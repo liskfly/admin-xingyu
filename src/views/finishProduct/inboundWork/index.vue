@@ -150,7 +150,7 @@ export default {
       this.loading.close();
     },
     handle(row, column, event) {
-      console.log(row);
+      // console.log(row);
       let text = {
         Wo: row.Wo, //预留工单号
         Rid: row.Rid, //必填 外包装Rid

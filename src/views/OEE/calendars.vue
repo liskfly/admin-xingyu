@@ -44,6 +44,7 @@ export default {
         contentHeight: "500px",
         eventOrderStrict: true,
         locale: "zh-cn",
+        // nowIndicator: true, // 启用当前时间线  
         views: {
           timeGridWeek: {
             slotLabelInterval: "00:30", // 设置时间间隔为1小时
@@ -1478,6 +1479,14 @@ export default {
       }
     },
     handleUpdate() {
+      if (this.form.closedTime === '' || this.form.errorType === '' || 
+      this.form.errorDsc === '') {
+          this.$message({
+            message: "请输完整信息",
+            type: "warning",
+          });
+        return;
+      }
       XY_OEE_LineErrorUpdate(this.form)
         .then((res) => {
           if (res.data.Status === "OK") {

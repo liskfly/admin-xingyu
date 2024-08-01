@@ -17,7 +17,7 @@ const actions = {
             const dataTable = xmlTagToJson(data, "Table")
             commit('SET_ROUTE', dataTable)
             // state.addRoutes=dataTable
-            console.log(state.addRoutes);
+            // console.log(state.addRoutes);
         })
 
     },

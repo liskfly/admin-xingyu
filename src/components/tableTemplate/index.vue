@@ -145,11 +145,11 @@ export default {
     getData() {
       getMaterial(this.pageTitle).then(({ data }) => {
         this.tableData = xmlTagToJson(data, "Table");
-        console.log(this.tableData);
+        // console.log(this.tableData);
       });
     },
     handleEdit(index, row) {
-      console.log(row);
+      // console.log(row);
       this.editForm ={
         ID:row.ID,
         Var1: row.var1,

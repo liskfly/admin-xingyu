@@ -571,6 +571,14 @@ export default {
       }
     },
     handleUpdate() {
+      if (this.form.closedTime === '' || this.form.errorType === '' || 
+      this.form.errorDsc === '') {
+          this.$message({
+            message: "请输完整信息",
+            type: "warning",
+          });
+        return;
+      }
       XY_OEE_LineErrorUpdate(this.form)
         .then((res) => {
           if (res.data.Status === "OK") {

@@ -143,7 +143,7 @@ export default {
               // }
             })
             .catch((data) => {
-              console.log(data);
+              // console.log(data);
               this.$message({
                 type: "error",
                 message: data,

@@ -165,24 +165,24 @@ export default {
       dialogClass: "pass",
       toForm: {
         ContainerName: "",
-        Equipment: "9101",
+        Equipment: "OQC",
         DataHeaderID: "709e558f16bf5365c6f343d20c84360d",
         TestResult: "ok",
       },
       equipmentChoice: [
         {
-          value: '9101',
-          lable: "RCM控制器装配自动化线",
+          value: 'OQC',
+          lable: "OQC",
         },
-        {
-          value: '9201',
-          lable: "HCM控制器装配自动化线",
-        },
-        {
-          value: '9301',
-          // lable: "毫米波雷达装配自动化线",
-          lable: '五合一自动化线'
-        },
+        // {
+        //   value: '9201',
+        //   lable: "HCM控制器装配自动化线",
+        // },
+        // {
+        //   value: '9301',
+        //   // lable: "毫米波雷达装配自动化线",
+        //   lable: '五合一自动化线'
+        // },
       ],
     };
   },
@@ -246,7 +246,7 @@ export default {
               this.tableData.sort((a, b) => {
                 let aTime = new Date(a.DateTime);
                 let bTime = new Date(b.DateTime);
-                return aTime - bTime;
+                return bTime - aTime;
               });
               this.form.PcbSn = "";
               this.form.Result = "PASS";
@@ -309,7 +309,7 @@ export default {
     sortDate(a, b) {
       let aTime = new Date(a.DateTime);
       let bTime = new Date(b.DateTime);
-      console.log(aTime, bTime);
+      // console.log(aTime, bTime);
       return aTime - bTime;
     },
     sortChange({ column, prop, order }) {

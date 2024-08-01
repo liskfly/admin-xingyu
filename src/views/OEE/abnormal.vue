@@ -43,6 +43,8 @@
         <div>
           <el-date-picker
             v-model="searchDate"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
             type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -136,7 +138,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="OEChange = false">取 消</el-button>
+        <el-button @click="maintenance = false">取 消</el-button>
         <el-button
           type="primary"
           @click="(dialogFormVisible = false), handleUpdate()"
@@ -258,21 +260,21 @@ export default {
     },
     //分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.currentPage = 1;
       this.pageSize = val;
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
     todaySizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.todayCurrentPage = 1;
       this.todyPageSize = val;
     },
     todayCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.todayCurrentPage = val;
     },
     getWrongHeight() {
@@ -283,7 +285,6 @@ export default {
         40;
     },
     dataMaintenancema(index, row) {
-      console.log(index, row);
       if (row.OperatorName) {
         this.title = "修改";
         this.form = {
@@ -328,6 +329,14 @@ export default {
       }
     },
     handleUpdate() {
+      if (this.form.closedTime === '' || this.form.errorType === '' || 
+      this.form.errorDsc === '') {
+          this.$message({
+            message: "请输完整信息",
+            type: "warning",
+          });
+        return;
+      }
       XY_OEE_LineErrorUpdate(this.form)
         .then((res) => {
           if (res.data.Status === "OK") {
