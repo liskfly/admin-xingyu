@@ -255,3 +255,19 @@ export function XY_OEE_LineErrorUpdate(data) {
     data
   });
 }
+
+export function XY_Assembly_OrderStatus(data) {
+  return request({
+    url: "/XingYuAPI/XY_Assembly_OrderStatus",
+    method: "post",
+    data
+  });
+}
+
+export function XY_SMT_OrderStatus(data) {
+  return request({
+    url: "/XingYuAPI/XY_SMT_OrderStatus",
+    method: "post",
+    data
+  });
+}

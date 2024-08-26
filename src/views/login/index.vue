@@ -81,7 +81,7 @@ export default {
       },
       loading: false,
       passwordType: "password",
-      redirect: undefined,
+      redirect: undefined
     };
   },
   watch: {
@@ -91,6 +91,8 @@ export default {
       },
       immediate: true,
     },
+  },
+  mounted() {
   },
   methods: {
     ...mapMutations(["SET_ROUTE", "SET_NAMEID"]),
@@ -169,7 +171,7 @@ export default {
         item.push(newData);
       });
       return item;
-    },
+    }
   },
 };
 </script>

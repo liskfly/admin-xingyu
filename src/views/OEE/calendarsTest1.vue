@@ -3,7 +3,13 @@ import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { XY_OEE_Calendar, XY_OEE_LevelCode, XY_OEE_LevelType } from "@/api/all";
+import {
+  XY_OEE_Calendar,
+  XY_OEE_LevelCode,
+  XY_OEE_LevelType,
+  XY_OEE_LineError,
+  XY_OEE_LineErrorUpdate,
+} from "@/api/all";
 import {
   getStartTime,
   getEndTime,
@@ -16,6 +22,9 @@ import {
   getDate,
   overDay,
   getDurTime,
+  durationChoice,
+  delectT,
+  getNowDate,
 } from "@/utils/oeeFun";
 
 import { getToken } from "@/utils/auth";
@@ -35,6 +44,20 @@ export default {
         contentHeight: "500px",
         eventOrderStrict: true,
         locale: "zh-cn",
+        // nowIndicator: true, // 启用当前时间线  
+        views: {
+          timeGridWeek: {
+            slotLabelInterval: "00:30", // 设置时间间隔为1小时
+          },
+        },
+        slotLabelFormat: {
+          hour: "2-digit", // 使用 2 位数字表示小时
+          minute: "2-digit", // 使用 2 位数字表示分钟（如果你需要的话）
+          hour12: false, // 使用 24 小时制
+          separator: " ", // 自定义分隔符
+          omitZeroMinute: false, // 是否省略零分钟
+          meridiem: false, // 是否显示上午/下午（对于 12 小时制）
+        },
         buttonText: {
           today: "今天",
           month: "月",
@@ -46,19 +69,11 @@ export default {
           timeGridPlugin,
           interactionPlugin, // needed for dateClick
         ],
-        slotLabelFormat: {
-          hour: "2-digit", // 使用 2 位数字表示小时
-          minute: "2-digit", // 使用 2 位数字表示分钟（如果你需要的话）
-          hour12: false, // 使用 24 小时制
-          separator: " ", // 自定义分隔符
-          omitZeroMinute: false, // 是否省略零分钟
-          meridiem: false, // 是否显示上午/下午（对于 12 小时制）
-        },
         displayEventTime: false,
         headerToolbar: {
-          left: "prev,next today",
+          left: "prev,next today addEvent timeChoice allDay",
           center: "title",
-          right: "lineOne,lineTwo,lineThree",
+          right: "lineOne lineTwo lineThree",
           // ,timeGridDay,listWeek
         },
         customButtons: {
@@ -80,11 +95,35 @@ export default {
               this.line = 2;
             },
           },
+          addEvent: {
+            text: "添加工作日程",
+            click: (e) => {
+              this.addEventShow = true;
+            },
+          },
+          timeChoice: {
+            text: "时间段",
+            click: (e) => {
+              this.durtimeStyle.top = e.target.getBoundingClientRect().top;
+              this.durtimeStyle.left = e.target.getBoundingClientRect().left;
+              this.$refs.timeChoice.$el.click();
+              // console.log(this.$refs.timeChoice.handleFocus);
+            },
+          },
+          allDay: {
+            text: "全天",
+            click: () => {
+              this.calendarOptions.slotMinTime = "00:00:00";
+              this.calendarOptions.slotMaxTime = "24:00:00";
+              this.calendarOptions.views.timeGridWeek.slotLabelInterval =
+                "01:00:00";
+              this.calendarOptions.slotDuration = "01:00:00";
+            },
+          },
         },
         initialView: "timeGridWeek",
-        allDaySlot: false, //allday 整天的日程是否显示
         // initialEvents: [INITIAL_EVENTS], // alternatively, use the `events` setting to fetch from a feed
-        // events: [],
+        events: [],
         // editable: true,
         selectable: true,
         height: "auto",
@@ -96,6 +135,9 @@ export default {
         eventOrder: "eventOrder",
         // select: this.handleDateSelect,
         eventClick: this.handleEventClick,
+        allDaySlot: false, //allday 整天的日程是否显示
+        slotMinTime: "00:00:00", //设置显示的时间从几点开始
+        slotMaxTime: "24:00:00", //设置显示的时间从几点结束
         // viewDidMount: this.handleViewRender,
         // slotEventOverlap:false,
         // slotEventOverlap:false,
@@ -105,17 +147,6 @@ export default {
         eventChange:
         eventRemove:
         */
-        eventSources: [
-          {
-            events: [],
-          },
-          {
-            events: [],
-          },
-          {
-            events: [],
-          },
-        ],
       },
       addEventShow: false,
       levelCodeInput: "",
@@ -148,6 +179,20 @@ export default {
       idChange: "",
       durationChange: "",
       key: 0,
+      typeChoice: [
+        {
+          value: "设备异常",
+          label: "设备异常",
+        },
+        {
+          value: "换线停机",
+          label: "换线停机",
+        },
+        {
+          value: "维修保养",
+          label: "维修保养",
+        },
+      ],
       levelCodeData: [],
       levelTypeData: [
         { name: "计划", value: "Plan" },
@@ -166,7 +211,49 @@ export default {
       dateInputWrite: false,
       timeInputWrite: false,
       eventOrder: 2,
-      lineHistory:0
+      lineHistory: 0,
+      workOrder: 0,
+      maintenanceIndex: 10000001,
+      completedIndex: 20000001,
+      workUpdataShow: false,
+      isGoingEventShow: false,
+      isCompleteShow: false,
+      form: {
+        operationType: "U",
+        serialNumber: 1,
+        errorLevel: 1,
+        closedTime: "",
+        errorType: "",
+        errorCode: "",
+        errorDsc: "",
+        operatorName: getToken(),
+      },
+      showForm: {
+        operationType: "U",
+        serialNumber: 1,
+        errorLevel: null,
+        closedTime: "",
+        lineNumber: "",
+        startTime: "",
+        endTime: "",
+        errorType: "",
+        errorCode: "",
+        errorDsc: "",
+        operatorName: "",
+        mcID: "",
+        mcName: "",
+      },
+      durtime: [],
+      durtimeStyle: {
+        top: 0,
+        left: 0,
+      },
+      durtimeList: durationChoice(),
+      wrongTime:{
+        start:'',
+        end:'',
+        mcName:''
+      }
     };
   },
   watch: {
@@ -195,138 +282,57 @@ export default {
         this.isPlanStopChange = false;
       }
     },
-    // durationInput(newVal, oldVal) {
-    //   console.log(1);
-    //   if (!this.dateInput[0] || !this.timeInput) {
-    //     this.durationInput = 0;
-    //     this.$message({
-    //       type: "error",
-    //       message: `先选择日期和开始时间`,
-    //     });
-    //     return;
-    //   }
-    //   this.durationInput = `${newVal}`.replace(/^0+(\d)|[^\d]+/g, "");
-    //   if (this.durationInput > 1440) {
-    //     this.durationInput = 1440;
-    //     this.$message({
-    //       type: "error",
-    //       message: `总时长不得超过24小时`,
-    //     });
-    //   }
-    //   if (
-    //     overDay(this.timeInput, newVal) &&
-    //     this.dateInput[0] === this.dateInput[1]
-    //   ) {
-    //     this.durationInput = Number(oldVal);
-    //     this.$message({
-    //       type: "error",
-    //       message: `输入时间已超过一天，请选择两天以上的日期`,
-    //     });
-    //     return;
-    //   }
-    // },
-    // durationChange(newVal, oldVal) {
-    //   if (!this.dateChange[0] && !this.timeChange) {
-    //     this.durationChange = 0;
-    //     this.$message({
-    //       type: "error",
-    //       message: `先选择日期和开始时间`,
-    //     });
-    //     return;
-    //   }
-    //   this.durationChange = `${newVal}`.replace(/^0+(\d)|[^\d]+/g, "");
-    //   if (this.durationChange > 1440) {
-    //     this.durationChange = 1440;
-    //     this.$message({
-    //       type: "error",
-    //       message: `总时长不得超过24小时`,
-    //     });
-    //   }
-    //   if (
-    //     overDay(this.timeChange, newVal) &&
-    //     this.dateChange[0] === this.dateChange[1]
-    //   ) {
-    //     this.durationChange = Number(oldVal);
-    //     this.$message({
-    //       type: "error",
-    //       message: `输入时间已超过一天，请选择两天以上的日期`,
-    //     });
-    //     return;
-    //   }
-    // },
-    // dateChange(newVal, oldVal) {
-    //   if (newVal === null) {
-    //     this.dateChangeWrite = false;
-    //   } else {
-    //     this.dateChangeWrite = true;
-    //   }
-    // },
-    // timeChange(newVal, oldVal) {
-    //   if (newVal === null) {
-    //     this.timeChangeWrite = false;
-    //   } else {
-    //     this.timeChangeWrite = true;
-    //   }
-    // },
-    // dateInput(newVal, oldVal) {
-    //   if (newVal === null) {
-    //     this.dateInputWrite = false;
-    //   } else {
-    //     this.dateInputWrite = true;
-    //   }
-    // },
-    // timeInput(newVal, oldVal) {
-    //   if (newVal === null) {
-    //     this.timeInputWrite = false;
-    //   } else {
-    //     this.timeInputWrite = true;
-    //   }
-    // },
     line(newVal, oldVal) {
-      this.calendarOptions.eventSources = [this.arr[newVal]];
-      // document.getElementsByClassName("fc-lineOne-button")[0].style.background =
-      //   this.line === 0
-      //     ? "linear-gradient(to right bottom, #65d1fb, #6591fb)"
-      //     : "white";
-      // document.getElementsByClassName("fc-lineTwo-button")[0].style.background =
-      //   this.line === 1
-      //     ? "linear-gradient(to right bottom, #65d1fb, #6591fb)"
-      //     : "white";
-      // document.getElementsByClassName(
-      //   "fc-lineThree-button"
-      // )[0].style.background =
-      //   this.line === 2
-      //     ? "linear-gradient(to right bottom, #65d1fb, #6591fb)"
-      //     : "white";
-      // document.getElementsByClassName("fc-lineOne-button")[0].style.color =
-      //   this.line === 0 ? "white" : "black";
-      // document.getElementsByClassName("fc-lineTwo-button")[0].style.color =
-      //   this.line === 1 ? "white" : "black";
-      // document.getElementsByClassName("fc-lineThree-button")[0].style.color =
-      //   this.line === 2 ? "white" : "black";
+      this.calendarOptions.events = this.arr[newVal];
+      document.getElementsByClassName("fc-lineOne-button")[0].style.background =
+        this.line === 0
+          ? "linear-gradient(to right bottom, #65d1fb, #6591fb)"
+          : "white";
+      document.getElementsByClassName("fc-lineTwo-button")[0].style.background =
+        this.line === 1
+          ? "linear-gradient(to right bottom, #65d1fb, #6591fb)"
+          : "white";
+      document.getElementsByClassName(
+        "fc-lineThree-button"
+      )[0].style.background =
+        this.line === 2
+          ? "linear-gradient(to right bottom, #65d1fb, #6591fb)"
+          : "white";
+      document.getElementsByClassName("fc-lineOne-button")[0].style.color =
+        this.line === 0 ? "white" : "black";
+      document.getElementsByClassName("fc-lineTwo-button")[0].style.color =
+        this.line === 1 ? "white" : "black";
+      document.getElementsByClassName("fc-lineThree-button")[0].style.color =
+        this.line === 2 ? "white" : "black";
     },
   },
   created() {
-    this.getdata(0);
+    this.getdata("Line1");
     this.getLevelCode();
   },
-  // mounted() {
-  //   this.getdata();
-  //   this.getLevelCode();
-  // },
+  mounted() {
+    // this.getdata();
+    // this.getLevelCode();
+  },
   methods: {
     getToken,
-    handleViewRender(e) {
-      // console.log(e.view);
-      if (e.view.type === "dayGridMonth") {
-        this.calendarOptions.eventSources = [this.arr[0]];
-      } else if (e.view.type === "timeGridWeek") {
-        this.calendarOptions.eventSources = [];
-        this.calendarOptions.eventSources.push(this.arr[1]);
-        this.calendarOptions.eventSources.push(this.arr[2]);
+    // handleViewRender(e) {
+    //   // console.log(e.view);
+    //   if (e.view.type === "dayGridMonth") {
+    //     this.calendarOptions.events = [this.arr[0]];
+    //   } else if (e.view.type === "timeGridWeek") {
+    //     this.calendarOptions.events = [];
+    //     this.calendarOptions.events.push(this.arr[1]);
+    //     this.calendarOptions.events.push(this.arr[2]);
+    //   }
+    // },
+    eventColor(boolen1, boolen2, code) {
+      if (code === '夜班') {
+        return '#00AC6A'
+      }else if (code === '白班'){
+        return '#00d382'
       }
-    },
-    eventColor(boolen1, boolen2) {
+      // console.log(code);
       if (boolen1 && !boolen2) {
         return "#00AC6A";
       } else if (!boolen1 && boolen2) {
@@ -346,50 +352,80 @@ export default {
     },
     handleEventClick({ event }) {
       let data = event["_def"].extendedProps;
-      console.log(getDurTime(data.StartTime, data.Duration), data);
-      this.idChange = data.ID;
-      this.levelTypeChange = data.LevelType;
-      this.levelCodeChange = data.LevelCode;
-      this.descriptionChange = data.Description;
-      this.operatorChange = data.Operator;
-      if (data.Repeat === "Y") {
-        this.dateRepectChange = [
-          setStartDate(data.StartTime),
-          setEndDate(data.EndTime),
-        ];
-      } else {
-        this.dateChange = setStartDate(data.StartTime);
-      }
-      this.lineChange = data.lineNumber;
-      this.timeChange = getStartTime(data.StartTime, false);
-      this.nameChange = data.Name;
-      this.repeatChange = data.Repeat;
-      this.gradeChange = data.Grade;
-      this.durationChange = getDurTime(data.StartTime, data.Duration);
-      if (data.IsWorking === "Y" && data.IsPlanStop === "N") {
-        this.isWorkingChange = true;
-        this.isPlanStopChange = false;
-        this.radio1 = 0;
-      } else if (data.IsWorking === "N" && data.IsPlanStop === "Y") {
-        this.isWorkingChange = false;
-        this.isPlanStopChange = true;
-        this.radio1 = 1;
-      } else {
-        this.isWorkingChange = false;
-        this.isPlanStopChange = false;
-        this.radio1 = 2;
+      // console.log(getDurTime(data.StartTime, data.Duration), data);
+      if (data.state === "work") {
+        this.idChange = data.ID;
+        this.levelTypeChange = data.LevelType;
+        this.levelCodeChange = data.LevelCode;
+        this.descriptionChange = data.Description;
+        this.operatorChange = data.Operator;
+        if (data.Repeat === "Y") {
+          this.dateRepectChange = [
+            setStartDate(data.StartTime),
+            setEndDate(data.EndTime),
+          ];
+        } else {
+          this.dateChange = setStartDate(data.StartTime);
+        }
+        this.lineChange = data.lineNumber;
+        this.timeChange = getStartTime(data.StartTime, false);
+        this.nameChange = data.Name;
+        this.repeatChange = data.Repeat;
+        this.gradeChange = data.Grade;
+        this.durationChange = getDurTime(data.StartTime, data.Duration);
+        if (data.IsWorking === "Y" && data.IsPlanStop === "N") {
+          this.isWorkingChange = true;
+          this.isPlanStopChange = false;
+          this.radio1 = 0;
+        } else if (data.IsWorking === "N" && data.IsPlanStop === "Y") {
+          this.isWorkingChange = false;
+          this.isPlanStopChange = true;
+          this.radio1 = 1;
+        } else {
+          this.isWorkingChange = false;
+          this.isPlanStopChange = false;
+          this.radio1 = 2;
+        }
+        this.workUpdataShow = true;
+      } else if (data.state === "onGoing") {
+        this.isGoingEventShow = true;
+        this.wrongTime = {
+          start:data.StartTime,
+          end:data.EndTime,
+          mcName:data.mcName
+        }
+      } else if (data.state === "complete") {
+        this.showForm = {
+          serialNumber: data.serialNumber,
+          errorLevel: data.errorLevel,
+          closedTime: data.closedTime,
+          lineNumber: data.lineNumber,
+          startTime: data.StartTime,
+          endTime: data.EndTime,
+          errorType: data.errorType,
+          errorCode: data.errorCode,
+          errorDsc: data.errorDsc,
+          operatorName: data.operatorName,
+          mcId: data.McID,
+          mcName: data.McName,
+        };
+        this.isCompleteShow = true;
       }
     },
     // handleEvents(events) {
     //   console.log(this.calendarOptions.eventSources);
     // },
-    getdata(line) {
-      this.eventOrder = 2;
+    async getdata(line) {
+      this.maintenanceIndex = 20000001;
+      this.completedIndex = 10000001;
+      this.workOrder = 2;
+      this.arr = [{ events: [] }, { events: [] }, { events: [] }];
       this.startLoading();
-      XY_OEE_Calendar({ operationType: "QA", lineNumber: "string" })
+      await XY_OEE_Calendar({ operationType: "QA", lineNumber: "string" })
         .then(async ({ data }) => {
-          console.log(data);
-          this.arr = [{ events: [] }, { events: [] }, { events: [] }];
+          if (data.Status === "NG") {
+            return;
+          }
           let arr1 = data.DataList.sort(function (a, b) {
             let obj1 = a["StartTime"];
             let obj2 = b["StartTime"];
@@ -397,7 +433,7 @@ export default {
             const val2 = Math.floor(new Date(obj2).getTime() / 1000);
             return val1 - val2;
           });
-          await arr1.forEach((item) => {
+          arr1.forEach((item) => {
             let obj = {
               Name: item.Name,
               LevelCode: item.LevelCode,
@@ -416,139 +452,16 @@ export default {
               EndTime: item.EndTime,
               lineNumber: item.LineNumber,
             };
-            // if (item.Grade === 1) {
-            //   this.arr[0].events.push({
-            //     ID: item.ID,
-            //     start: getStartDate(item.StartTime),
-            //     end: getEndDate(item.EndTime),
-            //     title: item.Name,
-            //     allDay: true,
-            //     color: this.eventColor(
-            //       item.IsWorking === "Y",
-            //       item.IsPlanStop === "Y"
-            //     ),
-            //     textColor: this.eventText(
-            //       item.IsWorking === "Y",
-            //       item.IsPlanStop === "Y"
-            //     ),
-            //     ...obj,
-            //   });
-            //   if (item.Repeat === "Y") {
-            //     this.arr[2].events.push({
-            //       ID: item.ID,
-            //       startTime: getStartTime(item.StartTime, false),
-            //       endTime: getEndTime(item.StartTime, item.Duration, false),
-            //       title: item.Name,
-            //       startRecur: getStartDate(item.StartTime),
-            //       endRecur: getEndDate(item.EndTime),
-            //       color: this.eventColor(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       textColor: this.eventText(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       ...obj,
-            //     });
-            //   } else {
-            //     this.arr[2].events.push({
-            //       ID: item.ID,
-            //       start: getStartTime(item.StartTime, true),
-            //       end: getEndTime(item.StartTime, item.Duration, true),
-            //       title: item.Name,
-            //       color: this.eventColor(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       textColor: this.eventText(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       allDay: false,
-            //       ...obj,
-            //     });
-            //   }
-            // } else {
-            //   console.log(
-            //     this.eventColor(item.IsWorking === "Y", item.IsPlanStop === "Y")
-            //   );
-            //   this.arr[0].events.push({
-            //     ID: item.ID,
-            //     start: getStartDate(item.StartTime),
-            //     end: getEndDate(item.EndTime),
-            //     title: item.Name,
-            //     allDay: true,
-            //     color: this.eventColor(
-            //       item.IsWorking === "Y",
-            //       item.IsPlanStop === "Y"
-            //     ),
-            //     textColor: this.eventText(
-            //       item.IsWorking === "Y",
-            //       item.IsPlanStop === "Y"
-            //     ),
-            //     ...obj,
-            //   });
-            //   if (item.Repeat === "Y") {
-            //     this.arr[1].events.push({
-            //       ID: item.ID,
-            //       startTime: getStartTime(item.StartTime, false),
-            //       endTime: getEndTime(item.StartTime, item.Duration, false),
-            //       title: item.Name,
-            //       startRecur: getStartDate(item.StartTime),
-            //       endRecur: getEndDate(item.EndTime),
-            //       color: this.eventColor(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       textColor: this.eventText(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       ...obj,
-            //     });
-            //   } else {
-            //     this.arr[1].events.push({
-            //       ID: item.ID,
-            //       start: getStartTime(item.StartTime, true),
-            //       end: getEndTime(item.StartTime, item.Duration, true),
-            //       title: item.Name,
-            //       allDay: false,
-            //       color: this.eventColor(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       textColor: this.eventText(
-            //         item.IsWorking === "Y",
-            //         item.IsPlanStop === "Y"
-            //       ),
-            //       ...obj,
-            //     });
-            //   }
-            // }
             this.arrChange(item, obj);
           });
-          this.calendarOptions.eventSources = [this.arr[0]];
-          this.line = 0;
-          if (line === 0) {
-          this.line = 0;
-          this.calendarOptions.eventSources = [this.arr[0]];
-          // this.DIYButton(1);
-          }else if(line === 1) {
-          this.line = 1;
-          this.calendarOptions.eventSources = [this.arr[1]];
-          // this.DIYButton(2);
-          }else if(line === 2) {
-          this.line = 2;
-          this.calendarOptions.eventSources = [this.arr[2]];
-          // this.DIYButton(3);
-          }
+          // this.calendarOptions.events = [this.arr[0]];
+          // this.line = 0;
+          // console.log(line);
           // this.line = this.lineHistory;
-          console.log(this.calendarOptions.eventSources);
+          // console.log(this.calendarOptions.events);
           // this.calendarOptions.eventSources = this.arr;
-          this.endLoading();
           // console.log(this.calendarOptions.eventSources);
-          this.key++;
+          // this.key++;
         })
         .catch((err) => {
           // console.log(err);
@@ -556,7 +469,263 @@ export default {
           //   type: "error",
           //   message: `网络不良`,
           // });
-          this.getdata(line);
+          this.getWorkEvent();
+        });
+      await XY_OEE_LineError({
+        operationType: "Q1",
+        tStartTime: "2024-05-15 00:00:00",
+        tEndTime: getNowDate(),
+      })
+        .then((res) => {
+          if (res.data.Status === "OK") {
+          let arr1 = res.data.DataList.sort(function (a, b) {
+            let obj1 = a["StartTime"];
+            let obj2 = b["StartTime"];
+            const val1 = Math.floor(new Date(obj1).getTime() / 1000);
+            const val2 = Math.floor(new Date(obj2).getTime() / 1000);
+            return val1 - val2;
+          });
+            arr1.forEach((item) => {
+              this.completedIndex = this.completedIndex + 0.1;
+              if (item.LineNumber === "Line1") {
+                this.completeObject(item, 0);
+              } else if (item.LineNumber === "Line2") {
+                this.completeObject(item, 1);
+              } else if (item.LineNumber === "Line3") {
+                this.completeObject(item, 2);
+              }
+            });
+          } else {
+            if (res.data.Message !== "NG：无数据") {
+              this.$message({
+                message: res.data.Message,
+                type: "warning",
+              });
+            }
+          }
+        })
+        .catch((res) => {
+          this.getCompleted();
+          this.$message({
+            message: res,
+            type: "error",
+          });
+        });
+      await XY_OEE_LineError({
+        operationType: "Q",
+      })
+        .then((res) => {
+          if (res.data.Status === "OK") {
+            let arr1 = res.data.DataList.sort(function (a, b) {
+              let obj1 = a["StartTime"];
+              let obj2 = b["StartTime"];
+              const val1 = Math.floor(new Date(obj1).getTime() / 1000);
+              const val2 = Math.floor(new Date(obj2).getTime() / 1000);
+              return val1 - val2;
+            });
+            arr1.forEach((item) => {
+              this.maintenanceIndex = this.maintenanceIndex + 0.1;
+              if (item.LineNumber === "Line1") {
+                this.maintenanceObject(item, 0);
+              } else if (item.LineNumber === "Line2") {
+                this.maintenanceObject(item, 1);
+              } else if (item.LineNumber === "Line3") {
+                this.maintenanceObject(item, 2);
+              }
+            });
+          } else {
+            if (res.data.Message !== "NG：无数据") {
+              this.$message({
+                message: res.data.Message,
+                type: "warning",
+              });
+            }
+          }
+          if (line === "Line1") {
+            this.line = 0;
+            this.calendarOptions.events = this.arr[0];
+            this.$nextTick(() => {
+              this.DIYButton(1);
+              this.endLoading();
+            });
+          } else if (line === "Line2") {
+            this.line = 1;
+            this.calendarOptions.events = this.arr[1];
+            this.$nextTick(() => {
+              this.DIYButton(2);
+              this.endLoading();
+            });
+          } else if (line === "Line3") {
+            this.line = 2;
+            this.calendarOptions.events = this.arr[2];
+            this.$nextTick(() => {
+              this.DIYButton(3);
+              this.endLoading();
+            });
+          }
+        })
+        .catch((res) => {
+          this.getOnGoing();
+          this.$message({
+            message: res,
+            type: "error",
+          });
+        });
+    },
+    getWorkEvent() {
+      this.workOrder = 2;
+      this.startLoading();
+      XY_OEE_Calendar({ operationType: "QA", lineNumber: "string" })
+        .then(async ({ data }) => {
+          if (data.Status === "NG") {
+            return;
+          }
+          let arr1 = data.DataList.sort(function (a, b) {
+            let obj1 = a["StartTime"];
+            let obj2 = b["StartTime"];
+            const val1 = Math.floor(new Date(obj1).getTime() / 1000);
+            const val2 = Math.floor(new Date(obj2).getTime() / 1000);
+            return val1 - val2;
+          });
+          arr1.forEach((item) => {
+            let obj = {
+              Name: item.Name,
+              LevelCode: item.LevelCode,
+              LevelType: item.LevelType,
+              Description: item.Description,
+              Duration: item.Duration,
+              Grade: item.Grade,
+              IsAtive: item.IsAtive,
+              IsPlanStop: item.IsPlanStop,
+              IsWorking: item.IsWorking,
+              Operator: item.Operator,
+              Repeat: item.Repeat,
+              CreationDate: item.CreationDate,
+              ModifiedDate: item.ModifiedDate,
+              StartTime: item.StartTime,
+              EndTime: item.EndTime,
+              lineNumber: item.LineNumber,
+            };
+            this.arrChange(item, obj);
+          });
+          this.endLoading();
+          // this.calendarOptions.events = [this.arr[0]];
+          // this.line = 0;
+          // console.log(line);
+          // this.line = this.lineHistory;
+          // console.log(this.calendarOptions.events);
+          // this.calendarOptions.eventSources = this.arr;
+          // console.log(this.calendarOptions.eventSources);
+          // this.key++;
+        })
+        .catch((err) => {
+          // console.log(err);
+          // this.$message({
+          //   type: "error",
+          //   message: `网络不良`,
+          // });
+          this.endLoading();
+          this.getWorkEvent();
+        });
+    },
+    getOnGoing() {
+      this.maintenanceIndex = 20000001;
+      this.startLoading();
+      XY_OEE_LineError({
+        operationType: "Q",
+      })
+        .then((res) => {
+          if (res.data.Status === "OK") {
+            let arr1 = res.data.DataList.sort(function (a, b) {
+              let obj1 = a["StartTime"];
+              let obj2 = b["StartTime"];
+              const val1 = Math.floor(new Date(obj1).getTime() / 1000);
+              const val2 = Math.floor(new Date(obj2).getTime() / 1000);
+              return val1 - val2;
+            });
+            arr1.forEach((item) => {
+              this.maintenanceIndex = this.maintenanceIndex + 0.1;
+              if (item.LineNumber === "Line1") {
+                this.maintenanceObject(item, 0);
+              } else if (item.LineNumber === "Line2") {
+                this.maintenanceObject(item, 1);
+              } else if (item.LineNumber === "Line3") {
+                this.maintenanceObject(item, 2);
+              }
+            });
+          } else {
+            if (res.data.Message !== "NG：无数据") {
+              this.$message({
+                message: res.data.Message,
+                type: "warning",
+              });
+            }
+          }
+          if (line === "Line1") {
+            this.line = 0;
+            this.calendarOptions.events = this.arr[0];
+            this.$nextTick(() => {
+              this.DIYButton(1);
+              this.endLoading();
+            });
+          } else if (line === "Line2") {
+            this.line = 1;
+            this.calendarOptions.events = this.arr[1];
+            this.$nextTick(() => {
+              this.DIYButton(2);
+              this.endLoading();
+            });
+          } else if (line === "Line3") {
+            this.line = 2;
+            this.calendarOptions.events = this.arr[2];
+            this.$nextTick(() => {
+              this.DIYButton(3);
+              this.endLoading();
+            });
+          }
+        })
+        .catch((res) => {
+          this.$message({
+            message: res,
+            type: "error",
+          });
+          this.getOnGoing();
+        });
+    },
+    getCompleted() {
+      this.completedIndex = 10000001;
+      XY_OEE_LineError({
+        operationType: "Q1",
+        tStartTime: "2024-05-15 00:00:00",
+        tEndTime: getNowDate(),
+      })
+        .then((res) => {
+          if (res.data.Status === "OK") {
+            res.data.DataList.forEach((item) => {
+              this.completedIndex = this.completedIndex + 0.1;
+              if (item.LineNumber === "Line1") {
+                this.completeObject(item, 0);
+              } else if (item.LineNumber === "Line2") {
+                this.completeObject(item, 1);
+              } else if (item.LineNumber === "Line3") {
+                this.completeObject(item, 2);
+              }
+            });
+          } else {
+            if (res.data.Message !== "NG：无数据") {
+              this.$message({
+                message: res.data.Message,
+                type: "warning",
+              });
+            }
+          }
+        })
+        .catch((res) => {
+          this.getCompleted();
+          this.$message({
+            message: res,
+            type: "error",
+          });
         });
     },
     //初始化获取数据
@@ -589,12 +758,9 @@ export default {
     },
     addData() {
       if (
-        this.dateRepectInput === [] ||
-        this.operatorInput === "" ||
         this.levelTypeInput === "" ||
         this.levelCodeInput === "" ||
         this.radio === 4 ||
-        this.dateInput === "" ||
         this.lineInput === ""
       ) {
         this.$message({
@@ -603,7 +769,14 @@ export default {
         });
         return;
       }
-      if (getMin(this.timeInput, this.durationInput) < 0) {
+      if (this.dateRepectInput === [] && this.dateInput === "") {
+        this.$message({
+          type: "error",
+          message: `请完整输入信息或者有信息格式不正确`,
+        });
+        return;
+      }
+      if (getMin(this.timeInput, this.durationInput) <= 0) {
         this.$message({
           type: "error",
           message: `请选择正确时间段`,
@@ -641,15 +814,15 @@ export default {
         lineNumber: this.lineInput,
         operationType: "I",
       };
-      console.log(obj);
       XY_OEE_Calendar(obj)
         .then((res) => {
-          console.log(obj, res.data.Status);
+          // console.log(obj, res.data.Status);
           if (res.data.Status === "OK") {
-            this.getdata(this.line);
+            this.fixedView();
             this.addEventShow = false;
             this.clearInput();
             this.endLoading();
+            console.log(this.dateRepectInput);
           }
         })
         .catch((err) => {
@@ -676,9 +849,10 @@ export default {
       })
         .then((res) => {
           if (res.data.Status === "OK") {
-            this.getdata(this.line);
+            this.fixedView();
             // this.key++;
             this.clearChange();
+            this.workUpdataShow = false;
             this.endLoading();
           }
         })
@@ -721,30 +895,30 @@ export default {
         });
         return;
       }
-      console.log({
-        id: this.idChange,
-        levelCode: this.levelCodeChange,
-        levelType: this.levelTypeChange,
-        name: this.nameChange,
-        description: `${this.descriptionChange}`,
-        operator: getToken(),
-        // this.operatorChange
-        repeat: this.repeatChange,
-        grade: `${this.gradeChange}`,
-        startTime:
-          this.repeatChange === "Y"
-            ? setStartDate(this.dateRepectChange[0]) + " " + this.timeChange
-            : setStartDate(this.dateChange) + " " + this.timeChange,
-        endTime:
-          this.repeatChange === "Y"
-            ? setStartDate(this.dateRepectChange[1])
-            : "2999-12-30 23:59:59",
-        duration: Number(getMin(this.timeChange, this.durationChange)),
-        isWorking: this.isWorkingChange ? "Y" : "N",
-        isPlanStop: this.isPlanStopChange ? "Y" : "N",
-        lineNumber: this.lineChange,
-        operationType: "U",
-      });
+      // console.log({
+      //   id: this.idChange,
+      //   levelCode: this.levelCodeChange,
+      //   levelType: this.levelTypeChange,
+      //   name: this.nameChange,
+      //   description: `${this.descriptionChange}`,
+      //   operator: getToken(),
+      //   // this.operatorChange
+      //   repeat: this.repeatChange,
+      //   grade: `${this.gradeChange}`,
+      //   startTime:
+      //     this.repeatChange === "Y"
+      //       ? setStartDate(this.dateRepectChange[0]) + " " + this.timeChange
+      //       : setStartDate(this.dateChange) + " " + this.timeChange,
+      //   endTime:
+      //     this.repeatChange === "Y"
+      //       ? setStartDate(this.dateRepectChange[1])
+      //       : "2999-12-30 23:59:59",
+      //   duration: Number(getMin(this.timeChange, this.durationChange)),
+      //   isWorking: this.isWorkingChange ? "Y" : "N",
+      //   isPlanStop: this.isPlanStopChange ? "Y" : "N",
+      //   lineNumber: this.lineChange,
+      //   operationType: "U",
+      // });
       // return;
       XY_OEE_Calendar({
         id: this.idChange,
@@ -772,7 +946,8 @@ export default {
       })
         .then((res) => {
           if (res.data.Status === "OK") {
-            this.getdata(this.line);
+            this.fixedView();
+            this.workUpdataShow = false;
           } else {
             console.log(res);
           }
@@ -807,13 +982,12 @@ export default {
       // this.timeChange = ''
     },
     clearInput() {
+      this.repeatInput = "N";
       this.gradeInput = "";
       this.durationInput = 0;
-      this.repeatInput = "N";
       this.nameInput = "";
-      this.dateInput = [];
-      this.dateRepectInput = "";
-      this.operatorInput = "";
+      this.dateInput = "";
+      this.dateRepectInput = [];
       this.descriptionInput = "";
       this.levelTypeInput = "";
       this.levelCodeInput = "";
@@ -1126,37 +1300,46 @@ export default {
       // }
     },
     repeatObj(item, obj, index) {
-      this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0:0.1)
+      this.workOrder = this.workOrder + 0.1;
+      // this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0 : 0.1);
       this.arr[index].events.push({
         ID: item.ID,
-        eventOrder: item.Grade === 1 ? 1:this.eventOrder,
+        eventOrder: this.workOrder,
         startTime: getStartTime(item.StartTime, false),
         endTime: getEndTime(item.StartTime, item.Duration, false),
         title: item.Name,
         startRecur: getStartDate(item.StartTime),
         endRecur: getEndDate(item.EndTime),
-        color: this.eventColor(item.IsWorking === "Y", item.IsPlanStop === "Y"),
+        color: this.eventColor(
+          item.IsWorking === "Y",
+          item.IsPlanStop === "Y",
+          obj.LevelCode
+        ),
         textColor: this.eventText(
           item.IsWorking === "Y",
           item.IsPlanStop === "Y"
         ),
+        state: "work",
         ...obj,
       });
     },
     notRepeatObj(item, obj, index) {
-      this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0:0.1)
+      this.workOrder = this.workOrder + 0.1;
+      // this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0 : 0.1);
       this.arr[index].events.push({
         ID: item.ID,
-        eventOrder: item.Grade === 1 ? 1:this.eventOrder,
+        eventOrder: this.workOrder,
         start: getStartTime(item.StartTime, true),
         end: getEndTime(item.StartTime, item.Duration, true),
         title: item.Name,
         allDay: false,
-        color: this.eventColor(item.IsWorking === "Y", item.IsPlanStop === "Y"),
+        color: this.eventColor(item.IsWorking === "Y", item.IsPlanStop === "Y",
+          obj.LevelCode),
         textColor: this.eventText(
           item.IsWorking === "Y",
           item.IsPlanStop === "Y"
         ),
+        state: "work",
         ...obj,
       });
     },
@@ -1230,6 +1413,111 @@ export default {
       document.getElementsByClassName("fc-lineThree-button")[0].style.color =
         "white";
     },
+    fixedView() {
+      if (this.line === 0) {
+        this.getdata("Line1");
+      } else if (this.line === 1) {
+        this.getdata("Line2");
+      } else if (this.line === 2) {
+        this.getdata("Line3");
+      }
+    },
+    completeObject(item, index) {
+      this.arr[index].events.push({
+        eventOrder: this.completedIndex,
+        start: delectT(item.StartTime),
+        end: delectT(item.EndTime),
+        title: item.McName,
+        color: "#fbc017",
+        state: "complete",
+        serialNumber: item.SerialNumber,
+        errorLevel: item.ErrorLevel,
+        closedTime: delectT(item.CloseTime),
+        lineNumber: item.LineNumber,
+        StartTime: delectT(item.StartTime),
+        EndTime: delectT(item.EndTime),
+        errorType: item.ErrorType,
+        errorCode: item.ErrorCode,
+        errorDsc: item.ErrorDsc,
+        operatorName: item.OperatorName,
+        McId: item.McID,
+        McName: item.McName,
+      });
+    },
+    maintenanceObject(item, index) {
+      this.arr[index].events.push({
+        eventOrder: this.maintenanceIndex,
+        start: delectT(item.StartTime),
+        end: delectT(item.EndTime),
+        title: item.McName,
+        color: "red",
+        state: "onGoing",
+        serialNumber: item.SerialNumber,
+        lineNumber: item.LineNumber,
+        startTime: delectT(item.StartTime),
+        endTime: delectT(item.EndTime),
+        mcId: item.McID,
+        mcName: item.McName,
+        StartTime:item.StartTime,
+        EndTime:item.EndTime
+      });
+    },
+    handleInput(value) {
+      // 将输入值转换为数字
+      const numericValue = parseInt(value, 10);
+      // 如果输入值是有效的数字且在0到5之间，则更新数据；否则，设置为上一个有效值或0
+      if (!isNaN(numericValue) && numericValue >= 1 && numericValue <= 5) {
+        this.form.errorLevel = numericValue.toString();
+      } else {
+        this.$nextTick(() => {
+          this.form.errorLevel = 1;
+          this.$message({
+            message: "请输入1~5范围的时间",
+            type: "warning",
+          });
+        });
+      }
+    },
+    handleUpdate() {
+      if (this.form.closedTime === '' || this.form.errorType === '' || 
+      this.form.errorDsc === '') {
+          this.$message({
+            message: "请输完整信息",
+            type: "warning",
+          });
+        return;
+      }
+      XY_OEE_LineErrorUpdate(this.form)
+        .then((res) => {
+          if (res.data.Status === "OK") {
+            this.maintenance = false;
+            this.getData();
+            this.$message({
+              message: "成功",
+              type: "success",
+            });
+          } else {
+            this.$message({
+              message: res.data.Message,
+              type: "warning",
+            });
+          }
+          this.isGoingEventShow = false;
+        })
+        .catch((res) => {
+          this.isGoingEventShow = false;
+          this.$message({
+            message: res,
+            type: "error",
+          });
+        });
+    },
+    durtimeChange() {
+      this.calendarOptions.slotMinTime = this.durtime[0];
+      this.calendarOptions.slotMaxTime = this.durtime[1];
+      this.calendarOptions.views.timeGridWeek.slotLabelInterval = "00:02:00";
+      this.calendarOptions.slotDuration = "00:02:00";
+    },
   },
 };
 </script>
@@ -1257,11 +1545,11 @@ export default {
             <div class="green"></div>
           </div>
           <div class="color">
-            <div>计划停机</div>
+            <div>异常</div>
             <div class="red"></div>
           </div>
           <div class="color">
-            <div>其他</div>
+            <div>已维修</div>
             <div class="yellow"></div>
           </div>
           <div class="color">
@@ -1272,6 +1560,7 @@ export default {
         </div>
       </div>
       <FullCalendar
+        style="margin: 0; max-width: none; width: 100%"
         class="demo-app-calendar"
         :options="calendarOptions"
         :key="key"
@@ -1284,155 +1573,10 @@ export default {
         </template>
       </FullCalendar>
     </div>
-    <div class="calendars-right">
-      <div>
-        <el-button
-          @click="(addEventShow = true), (gradeInput = '1')"
-          type="primary"
-        >
-          添加主日程
-        </el-button>
-        <el-button
-          @click="(addEventShow = true), (gradeInput = '2')"
-          type="primary"
-        >
-          添加日程计划
-        </el-button>
-      </div>
-      <div class="event-data">
-        <div style="margin-bottom: 20px; font-size: 20px">事件数据</div>
-        <el-form ref="form" label-width="100px">
-          <el-form-item label="名称">
-            <el-input v-model="nameChange"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="操作员">
-            <el-input v-model="operatorChange"></el-input>
-          </el-form-item> -->
-          <el-form-item label="日期">
-            <div></div>
-            <el-date-picker
-              v-show="repeatChange === 'Y'"
-              is-range
-              v-model="dateRepectChange"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
-            <el-date-picker
-              style="width: 350px"
-              v-show="repeatChange === 'N'"
-              v-model="dateChange"
-              type="date"
-              placeholder="选择日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="时间">
-            <div class="flex">
-              <el-time-picker
-                style="width: 160px"
-                v-model="timeChange"
-                format="HH:mm"
-                value-format="HH:mm:ss"
-                placeholder="任意时间点"
-              >
-              </el-time-picker>
-              <div style="margin: 0 10px">持续到</div>
-              <el-time-picker
-                style="width: 120px"
-                v-model="durationChange"
-                format="HH:mm"
-                value-format="HH:mm:00"
-                placeholder="任意时间点"
-              >
-              </el-time-picker>
-            </div>
-          </el-form-item>
-          <el-form-item label="是否重复">
-            <el-switch
-              v-model="repeatChange"
-              active-value="Y"
-              inactive-value="N"
-            ></el-switch>
-          </el-form-item>
-          <el-form-item label="工作状态" :inline="true">
-            <el-radio-group v-model="radio1">
-              <el-radio :label="0">工作</el-radio>
-              <el-radio :label="1">计划停机</el-radio>
-              <el-radio :label="2">其他</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="选择">
-            <div class="type">
-              <el-select v-model="lineChange" placeholder="工作线">
-                <el-option
-                  v-for="item in [
-                    { value: 'Line1', name: 'Line1' },
-                    { value: 'Line2', name: 'Line2' },
-                    { value: 'Line3', name: 'Line3' },
-                    { value: 'All', name: 'All' },
-                  ]"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-              <el-select v-model="levelTypeChange" placeholder="OEE类型">
-                <el-option
-                  v-for="item in levelTypeData"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-              <el-select v-model="levelCodeChange" placeholder="OEE参数">
-                <el-option
-                  v-for="item in levelCodeData"
-                  :key="item.LevelCode"
-                  :label="item.LevelCode"
-                  :value="item.LevelCode"
-                >
-                </el-option>
-              </el-select>
-            </div>
-          </el-form-item>
-          <el-form-item label="描述">
-            <el-input
-              type="textarea"
-              size="medium"
-              placeholder="请输入内容"
-              v-model="descriptionChange"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <div style="width: 100%" class="flex change-button">
-              <el-button
-                style="margin-left: 40px"
-                type="primary"
-                @click="UpData"
-                >修改</el-button
-              >
-              <el-button
-                style="margin-left: 100px"
-                type="primary"
-                @click="deleteEvent"
-                >删除</el-button
-              >
-            </div>
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
+
     <el-dialog
       width="600px"
-      :title="gradeInput === '1' ? '增加主事件' : '增加事件计划'"
+      :title="gradeInput === '1' ? '添加工作日程' : '增加事件计划'"
       :visible.sync="addEventShow"
     >
       <div>
@@ -1487,7 +1631,7 @@ export default {
               </el-time-picker>
               <div style="margin: 0 20px">持续到</div>
               <el-time-picker
-                style="width: 120px"
+                style="width: 100px"
                 v-model="durationInput"
                 format="HH:mm"
                 value-format="HH:mm:00"
@@ -1567,6 +1711,240 @@ export default {
         </el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="维护" :visible.sync="isGoingEventShow">
+      <el-form :model="form" ref="form" label-width="80px">
+        <el-form-item label="设备" prop="errorLevel">
+          <el-input v-model="wrongTime.mcName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="开始时间" prop="errorLevel">
+          <el-input v-model="wrongTime.start" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="结束时间" prop="errorLevel">
+          <el-input v-model="wrongTime.end" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="异常等级" prop="errorLevel">
+          <el-input-number
+            v-model="form.errorLevel"
+            @input="handleInput"
+          ></el-input-number>
+        </el-form-item>
+        <el-form-item label="异常类型" prop="errorType">
+          <el-select v-model="form.errorType" placeholder="请选择">
+            <el-option
+              v-for="item in typeChoice"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <!-- <el-input v-model="form.errorType"></el-input> -->
+        </el-form-item>
+        <el-form-item label="处理说明" prop="errorDsc">
+          <el-input v-model="form.errorDsc"></el-input>
+        </el-form-item>
+        <el-form-item label="异常代码" prop="errorCode">
+          <el-input v-model="form.errorCode"></el-input>
+        </el-form-item>
+        <el-form-item label="关闭时间" prop="status">
+          <el-date-picker
+            v-model="form.closedTime"
+            type="datetime"
+            placeholder="选择日期时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="isGoingEventShow = false">取 消</el-button>
+        <el-button type="primary" @click="handleUpdate()"> 确 定 </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="已维护日常" :visible.sync="isCompleteShow">
+      <el-form :model="showForm" label-width="auto">
+        <el-form-item class="custom-form-item" label="线体名">
+          <span>{{ showForm.lineNumber }}</span>
+        </el-form-item>
+        <el-form-item class="custom-form-item" label="设备名">
+          <span>{{ showForm.mcName }}</span>
+        </el-form-item>
+        <el-form-item class="custom-form-item" label="开始时间">
+          <span>{{ showForm.startTime }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="结束时间">
+          <span>{{ showForm.endTime }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="关闭时间">
+          <span>{{ showForm.closedTime }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="异常等级">
+          <span>{{ showForm.errorLevel }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="异常类型">
+          <span>{{ showForm.errorType }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="处理说明">
+          <span>{{ showForm.errorDsc }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="异常代码">
+          <span>{{ showForm.errorCode }}</span></el-form-item
+        >
+        <el-form-item class="custom-form-item" label="处理人">
+          <span>{{ showForm.operatorName }}</span></el-form-item
+        >
+      </el-form>
+    </el-dialog>
+
+    <el-dialog title="工作时间修改" :visible.sync="workUpdataShow">
+      <el-form ref="form" label-width="100px">
+        <el-form-item label="名称">
+          <el-input v-model="nameChange"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="操作员">
+            <el-input v-model="operatorChange"></el-input>
+          </el-form-item> -->
+        <el-form-item label="日期">
+          <div></div>
+          <el-date-picker
+            v-show="repeatChange === 'Y'"
+            is-range
+            v-model="dateRepectChange"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+          <el-date-picker
+            style="width: 350px"
+            v-show="repeatChange === 'N'"
+            v-model="dateChange"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="时间">
+          <div class="flex">
+            <el-time-picker
+              style="width: 160px"
+              v-model="timeChange"
+              format="HH:mm"
+              value-format="HH:mm:ss"
+              placeholder="任意时间点"
+            >
+            </el-time-picker>
+            <div style="margin: 0 10px">持续到</div>
+            <el-time-picker
+              style="width: 100px"
+              v-model="durationChange"
+              format="HH:mm"
+              value-format="HH:mm:00"
+              placeholder="任意时间点"
+            >
+            </el-time-picker>
+          </div>
+        </el-form-item>
+        <el-form-item label="是否重复">
+          <el-switch
+            v-model="repeatChange"
+            active-value="Y"
+            inactive-value="N"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="工作状态" :inline="true">
+          <el-radio-group v-model="radio1">
+            <el-radio :label="0">工作</el-radio>
+            <el-radio :label="1">计划停机</el-radio>
+            <el-radio :label="2">其他</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="选择">
+          <div class="type">
+            <el-select v-model="lineChange" placeholder="工作线">
+              <el-option
+                v-for="item in [
+                  { value: 'Line1', name: 'Line1' },
+                  { value: 'Line2', name: 'Line2' },
+                  { value: 'Line3', name: 'Line3' },
+                  { value: 'All', name: 'All' },
+                ]"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+            <el-select v-model="levelTypeChange" placeholder="OEE类型">
+              <el-option
+                v-for="item in levelTypeData"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+            <el-select v-model="levelCodeChange" placeholder="OEE参数">
+              <el-option
+                v-for="item in levelCodeData"
+                :key="item.LevelCode"
+                :label="item.LevelCode"
+                :value="item.LevelCode"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            type="textarea"
+            size="medium"
+            placeholder="请输入内容"
+            v-model="descriptionChange"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <div style="width: 100%" class="flex change-button">
+            <el-button style="margin-left: 40px" type="primary" @click="UpData"
+              >修改</el-button
+            >
+            <el-button
+              style="margin-left: 100px"
+              type="primary"
+              @click="deleteEvent"
+              >删除</el-button
+            >
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <div
+      class="timechoice"
+      :style="{ top: `${durtimeStyle.top}px`, left: `${durtimeStyle.left}px` }"
+    >
+      <el-select
+        v-model="durtime"
+        @change="durtimeChange()"
+        ref="timeChoice"
+        style="width: 0px; height: 0px; overflow: hidden"
+      >
+        <el-option
+          v-for="item in durtimeList"
+          :key="item.value[0]"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </div>
   </div>
 </template>
 
@@ -1590,6 +1968,13 @@ export default {
   min-height: 100%;
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
+
+  .timechoice {
+    width: 0px;
+    height: 0px;
+    // overflow: hidden;
+    position: fixed;
+  }
 }
 
 .demo-app-sidebar {
@@ -1652,7 +2037,7 @@ export default {
 
 .fc {
   /* the calendar root */
-  // max-width: 1100px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -1699,5 +2084,11 @@ export default {
 
 .fc-day-number {
   font-size: 20px;
+}
+
+/* 隐藏加号和减号 */
+::v-deep .el-input-number__increase,
+::v-deep .el-input-number__decrease {
+  display: none;
 }
 </style>

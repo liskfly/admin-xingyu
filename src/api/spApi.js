@@ -79,3 +79,19 @@ export function GetRequisitionPage(data) {
     data
   });
 }
+
+export function GetICTOverStation(data) {
+  return request({
+    url: "/Half/GetICTOverStation",
+    method: "post",
+    data
+  });
+}
+
+export function UPdateICTOverStation(data) {
+  return request({
+    url: "/Half/UPdateICTOverStation",
+    method: "post",
+    data
+  });
+}

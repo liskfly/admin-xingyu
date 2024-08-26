@@ -70,10 +70,15 @@ export function getFinshOrder(data) {
   });
 }
 //保存
-export function SaveIntactProduct(data) {
+export function SaveIntactProduct(data,code) {
   return request({
     url: "/IntactProduct/SaveIntactProduct",
     method: "post",
+    params: {code:code},
+    // data:{
+    //   obj:data,
+    //   stringcode:code
+    // }
     data
   });
 }
@@ -226,5 +231,14 @@ export function getPagePersonQualification(data) {
     url: "/Person/GetPagePersonQualification",
     method: "post",
     data
+  });
+}
+
+//pcb
+export function GetCodeBYPcbSN(code) {
+  return request({
+    url: "/IntactProduct/GetCodeBYPcbSN",
+    method: "post",
+    params: {code:code},
   });
 }

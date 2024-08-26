@@ -25,15 +25,30 @@
           </el-input>
         </el-form-item>
         <el-form-item v-show="getDataText.operationType != 'W'">
-          <el-input
-            placeholder="请输入seiralNumber"
-            clearable
-            style="width: 400px"
-            v-model="getDataText.seiralNumber"
-            class="input-with-select"
+          <!-- <el-time-picker
+              is-range
+              v-model="getDataText.date"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+              placeholder="选择时间范围"
+            >
+            </el-time-picker> -->
+          <el-date-picker
+            v-model="getDataText.date"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            :picker-options="pickerOptions"
           >
-            <!-- @change="getAllData()" -->
-          </el-input>
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getAllData()">查询</el-button>
@@ -51,23 +66,21 @@
         border
         stripe
       >
-        <el-table-column prop="OrderName" label="工单"></el-table-column>
-        <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
-        <el-table-column prop="OperationName" label="制程名称">
+        <el-table-column prop="OrderNumber" label="工单"></el-table-column>
+        <el-table-column prop="FinalYield" label="最终产率"> </el-table-column>
+        <el-table-column prop="FirstYield" label="首次测试良率"> </el-table-column>
+        <el-table-column prop="PlannedStartTime" label="计划开始时间">
         </el-table-column>
-        <el-table-column prop="AssemblyName" label="产品料号">
+        <el-table-column prop="PlannedFinishTime" label="计划完成时间">
         </el-table-column>
-        <el-table-column prop="LineName" label="线体"> </el-table-column>
-        <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-        <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column>
-        <el-table-column prop="EquipmentName" label="设备名称">
+        <el-table-column prop="ActualStarted" label="实际开始时间">
         </el-table-column>
-        <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
-        <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-        <el-table-column prop="StatusCODE" label="不良代码"> </el-table-column>
-        <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
-        <el-table-column prop="order" label="流程卡号"> </el-table-column>
-        <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
+        <el-table-column prop="ActualFinished" label="实际完成时间">
+        </el-table-column>
+        <el-table-column prop="QuantityOrdered" label="工单数量">
+        </el-table-column>
+        <el-table-column prop="QuantityProcessed" label="完成数量">
+        </el-table-column>
       </el-table>
       <div class="block" style="margin-top: 15px">
         <el-pagination
@@ -88,7 +101,7 @@
 </template>
 
 <script>
-import { XY_PCBAHisControl, XY_Prod_MissSNs } from "@/api/all";
+import { XY_Assembly_OrderStatus, XY_SMT_OrderStatus } from "@/api/all";
 import { getContainerMoves } from "@/api/material";
 import { aW } from "@fullcalendar/core/internal-common";
 export default {
@@ -100,7 +113,8 @@ export default {
       },
       tableData: [],
       getDataText: {
-        seiralNumber: "",
+        // seiralNumber: "",
+        date: [],
         workOrder: "",
         operationType: "S",
       },
@@ -110,11 +124,11 @@ export default {
       dialogVisible: false,
       inquireList: [
         {
-          lable: "工单号",
+          lable: "工单号查询",
           value: "W",
         },
         {
-          lable: "PCBA码",
+          lable: "时间查询",
           value: "S",
         },
       ],
@@ -127,7 +141,7 @@ export default {
   watch: {
     "getDataText.operationType"(newValue) {
       if (newValue == "W") {
-        this.getDataText.seiralNumber = "";
+        this.getDataText.date = [];
       } else {
         this.getDataText.workOrder = "";
       }
@@ -147,42 +161,69 @@ export default {
   methods: {
     getData() {
       return new Promise((resolve, reject) => {
-        XY_PCBAHisControl(this.getDataText).then(({ data }) => {
-          if (data.Status !== "NG") {
+        XY_SMT_OrderStatus({
+          operationType: "Q1",
+          orderName: this.getDataText.workOrder,
+          startTime: "",
+          endTime: "",
+        })
+          .then(({ data }) => {
+            if (data.Status !== "NG") {
+              resolve();
+              this.tableData.push(...data.DataList);
+            } else {
+              resolve();
+              this.tableData = [];
+            }
+          })
+          .catch((err) => {
             resolve();
-            this.tableData.push(...data.DataList);
-          } else {
-            resolve();
-            this.tableData = [];
-          }
-        });
+          });
+
+        // XY_PCBAHisControl(this.getDataText).then(({ data }) => {
+        //   if (data.Status !== "NG") {
+        //     resolve();
+        //     this.tableData.push(...data.DataList);
+        //   } else {
+        //     resolve();
+        //     this.tableData = [];
+        //   }
+        // });
       });
     },
     async getAllData() {
+      console.log(this.getDataText.date, this.getDataText.operationType);
       this.startLoading();
       this.tableData = [];
-      await this.getData();
+      if (this.getDataText.operationType == "W") {
+        await this.getData();
+      } else {
+        await this.getDateData();
+      }
       // await this.getDpiData();
       this.currentPage = 1;
       this.endLoading();
     },
-    getDpiData() {
+    getDateData() {
       return new Promise((resolve, reject) => {
-        if (this.getDataText.operationType === "S") {
-          getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
-            ({ data }) => {
-              this.tableData.push(...data.content);
+        XY_SMT_OrderStatus({
+          operationType: "Q2",
+          orderName: "",
+          startTime: this.getDataText.date[0],
+          endTime: this.getDataText.date[1],
+        })
+          .then(({ data }) => {
+            if (data.Status !== "NG") {
               resolve();
-            }
-          );
-        } else {
-          getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
-            ({ data }) => {
-              this.tableData.push(...data.content);
+              this.tableData.push(...data.DataList);
+            } else {
               resolve();
+              this.tableData = [];
             }
-          );
-        }
+          })
+          .catch((err) => {
+            resolve();
+          });
       });
       // this.startLoading();
       // if (this.getDataText.operationType === "S") {
