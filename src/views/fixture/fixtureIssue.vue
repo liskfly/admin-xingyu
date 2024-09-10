@@ -3,7 +3,7 @@
     <el-card shadow="always" :body-style="{ padding: '20px' }">
       <div>
         <el-form :model="getDataText" ref="form" class="form" :inline="true">
-          <el-form-item>
+          <!-- <el-form-item>
             <el-select
               v-model="getDataText.operationType"
               placeholder="选择方式"
@@ -44,10 +44,10 @@
               end-placeholder="结束日期"
             >
             </el-date-picker>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onSubmit">查询全部工单</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -164,6 +164,7 @@ export default {
     this.getScreenHeight();
   },
   mounted() {
+    this.onSubmit()
     window.addEventListener("resize", this.getScreenHeight);
     // this.getData();
   },

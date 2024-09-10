@@ -166,7 +166,7 @@ export default {
       dateInputWrite: false,
       timeInputWrite: false,
       eventOrder: 2,
-      lineHistory:0
+      lineHistory: 0,
     };
   },
   watch: {
@@ -531,17 +531,17 @@ export default {
           this.calendarOptions.eventSources = [this.arr[0]];
           this.line = 0;
           if (line === 0) {
-          this.line = 0;
-          this.calendarOptions.eventSources = [this.arr[0]];
-          // this.DIYButton(1);
-          }else if(line === 1) {
-          this.line = 1;
-          this.calendarOptions.eventSources = [this.arr[1]];
-          // this.DIYButton(2);
-          }else if(line === 2) {
-          this.line = 2;
-          this.calendarOptions.eventSources = [this.arr[2]];
-          // this.DIYButton(3);
+            this.line = 0;
+            this.calendarOptions.eventSources = [this.arr[0]];
+            // this.DIYButton(1);
+          } else if (line === 1) {
+            this.line = 1;
+            this.calendarOptions.eventSources = [this.arr[1]];
+            // this.DIYButton(2);
+          } else if (line === 2) {
+            this.line = 2;
+            this.calendarOptions.eventSources = [this.arr[2]];
+            // this.DIYButton(3);
           }
           // this.line = this.lineHistory;
           console.log(this.calendarOptions.eventSources);
@@ -589,12 +589,10 @@ export default {
     },
     addData() {
       if (
-        this.dateRepectInput === [] ||
         this.operatorInput === "" ||
         this.levelTypeInput === "" ||
         this.levelCodeInput === "" ||
         this.radio === 4 ||
-        this.dateInput === "" ||
         this.lineInput === ""
       ) {
         this.$message({
@@ -603,6 +601,20 @@ export default {
         });
         return;
       }
+      if (this.repeatInput === "Y" && this.dateRepectInput.length == 0) {
+        this.$message({
+          type: "error",
+          message: `请完整输入信息或者有信息格式不正确`,
+        });
+        return;
+      } else if (this.repeatInput !== "Y" && this.dateInput === "") {
+        this.$message({
+          type: "error",
+          message: `请完整输入信息或者有信息格式不正确`,
+        });
+        return;
+      }
+
       if (getMin(this.timeInput, this.durationInput) < 0) {
         this.$message({
           type: "error",
@@ -812,7 +824,7 @@ export default {
       this.repeatInput = "N";
       this.nameInput = "";
       this.dateInput = [];
-      this.dateRepectInput = "";
+      this.dateRepectInput = [];
       this.operatorInput = "";
       this.descriptionInput = "";
       this.levelTypeInput = "";
@@ -1126,10 +1138,10 @@ export default {
       // }
     },
     repeatObj(item, obj, index) {
-      this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0:0.1)
+      this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0 : 0.1);
       this.arr[index].events.push({
         ID: item.ID,
-        eventOrder: item.Grade === 1 ? 1:this.eventOrder,
+        eventOrder: item.Grade === 1 ? 1 : this.eventOrder,
         startTime: getStartTime(item.StartTime, false),
         endTime: getEndTime(item.StartTime, item.Duration, false),
         title: item.Name,
@@ -1144,10 +1156,10 @@ export default {
       });
     },
     notRepeatObj(item, obj, index) {
-      this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0:0.1)
+      this.eventOrder = this.eventOrder + (item.Grade === 1 ? 0 : 0.1);
       this.arr[index].events.push({
         ID: item.ID,
-        eventOrder: item.Grade === 1 ? 1:this.eventOrder,
+        eventOrder: item.Grade === 1 ? 1 : this.eventOrder,
         start: getStartTime(item.StartTime, true),
         end: getEndTime(item.StartTime, item.Duration, true),
         title: item.Name,

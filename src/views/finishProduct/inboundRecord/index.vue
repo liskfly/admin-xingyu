@@ -35,18 +35,14 @@
 
         <af-table-column prop="productid" label="产品编号"> </af-table-column>
 
-        <af-table-column prop="wonum" label="工单数量">
-        </af-table-column>
-        <af-table-column prop="goodnum" label="良品数量">
-        </af-table-column>
+        <af-table-column prop="wonum" label="工单数量"> </af-table-column>
+        <af-table-column prop="goodnum" label="良品数量"> </af-table-column>
         <!-- <af-table-column prop="yibgok" label="已报良品" width="100">
         </af-table-column> -->
-        <af-table-column prop="brokennum" label="不良品数量">
-        </af-table-column>
+        <af-table-column prop="brokennum" label="不良品数量"> </af-table-column>
         <!-- <af-table-column prop="yibgno" label="已报不良品" width="100">
         </af-table-column> -->
-        <af-table-column prop="updateuser" label="更新人">
-        </af-table-column>
+        <af-table-column prop="updateuser" label="更新人"> </af-table-column>
         <!-- <af-table-column prop="bgstatus" label="报工状态" width="100">
           <template
             slot-scope="scope"
@@ -57,10 +53,9 @@
             }}</el-tag>
           </template>
         </af-table-column> -->
-        
-            <!-- <span>{{ scope.row.Result == "PASS"? "良品" : "不良品" }}</span> -->
-        <af-table-column prop="erpmsg"  label="ERP回传信息" >
-        </af-table-column>
+
+        <!-- <span>{{ scope.row.Result == "PASS"? "良品" : "不良品" }}</span> -->
+        <af-table-column prop="erpmsg" label="ERP回传信息"> </af-table-column>
         <!-- <el-table-column label="操作" fixed="right" align="center" width="200">
           <template slot-scope="scope">
             <el-button
@@ -150,20 +145,19 @@
 
         <af-table-column prop="PackUser" label="操作员" width="100">
         </af-table-column>
-        <af-table-column prop="PackTime"  label="包装时间">
-        </af-table-column>
+        <af-table-column prop="PackTime" label="包装时间"> </af-table-column>
         <!-- <af-table-column prop="ErpReturnMsg" label="ERP回传信息">
         </af-table-column> -->
         <af-table-column prop="ErpgsTime" label="ERP工时上传时间">
         </af-table-column>
         <af-table-column prop="Erpgs" label="ERP工时回传消息">
           <template slot-scope="scope">
-            <div>{{scope.row.Erpgs == "200" ? "成功":scope.row.Erpgs}}</div>
+            <div>{{ scope.row.Erpgs == "200" ? "成功" : scope.row.Erpgs }}</div>
           </template>
         </af-table-column>
         <af-table-column prop="Erprk" label="ERP入库回传消息">
           <template slot-scope="scope">
-            <div>{{scope.row.Erprk == "200" ? "成功":scope.row.Erprk}}</div>
+            <div>{{ scope.row.Erprk == "200" ? "成功" : scope.row.Erprk }}</div>
           </template>
         </af-table-column>
         <af-table-column prop="ErprkTime" label="ERP入库上传时间">
@@ -266,7 +260,11 @@ export default {
         if (res.data.Code == 200) {
           let data = res.data.Data;
           this.total = data.Total;
-          this.tableData = data.list;
+          this.tableData = data.list.sort((a, b) => {
+            const dateA = new Date(a.updatetime);
+            const dateB = new Date(b.updatetime);
+            return dateA - dateB;
+          });
         } else {
           this.$alert(res.data.Msg, "错误信息", {
             confirmButtonText: "确定",
@@ -285,7 +283,7 @@ export default {
       // console.log(this.pageSize);
     },
     handleCurrentChange(value) {
-      this.getlistText.pageIndex = value - 1;
+      this.getText.pageIndex = value - 1;
       this.getData();
     },
     handleSizeChange1(value) {
@@ -352,7 +350,7 @@ export default {
         // console.log(this.tableData);
       });
     },
-    handleUpload(index,row) {
+    handleUpload(index, row) {
       this.startLoading();
       // console.log(111);
       uploadWorkingHours({

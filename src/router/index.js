@@ -29,6 +29,12 @@ export const constantRoutes = [
         component: () => import("@/views/dashboard"),
         meta: { title: "首页" },
       },
+      // {
+      //   path: "changeover",
+      //   name: "changeover",
+      //   component: () => import("@/views/smtapply/changeover.vue"),
+      //   meta: { title: "首c页" },
+      // }
     ],
   },
   // {

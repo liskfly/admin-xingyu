@@ -4,7 +4,13 @@
       <el-col :span="8">
         <el-card shadow="always" :body-style="{ padding: '20px' }">
           <div class="left-box">
-            <el-form label-position='left' :model="form" ref="form" label-width="80px" size="normal">
+            <el-form
+              label-position="left"
+              :model="form"
+              ref="form"
+              label-width="80px"
+              size="normal"
+            >
               <el-form-item label="工单">
                 <el-select
                   v-model="form.order"
@@ -35,7 +41,11 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="SIDE">
-                <el-select v-model="form.side" placeholder="选择SIDE">
+                <el-select
+                  v-model="form.side"
+                  placeholder="选择SIDE"
+                  @change="getStatus"
+                >
                   <el-option
                     v-for="item in sideList"
                     :key="item.sideType"
@@ -80,10 +90,12 @@
                   <el-checkbox-group
                     v-model="checkedLine1"
                     @change="handleCheckedChange(checkedLine1, 1)"
+                    style="display: flex; align-items: center"
                   >
                     <div class="box-content-bottom">
                       <el-checkbox
-                        v-for="item in lineData1"
+                        disabled
+                        v-for="(item, index) in lineData1"
                         :label="item"
                         :key="item.id"
                       >
@@ -97,7 +109,15 @@
                               }"
                             ></i>
                           </div>
-                          <div class="light">
+                          <div
+                            class="light"
+                            :style="{
+                              opacity:
+                                form.lineName === 'Line1' && index === 2
+                                  ? 0
+                                  : 1,
+                            }"
+                          >
                             轨道<i
                               class="icon"
                               :style="{
@@ -109,6 +129,14 @@
                           <span class="mc">{{ item.name }}</span>
                         </div>
                       </el-checkbox>
+                    </div>
+                    <div class="QuestBox">
+                      <div v-if="questStatus1 === 'OK'" class="okQuest">
+                        换线成功
+                      </div>
+                      <div v-if="questStatus1 === 'NG'" class="NGQuest">
+                        换线失败
+                      </div>
                     </div>
                   </el-checkbox-group>
                 </el-card>
@@ -124,9 +152,11 @@
                   <el-checkbox-group
                     v-model="checkedLine2"
                     @change="handleCheckedChange(checkedLine2, 2)"
+                    style="display: flex; align-items: center"
                   >
                     <div class="box-content-bottom">
                       <el-checkbox
+                        disabled
                         v-for="item in lineData2"
                         :label="item"
                         :key="item.id"
@@ -154,6 +184,14 @@
                         </div>
                       </el-checkbox>
                     </div>
+                    <div class="QuestBox">
+                      <div v-if="questStatus2 === 'OK'" class="okQuest">
+                        换线成功
+                      </div>
+                      <div v-if="questStatus2 === 'NG'" class="NGQuest">
+                        换线失败
+                      </div>
+                    </div>
                   </el-checkbox-group>
                 </el-card>
               </div>
@@ -168,9 +206,11 @@
                   <el-checkbox-group
                     v-model="checkedLine3"
                     @change="handleCheckedChange(checkedLine3, 3)"
+                    style="display: flex; align-items: center"
                   >
                     <div class="box-content-bottom">
                       <el-checkbox
+                        disabled
                         v-for="item in lineData3"
                         size=""
                         :label="item"
@@ -198,6 +238,14 @@
                           <span class="mc">{{ item.name }}</span>
                         </div>
                       </el-checkbox>
+                    </div>
+                    <div class="QuestBox">
+                      <div v-if="questStatus3 === 'OK'" class="okQuest">
+                        换线成功
+                      </div>
+                      <div v-if="questStatus3 === 'NG'" class="NGQuest">
+                        换线失败
+                      </div>
                     </div>
                   </el-checkbox-group>
                 </el-card>
@@ -235,11 +283,140 @@
 
           <div class="box-bottom">
             <!-- <el-button type="primary" @click="changeOver()" round>换线请求</el-button> -->
-            <div class="change-button" @click="changeOver()">换线请求</div>
+            <div class="change-button" @click="changeOver(1)">换线请求</div>
           </div>
         </div>
       </el-col>
     </el-row>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :show-close="cancellation"
+      custom-class="vertical-centered"
+    >
+      <el-carousel
+        ref="carousel"
+        arrow="never"
+        indicator-position="none"
+        height="80vh"
+        :interval="4000"
+        v-if="dialogVisible"
+        @mouseenter.native="delHandleMouseEnter()"
+      >
+        <el-carousel-item
+          v-for="(item, index) in pic1"
+          :key="item.img"
+          class="carousel"
+        >
+          <div class="remind">
+            <div class="num">{{ index + 1 }}</div>
+            <img :src="item.img" alt="" />
+          </div>
+          <!-- <img :src="item.img" alt="" class="remind" /> -->
+        </el-carousel-item>
+      </el-carousel>
+      <!-- <el-form  label-width="auto">
+        <el-form-item label="1.">
+          <div>正确选择工单，线别，SIDE;</div>
+        </el-form-item>
+        <el-form-item label="2.">
+          <div>当前设备不处于工作状态，当前无PCB在设备与轨道上;</div>
+        </el-form-item>
+        <el-form-item label="3.">
+            <div>
+              Laser: 设备处于通用平面打标界面
+            </div>
+            <div>
+              Printer:设备处于主界面 
+            </div>
+            <div>
+              SPI:设备处于主界面
+            </div>
+            <div>
+              
+              <el-form  label-width="auto">
+        <el-form-item label="Mounter:">
+            <div>
+              (1)设备处于主界面，切换成“新规模式”
+            </div>
+            <div>
+              (2)设备处于生产模式
+            </div>
+        </el-form-item>
+              </el-form>
+            </div>
+            <div>
+              M-AOI:设备处于主界面
+            </div>
+            <div>
+              Reflow:设备处于自动模式界面
+            </div>
+            <div>
+              S-AOI:设备处于主界面
+            </div>
+            <div>
+              ICT:设备处于手动界面
+            </div>
+        </el-form-item>
+      </el-form> -->
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible2"
+      width="80%"
+      :show-close="cancellation2"
+      custom-class="vertical-centered"
+    >
+      <el-carousel
+        ref="carousel"
+        arrow="never"
+        indicator-position="none"
+        height="80vh"
+        :interval="4000"
+        v-if="dialogVisible2"
+        @mouseenter.native="delHandleMouseEnter()"
+      >
+        <el-carousel-item
+          v-for="(item, index) in pic2"
+          :key="item.img"
+          class="carousel"
+        >
+          <div class="remind">
+            <div class="num">{{ index + 1 }}</div>
+            <img :src="item.img" alt="" />
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible3"
+      width="80%"
+      :show-close="cancellation3"
+      custom-class="vertical-centered"
+    >
+      <el-carousel
+        ref="carousel"
+        arrow="never"
+        indicator-position="none"
+        height="80vh"
+        :interval="4000"
+        v-if="dialogVisible3"
+        @mouseenter.native="delHandleMouseEnter()"
+      >
+        <el-carousel-item
+          v-for="(item, index) in pic3"
+          :key="item.img"
+          class="carousel"
+        >
+          <div class="remind">
+            <div class="num">{{ index + 1 }}</div>
+            <img :src="item.img" alt="" />
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+    </el-dialog>
   </div>
 </template>
 
@@ -347,6 +524,55 @@ export default {
       lineCheck2: false,
       lineCheck3: false,
       statusData: [],
+      questStatus1: "",
+      questStatus2: "",
+      questStatus3: "",
+      dialogVisible: false,
+      cancellation: false,
+      dialogVisible2: false,
+      cancellation2: false,
+      dialogVisible3: false,
+      cancellation3: false,
+      pic1: [
+        {
+          img: require("@/assets/remind/ebf17c0d502bcc01e03b0dc3172f276.jpg"),
+        },
+        {
+          img: require("@/assets/remind/a83eb0032dd7ad0c5a1c40a962caedc.jpg"),
+        },
+        {
+          img: require("@/assets/remind/6b807733ec4689bace23b4a69646c9d.jpg"),
+        },
+        {
+          img: require("@/assets/remind/b3d8c21c7ebdbe518d4c29ceb6e39c7.jpg"),
+        },
+      ],
+      pic2: [
+        {
+          img: require("@/assets/remind/9725d3bb4a0a245ff546935b045d439.jpg"),
+        },
+        {
+          img: require("@/assets/remind/e390fc42c2da1925f3465cb69a271d9.jpg"),
+        },
+        {
+          img: require("@/assets/remind/c4ef500dd67bb918f9852ac9d650211.jpg"),
+        },
+        {
+          img: require("@/assets/remind/5aced34c7f924e0d5e66ddf564eb93a.jpg"),
+        },
+      ],
+      pic3: [
+        {
+          img: require("@/assets/remind/7a1aac5b2f0a44c71f06793ad2e73a2.jpg"),
+        },
+        {
+          img: require("@/assets/remind/445d5d52c2dc3a529a6b4a26ac8fd7a.jpg"),
+        },
+        {
+          img: require("@/assets/remind/35e1d187cf429bcaeb9ae9909bdb29e.jpg"),
+        },
+      ],
+      schedule: [],
     };
   },
   created() {
@@ -360,17 +586,31 @@ export default {
       return this.lineData.filter((item, index) => index < 3);
     },
     lineData2() {
-      return this.lineData.filter((item, index) => index > 2 && index < 5);
+      return this.lineData.filter((item, index) => index > 2 && index < 6);
     },
     lineData3() {
-      return this.lineData.filter((item, index) => index > 4);
+      return this.lineData.filter((item, index) => index > 5);
     },
+  },
+  mounted() {
+    // console.log(this.$refs.ElCarousel);
+    // this.$refs.carousel.forEach((item, index) => {
+    //   this.$refs.carousel[index].handleMouseEnter = () => {}
+    // })
   },
   methods: {
     change(order) {
+      this.form = {
+        ...this.form,
+        lineName: "",
+        side: "",
+      };
       this.checkedLine1 = [];
       this.checkedLine2 = [];
       this.checkedLine3 = [];
+      this.questStatus1 = "";
+      this.questStatus2 = "";
+      this.questStatus3 = "";
       getChangeOverOrderInfor({
         workOrder: order,
       }).then(({ data }) => {
@@ -385,17 +625,105 @@ export default {
           productVer: data.SoftVer,
         };
       });
+      this.initialize();
     },
-    changeOver() {
+    // changeOver() {
+    //   let choice = [false, false, false];
+    //   this.dataProcessing().mcIDList.forEach((item) => {
+    //     if (item.mcId >= 1 && item.mcId <= 3) {
+    //       choice[0] = true;
+    //     } else if (item.mcId >= 4 && item.mcId <= 6) {
+    //       choice[1] = true;
+    //     } else if (item.mcId >= 7 && item.mcId <= 8) {
+    //       choice[2] = true;
+    //     }
+    //   });
+    //   if (this.form.side != "" && this.form.lineName !== "") {
+    //     let data = this.dataProcessing();
+    //     if (data.mcIDList.length !== 0) {
+    //       // console.log(data);
+    //       this.startLoading();
+    //       changeoverRequests(data)
+    //         .then((res) => {
+    //           this.endLoading();
+    //           if (res.data.Status == "NG") {
+    //             this.questStatus1 = choice[0] ? "NG" : "";
+    //             this.questStatus2 = choice[1] ? "NG" : "";
+    //             this.questStatus3 = choice[2] ? "NG" : "";
+    //             this.$alert(res.data.Message, "错误信息", {
+    //               confirmButtonText: "确定",
+    //               callback: () => {
+    //                 this.$message({
+    //                   type: "error",
+    //                   message: "换线请求失败",
+    //                 });
+    //               },
+    //             });
+    //             this.initialize();
+    //           } else {
+    //             this.questStatus1 = choice[0] ? "OK" : "";
+    //             this.questStatus2 = choice[1] ? "OK" : "";
+    //             this.questStatus3 = choice[2] ? "OK" : "";
+    //             this.getStatus(this.form.lineName);
+    //           }
+    //           this.checkedLine1 = [];
+    //           this.checkedLine2 = [];
+    //           this.checkedLine3 = [];
+    //         })
+    //         .catch((error) => {
+    //             this.questStatus1 = "";
+    //             this.questStatus2 = "";
+    //             this.questStatus3 = "";
+    //           this.endLoading();
+    //           this.$alert(error, "错误信息", {
+    //             confirmButtonText: "确定",
+    //           });
+    //         });
+    //     } else {
+    //       this.$message({
+    //         message: "请选择更换的线",
+    //         type: "warning",
+    //       });
+    //     }
+    //   } else {
+    //     this.$message.error("请先完成线和SIDE的选择");
+    //   }
+    // },
+    changeOver(num) {
+      if (num === 1) {
+        this.questStatus1 = "";
+        this.questStatus2 = "";
+        this.questStatus3 = "";
+      }
       if (this.form.side != "" && this.form.lineName !== "") {
         let data = this.dataProcessing();
         if (data.mcIDList.length !== 0) {
-          // console.log(data);
+          console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
           this.startLoading();
-          changeoverRequests(data)
+          changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]] })
             .then((res) => {
               this.endLoading();
               if (res.data.Status == "NG") {
+                if (data.mcIDList[num - 1].mcId < 4) {
+                  this.questStatus1 = "NG";
+                } else if (
+                  data.mcIDList[num - 1].mcId > 3 &&
+                  data.mcIDList[num - 1].mcId < 7
+                ) {
+                  this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus2 = "NG";
+                } else if (
+                  data.mcIDList[num - 1].mcId > 6 &&
+                  data.mcIDList[num - 1].mcId < 9
+                ) {
+                  this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
+                  this.questStatus3 = "NG";
+                }
+                this.checkedLine1 = [];
+                this.checkedLine2 = [];
+                this.checkedLine3 = [];
+                this.initialize();
                 this.$alert(res.data.Message, "错误信息", {
                   confirmButtonText: "确定",
                   callback: () => {
@@ -406,14 +734,39 @@ export default {
                   },
                 });
               } else {
-                this.getStatus(this.form.lineName);
-                this.$message.success("换线请求成功");
+                if (num !== data.mcIDList.length) {
+                  this.changeOver(num + 1);
+                } else if (num === data.mcIDList.length) {
+                  this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
+                  this.questStatus3 = this.checkedLine3.length === 0 ? "" : "OK";
+                  this.checkedLine1 = [];
+                  this.checkedLine2 = [];
+                  this.checkedLine3 = [];
+                  this.getStatus(this.form.lineName);
+                }
+              }
+            })
+            .catch((error) => {
+              if (data.mcIDList[num - 1].mcId < 4) {
+                this.questStatus1 = "NG";
+              } else if (
+                data.mcIDList[num - 1].mcId > 3 &&
+                data.mcIDList[num - 1].mcId < 7
+              ) {
+                this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+                this.questStatus2 = "NG";
+              } else if (
+                data.mcIDList[num - 1].mcId > 6 &&
+                data.mcIDList[num - 1].mcId < 9
+              ) {
+                this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+                this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
+                this.questStatus3 = "NG";
               }
               this.checkedLine1 = [];
               this.checkedLine2 = [];
               this.checkedLine3 = [];
-            })
-            .catch((error) => {
               this.endLoading();
               this.$alert(error, "错误信息", {
                 confirmButtonText: "确定",
@@ -429,8 +782,49 @@ export default {
         this.$message.error("请先完成线和SIDE的选择");
       }
     },
+    delHandleMouseEnter() {
+      this.$refs.carousel.handleMouseEnter = () => {};
+    },
+    closeCancellation1() {
+      this.$nextTick(() => {
+        this.$refs.carousel.handleMouseEnter = () => {};
+      });
+      this.cancellation = false;
+      this.dialogVisible = true;
+      setTimeout(() => {
+        this.cancellation = true;
+      }, 16000);
+    },
+    closeCancellation2() {
+      this.$nextTick(() => {
+        this.$refs.carousel.handleMouseEnter = () => {};
+      });
+      this.cancellation2 = false;
+      this.dialogVisible2 = true;
+      setTimeout(() => {
+        this.cancellation2 = true;
+      }, 16000);
+    },
+    closeCancellation3() {
+      this.$nextTick(() => {
+        this.$refs.carousel.handleMouseEnter = () => {};
+      });
+      this.cancellation3 = false;
+      this.dialogVisible3 = true;
+      setTimeout(() => {
+        this.cancellation3 = true;
+      }, 12000);
+    },
     getStatus(value) {
-      let numberID = value.replace(/[^\d]/g, "") * 100 + 1;
+      if (
+        this.form.order === "" ||
+        this.form.lineName === "" ||
+        this.form.side === ""
+      ) {
+        this.initialize();
+        return;
+      }
+      let numberID = this.form.lineName.replace(/[^\d]/g, "") * 100 + 1;
       // switch (value.lineType) {
       //   case "Line1":
       this.lineData = this.lineData.map((item, index) => {
@@ -458,18 +852,37 @@ export default {
       //     break;
       // }
       // console.log(this.statusData);
-      // let a=this.lineList.find(({id})=>id==value)
-      // getChangeOverStatus(a.lineType).then((res) => {
-      //   this.statusData = res.data.DetailList;
-      //   this.lineData = this.lineData.map((item, index) => {
-      //     return {
-      //       ...item,
-      //       equipment: this.statusData[index].McIdStatus,
-      //       orbit: this.statusData[index].ConverConveyorStatus,
-      //     };
-      //   });
+      console.log(this.form);
 
-      // });
+      let a = this.lineList.find(
+        ({ lineType }) => lineType == this.form.lineName
+      );
+      getChangeOverStatus(this.form).then((res) => {
+        // console.log(res);
+        this.statusData = res.data.DetailList;
+        this.lineData = this.lineData.map((item, index) => {
+          // console.log(index);
+          return {
+            ...item,
+            equipment: this.statusData[index]
+              ? this.statusData[index].McIdStatus
+              : 0,
+            orbit: this.statusData[index]
+              ? this.statusData[index].ConverConveyorStatus
+              : 0,
+          };
+        });
+      });
+    },
+    initialize() {
+      this.lineData = this.lineData.map((item, index) => {
+        // console.log(index,item);
+        return {
+          ...item,
+          equipment: 0,
+          orbit: 0,
+        };
+      });
     },
 
     dataProcessing() {
@@ -492,15 +905,25 @@ export default {
       if (num == 1) {
         this.lineCheck1 = !this.lineCheck1;
         this.checkedLine1 = this.lineCheck1 ? this.lineData1 : [];
+        if (this.lineCheck1) {
+          this.closeCancellation1();
+        }
       }
       if (num == 2) {
         this.lineCheck2 = !this.lineCheck2;
         this.checkedLine2 = this.lineCheck2 ? this.lineData2 : [];
+        if (this.lineCheck2) {
+          this.closeCancellation2();
+        }
       }
       if (num == 3) {
         this.lineCheck3 = !this.lineCheck3;
         this.checkedLine3 = this.lineCheck3 ? this.lineData3 : [];
+        if (this.lineCheck3) {
+          this.closeCancellation3();
+        }
       }
+      console.log(this.dataProcessing());
     },
     handleCheckedChange(value, a) {
       if (a == 1) {
@@ -524,7 +947,6 @@ export default {
     endLoading() {
       this.loading.close();
     },
-   
   },
 };
 </script>
@@ -609,6 +1031,7 @@ export default {
   }
 }
 .box-content-bottom {
+  width: 30rem;
   display: flex;
   flex-direction: column;
   gap: 2vh; //50
@@ -656,5 +1079,60 @@ export default {
 }
 .tongzi::-webkit-scrollbar {
   display: none;
+}
+
+.QuestBox {
+  width: 14rem;
+}
+
+.okQuest {
+  width: 13rem;
+  color: rgb(0, 197, 0);
+  font-size: 3rem;
+  border: 3px solid rgb(0, 197, 0);
+  text-align: center;
+}
+
+.NGQuest {
+  width: 13rem;
+  color: red;
+  font-size: 3rem;
+  border: 3px solid red;
+  text-align: center;
+}
+
+.dialogVisible {
+}
+::v-deep .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+}
+::v-deep .el-dialog .el-dialog__body {
+  flex: 1;
+  overflow: auto;
+}
+
+.remind {
+  width: 100%;
+  height: 100%;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .num {
+    font-size: 4rem;
+    color: red;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 }
 </style>

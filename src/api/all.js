@@ -45,15 +45,7 @@ export function getChangeOverStatus(value){
   return request({
     url: "/XingYuAPI/XY_SMT_ChangeOver_Q3Control",
     method: "post",
-    data:{
-      productVer: "",
-      lineName: value,
-      order: "",
-      product: "",
-      program: "",
-      side: "",
-      bomVer: ""
-    }
+    data:value
   });
 }
 

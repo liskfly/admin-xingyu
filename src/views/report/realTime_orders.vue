@@ -134,7 +134,7 @@
         </el-table-column>
         <el-table-column align="center" label="AOI-1-Top">
           <template slot-scope="scope">
-            {{scope.row['AOI-Top'] ? scope.row['AOI-Top']:scope.row['AOI']}}
+            {{scope.row['AOI-1-Top'] ? scope.row['AOI-1-Top']:scope.row['AOI']}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="Reflow-Top">
