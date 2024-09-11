@@ -586,10 +586,10 @@ export default {
       return this.lineData.filter((item, index) => index < 3);
     },
     lineData2() {
-      return this.lineData.filter((item, index) => index > 2 && index < 6);
+      return this.lineData.filter((item, index) => index > 2 && index < 5);
     },
     lineData3() {
-      return this.lineData.filter((item, index) => index > 5);
+      return this.lineData.filter((item, index) => index > 4);
     },
   },
   mounted() {
@@ -695,29 +695,37 @@ export default {
         this.questStatus2 = "";
         this.questStatus3 = "";
       }
-      if (this.form.side != "" && this.form.lineName !== "") {
+      if (true) {
         let data = this.dataProcessing();
         if (data.mcIDList.length !== 0) {
           console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
           this.startLoading();
+              let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
+                String(data.mcIDList[num - 1].mcId).length - 1
+              );
+              let lastDigit = parseInt(lastDigitAsString, 10);
           changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]] })
             .then((res) => {
               this.endLoading();
               if (res.data.Status == "NG") {
-                if (data.mcIDList[num - 1].mcId < 4) {
+                console.log(lastDigit);
+                if (lastDigit < 4) {
                   this.questStatus1 = "NG";
                 } else if (
-                  data.mcIDList[num - 1].mcId > 3 &&
-                  data.mcIDList[num - 1].mcId < 7
+                  lastDigit > 3 &&
+                  lastDigit < 6
                 ) {
-                  this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus1 =
+                    this.checkedLine1.length === 0 ? "" : "OK";
                   this.questStatus2 = "NG";
                 } else if (
-                  data.mcIDList[num - 1].mcId > 6 &&
-                  data.mcIDList[num - 1].mcId < 9
+                  lastDigit > 5 &&
+                  lastDigit < 9
                 ) {
-                  this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
-                  this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
+                  this.questStatus1 =
+                    this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus2 =
+                    this.checkedLine2.length === 0 ? "" : "OK";
                   this.questStatus3 = "NG";
                 }
                 this.checkedLine1 = [];
@@ -734,12 +742,16 @@ export default {
                   },
                 });
               } else {
+                  console.log(num === data.mcIDList.length,this.checkedLine1.length,this.checkedLine2.length,this.checkedLine3.length);
                 if (num !== data.mcIDList.length) {
                   this.changeOver(num + 1);
                 } else if (num === data.mcIDList.length) {
-                  this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
-                  this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
-                  this.questStatus3 = this.checkedLine3.length === 0 ? "" : "OK";
+                  this.questStatus1 =
+                    this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus2 =
+                    this.checkedLine2.length === 0 ? "" : "OK";
+                  this.questStatus3 =
+                    this.checkedLine3.length === 0 ? "" : "OK";
                   this.checkedLine1 = [];
                   this.checkedLine2 = [];
                   this.checkedLine3 = [];
@@ -748,17 +760,18 @@ export default {
               }
             })
             .catch((error) => {
-              if (data.mcIDList[num - 1].mcId < 4) {
+              console.log(lastDigit);
+              if (lastDigit < 4) {
                 this.questStatus1 = "NG";
               } else if (
-                data.mcIDList[num - 1].mcId > 3 &&
-                data.mcIDList[num - 1].mcId < 7
+                lastDigit > 3 &&
+                lastDigit < 6
               ) {
                 this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
                 this.questStatus2 = "NG";
               } else if (
-                data.mcIDList[num - 1].mcId > 6 &&
-                data.mcIDList[num - 1].mcId < 9
+                lastDigit > 5 &&
+                lastDigit < 9
               ) {
                 this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
                 this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
