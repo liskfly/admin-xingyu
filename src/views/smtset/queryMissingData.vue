@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { XY_OEE_LevelCode, XY_Prod_MissSNs } from "@/api/all";
+import { XY_Prod_MissSNs } from "@/api/timeApi";
 import { getDate } from "@/utils/getDate";
 import { getToken } from "@/utils/auth";
 import { orderName } from "@/utils/oeeFun";
@@ -75,14 +75,18 @@ export default {
   mounted() {},
   methods: {
     getData() {
+      this.startLoading();
       XY_Prod_MissSNs(this.getDataText)
         .then(({ data }) => {
           if (data.Status === "OK") {
             this.missingList = data.DataList;
           }
+          this.endLoading();
           console.log(data);
         })
-        .catch(() => {});
+        .catch(() => {
+          this.endLoading();
+        });
     },
     toQuatrace(SerialNumber) {
       this.$router.push({ path: "/report/quatrace", query: { SerialNumber } });
