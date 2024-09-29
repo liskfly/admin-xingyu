@@ -59,7 +59,7 @@
         </el-table-column>
         <el-table-column prop="LineName" label="线体"> </el-table-column>
         <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-        <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column>
+        <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
         <el-table-column prop="EquipmentName" label="设备名称">
         </el-table-column>
         <el-table-column prop="DateTime" label="过站时间"> </el-table-column>

@@ -30,7 +30,7 @@
                 <el-select
                   v-model="form.lineName"
                   placeholder="选择线别"
-                  @change="getStatus"
+                  @change="getStatus(),clearAll()"
                 >
                   <el-option
                     v-for="item in lineList"
@@ -44,7 +44,7 @@
                 <el-select
                   v-model="form.side"
                   placeholder="选择SIDE"
-                  @change="getStatus"
+                  @change="getStatus(),clearAll()"
                 >
                   <el-option
                     v-for="item in sideList"
@@ -82,7 +82,9 @@
               <div class="box-content">
                 <div class="box-header">
                   <!-- <span>清除</span> -->
-                  <div @click="handleCheckAllChange(1)">
+                  <div></div>
+                  <div class="title">印刷区</div>
+                  <div class="choice" @click="handleCheckAllChange(1)">
                     {{ lineCheck1 ? "取消全选" : "全选" }}
                   </div>
                 </div>
@@ -144,7 +146,9 @@
               <div class="box-content">
                 <div class="box-header">
                   <!-- <span>清除</span> -->
-                  <div @click="handleCheckAllChange(2)">
+                  <div></div>
+                  <div class="title">贴片区</div>
+                  <div class="choice" @click="handleCheckAllChange(2)">
                     {{ lineCheck2 ? "取消全选" : "全选" }}
                   </div>
                 </div>
@@ -198,7 +202,9 @@
               <div class="box-content">
                 <div class="box-header">
                   <!-- <span>清除</span> -->
-                  <div @click="handleCheckAllChange(3)">
+                  <div></div>
+                  <div class="title">炉后区</div>
+                  <div class="choice" @click="handleCheckAllChange(3)">
                     {{ lineCheck3 ? "取消全选" : "全选" }}
                   </div>
                 </div>
@@ -280,7 +286,6 @@
               </div>
             </div> -->
           </div>
-
           <div class="box-bottom">
             <!-- <el-button type="primary" @click="changeOver()" round>换线请求</el-button> -->
             <div class="change-button" @click="changeOver(1)">换线请求</div>
@@ -605,12 +610,7 @@ export default {
         lineName: "",
         side: "",
       };
-      this.checkedLine1 = [];
-      this.checkedLine2 = [];
-      this.checkedLine3 = [];
-      this.questStatus1 = "";
-      this.questStatus2 = "";
-      this.questStatus3 = "";
+      this.clearAll();
       getChangeOverOrderInfor({
         workOrder: order,
       }).then(({ data }) => {
@@ -695,15 +695,15 @@ export default {
         this.questStatus2 = "";
         this.questStatus3 = "";
       }
-      if (true) {
+      if (this.form.side != "" && this.form.lineName !== "") {
         let data = this.dataProcessing();
         if (data.mcIDList.length !== 0) {
           console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
           this.startLoading();
-              let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
-                String(data.mcIDList[num - 1].mcId).length - 1
-              );
-              let lastDigit = parseInt(lastDigitAsString, 10);
+          let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
+            String(data.mcIDList[num - 1].mcId).length - 1
+          );
+          let lastDigit = parseInt(lastDigitAsString, 10);
           changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]] })
             .then((res) => {
               this.endLoading();
@@ -711,17 +711,11 @@ export default {
                 console.log(lastDigit);
                 if (lastDigit < 4) {
                   this.questStatus1 = "NG";
-                } else if (
-                  lastDigit > 3 &&
-                  lastDigit < 6
-                ) {
+                } else if (lastDigit > 3 && lastDigit < 6) {
                   this.questStatus1 =
                     this.checkedLine1.length === 0 ? "" : "OK";
                   this.questStatus2 = "NG";
-                } else if (
-                  lastDigit > 5 &&
-                  lastDigit < 9
-                ) {
+                } else if (lastDigit > 5 && lastDigit < 9) {
                   this.questStatus1 =
                     this.checkedLine1.length === 0 ? "" : "OK";
                   this.questStatus2 =
@@ -742,7 +736,12 @@ export default {
                   },
                 });
               } else {
-                  console.log(num === data.mcIDList.length,this.checkedLine1.length,this.checkedLine2.length,this.checkedLine3.length);
+                console.log(
+                  num === data.mcIDList.length,
+                  this.checkedLine1.length,
+                  this.checkedLine2.length,
+                  this.checkedLine3.length
+                );
                 if (num !== data.mcIDList.length) {
                   this.changeOver(num + 1);
                 } else if (num === data.mcIDList.length) {
@@ -755,6 +754,9 @@ export default {
                   this.checkedLine1 = [];
                   this.checkedLine2 = [];
                   this.checkedLine3 = [];
+                  this.lineCheck1 = false;
+                  this.lineCheck2 = false;
+                  this.lineCheck3 = false;
                   this.getStatus(this.form.lineName);
                 }
               }
@@ -763,16 +765,10 @@ export default {
               console.log(lastDigit);
               if (lastDigit < 4) {
                 this.questStatus1 = "NG";
-              } else if (
-                lastDigit > 3 &&
-                lastDigit < 6
-              ) {
+              } else if (lastDigit > 3 && lastDigit < 6) {
                 this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
                 this.questStatus2 = "NG";
-              } else if (
-                lastDigit > 5 &&
-                lastDigit < 9
-              ) {
+              } else if (lastDigit > 5 && lastDigit < 9) {
                 this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
                 this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
                 this.questStatus3 = "NG";
@@ -949,6 +945,17 @@ export default {
         this.lineCheck3 = value.length === this.lineData3.length;
       }
     },
+    clearAll() {
+      this.checkedLine1 = [];
+      this.checkedLine2 = [];
+      this.checkedLine3 = [];
+      this.questStatus1 = "";
+      this.questStatus2 = "";
+      this.questStatus3 = "";
+      this.lineCheck1 = false;
+      this.lineCheck2 = false;
+      this.lineCheck3 = false;
+    },
     startLoading() {
       this.loading = this.$loading({
         lock: true,
@@ -1036,11 +1043,21 @@ export default {
   .box-header {
     padding-right: 5px;
     display: flex;
-    justify-content: flex-end;
+    // justify-content: flex-end;
+    justify-content: space-between;
+    align-items: end;
     gap: 5px;
     // justify-content: end;
     font-size: 2vh;
     cursor: pointer;
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .choice {
+      width: 5rem;
+      text-align: right;
+    }
   }
 }
 .box-content-bottom {

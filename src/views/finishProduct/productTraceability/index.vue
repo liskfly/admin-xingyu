@@ -82,7 +82,7 @@
         <!-- <el-table-column prop="LineName" label="线体"> </el-table-column> -->
         <el-table-column prop="EquipmentName" label="设备名称">
         </el-table-column>
-        <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column>
+        <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
         <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
         <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
         <el-table-column prop="StatusCODE" label="结果"> </el-table-column>
@@ -225,14 +225,16 @@ export default {
         if (this.getDataText.operationType === "S") {
           getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
             ({ data }) => {
-              this.tableData.push(...data.content);
+              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+              this.tableData.push(...arr);
               resolve();
             }
           );
         } else {
           getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
             ({ data }) => {
-              this.tableData.push(...data.content);
+              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+              this.tableData.push(...arr);
               resolve();
             }
           );
