@@ -113,6 +113,10 @@ export default {
           this.$store
             .dispatch("user/login", this.loginForm)
             .then((data) => {
+              // if (data) {
+              //   this.$router.push({ path: "/" });
+              // }
+              // this.loading = false;
               info(this.loginForm.employeeName).then(({ data }) => {
                 // console.log(data.EmployeeId);
                 findEmployeeRoles(data.EmployeeId).then((res) => {

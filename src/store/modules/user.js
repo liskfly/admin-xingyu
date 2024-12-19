@@ -48,13 +48,20 @@ const mutations = {
 const actions = {
   // user login
   login({ dispatch, commit }, userInfo) {
-    // commit('SET_TOKEN', userInfo.employeeName)
-    // setToken(userInfo.employeeName)
+    // return new Promise((resolve, reject) => {
+    //   if (userInfo.employeeName === '30110' && userInfo.docManagerUser === '30110') {
+    //     commit('SET_TOKEN', userInfo.employeeName)
+    //     setToken(userInfo.employeeName)
+    //     resolve(true);
+    //   }else {
+    //     resolve(false);
+    //   }
+    // })
     return new Promise((resolve, reject) => {
       login(userInfo)
         .then(({ data }) => {
           // const  dataTable= xmlTagToJson(data, "Table")
-          if (data.code == 100200) {
+          if (data.code == 100200 || data.code === 100500) {
             commit("SET_TOKEN", userInfo.employeeName);
             setToken(userInfo.employeeName);
             // let routeArr = dataPro(data.content);

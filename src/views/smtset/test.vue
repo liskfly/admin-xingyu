@@ -393,10 +393,10 @@ export default {
     ...mapState(["dashboardHeight"]),
   },
   created() {
-    // this.getData();
+    this.getData();
   },
   mounted() {
-    console.log(VUE_APP_BASE_API);
+    // console.log(VUE_APP_BASE_API);
     // $('#calendar').fullCalendar('gotoDate', targetDate);
     // window.addEventListener("resize", this.getHeight, false);
   },
@@ -515,6 +515,8 @@ export default {
 
       this.$nextTick(() => {
         // this.fullCalendarAM.events = this.arr[0].events;
+        console.log(this.arr);
+        
         this.equipmentChange();
         this.DIYButton();
       });

@@ -152,12 +152,13 @@
 </template>
 
 <script>
-import { getFinshOrder, SaveIntactProduct } from "@/api/wmsApi";
+import { getFinshOrder, SaveIntactProduct, TransferData } from "@/api/wmsApi";
 import { XY_PCBAHisControl } from "@/api/all";
 import { updateUri, getContainerMoves } from "@/api/index";
 import { getToken } from "@/utils/auth";
 import { getDate } from "@/utils/getDate";
 import AudioPlay from "@/components/mp3/audioPlay.vue";
+import axios from 'axios';
 // import { getDate } from "@/utils/getDate";
 export default {
   components: {
@@ -177,6 +178,8 @@ export default {
       tableHeight: 0,
       dialogVisible: false,
       workOrderList: [],
+      isCoolingDown: false,
+      timerId: null,
       form: {
         Wo: "",
         Pn: "",
@@ -282,12 +285,36 @@ export default {
       // console.log(data);
     },
     onSubmit() {
+      if (this.isCoolingDown) {
+        this.$message({
+            message: "2秒内不能重复点击按钮",
+            type: "warning",
+          });
+        return;
+      }
+      if (this.stringcode.toLowerCase().startsWith("40510") && this.stringcode.toLowerCase().substring(0, 13) !== this.form.Pn) {
+        this.$message.error("工单与产品信息不一致");
+        return;
+      }
+      this.isCoolingDown = true;
+      this.timerId = setTimeout(() => {
+        this.isCoolingDown = false;
+      }, 2000);
       this.form.CheckUser = getToken();
       this.form.CheckTime = this.getDate();
       this.toForm.ContainerName = this.form.PcbSn;
       this.toForm.TestResult = this.form.Result == "PASS" ? "OK" : "NG";
       this.toForm.DataHeaderID = this.generateGuid();
       this.toForm.finishCode = this.form.finishCode;
+      // axios.post('http://172.20.99.27/PcbApi/api/Repair/Repair_ES_Move',this.toForm)
+      //   .then(response => {
+      //     // 请求成功时处理响应数据
+      //     this.data = response.data;
+      //   })
+      //   .catch(error => {
+      //     // 请求失败时处理错误
+      //     console.error('请求失败:', error);
+      //   });
       // console.log(this.toForm);
       // XY_PCBAHisControl({
       //   seiralNumber: this.form.PcbSn,
@@ -397,9 +424,12 @@ export default {
       //     });
       //   }
       // });
-      updateUri(this.toForm)
-        .then(({ data }) => {
-          if (data.IsSucess == true) {
+      TransferData(this.toForm)
+        .then(({data}) => {
+          console.log(data);
+          
+          let res = JSON.parse(JSON.parse(data.Data))
+          if (res.IsSucess == true) {
             XY_PCBAHisControl({
               seiralNumber: this.form.PcbSn,
               workOrder: "",
@@ -426,7 +456,7 @@ export default {
                 });
               } else {
                 this.dialogForm.smt.dialogVisible = true;
-                this.dialogForm.smt.Msg = data.Message;
+                this.dialogForm.smt.Msg = res.Message;
               }
             });
 
@@ -545,6 +575,14 @@ export default {
     },
     failPlay() {
       this.$refs.fail.playAlert(); // 直接调用子组件的方法
+    },
+    resetCooldown() {
+      if (this.timerId) {
+        clearTimeout(this.timerId);
+      }
+      this.timerId = setTimeout(() => {
+        this.isCoolingDown = false;
+      }, 5000);
     },
   },
 };

@@ -30,7 +30,7 @@
                 <el-select
                   v-model="form.lineName"
                   placeholder="选择线别"
-                  @change="getStatus(),clearAll()"
+                  @change="getStatus(), clearAll()"
                 >
                   <el-option
                     v-for="item in lineList"
@@ -44,7 +44,7 @@
                 <el-select
                   v-model="form.side"
                   placeholder="选择SIDE"
-                  @change="getStatus(),clearAll()"
+                  @change="getStatus(), clearAll()"
                 >
                   <el-option
                     v-for="item in sideList"
@@ -562,6 +562,9 @@ export default {
         {
           img: require("@/assets/remind/模块二(3).jpg"),
         },
+        {
+          img: require("@/assets/remind/模块二(4).jpg"),
+        },
       ],
       pic3: [
         {
@@ -812,7 +815,7 @@ export default {
       this.dialogVisible2 = true;
       setTimeout(() => {
         this.cancellation2 = true;
-      }, 12000);
+      }, 16000);
     },
     closeCancellation3() {
       this.$nextTick(() => {
@@ -842,6 +845,8 @@ export default {
           id: numberID + index,
         };
       });
+      // console.log(this.lineData);
+
       //     break;
       //   case "Line2":
       //     this.lineData = this.lineData.map((item, index) => {
@@ -861,7 +866,7 @@ export default {
       //     break;
       // }
       // console.log(this.statusData);
-      console.log(this.form);
+      // console.log(this.form);
 
       let a = this.lineList.find(
         ({ lineType }) => lineType == this.form.lineName
@@ -870,18 +875,56 @@ export default {
         // console.log(res);
         this.statusData = res.data.DetailList;
         this.lineData = this.lineData.map((item, index) => {
-          // console.log(index);
-          return {
-            ...item,
-            equipment: this.statusData[index]
-              ? this.statusData[index].McIdStatus
-              : 0,
-            orbit: this.statusData[index]
-              ? this.statusData[index].ConverConveyorStatus
-              : 0,
-          };
+          // console.log(item);
+          // if (this.statusData) {
+          //   this.statusData.forEach((element) => {
+          //     if (item?.id === element.McId) {
+          //       console.log(index);
+          //       return {
+          //         ...item,
+          //         equipment: element.McIdStatus,
+          //         orbit: element.ConverConveyorStatus,
+          //       };
+          //     } else {
+          //       return {
+          //         ...item,
+          //         equipment: 0,
+          //         orbit: 0,
+          //       };
+          //     }
+          //   });
+          // }
+              //  return {
+              //     ...item,
+              //     equipment: this.statusData[index]
+              //       ? this.statusData[index].McIdStatus
+              //       : 0,
+              //     orbit: this.statusData[index]
+              //       ? this.statusData[index].ConverConveyorStatus
+              //       : 0,
+              //   };
+              return {
+                ...item,
+                equipment: 0,
+                orbit: 0
+              }
+        });
+        if (res.data.Status === 'OK' && this.statusData.length > 0) {
+          this.statusData.forEach((element) => {
+        this.lineData.forEach((item,index) => {
+          
+          if (element.McId === item.id) {
+              this.lineData[index].equipment = element.McIdStatus
+              this.lineData[index].orbit = element.ConverConveyorStatus
+          }
         });
       });
+        }
+      })
+      // .catch(() => {
+      //   console.log(1);
+        
+      // })
     },
     initialize() {
       this.lineData = this.lineData.map((item, index) => {

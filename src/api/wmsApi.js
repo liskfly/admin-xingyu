@@ -242,3 +242,12 @@ export function GetCodeBYPcbSN(code) {
     params: {code:code},
   });
 }
+
+//TransferData
+export function TransferData(data) {
+  return request({
+    url: "/RepairESMove/TransferData",
+    method: "post",
+    data,
+  });
+}
