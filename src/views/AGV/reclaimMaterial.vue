@@ -46,14 +46,14 @@
                   type="primary"
                   icon="el-icon-refresh"
                   size="mini"
-                  @click="handleEdit(scope.$index, scope.row)"
+                  @click=""
                 ></el-button>
   
                 <el-button
                   type="danger"
                   icon="el-icon-delete"
                   size="mini"
-                  @click="handleDelete(scope.$index, scope.row)"
+                  @click=""
                 ></el-button>
               </template>
             </el-table-column>

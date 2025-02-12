@@ -11,7 +11,7 @@
           >
           </el-option>
         </el-select>
-        <el-button type="" @click="" icon="el-icon-search">查询</el-button>
+        <el-button type="" @click="getData()" icon="el-icon-search">查询</el-button>
         <el-button type="primary" @click="" icon="el-icon-phone-outline">叫料</el-button>
         <el-button type="danger" @click="" icon="el-icon-delete">取消</el-button>
       </div>
@@ -27,14 +27,21 @@
           :height="tableHeight"
           style="width: 100%"
         >
-          <el-table-column prop="P" label="线体"> </el-table-column>
-          <el-table-column prop="P" label="工位"> </el-table-column>
-          <el-table-column prop="P" label="任务类型"> </el-table-column>
-          <el-table-column prop="P" label="起点"> </el-table-column>
-          <el-table-column prop="P" label="工位"> </el-table-column>
-          <el-table-column prop="P" label="状态"> </el-table-column>
-          <el-table-column prop="P" label="时间"> </el-table-column>
-          <el-table-column prop="P" label="工作人"> </el-table-column>
+          <el-table-column prop="lineNumber" label="线体"> </el-table-column>
+          <el-table-column prop="workstationID" label="工位"> </el-table-column>
+          <el-table-column prop="mtype" label="任务类型">
+          <template slot-scope="scope">
+            <span>{{ scope.row.mtype === '1' ? '送料':'收空车' }}</span>
+          </template>
+        </el-table-column>
+          <el-table-column prop="startPoint" label="起点"> </el-table-column>
+          <el-table-column prop="status" label="状态">
+          <template slot-scope="scope">
+            <span>{{ returnStatus(scope.row.status) }}</span>
+          </template>
+        </el-table-column>
+          <el-table-column prop="cr_date" label="时间"> </el-table-column>
+          <el-table-column prop="ud_user" label="工作人"> </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
@@ -46,14 +53,14 @@
                 type="primary"
                 icon="el-icon-phone-outline"
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click=""
               ></el-button>
 
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                @click="handleDelete(scope.$index, scope.row)"
+                @click=""
               ></el-button>
             </template>
           </el-table-column>
@@ -105,7 +112,7 @@
 </template>
 
 <script>
-import { moldControl, specControl } from "@/api/all";
+import { findLineMaterial } from "@/api/testApi";
 export default {
   data() {
     return {
@@ -142,7 +149,7 @@ export default {
   },
   created() {
     // this.getData();
-    this.getIDdata();
+    // this.getIDdata();
   },
   beforeMount() {
     this.getScreenHeight();
@@ -156,9 +163,20 @@ export default {
   },
   methods: {
     getData() {
-      moldControl(this.getText).then((res) => {
-        this.typeList = res.data.DataList;
+      findLineMaterial(this.line).then((res) => {
+        if (res && res.data && res.data.Success) {
+          this.tableData = JSON.parse(res.data.Data);
+        }
       });
+    },
+    returnStatus(num) {
+      if (num === '0') {
+        return '可用'
+      }else if(num === '1'){
+        return '有料车'
+      }else if(num === '2'){
+        return '待叫料'
+      }
     },
     getIDdata() {
       this.startLoading();
