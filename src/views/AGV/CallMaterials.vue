@@ -163,9 +163,14 @@ export default {
   },
   methods: {
     getData() {
+      this.startLoading()
       findLineMaterial(this.line).then((res) => {
         if (res && res.data && res.data.Success) {
           this.tableData = JSON.parse(res.data.Data);
+          this.endLoading();
+        }else {
+          this.tableData = [];
+          this.endLoading();
         }
       });
     },
