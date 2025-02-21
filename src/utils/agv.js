@@ -5,7 +5,7 @@ import axios from 'axios'
 
 // 基地址
 const service = axios.create({
-  baseURL: '/test',
+  baseURL: '/agv',
   // 5秒超时
 //   timeout: 300000
 })

@@ -1,57 +1,108 @@
 <template>
   <div class="smtinstpro">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getDataText">
-        <!-- <el-form-item>
-            <el-select v-model="getDataText.operationType" placeholder="检查类型">
-              <el-option
-                v-for="item in inquireList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item v-show="getDataText.operationType == 'W'">
-            <el-input
-              placeholder="请输入单号"
-              clearable
-              style="width: 400px"
-              v-model="getDataText.workOrder"
-              class="input-with-select"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item v-show="getDataText.operationType != 'W'">
-            <el-input
-              placeholder="请输入seiralNumber"
-              clearable
-              style="width: 400px"
-              v-model="getDataText.seiralNumber"
-              class="input-with-select"
-            >
-            </el-input>
-          </el-form-item> -->
+      <el-form
+        ref="form"
+        class="form"
+        :inline="true"
+        :model="getDataText"
+        size="small"
+      >
         <div class="flex-container">
           <div>
-            <el-form-item label="成品码">
+            <el-form-item label="工单号">
               <el-input
-                placeholder="请输入成品码"
+                placeholder=""
                 clearable
-                style="width: 400px"
-                v-model="productNumber"
+                style="width: 230px"
+                v-model="form.item1"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="PCB编码">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 230px"
+                v-model="form.item2"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="产品名称">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 230px"
+                v-model="form.item3"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="检验时间">
+              <el-date-picker
+                v-model="date"
+                style="width: 280px"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="产品编码">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 230px"
+                v-model="form.item6"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="检验人">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 230px"
+                v-model="form.item7"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="总成编码">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 230px"
+                v-model="form.item8"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="PCB编码">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 230px"
+                v-model="form.item9"
                 class="input-with-select"
               >
               </el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="getPcbId()">查询</el-button>
+              <el-button type="primary" @click="">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="outputFile()">下载表格</el-button>
             </el-form-item>
           </div>
-          <el-form-item>
+          <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
-          </el-form-item>
+          </el-form-item> -->
         </div>
       </el-form>
     </div>
@@ -67,28 +118,19 @@
         border
         stripe
       >
-        <el-table-column prop="OrderName" label="工单"></el-table-column>
-        <el-table-column prop="AssemblyName" label="产品料号">
-        </el-table-column>
-        <el-table-column prop="product" label="成品码">
-          <template slot-scope="scope">
-            <div>{{ oldProduct }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-        <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
-        <el-table-column prop="OperationName" label="制程名称">
-        </el-table-column>
-        <!-- <el-table-column prop="LineName" label="线体"> </el-table-column> -->
-        <el-table-column prop="EquipmentName" label="设备名称">
-        </el-table-column>
-        <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
-        <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
-        <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-        <el-table-column prop="StatusCODE" label="结果"> </el-table-column>
-        <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
-          <el-table-column prop="order" label="流程卡号"> </el-table-column>
-          <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
+        <el-table-column prop="OrderName" label="工单号"></el-table-column>
+        <el-table-column prop="AssemblyName" label="pcb编码"></el-table-column>
+        <el-table-column prop="OperationID" label="产品名称"> </el-table-column>
+        <el-table-column prop="SerialNumber" label="规格"> </el-table-column>
+        <el-table-column prop="OperationID" label="产品编码"> </el-table-column>
+        <el-table-column prop="OperationID" label="检验时间"> </el-table-column>
+        <el-table-column prop="OperationID" label="检验人"> </el-table-column>
+        <!-- <el-table-column prop="OperationID" label="总成编码">
+          </el-table-column>
+          <el-table-column prop="OperationID" label="PCB编码">
+          </el-table-column>
+          <el-table-column prop="OperationID" label="产品编码">
+          </el-table-column> -->
       </el-table>
       <div class="block" style="margin-top: 15px">
         <el-pagination
@@ -149,14 +191,29 @@ export default {
         orderName: "",
         operationName: "",
       },
+      form: {
+        item1: "",
+        item2: "",
+        item3: "",
+        item4: "",
+        item5: "",
+        item6: "",
+        item7: "",
+        item8: "",
+        item9: "",
+        item10: "",
+      },
+      date:[]
     };
   },
   watch: {
-    "getDataText.operationType"(newValue) {
-      if (newValue == "W") {
-        this.getDataText.seiralNumber = "";
+    "date"(newValue) {
+      if (newValue) {
+        this.form.item4 = newValue[0];
+        this.form.item5 = newValue[1];
       } else {
-        this.getDataText.workOrder = "";
+        this.form.item4 = '';
+        this.form.item5 = '';
       }
     },
   },
@@ -229,7 +286,9 @@ export default {
         if (this.getDataText.operationType === "S") {
           getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
             ({ data }) => {
-              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+              let arr = data.content.sort(
+                (a, b) => a.OperationID - b.OperationID
+              );
               this.tableData.push(...arr);
               resolve();
             }
@@ -237,7 +296,9 @@ export default {
         } else {
           getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
             ({ data }) => {
-              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+              let arr = data.content.sort(
+                (a, b) => a.OperationID - b.OperationID
+              );
               this.tableData.push(...arr);
               resolve();
             }
@@ -311,7 +372,8 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 260;
+        this.tableHeight = window.innerHeight - 350;
+        // this.tableHeight1 =
       });
     },
   },

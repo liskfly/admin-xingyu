@@ -426,6 +426,7 @@
 </template>
 
 <script>
+import { oneChangingLine } from "@/api/agvApi";
 import {
   getChangeOverOrder,
   getChangeOverOrderInfor,
@@ -784,6 +785,23 @@ export default {
                 confirmButtonText: "确定",
               });
             });
+          if (
+            data.mcIDList[0].mcId === 101 ||
+            data.mcIDList[0].mcId === 201 ||
+            data.mcIDList[0].mcId === 301
+          ) {
+            oneChangingLine([
+              {
+                lineNumber: data.lineName,
+                workOrder: data.order,
+                product: data.product,
+                side: data.side,
+                mcid: data.mcIDList[num - 1].mcId,
+              },
+            ]).then(() => {
+              this.endLoading();
+            });
+          }
         } else {
           this.$message({
             message: "请选择更换的线",
@@ -894,36 +912,35 @@ export default {
           //     }
           //   });
           // }
-              //  return {
-              //     ...item,
-              //     equipment: this.statusData[index]
-              //       ? this.statusData[index].McIdStatus
-              //       : 0,
-              //     orbit: this.statusData[index]
-              //       ? this.statusData[index].ConverConveyorStatus
-              //       : 0,
-              //   };
-              return {
-                ...item,
-                equipment: 0,
-                orbit: 0
-              }
+          //  return {
+          //     ...item,
+          //     equipment: this.statusData[index]
+          //       ? this.statusData[index].McIdStatus
+          //       : 0,
+          //     orbit: this.statusData[index]
+          //       ? this.statusData[index].ConverConveyorStatus
+          //       : 0,
+          //   };
+          return {
+            ...item,
+            equipment: 0,
+            orbit: 0,
+          };
         });
-        if (res.data.Status === 'OK' && this.statusData.length > 0) {
+        if (res.data.Status === "OK" && this.statusData.length > 0) {
           this.statusData.forEach((element) => {
-        this.lineData.forEach((item,index) => {
-          
-          if (element.McId === item.id) {
-              this.lineData[index].equipment = element.McIdStatus
-              this.lineData[index].orbit = element.ConverConveyorStatus
-          }
-        });
-      });
+            this.lineData.forEach((item, index) => {
+              if (element.McId === item.id) {
+                this.lineData[index].equipment = element.McIdStatus;
+                this.lineData[index].orbit = element.ConverConveyorStatus;
+              }
+            });
+          });
         }
-      })
+      });
       // .catch(() => {
       //   console.log(1);
-        
+
       // })
     },
     initialize() {

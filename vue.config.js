@@ -80,13 +80,14 @@ module.exports = {
           '^/sp': ''
         }
       },
-      '/test': {
+      '/agv': {
         // 需要访问的地址
-        target: 'http://172.20.99.32:8120/api',
+        target: 'http://172.20.99.21:9210/api',
+        // target: 'http://172.20.99.32:8120/api',
         // 开启代理
         changeOrigin: true,
         pathRewrite: {
-          '^/test': ''
+          '^/agv': ''
         }
       },
       //成品

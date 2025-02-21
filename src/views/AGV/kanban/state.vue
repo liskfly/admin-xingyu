@@ -81,13 +81,13 @@ export default {
           {
             name: "数据",
             type: "bar",
-            data: [120, 200, 150, 80],
+            data: [12, 20, 15, 8],
             barWidth: "50%", // 设置柱子的宽度
             itemStyle: {
               normal: {
                 color: function (params) {
                   // 根据数据值设置不同的颜色，这里仅为示例
-                  var colorList = ["#C1232B", "#E87C25", "#FCCE10", "yellowgreen"];
+                  let colorList = ["#C1232B", "#E87C25", "#FCCE10", "yellowgreen"];
                   return colorList[params.dataIndex];
                 },
               },

@@ -142,14 +142,12 @@
     },
     created() {
       // this.getData();
-      this.getIDdata();
     },
     beforeMount() {
       this.getScreenHeight();
     },
     mounted() {
       window.addEventListener("resize", this.getScreenHeight);
-      this.getData();
     },
     beforeDestroy() {
       window.removeEventListener("resize", this.getScreenHeight);

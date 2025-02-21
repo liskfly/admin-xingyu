@@ -1,11 +1,14 @@
 <template>
   <div id="data-view">
-    <div class="full-scrll" style="height: 100%">
+    <dv-loading v-if="!loading">Loading...</dv-loading>
+    <div class="full-scrll" style="height: 100%" v-else="loading">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" />
         <dv-decoration-8 class="dv-dec-8 decoration decoration-center" />
         <div class="text decoration-center">
-          <div style="margin: auto" @click="changedata()">星宇车灯电子二工厂AGV调度看板</div>
+          <div style="margin: auto" @click="changedata()">
+            星宇车灯电子二工厂AGV调度看板
+          </div>
         </div>
         <dv-decoration-8
           class="dv-dec-8 transform decoration decoration-center"
@@ -21,94 +24,26 @@
         </dv-border-box-7>
       </div>
       <div class="detail">
-        <div class="detail-box" style="border: 1px solid yellow">
+        <div
+          class="detail-box"
+          style="border: 1px solid yellow"
+          v-for="item in machineData"
+        >
           <img src="./img/agv.png" alt="" />
           <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
+            <div>线体:{{ item.lineNumber }}</div>
+            <div>工单:{{ item.workOrder }}</div>
+            <div>产品:{{ item.product }}</div>
+            <div>状态:{{ returnStatus(item.status) }}</div>
             <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
-            </div>
-          </div>
-        </div>
-        <div class="detail-box" style="border: 1px solid greenyellow">
-          <img src="./img/agv.png" alt="" />
-          <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
-            <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
-            </div>
-          </div>
-        </div>
-        <div class="detail-box" style="border: 1px solid red">
-          <img src="./img/agv.png" alt="" />
-          <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
-            <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
-            </div>
-          </div>
-        </div>
-        <div class="detail-box" style="border: 1px solid yellow">
-          <img src="./img/agv.png" alt="" />
-          <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
-            <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
-            </div>
-          </div>
-        </div>
-        <div class="detail-box" style="border: 1px solid greenyellow">
-          <img src="./img/agv.png" alt="" />
-          <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
-            <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
-            </div>
-          </div>
-        </div>
-        <div class="detail-box" style="border: 1px solid red">
-          <img src="./img/agv.png" alt="" />
-          <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
-            <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
-            </div>
-          </div>
-        </div>
-        <div class="detail-box" style="border: 1px solid yellow">
-          <img src="./img/agv.png" alt="" />
-          <div class="detail-text">
-            <div>线体:Line1</div>
-            <div>工单:W523467042606456_A</div>
-            <div>产品:542656345665465</div>
-            <div>状态:已完成</div>
-            <div class="light">
-              <div class="light-left"></div>
-              <div class="light-right"></div>
+              <div
+                class="light-size"
+                :class="returnClass(item.taskStatus1)"
+              ></div>
+              <div
+                class="light-size"
+                :class="returnClass(item.taskStatus2)"
+              ></div>
             </div>
           </div>
         </div>
@@ -123,7 +58,8 @@
 <script>
 import State from "./state.vue";
 import Number from "./number.vue";
-//   import { OrganizationalInfor, AggregateStatistics, StatisticalYearWork } from "@/api/test";
+import { findKanBan } from "@/api/agvApi";
+import { loading } from "@jiaminghi/data-view";
 export default {
   // name: "DataView",
   components: {
@@ -148,52 +84,182 @@ export default {
           ["异常报错7"],
           ["异常报错8"],
         ],
-        oddRowBGC:'#00d5ff00',
-        evenRowBGC:'#00d5ff00'
+        oddRowBGC: "#00d5ff00",
+        evenRowBGC: "#00d5ff00",
       },
+      machineData: [
+        {
+          lineNumber: "Line1",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+        {
+          lineNumber: "Line2",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+        {
+          lineNumber: "Line3",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+        {
+          lineNumber: "Line4",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+        {
+          lineNumber: "Line5",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+        {
+          lineNumber: "Line6",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+        {
+          lineNumber: "Line7",
+          workOrder: "",
+          product: "",
+          side: "",
+          programName: null,
+          deviceID: "",
+          status: "0",
+          taskID1: "",
+          taskStatus1: "",
+          taskID2: "",
+          taskStatus2: "",
+          ud_date: "",
+          remark: null,
+        },
+      ],
+      loading: false,
+      intervalId: null,
     };
   },
   mounted() {
-    // this.getChoiceList();
-    // this.getYear();
+    this.getData();
+    this.startLoop();
+  },
+  beforeDestroy() {
+    this.stopLoop();
   },
   methods: {
-    getChoiceList() {
-      OrganizationalInfor().then((res) => {
-        if (res.data && res.data.success) {
-          console.log(res);
-          this.DepartmentList = res.data.content.DepartmentList.map((item) => {
-            return item.Departmentitem;
-          });
-          this.ProjectTeamList = res.data.content.ProjectTeamList.map(
-            (item) => {
-              return item.ProjectTeamitem;
-            }
-          );
-          this.DepartmentList.unshift("请选择");
-          this.ProjectTeamList.unshift("请选择");
-          this.originalDepartment = res.data.content.DepartmentList;
-          this.originalProjectTeam = res.data.content.ProjectTeamList;
+    getData() {
+      findKanBan().then((res) => {
+        if (res.data.Success) {
+          this.machineData = JSON.parse(res.data.Data);
         }
+          setTimeout(() => {
+            this.loading = true;
+          }, 1000);
       });
     },
-    getYear() {
-      StatisticalYearWork().then((res) => {
-        if (res.data && res.data.success) {
-          this.yearList = res.data.content.map((item) => {
-            return item.submit_year;
-          });
-        }
-      });
+    returnStatus(num) {
+      if (num === "0") {
+        return "待叫料";
+      } else if (num === "2") {
+        return "叫料中";
+      } else if (num === "3") {
+        return "已取料";
+      } else if (num === "22") {
+        return "异常";
+      } else if (num === "99") {
+        return "已完成";
+      }
+    },
+    returnClass(num) {
+      if (num === "0") {
+        return "purple";
+      } else if (num === "2") {
+        return "yellow";
+      } else if (num === "22") {
+        return "red";
+      } else if (num === "99") {
+        return "green";
+      } else if (num === "3") {
+        return "blue";
+      } else {
+        return "grey";
+      }
     },
     changedata() {
       this.config = {
-        data: [
-          ["异常报错1"],
-          ["异常报错2"]
-        ],
-      }
-    }
+        data: [["异常报错1"], ["异常报错2"]],
+        oddRowBGC: "#00d5ff00",
+        evenRowBGC: "#00d5ff00",
+      };
+    },
+    startLoop() {
+      this.intervalId = setInterval(() => {
+        this.getData();
+      }, 10000); // Loop every second
+    },
+    stopLoop() {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    },
   },
 };
 </script>
@@ -300,18 +366,29 @@ export default {
     .light {
       padding-left: 15px;
       display: flex;
-      .light-left {
+      .light-size {
         width: 23px;
         height: 23px;
+        margin-right: 15px;
         border-radius: 999px;
+      }
+      .yellow {
+        background-color: yellow;
+      }
+      .blue {
+        background-color: blue;
+      }
+      .green {
+        background-color: rgb(0, 255, 0);
+      }
+      .red {
         background-color: red;
       }
-      .light-right {
-        width: 23px;
-        height: 23px;
-        margin-left: 15px;
-        border-radius: 999px;
-        background-color: red;
+      .purple {
+        background-color: purple;
+      }
+      .grey {
+        background-color: grey;
       }
     }
   }
@@ -343,6 +420,7 @@ export default {
 
 .ceil {
   color: red;
-  font-size: 20px;
+  font-size: 25px;
+  font-weight: 900;
 }
 </style>

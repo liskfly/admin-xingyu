@@ -2,42 +2,11 @@
   <div class="smtinstpro">
     <div>
       <el-form ref="form" class="form" :inline="true" :model="getDataText">
-        <!-- <el-form-item>
-            <el-select v-model="getDataText.operationType" placeholder="检查类型">
-              <el-option
-                v-for="item in inquireList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item v-show="getDataText.operationType == 'W'">
-            <el-input
-              placeholder="请输入单号"
-              clearable
-              style="width: 400px"
-              v-model="getDataText.workOrder"
-              class="input-with-select"
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item v-show="getDataText.operationType != 'W'">
-            <el-input
-              placeholder="请输入seiralNumber"
-              clearable
-              style="width: 400px"
-              v-model="getDataText.seiralNumber"
-              class="input-with-select"
-            >
-            </el-input>
-          </el-form-item> -->
         <div class="flex-container">
           <div>
-            <el-form-item label="成品码">
+            <el-form-item label="">
               <el-input
-                placeholder="请输入成品码"
+                placeholder="请输入容器ID、PCB编码或总成编码"
                 clearable
                 style="width: 400px"
                 v-model="productNumber"
@@ -46,7 +15,7 @@
               </el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="getPcbId()">查询</el-button>
+              <el-button type="primary" @click="">查询</el-button>
             </el-form-item>
           </div>
           <el-form-item>
@@ -67,28 +36,13 @@
         border
         stripe
       >
-        <el-table-column prop="OrderName" label="工单"></el-table-column>
-        <el-table-column prop="AssemblyName" label="产品料号">
+        <el-table-column prop="OrderName" label="容器ID"></el-table-column>
+        <el-table-column prop="AssemblyName" label="pcb编码"></el-table-column>
+        <el-table-column prop="OperationID" label="总成编码">
         </el-table-column>
-        <el-table-column prop="product" label="成品码">
-          <template slot-scope="scope">
-            <div>{{ oldProduct }}</div>
-          </template>
+        <el-table-column prop="SerialNumber" label="操作人"> </el-table-column>
+        <el-table-column prop="OperationID" label="操作时间">
         </el-table-column>
-        <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-        <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
-        <el-table-column prop="OperationName" label="制程名称">
-        </el-table-column>
-        <!-- <el-table-column prop="LineName" label="线体"> </el-table-column> -->
-        <el-table-column prop="EquipmentName" label="设备名称">
-        </el-table-column>
-        <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
-        <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
-        <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-        <el-table-column prop="StatusCODE" label="结果"> </el-table-column>
-        <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
-          <el-table-column prop="order" label="流程卡号"> </el-table-column>
-          <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
       </el-table>
       <div class="block" style="margin-top: 15px">
         <el-pagination
@@ -229,7 +183,9 @@ export default {
         if (this.getDataText.operationType === "S") {
           getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
             ({ data }) => {
-              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+              let arr = data.content.sort(
+                (a, b) => a.OperationID - b.OperationID
+              );
               this.tableData.push(...arr);
               resolve();
             }
@@ -237,7 +193,9 @@ export default {
         } else {
           getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
             ({ data }) => {
-              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+              let arr = data.content.sort(
+                (a, b) => a.OperationID - b.OperationID
+              );
               this.tableData.push(...arr);
               resolve();
             }
@@ -312,6 +270,7 @@ export default {
     getScreenHeight() {
       this.$nextTick(() => {
         this.tableHeight = window.innerHeight - 260;
+        // this.tableHeight1 =
       });
     },
   },

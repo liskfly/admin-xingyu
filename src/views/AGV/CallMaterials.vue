@@ -11,9 +11,15 @@
           >
           </el-option>
         </el-select>
-        <el-button type="" @click="getData()" icon="el-icon-search">查询</el-button>
-        <el-button type="primary" @click="" icon="el-icon-phone-outline">叫料</el-button>
-        <el-button type="danger" @click="" icon="el-icon-delete">取消</el-button>
+        <el-button type="" @click="getData()" icon="el-icon-search"
+          >查询</el-button
+        >
+        <el-button type="primary" @click="" icon="el-icon-phone-outline"
+          >叫料</el-button
+        >
+        <el-button type="danger" @click="" icon="el-icon-delete"
+          >取消</el-button
+        >
       </div>
       <div class="table_container">
         <el-table
@@ -28,39 +34,41 @@
           style="width: 100%"
         >
           <el-table-column prop="lineNumber" label="线体"> </el-table-column>
+          <el-table-column prop="workOrder" width="200" label="工单"> </el-table-column>
           <el-table-column prop="workstationID" label="工位"> </el-table-column>
           <el-table-column prop="mtype" label="任务类型">
-          <template slot-scope="scope">
-            <span>{{ scope.row.mtype === '1' ? '送料':'收空车' }}</span>
-          </template>
-        </el-table-column>
+            <template slot-scope="scope">
+              <span>{{ scope.row.mtype === "1" ? "送料" : "收空车" }}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="startPoint" label="起点"> </el-table-column>
           <el-table-column prop="status" label="状态">
-          <template slot-scope="scope">
-            <span>{{ returnStatus(scope.row.status) }}</span>
-          </template>
-        </el-table-column>
-          <el-table-column prop="cr_date" label="时间"> </el-table-column>
-          <el-table-column prop="ud_user" label="工作人"> </el-table-column>
+            <template slot-scope="scope">
+              <span>{{ returnStatus(scope.row.status) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="cr_date" width="200" label="时间"> </el-table-column>
+          <el-table-column prop="ud_user" label="操作人"> </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
-            width="150"
+            width="70"
             align="center"
           >
             <template slot-scope="scope">
               <el-button
+                v-if="scope.row.status === '1'"
                 type="primary"
                 icon="el-icon-phone-outline"
                 size="mini"
-                @click=""
+                @click="call(scope.row.materialPreparationID)"
               ></el-button>
-
               <el-button
+                v-if="scope.row.status !== '1'"
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                @click=""
+                @click="cancel(scope.row.materialPreparationID)"
               ></el-button>
             </template>
           </el-table-column>
@@ -81,38 +89,12 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="titleType" :visible.sync="dialogVisible">
-      <el-form :model="form" ref="form" label-width="80px">
-        <el-form-item label="产品编号" prop="productName">
-          <el-input v-model="form.productName"></el-input>
-        </el-form-item>
-        <el-form-item label="类型" prop="toolsMold">
-          <el-select v-model="form.toolsMold" placeholder="检查类型">
-            <el-option
-              v-for="item in typeList"
-              :key="item.ToolsMold"
-              :label="item.ToolsMold"
-              :value="item.ToolsMold"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="消耗量" prop="useage">
-          <el-input v-model.number="form.useage"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="remark">
-          <el-input type="textarea" v-model="form.remark"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addCancel()">取 消</el-button>
-        <el-button type="primary" @click="onSubmit()">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { findLineMaterial } from "@/api/testApi";
+import { findLineMaterial, taskCall, cancelTask } from "@/api/agvApi";
+import { getToken } from "@/utils/auth";
 export default {
   data() {
     return {
@@ -143,19 +125,19 @@ export default {
       typeList: [],
       itemPass1: "",
       titleType: "",
-      line:'Line1',
-      lineList:['Line1','Line2','Line3','Line4','Line5','Line6','Line7']
+      line: "Line1",
+      lineList: ["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7"],
+      operator: getToken(),
+      callVisible: false,
     };
   },
-  created() {
-    // this.getData();
-    // this.getIDdata();
-  },
+  created() {},
   beforeMount() {
     this.getScreenHeight();
   },
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
+    window.addEventListener('fullscreenchange', this.getScreenHeight);
     this.getData();
   },
   beforeDestroy() {
@@ -163,103 +145,88 @@ export default {
   },
   methods: {
     getData() {
-      this.startLoading()
+      this.startLoading();
       findLineMaterial(this.line).then((res) => {
         if (res && res.data && res.data.Success) {
           this.tableData = JSON.parse(res.data.Data);
           this.endLoading();
-        }else {
+        } else {
           this.tableData = [];
           this.endLoading();
         }
       });
     },
     returnStatus(num) {
-      if (num === '0') {
-        return '可用'
-      }else if(num === '1'){
-        return '有料车'
-      }else if(num === '2'){
-        return '待叫料'
+      if (num === "1") {
+        return "已备料";
+      } else if (num === "2") {
+        return "叫料中";
+      } else if (num === "3") {
+        return "已取料";
+      } else if (num === "99") {
+        return "已完成";
+      } else if (num === "10") {
+        return "任务取消";
+      } else if (num === "22") {
+        return "异常";
+      } else {
+        return "";
       }
     },
-    getIDdata() {
-      this.startLoading();
-      specControl(this.getAllText)
-        .then(({ data }) => {
-          this.endLoading();
-          if (data.Status == "OK") {
-            this.tableData = data.DataList;
-            this.tableData.sort((a, b) => {
-              return a.PD_model - b.PD_model;
-            });
-          }
-          if (
-            this.tableData.length % this.pageSize == 0 &&
-            this.currentPage > 1
-          ) {
-            this.currentPage--;
-          }
-        })
-        .catch(() => {
-          this.endLoading();
-          this.$message.error("请求数据失败，请刷新");
-        });
-    },
-    addOpen() {
-      this.getData();
-      //  this.$refs.form.resetFields()
-      this.form.productName = "";
-      this.form.useage = "";
-      this.form.toolsMold = "";
-      this.form.remark = "";
-      this.form.operationType = "I";
-      this.titleType = "添加";
-      this.dialogVisible = true;
-    },
-    addCancel() {
-      this.$refs.form.resetFields();
-      this.dialogVisible = false;
-      // this.$refs.form.resetFields();
-    },
-    handleEdit(index, row) {
-      this.getData();
-      this.form.operationType = "U";
-      this.form.productName = row.PD_model;
-      this.form.useage = row.Qty;
-      this.form.toolsMold = row.PN_Model;
-      this.form.remark = row.Dsc;
-      this.titleType = "修改";
-      this.dialogVisible = true;
-    },
-    handleDelete(index, row) {
-      this.$confirm("确定删除", "确认操作", {
+    call(materialPreparationID) {
+      this.$confirm("是否叫料?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           this.startLoading();
-          specControl({
-            toolsMold: row.PN_Model,
-            remark: row.Dsc,
-            productName: row.PD_model,
-            useage: row.Qty,
-            operationType: "D",
-          }).then(({ data }) => {
-            this.endLoading();
-            if (data.Status == "OK") {
-              //  this.currentPage = this.currentPage > 1 ? this.currentPage - 1 : 1;
-              this.getIDdata();
-              // this.dialogVisible = false;
-              this.$message({
-                type: "success",
-                message: `删除成功!`,
+          taskCall(materialPreparationID, this.operator).then((res) => {
+            if (res && res.data && res.data.Success) {
+              this.getData();
+              this.$success({
+                type: "error",
+                message: res.data.Message,
               });
+              this.endLoading();
             } else {
-              this.$alert(data.Message, "错误信息", {
-                confirmButtonText: "确定",
+              this.$message({
+                type: "error",
+                message: res.data.Message,
               });
+              this.endLoading();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消",
+          });
+        });
+    },
+    cancel(materialPreparationID) {
+      this.$confirm("是否取消叫料?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.startLoading();
+          cancelTask(materialPreparationID, this.operator).then((res) => {
+            if (res && res.data && res.data.Success) {
+              this.getData();
+              this.$success({
+                type: "error",
+                message: res.data.Message,
+              });
+              this.endLoading();
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.Message,
+              });
+              this.endLoading();
             }
           });
         })
@@ -269,34 +236,6 @@ export default {
             message: "已取消删除",
           });
         });
-    },
-    onSubmit() {
-      this.$refs.form.validate((valid) => (this.itemPass1 = valid));
-      if (this.itemPass1) {
-        specControl(this.form).then(({ data }) => {
-          if (data.Status == "OK") {
-            this.$refs.form.resetFields();
-            this.dialogVisible = false;
-            this.$message({
-              type: "success",
-              message: `${this.titleType}成功!`,
-            });
-            this.getIDdata();
-          } else {
-            this.$message({
-              type: "error",
-              message: `${this.titleType}添加失败!`,
-            });
-            this.$alert(data.Message, "错误信息", {
-              confirmButtonText: "确定",
-            });
-          }
-        });
-      } else {
-        this.$alert("添加失败,请完成必填项", "错误信息", {
-          confirmButtonText: "确定",
-        });
-      }
     },
     handleSizeChange(value) {
       this.pageSize = value;
@@ -329,7 +268,7 @@ export default {
 
 <style lang="scss" scoped>
 .titleSelect {
-    margin-right: 12px;
+  margin-right: 12px;
 }
 
 .type {
