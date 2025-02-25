@@ -1,6 +1,6 @@
 <template>
   <div class="meun">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="dialogVisible = true">新增</el-button>
       </div>
@@ -50,7 +50,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           align="center"
           background
@@ -383,7 +383,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -393,9 +393,9 @@ export default {
 
 <style lang="scss" scoped>
 .meun {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     // justify-content: flex-end;

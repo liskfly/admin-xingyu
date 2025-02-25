@@ -1,20 +1,22 @@
 <template>
   <div class="type">
-    <el-card shadow="always" :body-style="{ padding: '20px' }">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <div>
-          <el-button type="primary" @click="addOpen">添加</el-button>
-          <el-button type="primary" @click="getAll">全部</el-button>
+          <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
+          <el-button type="primary" @click="getAll" size="medium">全部</el-button>
           <el-button
             type="primary"
             v-show="!searchType"
             @click="searchType = !searchType"
+            size="medium"
             >日期搜索</el-button
           >
           <el-button
             type="primary"
             v-show="searchType"
             @click="searchType = !searchType"
+            size="medium"
             >名称搜索</el-button
           >
         </div>
@@ -29,6 +31,7 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            size="medium"
           >
           </el-date-picker>
           <el-input
@@ -37,6 +40,7 @@
             clearable
             v-model="searchText"
             class="input-with-select"
+            size="medium"
           >
             <!-- @change="getSearchData" -->
             <el-button
@@ -58,6 +62,7 @@
           border
           :height="tableHeight"
           style="width: 100%"
+          size="medium"
         >
           <el-table-column prop="Spare_Name" label="名称"> </el-table-column>
           <el-table-column prop="Spare_Model" label="型号"></el-table-column>
@@ -80,7 +85,7 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="150"
+            width="120"
             align="center"
           >
             <template slot-scope="scope">
@@ -101,7 +106,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           align="center"
           background
@@ -478,7 +483,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -488,12 +493,12 @@ export default {
 
 <style lang="scss" scoped>
 .type {
-  padding: 20px;
+  padding: 8px;
   .initBox {
     width: 500px;
   }
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     gap: 30px;
     justify-content: space-between;

@@ -8,6 +8,7 @@
       :header-cell-style="heardStyle"
       border
       style="width: 100%"
+      size="medium"
     >
       <af-table-column prop="CompName" label="料号"> </af-table-column>
       <af-table-column prop="ReelID" label="ID"> </af-table-column>
@@ -226,7 +227,7 @@ export default {
      getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
-        this.tableHeight = window.innerHeight - 200;
+        this.tableHeight = window.innerHeight - 180;
         //后面的50：根据需求空出的高度，自行调整
       });
     },

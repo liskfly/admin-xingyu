@@ -1,6 +1,6 @@
 <template>
   <div class="reportWork">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <div class="input_box">
           <el-input
@@ -32,7 +32,7 @@
           <af-table-column prop="ReportTime" sortable label="报工时间">
           </af-table-column>
         </el-table>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             background
             align="center"
@@ -121,7 +121,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -131,9 +131,9 @@ export default {
 
 <style lang="scss" scoped>
 .reportWork {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     justify-content: flex-end;

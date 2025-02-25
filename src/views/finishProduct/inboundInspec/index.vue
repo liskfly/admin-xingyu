@@ -2,7 +2,7 @@
   <div class="inboundInspec">
     <el-row>
       <el-col :span="16">
-        <el-card shadow="always" :body-style="{ padding: '20px' }">
+        <el-card shadow="always" :body-style="{ padding: '8px' }">
           <div class="left-box">
             <el-form
               class="inbound"
@@ -562,7 +562,7 @@ export default {
     getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
-        this.tableHeight = window.innerHeight - 110;
+        this.tableHeight = window.innerHeight - 109;
         //后面的50：根据需求空出的高度，自行调整
       });
     },
@@ -593,7 +593,7 @@ export default {
   // padding: 20px 0;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 152px);
+  height: calc(100vh - 127px);
 }
 .inbound .el-form-item__label {
   font-size: 20px;

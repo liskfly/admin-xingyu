@@ -1,10 +1,10 @@
 <template>
   <div class="checkRecord">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div>
-        <el-form ref="form" class="form" :inline="true" :model="getDataText">
-          <el-form-item>
-            <el-select v-model="inquire" placeholder="检查类型">
+        <el-form ref="form" class="form" :inline="true" :model="getDataText" size="medium">
+          <el-form-item class="form_Bottom">
+            <el-select v-model="inquire" placeholder="检查类型"  >
               <el-option
                 v-for="item in inquireList"
                 :key="item.value"
@@ -14,7 +14,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="form_Bottom">
             <el-select v-model="getDataText.inspectType" placeholder="检查类型">
               <el-option
                 v-for="item in typeList"
@@ -23,7 +23,7 @@
                 :value="item.value"
               ></el-option> </el-select
           ></el-form-item>
-          <el-form-item v-show="inquire == 'order'">
+          <el-form-item v-show="inquire == 'order'" class="form_Bottom">
             <el-input
               placeholder="请输入单号"
               clearable
@@ -33,7 +33,7 @@
             >
             </el-input>
           </el-form-item>
-          <el-form-item v-show="inquire != 'order'">
+          <el-form-item v-show="inquire != 'order'" class="form_Bottom">
             <el-date-picker
               v-model="value1"
               format="yyyy-MM-dd"
@@ -45,7 +45,7 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="form_Bottom">
             <el-button type="primary" @click="getData()">查询</el-button>
           </el-form-item>
         </el-form>
@@ -63,6 +63,7 @@
           row-key="step1"
           style="width: 100%"
           :tree-props="{ children: 'stepItemList' }"
+          size="medium"
         >
           <el-table-column prop="InspectOrder" label="任务编号" width="180">
           </el-table-column>
@@ -98,7 +99,7 @@
 
           <el-table-column prop="Remark" label="备注"> </el-table-column>
         </el-table>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             align="center"
             background
@@ -374,7 +375,7 @@ export default {
     getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         //后面的50：根据需求空出的高度，自行调整
       });
     },
@@ -395,12 +396,16 @@ export default {
 
 <style lang="scss" scoped>
 .checkRecord {
-  padding: 20px;
+  padding: 8px;
   .table_header {
     .form {
       display: flex;
       justify-content: space-between;
+    
     }
   }
+  .form_Bottom{
+        margin-bottom: 10px;
+      }
 }
 </style>

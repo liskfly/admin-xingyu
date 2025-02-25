@@ -1,6 +1,6 @@
 <template>
   <div class="meun">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="dialogVisible = true">新增</el-button>
       </div>
@@ -225,7 +225,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       // console.log( window.innerHeight);
-      this.tableHeight = window.innerHeight - 250;
+      this.tableHeight = window.innerHeight - 230;
       //后面的50：根据需求空出的高度，自行调整
     });
     this.getData();
@@ -397,9 +397,9 @@ export default {
 
 <style lang="scss" scoped>
 .meun {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     // justify-content: flex-end;

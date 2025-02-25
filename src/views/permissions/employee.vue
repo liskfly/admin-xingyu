@@ -1,6 +1,6 @@
 <template>
   <div class="employee">
-    <el-card>
+    <el-card :body-style="{ padding: '8px' }">
       <!-- <div class="table_header">
         <el-button type="primary" size="medium" @click="openAdd()"
           >新增</el-button
@@ -386,7 +386,7 @@ export default {
     },
      getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 240;
+        this.tableHeight = window.innerHeight - 190;
         // this.tableHeight1 =
       });
     },
@@ -396,7 +396,7 @@ export default {
 
 <style lang="scss" scoped>
 .employee {
-  padding: 20px;
+  padding: 8px;
   .el-tag + .el-tag {
     margin-left: 10px;
   }

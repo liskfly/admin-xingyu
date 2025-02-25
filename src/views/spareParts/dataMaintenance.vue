@@ -1,16 +1,17 @@
 <template>
   <div class="type">
-    <el-card shadow="always" :body-style="{ padding: '20px' }">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <div>
-          <el-button type="primary" @click="addOpen">添加</el-button>
-          <el-button type="primary" @click="getAll">全部</el-button>
+          <el-button type="primary" @click="addOpen " size="medium">添加</el-button>
+          <el-button type="primary" @click="getAll" size="medium">全部</el-button>
         </div>
         <div class="input_box">
           <el-input
             placeholder="请输入内容"
             clearable
             v-model="searchText"
+            size="medium"
             class="input-with-select"
           >
             <!-- @change="getSearchData" -->
@@ -33,6 +34,7 @@
           border
           :height="tableHeight"
           style="width: 100%"
+          size="medium"
         >
           <el-table-column prop="Supplier_Code" label="编码"> </el-table-column>
           <el-table-column prop="Supplier_Name" label="名称"></el-table-column>
@@ -52,7 +54,7 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="150"
+            width="120"
             align="center"
           >
             <template slot-scope="scope">
@@ -73,7 +75,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           align="center"
           background
@@ -357,7 +359,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -367,12 +369,12 @@ export default {
 
 <style lang="scss" scoped>
 .type {
-  padding: 20px;
+  padding: 8px;
   .initBox {
     width: 500px;
   }
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     gap: 30px;
     justify-content: space-between;

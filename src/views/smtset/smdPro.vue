@@ -1,14 +1,15 @@
 <template>
   <div class="smdPro">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="dialogVisible = true"
+        <el-button type="primary" size="small" @click="dialogVisible = true"
           >添加/修改机种</el-button
         >
         <div class="input_box">
           <el-input
             placeholder="请输入内容"
             clearable
+            size="medium"
             v-model="getlistText.searchText"
             class="input-with-select"
             @input="getSearchData"
@@ -19,7 +20,15 @@
         </div>
       </div>
       <div class="table_container">
-        <el-table :data="tableData"  :height="tableHeight" border style="width: 100%">
+        <el-table
+          :data="tableData"
+          :height="tableHeight"
+          border
+           size="medium"
+          style="width: 100%"
+        >
+          <el-table-column label="序号" width="55" align="center" type="index">
+          </el-table-column>
           <el-table-column prop="ProductName" label="批量名称" min-width="120">
           </el-table-column>
           <el-table-column prop="MjsId" label="数据名称" min-width="120">
@@ -48,7 +57,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             background
             align="center"
@@ -57,7 +66,7 @@
             :page-sizes="[5, 10, 20, 50, 100]"
             :current-page="currentPage"
             :page-size="getlistText.pageSize"
-             layout="total,sizes, prev, pager, next, jumper"
+            layout="total,sizes, prev, pager, next, jumper"
             :total="total"
           >
           </el-pagination>
@@ -99,7 +108,7 @@ export default {
         productName: "",
         mjsId: "",
       },
-      tableHeight:0,
+      tableHeight: 0,
       tableData: [],
       total: 0,
       currentPage: 1,
@@ -113,7 +122,7 @@ export default {
   created() {
     this.getData();
   },
-     beforeMount() {
+  beforeMount() {
     this.getScreenHeight();
   },
   mounted() {
@@ -207,7 +216,7 @@ export default {
       this.getlistText.pageIndex = 0;
       this.getData();
     },
-     handleSizeChange(value) {
+    handleSizeChange(value) {
       this.getlistText.pageSize = value;
       this.getData();
       // console.log(this.pageSize);
@@ -227,11 +236,9 @@ export default {
     endLoading() {
       this.loading.close();
     },
-      getScreenHeight() {
-      this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
-        // this.tableHeight1 =
-      });
+    getScreenHeight() {
+      
+        this.tableHeight = window.innerHeight - 235;
     },
   },
 };
@@ -239,9 +246,9 @@ export default {
 
 <style lang="scss" scoped>
 .smdPro {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     display: flex;
     gap: 30px;
     justify-content: space-between;

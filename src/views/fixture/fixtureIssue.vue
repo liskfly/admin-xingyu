@@ -1,8 +1,8 @@
 <template>
   <div class="issue">
-    <el-card shadow="always" :body-style="{ padding: '20px' }">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div>
-        <el-form :model="getDataText" ref="form" class="form" :inline="true">
+        <el-form :model="getDataText" ref="form" class="form" :inline="true" size="medium">
           <!-- <el-form-item>
             <el-select
               v-model="getDataText.operationType"
@@ -46,7 +46,7 @@
             </el-date-picker>
           </el-form-item> -->
 
-          <el-form-item>
+          <el-form-item class="form_Bottom">
             <el-button type="primary" @click="onSubmit">查询全部工单</el-button>
           </el-form-item>
         </el-form>
@@ -63,10 +63,11 @@
           border
           :height="tableHeight"
           style="width: 100%"
+          size="medium"
         >
-          <af-table-column prop="WO" label="治具发料单" align="center">
+          <af-table-column prop="WO" label="治具发料单" >
           </af-table-column>
-          <af-table-column prop="PD_model" label="料号" align="center">
+          <af-table-column prop="PD_model" label="料号" >
           </af-table-column>
 
           <af-table-column prop="Plan_qty" label="数量" align="center">
@@ -79,14 +80,14 @@
               <!-- <span>{{ scope.row.Stts == 4 ? "已发料" : "已上架" }}</span> -->
             </template>
           </el-table-column>
-          <af-table-column prop="Crt_dt" label="创建时间" align="center">
+          <af-table-column prop="Crt_dt" label="创建时间">
           </af-table-column>
-          <af-table-column prop="Plan_dt" label="计划时间" align="center">
+          <af-table-column prop="Plan_dt" label="计划时间" >
           </af-table-column>
         </el-table>
       </div>
 
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           align="center"
           background
@@ -203,7 +204,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 235;
         // this.tableHeight1 =
       });
     },
@@ -265,7 +266,7 @@ export default {
 
 <style lang="scss" scoped>
 .issue {
-  padding: 20px;
+  padding: 8px;
   .table_header {
     // padding-bottom: 20px;
     .form {
@@ -279,6 +280,9 @@ export default {
     .input_box {
       width: 400px;
     }
+  }
+  .form_Bottom{
+        margin-bottom: 10px;
   }
 }
 </style>

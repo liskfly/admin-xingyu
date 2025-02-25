@@ -1,6 +1,6 @@
 <template>
   <div class="inboundRecord">
-    <!-- <el-card class="box-card"> -->
+   <el-card shadow="always" :body-style="{ padding: '8px' }">
     <div class="table_header">
       <div class="input_box">
         <el-input
@@ -89,7 +89,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -164,7 +164,7 @@
         </af-table-column>
         <af-table-column prop="Erpuid" label="ERP上传Uid"> </af-table-column>
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -200,7 +200,7 @@
       </el-table>
     </el-dialog>
 
-    <!-- </el-card> -->
+    </el-card>
   </div>
 </template>
 
@@ -413,8 +413,8 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = (window.innerHeight - 190 - 68 - 68) * 0.6;
-        this.tableHeight1 = (window.innerHeight - 190 - 68 - 68) * 0.4;
+        this.tableHeight = (window.innerHeight - 140 - 68 - 68) * 0.6;
+        this.tableHeight1 = (window.innerHeight - 140 - 68 - 68) * 0.4;
         //后面的50：根据需求空出的高度，自行调整
       });
     },
@@ -424,9 +424,9 @@ export default {
 
 <style lang="scss" scoped>
 .inboundRecord {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     justify-content: flex-end;
@@ -436,7 +436,7 @@ export default {
     }
   }
   .box {
-    margin-top: 20px;
+    margin-top: 8px;
   }
   //   .tableAuto.el-table .cell {
   //   white-space: nowrap;

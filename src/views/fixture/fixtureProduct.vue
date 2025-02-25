@@ -1,8 +1,8 @@
 <template>
   <div class="type">
-    <el-card>
+    <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="addOpen">添加</el-button>
+        <el-button type="primary" @click="addOpen"  size="medium">添加</el-button>
       </div>
       <div class="table_container">
         <el-table
@@ -15,6 +15,7 @@
           border
           :height="tableHeight"
           style="width: 100%"
+           size="medium"
         >
           <el-table-column prop="PD_model" label="产品编号"> </el-table-column>
           <el-table-column prop="PN_Model" label="类型"> </el-table-column>
@@ -23,7 +24,7 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="150"
+            width="120"
             align="center"
           >
             <template slot-scope="scope">
@@ -44,7 +45,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           align="center"
           background
@@ -279,7 +280,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -289,12 +290,12 @@ export default {
 
 <style lang="scss" scoped>
 .type {
-  padding: 20px;
+  padding: 8px;
   .initBox {
     width: 500px;
   }
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     // justify-content: flex-end;

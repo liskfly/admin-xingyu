@@ -1,9 +1,9 @@
 <template>
   <div class="inboundRecord">
-    <!-- <el-card class="box-card"> -->
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getText">
-        <el-form-item>
+      <el-form ref="form" class="form" :inline="true" :model="getText"   size="medium">
+        <el-form-item class="form_Bottom">
           <el-input
             placeholder="请输入产品编号"
             clearable
@@ -12,7 +12,7 @@
           >
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="form_Bottom">
           <el-input
             placeholder="请输入单号"
             clearable
@@ -21,7 +21,7 @@
           >
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="form_Bottom">
           <el-date-picker
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
@@ -32,7 +32,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item class="form_Bottom">
           <el-button type="primary" @click="getData()">查询</el-button>
         </el-form-item>
       </el-form>
@@ -45,6 +45,7 @@
         stripe
         class="tableAuto"
         style="width: 100%"
+        size="medium"
       >
         <el-table-column prop="ProjectName" label="产品编号"> </el-table-column>
         <el-table-column prop="OrderNo" label="工单号"> </el-table-column>
@@ -74,7 +75,7 @@
               ></el-button>
               </el-table-column> -->
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -101,6 +102,7 @@
         stripe
         class="tableAuto"
         style="width: 100%"
+        size="medium"
       >
         <af-table-column prop="ParentId" label="工单号"> </af-table-column>
         <af-table-column prop="MaterialCode" label="物料编码">
@@ -125,7 +127,7 @@
         </af-table-column> -->
       </el-table>
     </el-dialog>
-    <!-- </el-card> -->
+    </el-card>
   </div>
 </template>
 
@@ -241,7 +243,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 260;
+        this.tableHeight = window.innerHeight - 230;
         this.tableHeight1 = window.innerHeight - this.tableHeight - 300;
         //后面的50：根据需求空出的高度，自行调整
       });
@@ -252,7 +254,7 @@ export default {
 
 <style lang="scss" scoped>
 .inboundRecord {
-  padding: 20px;
+  padding: 8px;
   .table_header {
     // padding-bottom: 20px;
     // display: flex;
@@ -269,5 +271,8 @@ export default {
   //   .tableAuto.el-table .cell {
   //   white-space: nowrap;
   // }
+  .form_Bottom{
+        margin-bottom: 10px;
+      }
 }
 </style>

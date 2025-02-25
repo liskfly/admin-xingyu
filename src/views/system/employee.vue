@@ -1,6 +1,6 @@
 <template>
   <div class="employee">
-    <el-card>
+    <el-card :body-style="{ padding: '8px' }">
       <!-- <div class="table_header">
         <el-button type="primary" size="medium" @click="openAdd()"
           >新增</el-button
@@ -158,6 +158,6 @@ export default {
 
 <style lang="scss" scoped>
 .employee {
-  padding: 20px;
+  padding: 8px;
 }
 </style>

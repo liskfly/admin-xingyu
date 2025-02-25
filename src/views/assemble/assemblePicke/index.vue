@@ -1,6 +1,6 @@
 <template>
   <div class="inboundRecord">
-    <!-- <el-card class="box-card"> -->
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
     <div class="table_header">
       <!-- <div class="input_box">
         <el-input
@@ -119,7 +119,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -234,7 +234,7 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <!-- </el-card> -->
+    </el-card>
   </div>
 </template>
 
@@ -274,8 +274,8 @@ export default {
     this.getText.searchText = this.$route.params.id;
     this.getData();
     this.$nextTick(() => {
-      this.tableHeight = (window.innerHeight - 190 - 68 - 68 + 80 - 40) * 0.6;
-      this.tableHeight1 = (window.innerHeight - 190 - 68 + 80 - 50 - 40) * 0.4;
+      this.tableHeight = (window.innerHeight - 148- 68 - 68 + 80 - 40) * 0.6;
+      this.tableHeight1 = (window.innerHeight - 148 - 68 + 80 - 50 - 40) * 0.4;
     });
   },
   methods: {
@@ -452,9 +452,9 @@ export default {
 
 <style lang="scss" scoped>
 .inboundRecord {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    // padding-bottom: 20px;
     display: flex;
     // gap: 30px;
     justify-content: flex-end;

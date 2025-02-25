@@ -1,5 +1,6 @@
 <template>
   <div class="aptitude">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
     <div class="header">
       <el-button type="primary" @click="openAdd()">新增</el-button>
     </div>
@@ -31,7 +32,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -92,6 +93,7 @@
         <el-button type="primary" @click="onSubmit()">确定</el-button>
       </span>
     </el-dialog>
+    </el-card>
   </div>
 </template>
 
@@ -258,7 +260,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 260;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -291,9 +293,9 @@ export default {
 
 <style lang="scss" scoped>
 .aptitude {
-  padding: 20px;
+  padding: 8px;
   .header {
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
 }
 </style>

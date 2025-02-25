@@ -1,8 +1,8 @@
 <template>
   <div class="firstdata">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
+        <el-button type="primary" @click="dialogVisible = true" size="medium">添加</el-button>
         <!-- <div class="input_box">
           <el-input
             placeholder="请输入内容"
@@ -29,6 +29,7 @@
           row-key="step1"
           style="width: 100%"
           :tree-props="{ children: 'stepItemList' }"
+          size="medium"
         >
           <el-table-column prop="Product" label="产品编号" width="180">
           </el-table-column>
@@ -47,7 +48,7 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="200"
+            width="120"
             align="center"
           >
             <template slot-scope="scope">
@@ -85,7 +86,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             align="center"
             background
@@ -868,7 +869,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
 
         //后面的50：根据需求空出的高度，自行调整
       });
@@ -878,9 +879,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .firstdata {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     gap: 30px;
     justify-content: space-between;

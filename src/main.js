@@ -34,7 +34,7 @@ Vue.prototype.$moment = moment;
 //   mockXHR()
 // }
 
-Vue.use(ElementUI)
+Vue.use(ElementUI,{size:"medium"})
 
 Vue.config.productionTip = false
 

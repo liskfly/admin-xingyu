@@ -1,8 +1,8 @@
 <template>
   <div class="firstdata">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="addFormOpen()">添加</el-button>
+        <el-button type="primary" @click="addFormOpen()"  size="medium">添加</el-button>
         <!-- <div class="input_box">
           <el-input
             placeholder="请输入内容"
@@ -29,10 +29,11 @@
           row-key="Step1"
           style="width: 100%"
           :tree-props="{ children: 'stepItemList', hasChildren: 'hasChildren' }"
+          size="medium"
         >
-          <el-table-column prop="Step1" label="检验工序"> </el-table-column>
+          <el-table-column prop="Step1" label="检验工序" width="90"> </el-table-column>
           <el-table-column prop="Name" label="检验设备"> </el-table-column>
-          <el-table-column prop="SubItem" label="检验项"> </el-table-column>
+          <el-table-column prop="SubItem" label="检验项"  width="90"> </el-table-column>
           <el-table-column prop="SubItemName" label="检验名称">
           </el-table-column>
           <el-table-column prop="SubItemAim" label="检验目标">
@@ -48,7 +49,7 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="150"
+            width="120"
             align="center"
           >
             <template slot-scope="scope" v-if="scope.row.Step1 % 1 !== 0">
@@ -68,7 +69,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             background
             align="center"
@@ -650,7 +651,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
 
         //后面的50：根据需求空出的高度，自行调整
       });
@@ -661,9 +662,9 @@ export default {
 
 <style lang="scss" scoped>
 .firstdata {
-  padding: 20px;
+  padding: 8px;
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     gap: 30px;
     justify-content: space-between;

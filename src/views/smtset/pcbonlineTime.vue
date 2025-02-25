@@ -1,11 +1,12 @@
 <template>
   <div class="parametEnable">
-    <el-card shadow="always" :body-style="{ padding: '10px' }">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
       <el-form :model="form" ref="form" :inline="true" size="normal">
-        <el-form-item label="产品">
+        <el-form-item label="产品" style="margin-bottom: 10px;">
           <el-select
             v-model="form.productName"
             filterable
+              size="medium"
             placeholder="点击选择"
           >
             <el-option
@@ -16,10 +17,11 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="正反面">
+        <el-form-item label="正反面" style="margin-bottom: 10px;">
           <el-select
             v-model="form.side"
             filterable
+              size="medium"
             placeholder="点击选择"
           >
             <el-option
@@ -30,17 +32,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="时间" label-width="50px">
+        <el-form-item label="时间" label-width="50px" style="margin-bottom: 10px;">
           <el-input
             type="number"
             v-model="form.cycleTime"
+            size="medium"
             placeholder="输入时间"
           ></el-input>
         </el-form-item>
-        <el-form-item class="item">
-          <el-button type="primary" @click="addData">添加</el-button>
-          <el-button type="primary" @click="getNowData">查询当前状态</el-button>
-          <el-button type="primary" @click="getHistoryData"
+        <el-form-item class="item" style="margin-bottom: 10px;">
+          <el-button type="primary" @click="addData"   size="medium">添加</el-button>
+          <el-button type="primary" @click="getNowData"   size="medium">查询当前状态</el-button>
+          <el-button type="primary" @click="getHistoryData"   size="medium"
             >查询历史状态</el-button
           >
         </el-form-item>
@@ -52,6 +55,7 @@
         :height="tableHeight"
         border
         stripe
+          size="medium"
       >
         <el-table-column prop="ProductName" label="产品"> </el-table-column>
         <el-table-column prop="CycleTime" label="周期时间"> </el-table-column>
@@ -78,7 +82,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -201,7 +205,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 290;
+        this.tableHeight = window.innerHeight - 235;
 
         //后面的50：根据需求空出的高度，自行调整
       });
@@ -327,6 +331,6 @@ export default {
 
 <style lang="scss" scoped>
 .parametEnable {
-  padding: 10px;
+  padding: 8px;
 }
 </style>

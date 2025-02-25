@@ -1,6 +1,6 @@
 <template>
   <div class="role">
-    <el-card class="box-card">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="dialogVisible = true"
           >添加角色</el-button
@@ -53,7 +53,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             align="center"
             @size-change="handleSizeChange"
@@ -393,9 +393,9 @@ export default {
 <style lang="scss" scoped>
 .role {
   box-sizing: border-box;
-  padding: 20px;
+  padding: 8px;
   .table_header {
-  padding-bottom: 20px;
+  padding-bottom: 8px;
 }
 .custom-tree-node {
   flex: 1;

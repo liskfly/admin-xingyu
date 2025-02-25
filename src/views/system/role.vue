@@ -1,7 +1,7 @@
 <template>
   <div class="role">
     <el-card>
-      <div class="table_header">
+      <div class="table_header" :body-style="{ padding: '8px' }">
         <el-button type="primary" size="medium" @click="openAdd()"
           >新增</el-button
         >
@@ -174,6 +174,6 @@ export default {
 
 <style lang="scss" scoped>
 .role {
-  padding: 20px;
+  padding: 8px;
 }
 </style>
