@@ -1,4 +1,5 @@
 import request from "@/utils/agv";
+import request1 from "@/request/AGVRequest";
 // 查询设备数据
 export function findLineMaterial(data) {
   return request({
@@ -48,5 +49,21 @@ export function cancelTask(materialPreparationID,cr_user) {
       materialPreparationID,
       cr_user
     }
+  });
+}
+export function findLineMaterialk(data) {
+  return request1({
+    url: "/AGVController/findLineMaterial",
+    method: "post",
+    params:{
+      line:data
+    }
+  });
+}
+export function recycleEmptyVehicles(data) {
+  return request1({
+    url: "/AGVController/recycleEmptyVehicles",
+    method: "post",
+    params:data
   });
 }
