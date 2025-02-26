@@ -43,7 +43,7 @@
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-refresh" size="mini" @click="emptyRecycle(scope.row)"></el-button>
 
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click=""></el-button>
+              <el-button type="danger" icon="el-icon-circle-close" size="mini" @click="emptyCancel(scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { findLineMaterialk, recycleEmptyVehicles } from "@/api/agvApi";
+import { findLineMaterialk, recycleEmptyVehicles,cancelTask1 } from "@/api/agvApi";
 import { getToken } from "@/utils/auth";
 export default {
   data() {
@@ -188,6 +188,34 @@ export default {
       })
         .then(() => {
           recycleEmptyVehicles({
+            materialPreparationID: row.materialPreparationID,
+            cr_user: getToken(),
+          }).then((res) => {
+            this.$notify({
+              title: "提示信息",
+              message: res.Message,
+              type: res.Success ? "success" : "error",
+            });
+            this.getData();
+          });
+
+        })
+        .catch(() => {
+          this.$notify({
+            title: "提示信息",
+            message: "取消操作",
+            type: "info",
+          });
+        });
+    },
+    emptyCancel(){
+      this.$confirm("确定进行取消回收", "确认提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          cancelTask1({
             materialPreparationID: row.materialPreparationID,
             cr_user: getToken(),
           }).then((res) => {

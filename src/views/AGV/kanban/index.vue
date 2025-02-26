@@ -210,6 +210,8 @@ export default {
       findKanBan().then((res) => {
         if (res.data.Success) {
           this.machineData = JSON.parse(res.data.Data);
+          // console.log(this.machineData);
+          
         }
           setTimeout(() => {
             this.loading = true;

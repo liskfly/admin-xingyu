@@ -21,7 +21,7 @@ export default {
       const option = {
         xAxis: {
           type: "category",
-          data: ["1/3", "1/14", "1/15", "1/16", "1/17", "1/18", "1/19"],
+          data: ["2/19", "2/20", "2/21", "2/22", "2/23", "2/24", "2/25"],
           axisLine: {
             lineStyle: {
               color: "#ffffff", // 将轴线颜色设置为白色
@@ -48,7 +48,7 @@ export default {
         },
         series: [
           {
-            data: [120, 200, 150, 80, 70, 110, 130],
+            data: [10, 15, 10, 10, 10, 15, 10],
             type: "bar",
           },
         ],
