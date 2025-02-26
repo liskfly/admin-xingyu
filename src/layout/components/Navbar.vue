@@ -17,7 +17,7 @@
 
       </template>
       <el-dropdown class="avatar-container" trigger="click">
-        <div class="avatar-wrapper">
+        <div class="avatar-wrapper" style="cursor: pointer;">
           <el-avatar :size="35" :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar>
           <span style="padding-left: 8px;font-weight: bold;font-size: 1.1rem;">{{logName  }}</span>
           <!-- <img src="../../assets/profile.jpg" class="user-avatar" /> -->
