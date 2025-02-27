@@ -76,6 +76,7 @@
 
 <script>
 import {shortcuts} from "@/utils/dataMenu"
+import {QuerySDZHHeadData,QuerySDZHDetailData} from "@/api/sdzApi"
 export default {
   data() {
     return {

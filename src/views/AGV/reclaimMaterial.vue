@@ -139,7 +139,7 @@ export default {
         if (res.Success) {
           let data = JSON.parse(res.Data);
           this.tableData = data;
-          console.log(this.tableData);
+          // console.log(this.tableData);
         }
       });
     },

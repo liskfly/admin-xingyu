@@ -1,10 +1,10 @@
 <template>
     <div class="type">
-      <el-card>
-        <div class="table_header">
+      <el-card :body-style="{ padding: '8px' }">
+        <!-- <div class="table_header">
             <el-input style="width: 240px;" v-model="line"></el-input>
           <el-button type="" style="margin-left: 10px;" @click="getData()" icon="el-icon-search">查询</el-button>
-        </div>
+        </div> -->
         <div class="table_container">
           <el-table
             :data="
@@ -17,15 +17,23 @@
             :height="tableHeight"
             style="width: 100%"
           >
-            <el-table-column prop="lineNumber" label="点位ID"> </el-table-column>
-            <el-table-column prop="lineNumber" label="点位名称"> </el-table-column>
-            <el-table-column prop="workstationID" label="状态"> </el-table-column>
-            <el-table-column prop="mtype" label="工位"></el-table-column>
-            <el-table-column prop="startPoint" label="更新人"> </el-table-column>
-            <el-table-column prop="status" label="更新时间"></el-table-column>
+          <el-table-column type="index" label="序号" width="55"> </el-table-column>
+            <el-table-column prop="pointID" label="点位ID"> </el-table-column>
+            <el-table-column prop="pointName" label="点位名称"> </el-table-column>
+            <el-table-column prop="status" label="状态" align="center" width="100"> 
+              <template slot-scope="scope">
+              <el-tag  effect="dark" :color="returnStatus(scope.row.status).color " >
+                {{ returnStatus(scope.row.status).status }}
+              </el-tag>
+    
+            </template>
+            </el-table-column>
+            <el-table-column prop="workstationID" label="工位"></el-table-column>
+            <el-table-column prop="cr_user" label="更新人"> </el-table-column>
+            <el-table-column prop="cr_date" label="更新时间"></el-table-column>
           </el-table>
         </div>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             align="center"
             background
@@ -44,6 +52,7 @@
   </template>
   
   <script>
+   import { findPoint } from "@/api/agvApi";
   export default {
     data() {
       return {
@@ -79,7 +88,7 @@
       };
     },
     created() {
-      // this.getData();
+      this.getData();
       // this.getIDdata();
     },
     beforeMount() {
@@ -93,17 +102,36 @@
     },
     methods: {
       getData() {
-        this.startLoading()
-        findLineMaterial(this.line).then((res) => {
-          if (res && res.data && res.data.Success) {
-            this.tableData = JSON.parse(res.data.Data);
-            this.endLoading();
-          }else {
-            this.tableData = [];
-            this.endLoading();
-          }
-        });
+        findPoint().then(res=>{
+          this.tableData=[]
+          // console.log(res);
+          let data = JSON.parse(res.Data);
+          this.tableData = data;
+           console.log(data);
+        })
       },
+      returnStatus(num) {
+      let status = "";
+  let color = "";
+
+  switch (num) {
+    case "0":
+      status = "可用";
+      color = "#67c23a"; // 绿色
+      break;
+    case "1":
+      status = "有料车";
+      color = "#004ea1"; // 橙色
+      break;
+    case "2":
+      status = "待叫料";
+      color = "#FFA500"; // 蓝色
+      break;
+  
+  }
+
+  return { status, color };
+    },
       handleSizeChange(value) {
         this.pageSize = value;
         console.log(this.pageSize);
@@ -112,20 +140,10 @@
         // console.log(`当前页: ${val}`);
         this.currentPage = val;
       },
-      startLoading() {
-        this.loading = this.$loading({
-          lock: true,
-          text: "加载中~",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.2)", //调节透明度
-        });
-      },
-      endLoading() {
-        this.loading.close();
-      },
+
       getScreenHeight() {
         this.$nextTick(() => {
-          this.tableHeight = window.innerHeight - 300;
+          this.tableHeight = window.innerHeight - 180;
           // this.tableHeight1 =
         });
       },
@@ -139,12 +157,12 @@
   }
   
   .type {
-    padding: 20px;
+    padding: 8px;
     .initBox {
       width: 500px;
     }
     .table_header {
-      padding-bottom: 20px;
+      padding-bottom: 8px;
       display: flex;
       // gap: 30px;
       // justify-content: flex-end;

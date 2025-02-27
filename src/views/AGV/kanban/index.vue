@@ -1,12 +1,12 @@
 <template>
-  <div id="data-view">
+  <div id="data-view" >
     <dv-loading v-if="!loading">Loading...</dv-loading>
     <div class="full-scrll" style="height: 100%" v-else="loading">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" />
         <dv-decoration-8 class="dv-dec-8 decoration decoration-center" />
         <div class="text decoration-center">
-          <div style="margin: auto" @click="changedata()">
+          <div style="margin: auto;" @click="changedata()">
             星宇车灯电子二工厂AGV调度看板
           </div>
         </div>
@@ -323,7 +323,7 @@ export default {
   }
 
   .warning {
-    width: 1220px;
+    width: 1235px;
     height: 200px;
     padding: 15px;
     background-color: #00d5ff4d;
@@ -339,7 +339,7 @@ export default {
   }
 
   .detail-box {
-    width: 550px;
+    width: 590px;
     height: 200px;
     padding: 5px;
     font-size: 22px;
@@ -363,7 +363,7 @@ export default {
     flex-direction: column;
     // color: rgb(0, 183, 255);
     color: #fff;
-    font-size: 1200;
+    font-size: 1.35rem;
     justify-content: space-between;
     .light {
       padding-left: 15px;
@@ -407,7 +407,7 @@ export default {
 
   .text {
     width: 500px;
-    font-size: 30px;
+    font-size: 2rem;
     display: flex;
   }
 

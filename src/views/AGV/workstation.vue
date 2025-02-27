@@ -1,10 +1,10 @@
 <template>
     <div class="type">
-      <el-card>
-        <div class="table_header">
+      <el-card :body-style="{ padding: '8px' }">
+        <!-- <div class="table_header">
             <el-input style="width: 240px;" v-model="line"></el-input>
           <el-button type="" style="margin-left: 10px;" @click="getData()" icon="el-icon-search">查询</el-button>
-        </div>
+        </div> -->
         <div class="table_container">
           <el-table
             :data="
@@ -17,14 +17,15 @@
             :height="tableHeight"
             style="width: 100%"
           >
-            <el-table-column prop="lineNumber" label="工位ID"> </el-table-column>
-            <el-table-column prop="workstationID" label="名称"> </el-table-column>
-            <el-table-column prop="mtype" label="区域"></el-table-column>
-            <el-table-column prop="startPoint" label="更新人"> </el-table-column>
-            <el-table-column prop="status" label="更新时间"></el-table-column>
+          <el-table-column type="index" label="序号" width="55"> </el-table-column>
+            <el-table-column prop="workstationID" label="工位ID"> </el-table-column>
+            <el-table-column prop="name" label="名称"> </el-table-column>
+            <el-table-column prop="area" label="区域"></el-table-column>
+            <el-table-column prop="cr_user" label="更新人"> </el-table-column>
+            <el-table-column prop="cr_date" label="更新时间"></el-table-column>
           </el-table>
         </div>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             align="center"
             background
@@ -43,6 +44,7 @@
   </template>
   
   <script>
+  import { findWorkStation } from "@/api/agvApi";
   export default {
     data() {
       return {
@@ -78,7 +80,7 @@
       };
     },
     created() {
-      // this.getData();
+      this.getData();
       // this.getIDdata();
     },
     beforeMount() {
@@ -92,16 +94,13 @@
     },
     methods: {
       getData() {
-        this.startLoading()
-        findLineMaterial(this.line).then((res) => {
-          if (res && res.data && res.data.Success) {
-            this.tableData = JSON.parse(res.data.Data);
-            this.endLoading();
-          }else {
-            this.tableData = [];
-            this.endLoading();
-          }
-        });
+        findWorkStation().then(res=>{
+          this.tableData=[]
+          // console.log(res);
+          let data = JSON.parse(res.Data);
+          this.tableData = data;
+           console.log(data);
+        })
       },
       handleSizeChange(value) {
         this.pageSize = value;
@@ -124,7 +123,7 @@
       },
       getScreenHeight() {
         this.$nextTick(() => {
-          this.tableHeight = window.innerHeight - 300;
+          this.tableHeight = window.innerHeight - 185;
           // this.tableHeight1 =
         });
       },
@@ -138,12 +137,12 @@
   }
   
   .type {
-    padding: 20px;
+    padding: 8px;
     .initBox {
       width: 500px;
     }
     .table_header {
-      padding-bottom: 20px;
+      padding-bottom: 8px;
       display: flex;
       // gap: 30px;
       // justify-content: flex-end;

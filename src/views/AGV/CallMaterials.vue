@@ -1,6 +1,6 @@
 <template>
   <div class="type">
-    <el-card>
+    <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-select v-model="line" placeholder="请选择" class="titleSelect">
           <el-option
@@ -44,7 +44,10 @@
           <el-table-column prop="startPoint" label="起点"> </el-table-column>
           <el-table-column prop="status" label="状态">
             <template slot-scope="scope">
-              <span>{{ returnStatus(scope.row.status) }}</span>
+              <el-tag  effect="dark" :color="returnStatus(scope.row.status).color " >
+                {{ returnStatus(scope.row.status).status }}
+              </el-tag>
+    
             </template>
           </el-table-column>
           <el-table-column prop="cr_date" width="200" label="时间"> </el-table-column>
@@ -157,21 +160,41 @@ export default {
       });
     },
     returnStatus(num) {
-      if (num === "1") {
-        return "已备料";
-      } else if (num === "2") {
-        return "叫料中";
-      } else if (num === "3") {
-        return "已取料";
-      } else if (num === "99") {
-        return "已完成";
-      } else if (num === "10") {
-        return "任务取消";
-      } else if (num === "22") {
-        return "异常";
-      } else {
-        return "";
-      }
+      let status = "";
+  let color = "";
+
+  switch (num) {
+    case "1":
+      status = "已备料";
+      color = "#67c23a"; // 绿色
+      break;
+    case "2":
+      status = "叫料中";
+      color = "#FFA500"; // 橙色
+      break;
+    case "3":
+      status = "已取料";
+      color = "#0000FF"; // 蓝色
+      break;
+    case "99":
+      status = "已完成";
+      color = "#808080"; // 灰色
+      break;
+    case "10":
+      status = "任务取消";
+      color = "#FF0000"; // 红色
+      break;
+    case "22":
+      status = "异常";
+      color = "#8B0000"; // 深红色
+      break;
+    default:
+      status = "";
+      color = "#333333"; // 深灰色（替代白色，确保在白色背景可见）
+      break;
+  }
+
+  return { status, color };
     },
     call(materialPreparationID) {
       this.$confirm("是否叫料?", "提示", {
@@ -258,7 +281,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 300;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },
@@ -272,12 +295,12 @@ export default {
 }
 
 .type {
-  padding: 20px;
+  padding: 8px;
   .initBox {
     width: 500px;
   }
   .table_header {
-    padding-bottom: 20px;
+    padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     // justify-content: flex-end;
