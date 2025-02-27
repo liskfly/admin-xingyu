@@ -67,3 +67,10 @@ export function recycleEmptyVehicles(data) {
     params:data
   });
 }
+export function cancelTask1(data) {
+  return request({
+    url: "/AGVController/cancelTask",
+    method: "post",
+    params:data
+  });
+}

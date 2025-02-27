@@ -1,24 +1,20 @@
 <template>
   <div id="state">
-    <div ref="state" style="width: 100%; height: 100%" class="state"></div>
+    <div ref="state" id="charAgv" style="width: 100%; height: 100%" class="state"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
+import { findKanBan } from "@/api/agvApi";
 export default {
   data() {
     return {
       state: "",
-    };
-  },
-  mounted() {
-    this.echartInit();
-  },
-  methods: {
-    echartInit() {
-      this.state = echarts.init(this.$refs.state);
-      const option = {
+      intervalId: null,
+      arrData: [],
+      option: {
+
         title: {
           // text: "横向柱状图示例",
           textStyle: {
@@ -65,7 +61,7 @@ export default {
         },
         yAxis: {
           type: "category",
-          data: ["异常", "待叫料", "叫料中", "已完成"],
+          data: ["异常", "已取料", "叫料中", "已完成"],
           axisLine: {
             lineStyle: {
               color: "#ffffff", // 将轴线颜色设置为白色
@@ -87,15 +83,73 @@ export default {
               normal: {
                 color: function (params) {
                   // 根据数据值设置不同的颜色，这里仅为示例
-                  let colorList = ["#C1232B", "#E87C25", "#FCCE10", "yellowgreen"];
+                  let colorList = [
+                    "#C1232B",
+                    "#0000ff",
+                    "#FCCE10",
+                    "yellowgreen",
+                  ];
                   return colorList[params.dataIndex];
                 },
               },
             },
           },
         ],
-      };
-      this.state.setOption(option);
+      }
+    };
+  },
+  mounted() {
+    this.echartInit();
+    this.getData()
+    this.startLoop();
+  },
+  beforeDestroy() {
+    this.stopLoop();
+  },
+  methods: {
+    getData() {
+      findKanBan().then((res) => {
+        if (res.data.Success) {
+          let data = JSON.parse(res.data.Data);
+          // console.log(data);
+          let count2 = 0,
+            count3 = 0,
+            count99 = 0;
+          data.forEach((item) => {
+            // 处理 taskStatus1
+            if (item.taskStatus1 === "2") count2++;
+            else if (item.taskStatus1 === "22") count3++;
+            else if (item.taskStatus1 === "3") count99++;
+
+            // 处理 taskStatus2
+            if (item.taskStatus2 === "2") count2++;
+            else if (item.taskStatus2 === "22") count3++;
+            else if (item.taskStatus2 === "3") count99++;
+          });
+
+          // this.arrData = [10, count2, count3, count99];
+          console.log(data);
+          this.option.series[0].data = [count3, count99, count2, 10];
+          console.log(count99);
+
+          this.state.setOption(this.option);
+          this.state.resize()
+        }
+        setTimeout(() => {
+          this.loading = true;
+        }, 1000);
+      });
+    },
+    echartInit() {
+      this.state = echarts.init(document.getElementById("charAgv"));
+
+      this.state.setOption(this.option);
+      this.state.resize()
+    },
+    startLoop() {
+      this.intervalId = setInterval(() => {
+        this.getData();
+      }, 10000); // Loop every second
     },
   },
 };
