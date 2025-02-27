@@ -1,47 +1,56 @@
 <template>
   <div class="smtinstpro">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getDataText">
+      <el-form
+        ref="form"
+        class="form"
+        :inline="true"
+        :model="getDataText"
+        size="small"
+      >
         <div class="flex-container">
           <div>
-            <el-form-item label="">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                  @change="change()"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="" v-show="value === 'rid'">
+            <el-form-item label="PcbID">
               <el-input
-                placeholder="请输入容器ID"
+                placeholder=""
                 clearable
-                style="width: 400px"
-                v-model="form.SearchModel.rid"
+                style="width: 230px"
+                v-model="form.SearchModel.PcbID"
                 class="input-with-select"
               >
               </el-input>
             </el-form-item>
-            <el-form-item label="" v-show="value === 'pcbsn'">
+            <el-form-item label="板内码">
               <el-input
-                placeholder="请输入PCB编码"
+                placeholder=""
                 clearable
-                style="width: 400px"
-                v-model="form.SearchModel.pcbsn"
+                style="width: 230px"
+                v-model="form.SearchModel.BlockID"
                 class="input-with-select"
               >
               </el-input>
             </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="getData()">查询</el-button>
+            <el-form-item label="时间">
+              <el-date-picker
+                v-model="date"
+                style="width: 280px"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
             </el-form-item>
             <el-form-item>
-            <el-button type="primary" @click="outputFile()">下载表格</el-button>
-          </el-form-item>
+              <el-button type="primary" @click="dataSubmit()">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="outputFile()"
+                >下载表格</el-button
+              >
+            </el-form-item>
           </div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
@@ -61,11 +70,16 @@
         border
         stripe
       >
-        <el-table-column prop="rid" width="400" label="容器ID"></el-table-column>
-        <el-table-column prop="pcbsn" width="400" label="pcb编码"></el-table-column>
-        <!-- <el-table-column prop="rid" label="总成编码"> </el-table-column> -->
-        <el-table-column prop="creuser" width="150" label="操作人"> </el-table-column>
-        <el-table-column prop="cretime" label="操作时间"> </el-table-column>
+        <el-table-column prop="BlockNo" width="55" label="序号"> </el-table-column>
+        <el-table-column prop="OrderNo" label="工单号"></el-table-column>
+        <el-table-column
+          prop="PcbID"
+          width="310"
+          label="pcb编码"
+        ></el-table-column>
+        <el-table-column prop="BlockID" width="310" label="板内码">
+        </el-table-column>
+        <el-table-column prop="ReadTime" label="读取时间"> </el-table-column>
       </el-table>
       <div class="block" style="margin-top: 15px">
         <el-pagination
@@ -87,7 +101,7 @@
 
 <script>
 import Axios from "axios";
-import { QueryPackingData } from "@/api/wmsApi";
+import { QueryPCBBoardData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 // import { getDate } from "@/utils/getDate";
@@ -129,27 +143,22 @@ export default {
         PageSize: 20,
         SearchText: "",
         SearchModel: {
-          id: 0,
-          rid: "",
-          pcbsn: "",
-          barno: "",
-          creuser: "",
-          cretime: "",
+          PcbID: "",
+          BlockNo: 0,
         },
         StartTime: "",
         EndTime: "",
       },
       date: [],
       total: 0,
-      value:'rid',
       options: [
         {
-          value: "rid",
-          label: "容器ID",
+          value: "PASS",
+          label: "PASS",
         },
         {
-          value: "pcbsn",
-          label: "PCB编码",
+          value: "FAIL",
+          label: "FAIL",
         },
       ],
     };
@@ -183,7 +192,7 @@ export default {
   methods: {
     getData() {
       this.startLoading();
-      QueryPackingData(this.form).then(({ data }) => {
+      QueryPCBBoardData(this.form).then(({ data }) => {
         if (data.Success) {
           this.tableData = data.Data.list;
           this.total = data.Data.Total;
@@ -193,12 +202,20 @@ export default {
         }
         this.endLoading();
       });
+    },
+    async getAllData() {
+      this.startLoading();
+      this.tableData = [];
+      await this.getData();
+      await this.getDpiData();
+      this.currentPage = 1;
+      this.endLoading();
     },
     dataSubmit() {
       this.form.PageIndex = 1;
       this.form.pageSize = 20;
       this.startLoading();
-      QueryPackingData(this.form).then(({ data }) => {
+      QueryPCBBoardData(this.form).then(({ data }) => {
         if (data.Success) {
           this.tableData = data.Data.list;
           this.total = data.Data.Total;
@@ -208,16 +225,6 @@ export default {
         }
         this.endLoading();
       });
-    },
-    change() {
-      this.form.SearchModel = {
-          id: 0,
-          rid: "",
-          pcbsn: "",
-          barno: "",
-          creuser: "",
-          cretime: "",
-        }
     },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
@@ -271,7 +278,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 260;
+        this.tableHeight = window.innerHeight - 250;
         // this.tableHeight1 =
       });
     },

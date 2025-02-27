@@ -251,3 +251,30 @@ export function TransferData(data) {
     data,
   });
 }
+
+//入库检验查询
+export function QueryWarehouseInspectionData(data) {
+  return request({
+    url: "/ReportQuery/QueryWarehouseInspectionData",
+    method: "post",
+    data,
+  });
+}
+
+//包装数据查询
+export function QueryPackingData(data) {
+  return request({
+    url: "/ReportQuery/QueryPackingData",
+    method: "post",
+    data,
+  });
+}
+
+//拼板SN查询
+export function QueryPCBBoardData(data) {
+  return request({
+    url: "/ReportQuery/QueryPCBBoardData",
+    method: "post",
+    data,
+  });
+}

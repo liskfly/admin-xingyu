@@ -15,7 +15,7 @@
                 placeholder=""
                 clearable
                 style="width: 230px"
-                v-model="form.item1"
+                v-model="form.SearchModel.wo"
                 class="input-with-select"
               >
               </el-input>
@@ -25,20 +25,21 @@
                 placeholder=""
                 clearable
                 style="width: 230px"
-                v-model="form.item2"
+                v-model="form.SearchModel.pcbsn"
                 class="input-with-select"
               >
               </el-input>
             </el-form-item>
-            <el-form-item label="产品名称">
-              <el-input
-                placeholder=""
-                clearable
-                style="width: 230px"
-                v-model="form.item3"
-                class="input-with-select"
-              >
-              </el-input>
+            <el-form-item label="检验结果">
+              <el-select v-model="value" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="检验时间">
               <el-date-picker
@@ -58,7 +59,7 @@
                 placeholder=""
                 clearable
                 style="width: 230px"
-                v-model="form.item6"
+                v-model="form.SearchModel.pn"
                 class="input-with-select"
               >
               </el-input>
@@ -68,7 +69,7 @@
                 placeholder=""
                 clearable
                 style="width: 230px"
-                v-model="form.item7"
+                v-model="form.SearchModel.checkuser"
                 class="input-with-select"
               >
               </el-input>
@@ -78,26 +79,28 @@
                 placeholder=""
                 clearable
                 style="width: 230px"
-                v-model="form.item8"
+                v-model="form.SearchModel.ProductCode"
                 class="input-with-select"
               >
               </el-input>
             </el-form-item>
-            <el-form-item label="PCB编码">
+            <!-- <el-form-item label="规格">
               <el-input
                 placeholder=""
                 clearable
                 style="width: 230px"
-                v-model="form.item9"
+                v-model="form.SearchModel.spec"
                 class="input-with-select"
               >
               </el-input>
+            </el-form-item> -->
+            <el-form-item>
+              <el-button type="primary" @click="dataSubmit()">查询</el-button>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="">查询</el-button>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="outputFile()">下载表格</el-button>
+              <el-button type="primary" @click="outputFile()"
+                >下载表格</el-button
+              >
             </el-form-item>
           </div>
           <!-- <el-form-item>
@@ -118,13 +121,18 @@
         border
         stripe
       >
-        <el-table-column prop="OrderName" label="工单号"></el-table-column>
-        <el-table-column prop="AssemblyName" label="pcb编码"></el-table-column>
-        <el-table-column prop="OperationID" label="产品名称"> </el-table-column>
-        <el-table-column prop="SerialNumber" label="规格"> </el-table-column>
-        <el-table-column prop="OperationID" label="产品编码"> </el-table-column>
-        <el-table-column prop="OperationID" label="检验时间"> </el-table-column>
-        <el-table-column prop="OperationID" label="检验人"> </el-table-column>
+        <el-table-column prop="wo" label="工单号"></el-table-column>
+        <el-table-column
+          prop="pcbsn"
+          width="210"
+          label="pcb编码"
+        ></el-table-column>
+        <el-table-column prop="name" label="产品名称"> </el-table-column>
+        <el-table-column prop="spec" width="260" label="规格" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column prop="pn" label="产品编码"> </el-table-column>
+        <el-table-column prop="checktime" label="检验时间"> </el-table-column>
+        <el-table-column prop="checkuser" label="检验人"> </el-table-column>
         <!-- <el-table-column prop="OperationID" label="总成编码">
           </el-table-column>
           <el-table-column prop="OperationID" label="PCB编码">
@@ -138,11 +146,11 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
+          :current-page="form.PageIndex"
+          :page-size="form.PageSize"
           :page-sizes="[5, 10, 20, 50, 100]"
           layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
+          :total="total"
         >
         </el-pagination>
       </div>
@@ -152,12 +160,10 @@
 
 <script>
 import Axios from "axios";
-import { XY_PCBAHisControl, XY_Prod_MissSNs } from "@/api/all";
-import { getContainerMoves } from "@/api/material";
-import { GetCodeBYPcbSN } from "@/api/wmsApi";
-import { aW } from "@fullcalendar/core/internal-common";
+import { QueryWarehouseInspectionData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+// import { getDate } from "@/utils/getDate";
 export default {
   data() {
     return {
@@ -174,7 +180,7 @@ export default {
       productNumber: "",
       oldProduct: "",
       currentPage: 1, // 当前页码
-      pageSize: 10, // 每页的数据条数
+      pageSize: 20, // 每页的数据条数
       tableHeight: 0,
       dialogVisible: false,
       inquireList: [
@@ -192,28 +198,43 @@ export default {
         operationName: "",
       },
       form: {
-        item1: "",
-        item2: "",
-        item3: "",
-        item4: "",
-        item5: "",
-        item6: "",
-        item7: "",
-        item8: "",
-        item9: "",
-        item10: "",
+        PageIndex: 1,
+        PageSize: 20,
+        // SearchText: "string",
+        SearchModel: {
+          id: 0,
+          wo: "",
+          pn: "",
+          name: "",
+          spec: "",
+          pcbsn: "",
+          result: "",
+          checkuser: "",
+          checktime: "",
+          ProductCode: ""
+        },
+        StartTime: "",
+        EndTime: "",
       },
-      date:[]
+      date: [],
+      total: 0,
+      options: [{
+          value: 'PASS',
+          label: 'PASS'
+        }, {
+          value: 'FAIL',
+          label: 'FAIL'
+        }],
     };
   },
   watch: {
-    "date"(newValue) {
+    date(newValue) {
       if (newValue) {
-        this.form.item4 = newValue[0];
-        this.form.item5 = newValue[1];
+        this.form.StartTime = newValue[0];
+        this.form.EndTime = newValue[1];
       } else {
-        this.form.item4 = '';
-        this.form.item5 = '';
+        this.form.StartTime = "";
+        this.form.EndTime = "";
       }
     },
   },
@@ -222,8 +243,8 @@ export default {
     // this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
   },
   mounted() {
+    this.getData();
     this.$nextTick(() => {
-      // console.log( window.innerHeight);
       this.getScreenHeight();
       //后面的50：根据需求空出的高度，自行调整
     });
@@ -233,44 +254,17 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
-    getPcbId() {
-      GetCodeBYPcbSN(this.productNumber)
-        .then(({ data }) => {
-          if (data.Code === 200) {
-            this.oldProduct = this.productNumber;
-            this.getDataText.seiralNumber = data.Data;
-            this.getAllData();
-          } else {
-            this.$message.error(data.Msg);
-          }
-        })
-        .catch((err) => {
-          this.$message.error(err);
-        });
-      // Axios.post("/cm/IntactProduct/GetCodeBYPcbSN", `${this.productNumber}`, {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      //   .then(({ data }) => {
-      //     this.getDataText.seiralNumber = data.Data;
-      //     this.getAllData();
-      //   })
-      //   .catch((err) => {
-      //     this.$message.error(err);
-      //   });
-    },
     getData() {
-      return new Promise((resolve, reject) => {
-        XY_PCBAHisControl(this.getDataText).then(({ data }) => {
-          if (data.Status !== "NG") {
-            resolve();
-            this.tableData.push(...data.DataList);
-          } else {
-            resolve();
-            this.tableData = [];
-          }
-        });
+      this.startLoading();
+      QueryWarehouseInspectionData(this.form).then(({ data }) => {
+        if (data.Success) {
+          this.tableData = data.Data.list;
+          this.total = data.Data.Total;
+        } else {
+          this.tableData = [];
+          this.form.PageIndex = 1;
+        }
+        this.endLoading();
       });
     },
     async getAllData() {
@@ -281,56 +275,32 @@ export default {
       this.currentPage = 1;
       this.endLoading();
     },
-    getDpiData() {
-      return new Promise((resolve, reject) => {
-        if (this.getDataText.operationType === "S") {
-          getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
-            ({ data }) => {
-              let arr = data.content.sort(
-                (a, b) => a.OperationID - b.OperationID
-              );
-              this.tableData.push(...arr);
-              resolve();
-            }
-          );
+    dataSubmit() {
+      this.form.PageIndex = 1;
+      this.form.pageSize = 20;
+      this.startLoading();
+      QueryWarehouseInspectionData(this.form).then(({ data }) => {
+        if (data.Success) {
+          this.tableData = data.Data.list;
+          this.total = data.Data.Total;
         } else {
-          getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
-            ({ data }) => {
-              let arr = data.content.sort(
-                (a, b) => a.OperationID - b.OperationID
-              );
-              this.tableData.push(...arr);
-              resolve();
-            }
-          );
+          this.tableData = [];
+          this.form.PageIndex = 1;
         }
+        this.endLoading();
       });
-      // this.startLoading();
-      // if (this.getDataText.operationType === "S") {
-      //   getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
-      //     ({ data }) => {
-      //       this.endLoading();
-      //       this.tableData.push(...data.content);
-      //     }
-      //   );
-      // } else {
-      //   getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
-      //     ({ data }) => {
-      //       this.endLoading();
-      //       this.tableData.push(...data.content);
-      //     }
-      //   );
-      // }
     },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
-      this.currentPage = 1;
-      this.pageSize = val;
+      this.form.PageIndex = 1;
+      this.form.pageSize = val;
+      this.getData();
     },
     //当前页改变时触发 跳转其他页
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
-      this.currentPage = val;
+      this.form.PageIndex = val;
+      this.getData();
     },
     startLoading() {
       this.loading = this.$loading({
@@ -348,7 +318,7 @@ export default {
         this.$message.error("列表不能为空");
         return;
       }
-      this.pageSize = this.tableData.length;
+      this.form.pageSize = this.tableData.length;
       this.$nextTick(function () {
         var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
 
@@ -366,13 +336,13 @@ export default {
         } catch (e) {
           if (typeof console !== "undefined") console.log(e, wbOut);
         }
-        this.pageSize = 10; //表格还原
+        this.form.pageSize = 20; //表格还原
         return wbOut;
       });
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 350;
+        this.tableHeight = window.innerHeight - 300;
         // this.tableHeight1 =
       });
     },
