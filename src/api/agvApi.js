@@ -68,9 +68,30 @@ export function recycleEmptyVehicles(data) {
   });
 }
 export function cancelTask1(data) {
-  return request({
+  return request1({
     url: "/AGVController/cancelTask",
     method: "post",
     params:data
+  });
+}
+export function findWorkStation() {
+  return request1({
+    url: "/AGVController/findWorkStation",
+    method: "post",
+
+  });
+}
+export function findPoint() {
+  return request1({
+    url: "/AGVController/findPoint",
+    method: "post",
+  
+  });
+}
+export function findTaskPage(data) {
+  return request1({
+    url: "/AGVController/findTaskPage",
+    method: "post",
+  data
   });
 }

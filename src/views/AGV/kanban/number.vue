@@ -6,19 +6,13 @@
 
 <script>
 import * as echarts from "echarts";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
       state: "",
-    };
-  },
-  mounted() {
-    this.echartInit();
-  },
-  methods: {
-    echartInit() {
-      this.state = echarts.init(this.$refs.state);
-      const option = {
+      intervalId: null,
+      option: {
         xAxis: {
           type: "category",
           data: ["2/19", "2/20", "2/21", "2/22", "2/23", "2/24", "2/25"],
@@ -50,10 +44,72 @@ export default {
           {
             data: [10, 15, 10, 10, 10, 15, 10],
             type: "bar",
+            itemStyle: {
+              normal: {
+                label: {
+                  show: true, // 开启显示
+                  position: "top", // 在上方显示
+                  textStyle: {
+                    // 数值样式
+                    color: "white",
+                    fontSize: 25,
+                  },
+                },
+              },
+            },
           },
         ],
-      };
-      this.state.setOption(option);
+      },
+    };
+  },
+  mounted() {
+    this.echartInit();
+    this.getWeekDay();
+    this.getData();
+    this.startLoop();
+  },
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+  methods: {
+    getData() {
+      // const result = [];
+      // for (let i = 0; i < 7; i++) {
+      //   const num = Math.floor(Math.random() * 6) + 10;
+      //   result.push(num);
+      // }
+      this.option.series[0].data = [10, 15, 10, 10, 10, 15, 10];
+      this.state.setOption(this.option);
+      this.state.resize();
+    },
+    getWeekDay() {
+      const today = dayjs();
+      const dates = [];
+      for (let i = 0; i < 7; i++) {
+        const date = today.subtract(7 - i, "day").format("M/D");
+        dates.push(date);
+      }
+      this.option.xAxis.data = dates;
+      // console.log(today.subtract(1,'day').format('M/D'));
+
+      this.state.setOption(this.option);
+      this.state.resize();
+    },
+    echartInit() {
+      this.state = echarts.init(this.$refs.state);
+      this.state.setOption(this.option);
+    },
+    startLoop() {
+      let todayText = dayjs().subtract(1, "day").format("M/D");
+      let optionDate = this.option.xAxis.data[6];
+
+      this.intervalId = setInterval(() => {
+        // this.getData();
+        if (todayText != optionDate) {
+          this.getWeekDay();
+          this.getData();
+        }
+      }, 1000 * 60 * 5); // Loop every second
     },
   },
 };

@@ -29,7 +29,7 @@ export default {
             type: "shadow",
           },
           textStyle: {
-            color: "white", // 文字颜色
+            // color: "white", // 文字颜色
             textShadowColor: "transparent", // 文字阴影颜色
             textShadowBlur: 0, // 文字阴影模糊度
           },
@@ -79,6 +79,18 @@ export default {
             type: "bar",
             data: [12, 20, 15, 8],
             barWidth: "50%", // 设置柱子的宽度
+            label: {
+              show: true, // 开启显示
+              position: "right", // 在上方显示
+              textStyle: {
+                // 数值样式
+                color: "white",
+                fontSize: 25,
+              },
+              formatter:  (params)=> {
+                return params.value > 0 ? params.value : '';
+              }
+            },
             itemStyle: {
               normal: {
                 color: function (params) {
@@ -92,6 +104,7 @@ export default {
                   return colorList[params.dataIndex];
                 },
               },
+
             },
           },
         ],
@@ -128,9 +141,9 @@ export default {
           });
 
           // this.arrData = [10, count2, count3, count99];
-          console.log(data);
+
           this.option.series[0].data = [count3, count99, count2, 10];
-          console.log(count99);
+
 
           this.state.setOption(this.option);
           this.state.resize()

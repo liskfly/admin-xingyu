@@ -9,13 +9,14 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <div class="" style="display: flex;">
-       <template>
-        <!-- <message  class="right-menu-item hover-effect"/> -->
-        <!-- 全屏显示 -->
+      <div class="" style="display: flex;gap: 8px;">
+        <div>  <screenfull id="screenfull" class="right-menu-item hover-effect" /></div>
+       <!-- <template>
+         <message  class="right-menu-item hover-effect"/> 
+      
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-      </template>
+      </template> -->
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper" style="cursor: pointer;">
           <el-avatar :size="35" :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar>
@@ -24,6 +25,7 @@
           <!-- <i class="el-icon-caret-bottom" /> -->
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          
           <router-link to="/">
             <el-dropdown-item> 首页 </el-dropdown-item>
           </router-link>
@@ -118,7 +120,7 @@ export default {
     .right-menu-item {
       display: inline-block;
       position: relative;
-      padding-right:15px;
+      // padding-right:15px;
       height: 100%;
       font-size: 25px;
       color: #5a5e66;
