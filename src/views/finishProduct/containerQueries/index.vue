@@ -1,7 +1,7 @@
 <template>
   <div class="smtinstpro">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getDataText">
+      <el-form ref="form" class="form" :inline="true" :model="getDataText" size="small">
         <div class="flex-container">
           <div>
             <el-form-item label="">
@@ -36,12 +36,22 @@
               >
               </el-input>
             </el-form-item>
+            <el-form-item label="" v-show="value === 'ProductCode'">
+              <el-input
+                placeholder="请输入总成编码"
+                clearable
+                style="width: 400px"
+                v-model="form.SearchModel.ProductCode"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="getData()">查询</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
-          </el-form-item>
+          </el-form-item> -->
           </div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
@@ -50,6 +60,11 @@
       </el-form>
     </div>
     <div class="table">
+      <div class="btn">
+        <el-button type="success" @click="outputFile()" size="small"
+          >下载表格</el-button
+        >
+      </div>
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -61,9 +76,9 @@
         border
         stripe
       >
-        <el-table-column prop="rid" width="400" label="容器ID"></el-table-column>
-        <el-table-column prop="pcbsn" width="400" label="pcb编码"></el-table-column>
-        <!-- <el-table-column prop="rid" label="总成编码"> </el-table-column> -->
+        <el-table-column prop="rid" width="300" label="容器ID"></el-table-column>
+        <el-table-column prop="pcbsn" width="300" label="pcb编码"></el-table-column>
+        <el-table-column prop="ProductCode" width="300" label="总成编码"> </el-table-column>
         <el-table-column prop="creuser" width="150" label="操作人"> </el-table-column>
         <el-table-column prop="cretime" label="操作时间"> </el-table-column>
       </el-table>
@@ -134,6 +149,7 @@ export default {
           pcbsn: "",
           barno: "",
           creuser: "",
+          ProductCode: "",
           cretime: "",
         },
         StartTime: "",
@@ -150,6 +166,10 @@ export default {
         {
           value: "pcbsn",
           label: "PCB编码",
+        },
+        {
+          value: "ProductCode",
+          label: "总成编码",
         },
       ],
     };
@@ -294,5 +314,16 @@ export default {
   align-items: center; /* 垂直居中 */
   /* 可能需要添加额外的宽度或最大宽度，根据实际需要调整 */
   width: 100%; /* 或者指定其他宽度 */
+}
+
+.table {
+  position: relative;
+  .btn {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: -2.2rem;
+    z-index: 99;
+  }
 }
 </style>

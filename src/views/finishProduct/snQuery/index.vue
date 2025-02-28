@@ -14,7 +14,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 300px"
                 v-model="form.SearchModel.PcbID"
                 class="input-with-select"
               >
@@ -24,7 +24,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 300px"
                 v-model="form.SearchModel.BlockID"
                 class="input-with-select"
               >
@@ -46,11 +46,11 @@
             <el-form-item>
               <el-button type="primary" @click="dataSubmit()">查询</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
               <el-button type="primary" @click="outputFile()"
                 >下载表格</el-button
               >
-            </el-form-item>
+            </el-form-item> -->
           </div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
@@ -59,6 +59,11 @@
       </el-form>
     </div>
     <div class="table">
+      <div class="btn">
+        <el-button type="success" @click="outputFile()" size="small"
+          >下载表格</el-button
+        >
+      </div>
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -75,7 +80,7 @@
         <el-table-column
           prop="PcbID"
           width="310"
-          label="pcb编码"
+          label="PCB编码"
         ></el-table-column>
         <el-table-column prop="BlockID" width="310" label="板内码">
         </el-table-column>
@@ -144,7 +149,7 @@ export default {
         SearchText: "",
         SearchModel: {
           PcbID: "",
-          BlockNo: 0,
+          BlockID: "",
         },
         StartTime: "",
         EndTime: "",
@@ -301,5 +306,16 @@ export default {
   align-items: center; /* 垂直居中 */
   /* 可能需要添加额外的宽度或最大宽度，根据实际需要调整 */
   width: 100%; /* 或者指定其他宽度 */
+}
+
+.table {
+  position: relative;
+  .btn {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: -2.2rem;
+    z-index: 99;
+  }
 }
 </style>
