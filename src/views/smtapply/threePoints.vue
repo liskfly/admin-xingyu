@@ -4,14 +4,15 @@
       <div style="margin-bottom: 8px">
         <el-date-picker
           v-model="dateValue"
-          type="daterange"
+          type="datetimerange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           size="small"
           :picker-options="pickerOptions"
-          value-format="yyyy-MM-dd"
-        
+          value-format="yyyy-MM-dd HH:mm:ss"
+          :default-time="['00:00:00', '23:59:59']"
+          :clearable="false"
         >
         </el-date-picker>
       </div>
@@ -20,7 +21,7 @@
         border
         :height="tableHeight"
         style="width: 100%"
-        size="small"
+      
         highlight-current-row
         @row-click="rowClick"
       >
@@ -32,10 +33,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="LineName" label="线体"> </el-table-column>
-        <el-table-column prop="DeviceID" label="设备ID"> </el-table-column>
-        <el-table-column prop="DataName" label="照合ID"> </el-table-column>
+        <el-table-column prop="DeviceID" label="设备ID" > </el-table-column>
+        <el-table-column prop="DataName" label="照合ID" > </el-table-column>
         <el-table-column prop="InsertTime" label="时间"> </el-table-column>
-        <el-table-column prop="DeviceID2" label="照合设备ID"> </el-table-column>
+        <el-table-column prop="DeviceID2" label="照合设备ID" > </el-table-column>
         <!-- <el-table-column label="图片查看" width="100">
           <template slot-scope="scope">
             <el-button
@@ -47,7 +48,7 @@
             >
           </template>
         </el-table-column> -->
-        <el-table-column label="图片查看" width="100" align="center">
+        <el-table-column label="图片" width="100" align="center">
           <template slot-scope="scope">
             <el-image :src="scope.row.ImageUrl" lazy   style="width: 35px;"  :preview-src-list="[scope.row.ImageUrl]"></el-image>
           </template>
@@ -72,7 +73,7 @@
         border
         :height="tableHeight2"
         style="width: 100%"
-        size="small"
+
       >
         <el-table-column type="index" label="序号" width="55" />
 
@@ -86,13 +87,14 @@
 </template>
 
 <script>
-import { shortcuts ,disabledDate} from "@/utils/dataMenu";
+import { shortcuts1 ,disabledDate, setTodayDate, setLastDate } from "@/utils/dataMenu";
+import dayjs from "dayjs";
 import { QuerySDZHHeadData, QuerySDZHDetailData } from "@/api/sdzApi";
 export default {
   data() {
     return {
       pickerOptions: {
-        shortcuts: shortcuts,
+        shortcuts: shortcuts1,
         disabledDate:disabledDate
       },
       tableData: [
@@ -121,16 +123,22 @@ export default {
         this.getForm.EndTime = "";
       } else {
         this.getForm.StartTime = value[0];
-        this.getForm.EndTime = value[1]+" "+"23:59:59";
+        this.getForm.EndTime = value[1];
       }
       this.getForm.PageIndex = 1;
       this.getData();
     },
   },
   beforeMount() {
-
+    let end = setTodayDate()
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0); // 今天的开始时间
+    // let start= setLastDate();
+    this.dateValue = [dayjs(todayStart).format("YYYY-MM-DD HH:mm:ss"), dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")];
+    // console.log(this.dateValue);
+    
     this.getScreenHeight();
-    this.getData();
+    // this.getData();
   },
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
@@ -146,6 +154,7 @@ export default {
         this.tableData = res.Data.list.map(item=>{
           return {
             ...item,
+            InsertTime:dayjs(item.InsertTime).format("YYYY-MM-DD HH:mm:ss"),
             ImageUrl:`http://172.20.99.21:5432/${item.ImageUrl}`
           }
         })
