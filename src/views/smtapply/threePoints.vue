@@ -1,43 +1,57 @@
 <template>
   <div class="three">
     <el-card :body-style="{ padding: '8px' }">
-      <div style="margin-bottom: 8px;">
+      <div style="margin-bottom: 8px">
         <el-date-picker
-      v-model="dateValue"
-      type="daterange"
-     
-      range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-      size="small"
-      :picker-options="pickerOptions"
-      value-format="yyyy-MM-dd"
-      @change="changeDate"
-      >
-    </el-date-picker>
+          v-model="dateValue"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          size="small"
+          :picker-options="pickerOptions"
+          value-format="yyyy-MM-dd"
+        
+        >
+        </el-date-picker>
       </div>
       <el-table
-        :data="
-          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
+        :data="tableData"
         border
         :height="tableHeight"
         style="width: 100%"
-         size="small"
-         highlight-current-row
+        size="small"
+        highlight-current-row
+        @row-click="rowClick"
       >
-        <el-table-column type="index" label="序号" width="55" />
-        <el-table-column prop="lineNumber" label="线体"> </el-table-column>
-        <el-table-column prop="deviceID" label="设备ID"> </el-table-column>
-        <el-table-column prop="ID" label="照合ID"> </el-table-column>
-        <el-table-column prop="date" label="时间"> </el-table-column>
-        <el-table-column prop="photographID" label="照合设备ID"> </el-table-column>
-        <el-table-column label="图片查看" width="100">
+        <el-table-column type="index" label="序号" width="55" align="center">
           <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-picture-outline" size="mini" @click="emptyRecycle(scope.row)">查看</el-button>
-
-            </template>
-           </el-table-column>
+            <span>{{
+              scope.$index + getForm.PageSize * (getForm.PageIndex - 1) + 1
+            }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="LineName" label="线体"> </el-table-column>
+        <el-table-column prop="DeviceID" label="设备ID"> </el-table-column>
+        <el-table-column prop="DataName" label="照合ID"> </el-table-column>
+        <el-table-column prop="InsertTime" label="时间"> </el-table-column>
+        <el-table-column prop="DeviceID2" label="照合设备ID"> </el-table-column>
+        <!-- <el-table-column label="图片查看" width="100">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-picture-outline"
+              size="mini"
+              @click="emptyRecycle(scope.row)"
+              >查看</el-button
+            >
+          </template>
+        </el-table-column> -->
+        <el-table-column label="图片查看" width="100" align="center">
+          <template slot-scope="scope">
+            <el-image :src="scope.row.ImageUrl" lazy   style="width: 35px;"  :preview-src-list="[scope.row.ImageUrl]"></el-image>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="block" style="margin: 8px 0">
         <el-pagination
@@ -45,91 +59,76 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
+          :current-page="getForm.PageIndex"
+          :page-size="getForm.PageSize"
           :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
+          layout="total,sizes, prev, pager, next"
+          :total="total"
         >
         </el-pagination>
       </div>
       <el-table
-        :data="
-          tableData2
-        "
+        :data="tableData2"
         border
         :height="tableHeight2"
         style="width: 100%"
-         size="small"
+        size="small"
       >
         <el-table-column type="index" label="序号" width="55" />
-    
-        <el-table-column prop="parameter" label="调整参数">
-        </el-table-column>
-        <el-table-column prop="value" label="值"> </el-table-column>
-        <el-table-column prop="unit" label="单位"> </el-table-column>
-      
+
+        <el-table-column prop="Parameter" label="调整参数"> </el-table-column>
+        <el-table-column prop="Value" label="值"> </el-table-column>
+        <el-table-column prop="Unit" label="单位"> </el-table-column>
+        <el-table-column prop="Description" label="描述"> </el-table-column>
       </el-table>
     </el-card>
   </div>
 </template>
 
 <script>
-import {shortcuts} from "@/utils/dataMenu"
-import {QuerySDZHHeadData,QuerySDZHDetailData} from "@/api/sdzApi"
+import { shortcuts ,disabledDate} from "@/utils/dataMenu";
+import { QuerySDZHHeadData, QuerySDZHDetailData } from "@/api/sdzApi";
 export default {
   data() {
     return {
-      pickerOptions:{
-        shortcuts:shortcuts
+      pickerOptions: {
+        shortcuts: shortcuts,
+        disabledDate:disabledDate
       },
-      tableData:[{
-        lineNumber:"Line1",
-        deviceID:"102",
-        ID:"2025-02-25_14-59-51e_Rev_Offset",
-        date:"2025-02-25 14:59:51",
-         photographID:"103"
-      }],
+      tableData: [
+      ],
       tableData2: [
-        {
-          
-            parameter:"REV X",
-            value:"-0.016",
-            unit:"mm"
-           
-        },
-        {
-           
-            parameter:"REV Y",
-            value:"-0.026",
-             unit:"mm"
-        },
-        {
-           
-            parameter:"REV T",
-            value:"-45",
-           unit:"Arc Seconds"
-        }
       ],
       currentPage: 1, // 当前页码
       pageSize: 10, // 每页的数据条数
       tableHeight: 0,
-      dateValue:[],
+      dateValue: [],
       tableHeight2: 0,
-      getDataForm:{
-        startTime:"",
-        endTime:""
-      }
+      getForm: {
+        PageIndex: 1,
+        PageSize: 10,
+        SearchText: "",
+        StartTime: "",
+        EndTime: "",
+      },
+      total: 0,
     };
   },
-  watch:{
+  watch: {
     dateValue(value) {
-      this.getDataForm.startTime = value[0];
-      this.getDataForm.endTime = value[1];
-      // console.log(this.getDataText);
+      if (value == null) {
+        this.getForm.StartTime = "";
+        this.getForm.EndTime = "";
+      } else {
+        this.getForm.StartTime = value[0];
+        this.getForm.EndTime = value[1]+" "+"23:59:59";
+      }
+      this.getForm.PageIndex = 1;
+      this.getData();
     },
   },
   beforeMount() {
+
     this.getScreenHeight();
     this.getData();
   },
@@ -140,23 +139,56 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
-    getData() {},
-    changeDate(val){
-   
-   
+    getData() {
+     
+      this.tableData2 = [];
+      QuerySDZHHeadData(this.getForm).then((res) => {
+        this.tableData = res.Data.list.map(item=>{
+          return {
+            ...item,
+            ImageUrl:`http://172.20.99.21:5432/${item.ImageUrl}`
+          }
+        })
+        this.total = res.Data.Total;
+        //  console.log(data);
+      });
     },
+    rowClick(val) {
+      let data = {
+        PageIndex: 1,
+        PageSize: 100,
+        SearchText: "",
+        SearchModel: {
+          DetailGuid: "",
+          DataName: val.DataName,
+          Parameter: "",
+          Description: "",
+          Value: "",
+          Unit: "",
+        },
+        StartTime: "",
+        EndTime: "",
+      };
+      QuerySDZHDetailData(data).then(res=>{
+        this.tableData2= res.Data.list;
+      })
+    },
+    changeDate(val) {},
     handleSizeChange(value) {
-      this.pageSize = value;
-      console.log(this.pageSize);
+      this.getForm.PageSize = value;
+      this.getData()
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
-      this.currentPage = val;
+      console.log(val);
+      
+      this.getForm.PageIndex = val;
+      this.getData()
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = (window.innerHeight - 190-40)*0.6;
-        this.tableHeight2 =(window.innerHeight - 190-40)*0.4;
+        this.tableHeight = (window.innerHeight - 190 - 40) * 0.6;
+        this.tableHeight2 = (window.innerHeight - 190 - 40) * 0.4;
       });
     },
   },

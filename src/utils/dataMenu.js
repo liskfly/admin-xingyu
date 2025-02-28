@@ -76,6 +76,8 @@ export const setLastDate = () => {
 
 //限制三个月的选择
 export const disabledDate = (time) => {
+  // console.log(time);
+  
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0); // 今天的开始时间
 
