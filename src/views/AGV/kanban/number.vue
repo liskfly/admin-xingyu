@@ -79,6 +79,7 @@ export default {
       //   result.push(num);
       // }
       this.option.series[0].data = [10, 15, 10, 10, 10, 15, 10];
+      
       this.state.setOption(this.option);
       this.state.resize();
     },
