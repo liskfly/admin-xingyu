@@ -42,6 +42,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="startPoint" label="起点"> </el-table-column>
+          <el-table-column prop="startName" label="起点名称"> </el-table-column>
+          <el-table-column prop="endPoint" label="终点"> </el-table-column>
+          <el-table-column prop="endName" label="起点名称"> </el-table-column>
           <el-table-column prop="status" label="状态">
             <template slot-scope="scope">
               <el-tag  effect="dark" :color="returnStatus(scope.row.status).color " >
@@ -151,7 +154,12 @@ export default {
       this.startLoading();
       findLineMaterial(this.line).then((res) => {
         if (res && res.data && res.data.Success) {
-          this.tableData = JSON.parse(res.data.Data);
+          this.tableData = JSON.parse(res.data.Data).filter((res) => {
+            if (res.mtype == 1) {
+              return true
+            }
+            return false
+          });
           this.endLoading();
         } else {
           this.tableData = [];

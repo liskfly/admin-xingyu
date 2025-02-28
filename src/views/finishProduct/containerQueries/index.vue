@@ -69,6 +69,7 @@
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         "
+        ref="myTable"
         :height="tableHeight"
         id="Table1"
         size="mini"
@@ -105,7 +106,7 @@ import Axios from "axios";
 import { QueryPackingData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-// import { getDate } from "@/utils/getDate";
+import { getXLSX } from "@/utils/computeXLXS";
 export default {
   data() {
     return {
@@ -178,7 +179,7 @@ export default {
     date(newValue) {
       if (newValue) {
         this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1];
+        this.form.EndTime = newValue[1] + ' 23:59:59';
       } else {
         this.form.StartTime = "";
         this.form.EndTime = "";
@@ -263,30 +264,33 @@ export default {
       this.loading?.close();
     },
     outputFile() {
-      if (this.tableData.length === 0) {
-        this.$message.error("列表不能为空");
-        return;
-      }
-      this.form.pageSize = this.tableData.length;
-      this.$nextTick(function () {
-        var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
+      // if (this.tableData.length === 0) {
+      //   this.$message.error("列表不能为空");
+      //   return;
+      // }
+      // this.form.pageSize = this.tableData.length;
+      // this.$nextTick(function () {
+      //   var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
 
-        /* get binary string as output */
-        var wbOut = XLSX.write(ws1, {
-          bookType: "xlsx",
-          bookSST: true,
-          type: "array",
-        });
-        try {
-          FileSaver.saveAs(
-            new Blob([wbOut], { type: "application/octet-stream" }),
-            "result.xlsx"
-          );
-        } catch (e) {
-          if (typeof console !== "undefined") console.log(e, wbOut);
-        }
-        this.form.pageSize = 20; //表格还原
-        return wbOut;
+      //   /* get binary string as output */
+      //   var wbOut = XLSX.write(ws1, {
+      //     bookType: "xlsx",
+      //     bookSST: true,
+      //     type: "array",
+      //   });
+      //   try {
+      //     FileSaver.saveAs(
+      //       new Blob([wbOut], { type: "application/octet-stream" }),
+      //       "result.xlsx"
+      //     );
+      //   } catch (e) {
+      //     if (typeof console !== "undefined") console.log(e, wbOut);
+      //   }
+      //   this.form.pageSize = 20; //表格还原
+      //   return wbOut;
+      // });
+      QueryPCBBoardData({ ...this.form, pageSize: this.total }).then((res) => {
+        getXLSX(res.data.Data.list,this.$refs.myTable.columns,'包装数据')
       });
     },
     getScreenHeight() {

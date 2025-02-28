@@ -24,9 +24,10 @@
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="orderTaskID" label="备料ID"> </el-table-column>
+          <el-table-column prop="materialPreparationID" width="200" label="备料ID"> </el-table-column>
+          <el-table-column prop="workOrder" width="200" label="工单"> </el-table-column>
           <el-table-column prop="lineNumber" label="线体"> </el-table-column>
-          <el-table-column prop="workstationID" label="工位" width="100"></el-table-column>
+          <el-table-column prop="workstationID" label="工位" width="70"></el-table-column>
           <el-table-column prop="mtype" label="任务类型" width="100" align="center">
             <template slot-scope="scope">
               <el-tag :type="scope.row.mtype == 1 ? 'success' : 'info'" effect="plain">
@@ -35,6 +36,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="startPoint" label="起点" width="100" align="center"></el-table-column>
+          <el-table-column prop="startName" label="起点名称"> </el-table-column>
+          <el-table-column prop="endPoint" label="终点"> </el-table-column>
+          <el-table-column prop="endName" label="起点名称"> </el-table-column>
           <el-table-column prop="status" label="状态" width="100" align="center">
             <template slot-scope="scope">
               <el-tag effect="dark" :color="returnStatus(scope.row.status).color">
@@ -115,7 +119,7 @@ export default {
       findTaskPage(this.getForm).then((res) => {
         this.tableData = [];
         this.total = 0;
-        // console.log(res);
+        console.log(JSON.parse(res.Data));
         let data = JSON.parse(res.Data);
         this.tableData = data.list;
         this.total = data.Total;
