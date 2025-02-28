@@ -10,6 +10,16 @@ import { saveAs } from 'file-saver';
  * @param {string} [options.fileName='export'] 文件名
  * @param {Object} [options.styles] 自定义样式
  */
+// 对齐方式映射函数
+function mapAlignment(align) {
+  const map = {
+    left: 'left',
+    center: 'center',
+    right: 'right',
+    undefined: 'left'
+  };
+  return map[align] || 'left';
+}
 export async function exportTableToExcel({
   tableRef,
   fetchAllData,
@@ -49,20 +59,23 @@ export async function exportTableToExcel({
     });
 
     // 6. 自适应列宽
-    worksheet.columns = columns.map((col, index) => {
+    worksheet.columns = columns.map((col, colIndex) => {
       const headerLength = col.label?.length || 0;
-      const dataLength = allData.reduce((max, row) => {
-        const cellValue = worksheet.getRow(row._id + 2) // 数据从第2行开始
-          .getCell(index + 1).value?.toString() || '';
-        return Math.max(max, cellValue.length);
-      }, 0);
-      
+      let maxDataLength = 0;
+
+      allData.forEach((row, rowIndex) => {
+        const excelRowNumber = rowIndex + 2;
+        const cell = worksheet.getRow(excelRowNumber).getCell(colIndex + 1);
+        const cellValue = cell.value?.toString() || '';
+        maxDataLength = Math.max(maxDataLength, cellValue.length);
+      });
+
       return {
-        width: Math.max(headerLength, dataLength) + 4,
+        width: Math.max(headerLength, maxDataLength) + 4,
         style: { 
           alignment: { 
             wrapText: true,
-            horizontal: col.align ? this.mapAlignment(col.align) : 'left'
+            horizontal: col.align ? mapAlignment(col.align) : 'left'
           },
           ...(styles.cell || {})
         }
@@ -94,13 +107,34 @@ export async function exportTableToExcel({
   }
 }
 
-// 对齐方式映射
-function mapAlignment(align) {
-  const map = {
-    left: 'left',
-    center: 'center',
-    right: 'right',
-    undefined: 'left'
-  };
-  return map[align] || 'left';
-}
+
+// async handleExport() {
+//   try {
+//     await exportTableToExcel({
+//       tableRef: this.$refs.myTable,
+//       fetchAllData: this.fetchAllUsers,
+//       fileName: '用户数据',
+//       styles: {
+//         headerBgColor: 'FFA0A0A0',  // 灰色表头
+//         headerFont: { color: 'FFFFFFFF' }, // 白色文字
+//headerFont: {
+  //color: { argb: 'FFFFFFFF' }, // 红色文字
+  //bold: true,
+  //italic: true
+//},
+//         cell: { numFmt: '@' } // 强制文本格式
+//       }
+//     });
+//   } catch (error) {
+//     this.$message.error(error.message);
+//   }
+// },
+
+// // 获取全部数据的方法（根据实际场景实现）
+// async fetchAllUsers() {
+  
+//   return this.tableData.map((item, index) => ({ 
+//   ...item,
+//   _id: index // 如果依赖 _id，确保它是数字
+// }));
+// },

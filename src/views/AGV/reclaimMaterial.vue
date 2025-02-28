@@ -11,7 +11,7 @@
         <el-button type="danger" @click="" icon="el-icon-delete">取消</el-button>
       </div>
       <div class="table_container">
-        <el-table :data="tableData.slice(
+        <el-table    :data="tableData.slice(
           (currentPage - 1) * pageSize,
           currentPage * pageSize
         )
