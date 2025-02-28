@@ -51,6 +51,58 @@ export const shortcuts = [
     },
   }
 ]
+export const shortcuts1 = [
+  {
+    text: '近三个月',
+    onClick: (picker) => {
+      const end = new Date();
+      let start = new Date(end);
+      let targetMonth = end.getMonth() - 3;
+      let targetYear = end.getFullYear();
+      // 处理跨年情况
+      if (targetMonth < 0) {
+        targetMonth += 12;
+        targetYear -= 1;
+      }
+      start.setFullYear(targetYear);
+      start.setMonth(targetMonth);
+      // start.setDate(1); // 确保是月份的第一天
+      // return [start, end];
+      picker.$emit('pick', [start, end]);
+    },
+  },
+  {
+    text: '本月',
+    onClick: (picker) => {
+      const end = new Date()
+      const start = new Date()
+      const date = (new Date()).getDate() - 1
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * date)
+      // return [start, end]
+      picker.$emit('pick', [start, end]);
+    },
+  },
+  {
+    text: '近七天',
+    onClick: (picker) => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+      // return [start, end]
+      picker.$emit('pick', [start, end]);
+    },
+  },
+  {
+    text: '当天',
+    onClick: (picker) => {
+      const end = new Date()
+      const start = new Date()
+      start.setHours(0, 0, 0, 0);
+      picker.$emit('pick', [start, end]);
+      // return [start, end]
+    },
+  }
+]
 
 export const setTodayDate = () => {
   // 获取当前日期
@@ -59,7 +111,7 @@ export const setTodayDate = () => {
   const formattedDate = `${now.getFullYear()}-${String(
     now.getMonth() + 1
   ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  return formattedDate;
+  return formattedDate +" "+"23:59:59";
 };
 export const setLastDate = () => {
   // 获取当前日期  
@@ -76,6 +128,8 @@ export const setLastDate = () => {
 
 //限制三个月的选择
 export const disabledDate = (time) => {
+  // console.log(time);
+  
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0); // 今天的开始时间
 
