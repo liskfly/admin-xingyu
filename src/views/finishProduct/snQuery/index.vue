@@ -14,7 +14,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 300px"
                 v-model="form.SearchModel.PcbID"
                 class="input-with-select"
               >
@@ -24,7 +24,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 300px"
                 v-model="form.SearchModel.BlockID"
                 class="input-with-select"
               >
@@ -46,11 +46,11 @@
             <el-form-item>
               <el-button type="primary" @click="dataSubmit()">查询</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
               <el-button type="primary" @click="outputFile()"
                 >下载表格</el-button
               >
-            </el-form-item>
+            </el-form-item> -->
           </div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
@@ -59,7 +59,13 @@
       </el-form>
     </div>
     <div class="table">
+      <div class="btn">
+        <el-button type="success" @click="outputFile()" size="small"
+          >下载表格</el-button
+        >
+      </div>
       <el-table
+        ref="myTable"
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         "
@@ -70,12 +76,13 @@
         border
         stripe
       >
-        <el-table-column prop="BlockNo" width="55" label="序号"> </el-table-column>
+        <el-table-column prop="BlockNo" width="55" label="序号">
+        </el-table-column>
         <el-table-column prop="OrderNo" label="工单号"></el-table-column>
         <el-table-column
           prop="PcbID"
           width="310"
-          label="pcb编码"
+          label="PCB编码"
         ></el-table-column>
         <el-table-column prop="BlockID" width="310" label="板内码">
         </el-table-column>
@@ -104,7 +111,7 @@ import Axios from "axios";
 import { QueryPCBBoardData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-// import { getDate } from "@/utils/getDate";
+import { getXLSX } from "@/utils/computeXLXS";
 export default {
   data() {
     return {
@@ -144,7 +151,7 @@ export default {
         SearchText: "",
         SearchModel: {
           PcbID: "",
-          BlockNo: 0,
+          BlockID: "",
         },
         StartTime: "",
         EndTime: "",
@@ -167,7 +174,7 @@ export default {
     date(newValue) {
       if (newValue) {
         this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1];
+        this.form.EndTime = newValue[1] + " 23:59:59";
       } else {
         this.form.StartTime = "";
         this.form.EndTime = "";
@@ -179,7 +186,7 @@ export default {
     // this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
   },
   mounted() {
-    this.getData();
+    // this.getData();
     this.$nextTick(() => {
       this.getScreenHeight();
       //后面的50：根据需求空出的高度，自行调整
@@ -250,30 +257,64 @@ export default {
       this.loading?.close();
     },
     outputFile() {
-      if (this.tableData.length === 0) {
-        this.$message.error("列表不能为空");
-        return;
-      }
-      this.form.pageSize = this.tableData.length;
-      this.$nextTick(function () {
-        var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
+      // if (this.tableData.length === 0) {
+      //   this.$message.error("列表不能为空");
+      //   return;
+      // }
+      // this.form.pageSize = this.tableData.length;
+      // this.$nextTick(function () {
+      //   var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
 
-        /* get binary string as output */
-        var wbOut = XLSX.write(ws1, {
-          bookType: "xlsx",
-          bookSST: true,
-          type: "array",
-        });
-        try {
-          FileSaver.saveAs(
-            new Blob([wbOut], { type: "application/octet-stream" }),
-            "result.xlsx"
-          );
-        } catch (e) {
-          if (typeof console !== "undefined") console.log(e, wbOut);
-        }
-        this.form.pageSize = 20; //表格还原
-        return wbOut;
+      //   /* get binary string as output */
+      //   var wbOut = XLSX.write(ws1, {
+      //     bookType: "xlsx",
+      //     bookSST: true,
+      //     type: "array",
+      //   });
+      //   try {
+      //     FileSaver.saveAs(
+      //       new Blob([wbOut], { type: "application/octet-stream" }),
+      //       "result.xlsx"
+      //     );
+      //   } catch (e) {
+      //     if (typeof console !== "undefined") console.log(e, wbOut);
+      //   }
+      //   this.form.pageSize = 20; //表格还原
+      //   return wbOut;
+      // });
+
+      QueryPCBBoardData({ ...this.form, pageSize: this.total }).then((res) => {
+        getXLSX(res.data.Data.list,this.$refs.myTable.columns,'拼板SN')
+        // const allData = res.data.Data.list;
+        // const columns = this.$refs.myTable.columns;
+
+        // // 3. 构造 Excel 表头（与 el-table 列一致）
+        // const headers = columns
+        //   .filter((col) => col.property && col.label) // 过滤有效列
+        //   .map((col) => ({
+        //     header: col.label, // Excel 表头名称（与 el-table 列名一致）
+        //     key: col.property, // 数据字段键名
+        //   }));
+
+        // // 5. 构造工作表数据（兼容 el-table 的 formatter）
+        // const worksheetData = [
+        //   headers.map((h) => h.header), // 第一行为表头
+        //   ...allData.map((item) =>
+        //     headers.map((h) => {
+        //       // 查找列配置中的 formatter
+        //       const column = columns.find((c) => c.property === h.key);
+        //       return column?.formatter
+        //         ? column.formatter(item) // 如果定义了 formatter，使用格式化后的值
+        //         : item[h.key];
+        //     })
+        //   ),
+        // ];
+
+        // // 6. 生成 Excel 文件
+        // const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        // const workbook = XLSX.utils.book_new();
+        // XLSX.utils.book_append_sheet(workbook, worksheet, "拼版SN数据");
+        // XLSX.writeFile(workbook, "拼版SN数据.xlsx");
       });
     },
     getScreenHeight() {
@@ -301,5 +342,16 @@ export default {
   align-items: center; /* 垂直居中 */
   /* 可能需要添加额外的宽度或最大宽度，根据实际需要调整 */
   width: 100%; /* 或者指定其他宽度 */
+}
+
+.table {
+  position: relative;
+  .btn {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: -2.2rem;
+    z-index: 99;
+  }
 }
 </style>

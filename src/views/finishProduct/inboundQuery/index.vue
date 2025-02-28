@@ -24,22 +24,11 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 350px"
                 v-model="form.SearchModel.pcbsn"
                 class="input-with-select"
               >
               </el-input>
-            </el-form-item>
-            <el-form-item label="检验结果">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
             </el-form-item>
             <el-form-item label="检验时间">
               <el-date-picker
@@ -54,11 +43,22 @@
               >
               </el-date-picker>
             </el-form-item>
+            <el-form-item label="检验结果">
+              <el-select v-model="form.SearchModel.result" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="产品编码">
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 350px"
                 v-model="form.SearchModel.pn"
                 class="input-with-select"
               >
@@ -74,7 +74,7 @@
               >
               </el-input>
             </el-form-item>
-            <el-form-item label="总成编码">
+            <!-- <el-form-item label="总成编码">
               <el-input
                 placeholder=""
                 clearable
@@ -83,7 +83,7 @@
                 class="input-with-select"
               >
               </el-input>
-            </el-form-item>
+            </el-form-item> -->
             <!-- <el-form-item label="规格">
               <el-input
                 placeholder=""
@@ -94,15 +94,17 @@
               >
               </el-input>
             </el-form-item> -->
+            <!-- <div >1</div> -->
             <el-form-item>
               <el-button type="primary" @click="dataSubmit()">查询</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
               <el-button type="primary" @click="outputFile()"
                 >下载表格</el-button
               >
-            </el-form-item>
+            </el-form-item> -->
           </div>
+          <div></div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
           </el-form-item> -->
@@ -110,10 +112,16 @@
       </el-form>
     </div>
     <div class="table">
+      <div class="btn">
+        <el-button type="success" @click="outputFile()" size="small"
+          >下载表格</el-button
+        >
+      </div>
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         "
+        ref="myTable"
         :height="tableHeight"
         id="Table1"
         size="mini"
@@ -128,7 +136,12 @@
           label="pcb编码"
         ></el-table-column>
         <el-table-column prop="name" label="产品名称"> </el-table-column>
-        <el-table-column prop="spec" width="260" label="规格" show-overflow-tooltip>
+        <el-table-column
+          prop="spec"
+          width="260"
+          label="规格"
+          show-overflow-tooltip
+        >
         </el-table-column>
         <el-table-column prop="pn" label="产品编码"> </el-table-column>
         <el-table-column prop="checktime" label="检验时间"> </el-table-column>
@@ -163,7 +176,7 @@ import Axios from "axios";
 import { QueryWarehouseInspectionData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-// import { getDate } from "@/utils/getDate";
+import { getXLSX } from "@/utils/computeXLXS";
 export default {
   data() {
     return {
@@ -208,30 +221,34 @@ export default {
           name: "",
           spec: "",
           pcbsn: "",
-          result: "",
+          result: "PASS",
           checkuser: "",
           checktime: "",
-          ProductCode: ""
+          ProductCode: "",
         },
         StartTime: "",
         EndTime: "",
       },
       date: [],
       total: 0,
-      options: [{
-          value: 'PASS',
-          label: 'PASS'
-        }, {
-          value: 'FAIL',
-          label: 'FAIL'
-        }],
+      value: "PASS",
+      options: [
+        {
+          value: "PASS",
+          label: "PASS",
+        },
+        {
+          value: "FAIL",
+          label: "FAIL",
+        },
+      ],
     };
   },
   watch: {
     date(newValue) {
       if (newValue) {
         this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1];
+        this.form.EndTime = newValue[1] + ' 23:59:59';
       } else {
         this.form.StartTime = "";
         this.form.EndTime = "";
@@ -314,30 +331,34 @@ export default {
       this.loading?.close();
     },
     outputFile() {
-      if (this.tableData.length === 0) {
-        this.$message.error("列表不能为空");
-        return;
-      }
-      this.form.pageSize = this.tableData.length;
-      this.$nextTick(function () {
-        var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
+      // if (this.tableData.length === 0) {
+      //   this.$message.error("列表不能为空");
+      //   return;
+      // }
+      // this.form.pageSize = this.tableData.length;
+      // this.$nextTick(function () {
+      //   var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
 
-        /* get binary string as output */
-        var wbOut = XLSX.write(ws1, {
-          bookType: "xlsx",
-          bookSST: true,
-          type: "array",
-        });
-        try {
-          FileSaver.saveAs(
-            new Blob([wbOut], { type: "application/octet-stream" }),
-            "result.xlsx"
-          );
-        } catch (e) {
-          if (typeof console !== "undefined") console.log(e, wbOut);
-        }
-        this.form.pageSize = 20; //表格还原
-        return wbOut;
+      //   /* get binary string as output */
+      //   var wbOut = XLSX.write(ws1, {
+      //     bookType: "xlsx",
+      //     bookSST: true,
+      //     type: "array",
+      //   });
+      //   try {
+      //     FileSaver.saveAs(
+      //       new Blob([wbOut], { type: "application/octet-stream" }),
+      //       "result.xlsx"
+      //     );
+      //   } catch (e) {
+      //     if (typeof console !== "undefined") console.log(e, wbOut);
+      //   }
+      //   this.form.pageSize = 20; //表格还原
+      //   return wbOut;
+      // });
+      
+      QueryWarehouseInspectionData({ ...this.form, pageSize: this.total }).then((res) => {
+        getXLSX(res.data.Data.list,this.$refs.myTable.columns,'入库检验')
       });
     },
     getScreenHeight() {
@@ -365,5 +386,16 @@ export default {
   align-items: center; /* 垂直居中 */
   /* 可能需要添加额外的宽度或最大宽度，根据实际需要调整 */
   width: 100%; /* 或者指定其他宽度 */
+}
+
+.table {
+  position: relative;
+  .btn {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: -2.2rem;
+    z-index: 99;
+  }
 }
 </style>

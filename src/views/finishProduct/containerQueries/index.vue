@@ -1,7 +1,7 @@
 <template>
   <div class="smtinstpro">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getDataText">
+      <el-form ref="form" class="form" :inline="true" :model="getDataText" size="small">
         <div class="flex-container">
           <div>
             <el-form-item label="">
@@ -36,12 +36,22 @@
               >
               </el-input>
             </el-form-item>
+            <el-form-item label="" v-show="value === 'ProductCode'">
+              <el-input
+                placeholder="请输入总成编码"
+                clearable
+                style="width: 400px"
+                v-model="form.SearchModel.ProductCode"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="getData()">查询</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
-          </el-form-item>
+          </el-form-item> -->
           </div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
@@ -50,10 +60,16 @@
       </el-form>
     </div>
     <div class="table">
+      <div class="btn">
+        <el-button type="success" @click="outputFile()" size="small"
+          >下载表格</el-button
+        >
+      </div>
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         "
+        ref="myTable"
         :height="tableHeight"
         id="Table1"
         size="mini"
@@ -61,9 +77,9 @@
         border
         stripe
       >
-        <el-table-column prop="rid" width="400" label="容器ID"></el-table-column>
-        <el-table-column prop="pcbsn" width="400" label="pcb编码"></el-table-column>
-        <!-- <el-table-column prop="rid" label="总成编码"> </el-table-column> -->
+        <el-table-column prop="rid" width="300" label="容器ID"></el-table-column>
+        <el-table-column prop="pcbsn" width="300" label="pcb编码"></el-table-column>
+        <el-table-column prop="ProductCode" width="300" label="总成编码"> </el-table-column>
         <el-table-column prop="creuser" width="150" label="操作人"> </el-table-column>
         <el-table-column prop="cretime" label="操作时间"> </el-table-column>
       </el-table>
@@ -90,7 +106,7 @@ import Axios from "axios";
 import { QueryPackingData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-// import { getDate } from "@/utils/getDate";
+import { getXLSX } from "@/utils/computeXLXS";
 export default {
   data() {
     return {
@@ -134,6 +150,7 @@ export default {
           pcbsn: "",
           barno: "",
           creuser: "",
+          ProductCode: "",
           cretime: "",
         },
         StartTime: "",
@@ -151,6 +168,10 @@ export default {
           value: "pcbsn",
           label: "PCB编码",
         },
+        {
+          value: "ProductCode",
+          label: "总成编码",
+        },
       ],
     };
   },
@@ -158,7 +179,7 @@ export default {
     date(newValue) {
       if (newValue) {
         this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1];
+        this.form.EndTime = newValue[1] + ' 23:59:59';
       } else {
         this.form.StartTime = "";
         this.form.EndTime = "";
@@ -243,30 +264,33 @@ export default {
       this.loading?.close();
     },
     outputFile() {
-      if (this.tableData.length === 0) {
-        this.$message.error("列表不能为空");
-        return;
-      }
-      this.form.pageSize = this.tableData.length;
-      this.$nextTick(function () {
-        var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
+      // if (this.tableData.length === 0) {
+      //   this.$message.error("列表不能为空");
+      //   return;
+      // }
+      // this.form.pageSize = this.tableData.length;
+      // this.$nextTick(function () {
+      //   var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
 
-        /* get binary string as output */
-        var wbOut = XLSX.write(ws1, {
-          bookType: "xlsx",
-          bookSST: true,
-          type: "array",
-        });
-        try {
-          FileSaver.saveAs(
-            new Blob([wbOut], { type: "application/octet-stream" }),
-            "result.xlsx"
-          );
-        } catch (e) {
-          if (typeof console !== "undefined") console.log(e, wbOut);
-        }
-        this.form.pageSize = 20; //表格还原
-        return wbOut;
+      //   /* get binary string as output */
+      //   var wbOut = XLSX.write(ws1, {
+      //     bookType: "xlsx",
+      //     bookSST: true,
+      //     type: "array",
+      //   });
+      //   try {
+      //     FileSaver.saveAs(
+      //       new Blob([wbOut], { type: "application/octet-stream" }),
+      //       "result.xlsx"
+      //     );
+      //   } catch (e) {
+      //     if (typeof console !== "undefined") console.log(e, wbOut);
+      //   }
+      //   this.form.pageSize = 20; //表格还原
+      //   return wbOut;
+      // });
+      QueryPCBBoardData({ ...this.form, pageSize: this.total }).then((res) => {
+        getXLSX(res.data.Data.list,this.$refs.myTable.columns,'包装数据')
       });
     },
     getScreenHeight() {
@@ -294,5 +318,16 @@ export default {
   align-items: center; /* 垂直居中 */
   /* 可能需要添加额外的宽度或最大宽度，根据实际需要调整 */
   width: 100%; /* 或者指定其他宽度 */
+}
+
+.table {
+  position: relative;
+  .btn {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: -2.2rem;
+    z-index: 99;
+  }
 }
 </style>

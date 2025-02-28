@@ -29,6 +29,9 @@
           </el-table-column>
           <el-table-column prop="workstationID" label="工位"> </el-table-column>
           <el-table-column prop="startPoint" label="起点"> </el-table-column>
+          <el-table-column prop="startName" label="起点名称"> </el-table-column>
+          <el-table-column prop="endPoint" label="终点"> </el-table-column>
+          <el-table-column prop="endName" label="起点名称"> </el-table-column>
           <el-table-column prop="status" label="状态" width="100" align="center">
             <template slot-scope="scope">
               <el-tag effect="dark" :color="returnStatus(scope.row.status).color">
@@ -139,7 +142,12 @@ export default {
         this.tableData = []
         if (res.Success) {
           let data = JSON.parse(res.Data);
-          this.tableData = data;
+          this.tableData = data.filter((item) => {
+            if (item.mtype == 2) {
+              return true
+            }
+            return false
+          });;
           // console.log(this.tableData);
         }
       });
