@@ -11,11 +11,11 @@
         <el-button type="danger" @click="" icon="el-icon-delete">取消</el-button>
       </div>
       <div class="table_container">
-        <el-table :data="tableData.slice(
+        <el-table    :data="tableData.slice(
           (currentPage - 1) * pageSize,
           currentPage * pageSize
         )
-          " border :height="tableHeight" style="width: 100%" >
+          " border :height="tableHeight" style="width: 100%">
           <el-table-column type="index" label="序号" width="55" />
           <el-table-column prop="lineNumber" label="线体"> </el-table-column>
 
@@ -34,10 +34,10 @@
           <el-table-column prop="endName" label="终点名称"> </el-table-column>
           <el-table-column prop="status" label="状态" width="100" align="center">
             <template slot-scope="scope">
-              <el-tag  effect="dark" :color="returnStatus(scope.row.status).color " >
+              <el-tag effect="dark" :color="returnStatus(scope.row.status).color">
                 {{ returnStatus(scope.row.status).status }}
               </el-tag>
-    
+
             </template>
           </el-table-column>
           <el-table-column prop="cr_date" label="时间"> </el-table-column>
@@ -46,7 +46,8 @@
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-refresh" size="mini" @click="emptyRecycle(scope.row)"></el-button>
 
-              <el-button type="danger" icon="el-icon-circle-close" size="mini" @click="emptyCancel(scope.row)"></el-button>
+              <el-button type="danger" icon="el-icon-circle-close" size="mini"
+                @click="emptyCancel(scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-import { findLineMaterialk, recycleEmptyVehicles,cancelTask1 } from "@/api/agvApi";
+import { findLineMaterialk, recycleEmptyVehicles, cancelTask1 } from "@/api/agvApi";
 import { getToken } from "@/utils/auth";
 export default {
   data() {
@@ -138,7 +139,7 @@ export default {
     getData() {
       findLineMaterialk(this.line).then((res) => {
         // console.log(res);
-        this.tableData=[]
+        this.tableData = []
         if (res.Success) {
           let data = JSON.parse(res.Data);
           this.tableData = data.filter((item) => {
@@ -153,40 +154,40 @@ export default {
     },
     returnStatus(num) {
       let status = "";
-  let color = "";
+      let color = "";
 
-  switch (num) {
-    case "1":
-      status = "已备料";
-      color = "#67c23a"; // 绿色
-      break;
-    case "2":
-      status = "叫料中";
-      color = "#FFA500"; // 橙色
-      break;
-    case "3":
-      status = "已取料";
-      color = "#0000FF"; // 蓝色
-      break;
-    case "99":
-      status = "已完成";
-      color = "#808080"; // 灰色
-      break;
-    case "10":
-      status = "任务取消";
-      color = "#FF0000"; // 红色
-      break;
-    case "22":
-      status = "异常";
-      color = "#8B0000"; // 深红色
-      break;
-    default:
-      status = "";
-      color = "#333333"; // 深灰色（替代白色，确保在白色背景可见）
-      break;
-  }
+      switch (num) {
+        case "1":
+          status = "已备料";
+          color = "#67c23a"; // 绿色
+          break;
+        case "2":
+          status = "叫料中";
+          color = "#FFA500"; // 橙色
+          break;
+        case "3":
+          status = "已取料";
+          color = "#0000FF"; // 蓝色
+          break;
+        case "99":
+          status = "已完成";
+          color = "#808080"; // 灰色
+          break;
+        case "10":
+          status = "任务取消";
+          color = "#FF0000"; // 红色
+          break;
+        case "22":
+          status = "异常";
+          color = "#8B0000"; // 深红色
+          break;
+        default:
+          status = "";
+          color = "#333333"; // 深灰色（替代白色，确保在白色背景可见）
+          break;
+      }
 
-  return { status, color };
+      return { status, color };
     },
     emptyRecycle(row) {
       this.$confirm("确定进行空车回收", "确认提示", {
@@ -216,7 +217,7 @@ export default {
           });
         });
     },
-    emptyCancel(){
+    emptyCancel() {
       this.$confirm("确定进行取消回收", "确认提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

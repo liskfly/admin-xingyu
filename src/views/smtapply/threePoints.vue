@@ -151,6 +151,7 @@ export default {
      
       this.tableData2 = [];
       QuerySDZHHeadData(this.getForm).then((res) => {
+      
         this.tableData = res.Data.list.map(item=>{
           return {
             ...item,
