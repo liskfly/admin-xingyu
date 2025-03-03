@@ -1,5 +1,8 @@
 <template>
   <div class="login-container">
+    <div id="stars" />
+    <div id="stars2" />
+    <div id="stars3" />
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -61,8 +64,10 @@
 </template>
 
 <script>
+
 import { mapMutations } from "vuex";
 import { findEmployeeRoles, info } from "@/api/index";
+import { getToken } from "@/utils/auth";
 export default {
   name: "Login",
   data() {
@@ -93,6 +98,13 @@ export default {
     },
   },
   mounted() {
+    let loginName=localStorage.getItem("LONINNAME")!=null?localStorage.getItem("LONINNAME"):""
+    this.loginForm.employeeName=loginName
+    if(this.loginForm.employeeName==""){
+      this.$refs.username.focus();
+    }else{
+      this.$refs.password.focus();
+    }
   },
   methods: {
     ...mapMutations(["SET_ROUTE", "SET_NAMEID"]),
@@ -119,6 +131,7 @@ export default {
               // this.loading = false;
               info(this.loginForm.employeeName).then(({ data }) => {
                 // console.log(data.EmployeeId);
+                localStorage.setItem("LONINNAME", this.loginForm.employeeName);
                 findEmployeeRoles(data.EmployeeId).then((res) => {
                   // console.log(data.content);
                   let a = [];
@@ -181,6 +194,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
@@ -196,6 +210,10 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  // height: 100vh;
+  //   overflow: hidden;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+
   .el-input {
     display: inline-block;
     height: 47px;
@@ -289,4 +307,7 @@ $light_gray: #eee;
     user-select: none;
   }
 }
+</style>
+<style lang="scss" scoped>
+@import '../../styles/login.css';
 </style>

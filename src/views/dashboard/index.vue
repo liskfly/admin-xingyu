@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container" ref="dc">
     <!-- <div class="dashboard-text">欢迎使用</div> -->
-    <el-carousel :height="`${dashboardHeight}px`">
+    <el-carousel :height="`${dashboardHeight}px`" :interval="4500">
       <el-carousel-item v-for="item in pic" :key="item.img">
         <img
           :style="{ width: `${item.width}%`, height: `${item.height}%` }"
@@ -32,6 +32,11 @@ export default {
           width: 100,
           height: 100,
         },
+        // {
+        //   img: require("@/assets/dashboard/1714269459418.png"),
+        //   width: 100,
+        //   height: 100,
+        // },
         // {
         //   img: require("@/assets/dashboard/img_v3_02a6_fc862b5a-7752-4624-b6ec-ff6f5e0072ag.jpg"),
         //   width: 80,

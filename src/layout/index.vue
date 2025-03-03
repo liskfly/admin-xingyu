@@ -2,7 +2,7 @@
   <div :class="classObj" class="app-wrapper">
     <div class="header-title">
       <div class="text">Siemens Opcenter 中心 -- 智能电子</div>
-      <div class="logo" v-if="device !== 'mobile'"><img src="../assets/logo_xyl2-modified.png" alt="星宇" /></div>
+      <div class="logo"  v-if="device !== 'mobile'"><img src="../assets/logo_xyl2-modified.png" alt="星宇" width="160"/></div>
     </div>
     <div
       v-if="device === 'mobile' && sidebar.opened"
@@ -202,7 +202,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   // position: relative;
-  height: 60px;
+  height: 55px;
   color: #fff;
   background-color: $menuBg;
 }
@@ -217,18 +217,20 @@ export default {
   // position: absolute;
   right: 0;
   top: 0;
+  display: flex;
+  align-items: center;
   // float: right;
   // width:auto;
   // background-color: #fff;
 }
 .noti {
   flex: 0 0 200px;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 101px);
   width: 100%;
 }
 .left-box {
   flex: 1;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 101px);
   overflow: auto;
 }
 .left-box::-webkit-scrollbar {

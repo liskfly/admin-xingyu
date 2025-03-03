@@ -140,7 +140,7 @@ export default {
 <style lang="scss" scoped>
 .traceability {
   width: 100%;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 101px);
   overflow: hidden;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */

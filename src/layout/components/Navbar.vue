@@ -152,7 +152,7 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 15px;
+      margin-right: 8px;
 
       .avatar-wrapper {
         display: flex;
