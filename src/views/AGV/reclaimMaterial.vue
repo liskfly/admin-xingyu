@@ -44,9 +44,9 @@
           <el-table-column prop="ud_user" label="工作人"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="150" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-refresh" size="mini" @click="emptyRecycle(scope.row)"></el-button>
+              <el-button type="primary" icon="el-icon-refresh" v-if="scope.row.status === '1'" size="mini" @click="emptyRecycle(scope.row)"></el-button>
 
-              <el-button type="danger" icon="el-icon-circle-close" size="mini"
+              <el-button type="danger" icon="el-icon-circle-close" v-if="scope.row.status !== '1'" size="mini"
                 @click="emptyCancel(scope.row)"></el-button>
             </template>
           </el-table-column>
