@@ -1,12 +1,18 @@
 <template>
   <div id="state">
-    <div ref="state" id="charAgv" style="width: 100%; height: 100%" class="state"></div>
+    <div
+      ref="state"
+      id="charAgv"
+      style="width: 100%; height: 100%"
+      class="state"
+    ></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-import { findKanBan } from "@/api/agvApi";
+import { findKanBan, findTaskData } from "@/api/agvApi";
+import { element } from "screenfull";
 export default {
   data() {
     return {
@@ -14,7 +20,6 @@ export default {
       intervalId: null,
       arrData: [],
       option: {
-
         title: {
           // text: "横向柱状图示例",
           textStyle: {
@@ -87,9 +92,9 @@ export default {
                 color: "white",
                 fontSize: 25,
               },
-              formatter:  (params)=> {
-                return params.value > 0 ? params.value : '';
-              }
+              formatter: (params) => {
+                return params.value > 0 ? params.value : "";
+              },
             },
             itemStyle: {
               normal: {
@@ -104,16 +109,15 @@ export default {
                   return colorList[params.dataIndex];
                 },
               },
-
             },
           },
         ],
-      }
+      },
     };
   },
   mounted() {
     this.echartInit();
-    this.getData()
+    this.getData();
     this.startLoop();
   },
   beforeDestroy() {
@@ -142,11 +146,23 @@ export default {
 
           // this.arrData = [10, count2, count3, count99];
 
-          this.option.series[0].data = [count3, count99, count2, 10];
-
-
-          this.state.setOption(this.option);
-          this.state.resize()
+          findTaskData().then((res) => {
+            if (res.data.Success) {
+              let data1 = JSON.parse(res.data.Data);
+              console.log(data1);
+              
+              this.option.series[0].data = [
+                count3,
+                count99,
+                count2,
+                data1.length,
+              ];
+            } else {
+              this.option.series[0].data = [count3, count99, count2, 0];
+            }
+            this.state.setOption(this.option);
+            this.state.resize();
+          });
         }
         setTimeout(() => {
           this.loading = true;
@@ -157,7 +173,7 @@ export default {
       this.state = echarts.init(document.getElementById("charAgv"));
 
       this.state.setOption(this.option);
-      this.state.resize()
+      this.state.resize();
     },
     startLoop() {
       this.intervalId = setInterval(() => {

@@ -95,3 +95,9 @@ export function findTaskPage(data) {
   data
   });
 }
+export function findTaskData() {
+  return request({
+    url: "/AGVController/findTaskData",
+    method: "post"
+  });
+}

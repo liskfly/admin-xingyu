@@ -24,7 +24,7 @@
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="materialPreparationID" width="200" label="备料ID"> </el-table-column>
+          <!-- <el-table-column prop="materialPreparationID" width="200" label="备料ID"> </el-table-column> -->
           <el-table-column prop="workOrder" width="200" label="工单"> </el-table-column>
           <el-table-column prop="lineNumber" label="线体"> </el-table-column>
           <el-table-column prop="workstationID" label="工位" width="70"></el-table-column>

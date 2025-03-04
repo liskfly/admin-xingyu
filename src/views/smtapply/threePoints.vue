@@ -50,7 +50,7 @@
         </el-table-column> -->
         <el-table-column label="图片" width="100" align="center">
           <template slot-scope="scope">
-            <el-image :src="scope.row.ImageUrl" lazy   style="width: 35px;"  :preview-src-list="[scope.row.ImageUrl]"></el-image>
+            <el-image :src="scope.row.ImageUrl" lazy   style="width: 30px;"  :preview-src-list="[scope.row.ImageUrl]"></el-image>
           </template>
         </el-table-column>
       </el-table>
