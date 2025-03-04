@@ -363,7 +363,7 @@ export default {
     flex-direction: column;
     // color: rgb(0, 183, 255);
     color: #fff;
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     justify-content: space-between;
     .light {
       padding-left: 15px;

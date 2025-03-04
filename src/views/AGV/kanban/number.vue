@@ -78,7 +78,7 @@ export default {
       //   const num = Math.floor(Math.random() * 6) + 10;
       //   result.push(num);
       // }
-      this.option.series[0].data = [10, 15, 10, 10, 10, 15, 10];
+      this.option.series[0].data = [12, 10, 17, 14, 12, 16, 13];
       
       this.state.setOption(this.option);
       this.state.resize();
