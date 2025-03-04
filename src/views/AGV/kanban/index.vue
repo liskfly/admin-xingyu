@@ -6,7 +6,7 @@
         <dv-decoration-10 class="dv-dec-10 decoration" />
         <dv-decoration-8 class="dv-dec-8 decoration decoration-center" />
         <div class="text decoration-center">
-          <div style="margin: auto" @click="changedata()">
+          <div style="margin: auto">
             星宇车灯电子二工厂AGV调度看板
           </div>
         </div>
@@ -74,16 +74,7 @@ export default {
       originalProjectTeam: [],
       yearList: [],
       config: {
-        data: [
-          ["异常报错1"],
-          ["异常报错2"],
-          ["异常报错3"],
-          ["异常报错4"],
-          ["异常报错5"],
-          ["异常报错6"],
-          ["异常报错7"],
-          ["异常报错8"],
-        ],
+        data: [],
         oddRowBGC: "#00d5ff00",
         evenRowBGC: "#00d5ff00",
       },

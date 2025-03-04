@@ -82,7 +82,7 @@ export default {
           {
             name: "数据",
             type: "bar",
-            data: [12, 20, 15, 8],
+            data: [0, 20, 15, 8],
             barWidth: "50%", // 设置柱子的宽度
             label: {
               show: true, // 开启显示
