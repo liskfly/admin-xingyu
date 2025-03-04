@@ -42,6 +42,8 @@ export default {
       // console.log(full);
       
       let fullDiv = "";
+      console.log(this.$route.path);
+      
       switch (this.$route.path) {
         case "/kanban/smt_lot":
           fullDiv = document.getElementById("fullDiv1");
@@ -56,7 +58,7 @@ export default {
           fullDiv = document.getElementById("fullDiv4");
           break;
       }
-      // console.log(fullDiv);
+      console.log(fullDiv);
 
       if (fullDiv) {
         //找到后调用自带的toggle事件进行放大操作
