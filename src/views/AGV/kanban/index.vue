@@ -1,12 +1,12 @@
 <template>
-  <div id="data-view" >
+  <div id="data-view">
     <dv-loading v-if="!loading">Loading...</dv-loading>
     <div class="full-scrll" style="height: 100%" v-else="loading">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" />
         <dv-decoration-8 class="dv-dec-8 decoration decoration-center" />
         <div class="text decoration-center">
-          <div style="margin: auto;" @click="changedata()">
+          <div style="margin: auto" @click="changedata()">
             星宇车灯电子二工厂AGV调度看板
           </div>
         </div>
@@ -200,9 +200,15 @@ export default {
   },
   mounted() {
     this.getData();
+    setTimeout(() => {
+      this.loading = true;
+    }, 1000);
     this.startLoop();
   },
   beforeDestroy() {
+    this.stopLoop();
+  },
+  destroyed() {
     this.stopLoop();
   },
   methods: {
@@ -211,11 +217,7 @@ export default {
         if (res.data.Success) {
           this.machineData = JSON.parse(res.data.Data);
           // console.log(this.machineData);
-          
         }
-          setTimeout(() => {
-            this.loading = true;
-          }, 1000);
       });
     },
     returnStatus(num) {

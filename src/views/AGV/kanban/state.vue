@@ -164,6 +164,10 @@ export default {
         this.getData();
       }, 10000); // Loop every second
     },
+    stopLoop() {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    },
   },
 };
 </script>
