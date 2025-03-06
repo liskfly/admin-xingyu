@@ -1,0 +1,584 @@
+<template>
+  <div class="smdPro">
+    <el-card class="box-card" :body-style="{ padding: '8px' }">
+      <div class="table_header">
+        <el-button type="primary" @click="openAdd()">添加</el-button>
+        <div class="input_box">
+          <!-- <el-input
+            placeholder="请输入内容"
+            clearable
+            v-model="getlistText.searchText"
+            class="input-with-select"
+            @input="getSearchData"
+            @change="getSearchData"
+          >
+            <el-button slot="append" icon="el-icon-search"></el-button>
+          </el-input> -->
+        </div>
+      </div>
+      <div class="table_container">
+        <el-table
+          :data="tableData"
+          :height="tableHeight"
+          border
+          size="small"
+          stripe
+          style="width: 100%; height: 400"
+        >
+          <el-table-column type="index" label="序号" width="50" />
+          <el-table-column prop="line_code" label="线体" width="75"> </el-table-column>
+          <el-table-column prop="device_model" label="设备型号" width="100">
+          </el-table-column>
+          <el-table-column
+            prop="fault_phenomenon"
+            label="故障现象"
+          ></el-table-column>
+          <el-table-column prop="analysis_steps" label="分析步骤">
+            <template slot-scope="scope">
+              <span style="white-space: pre-wrap">{{
+                scope.row.analysis_steps
+              }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="solution_method" label="处理方法">
+            <template slot-scope="scope">
+              <span style="white-space: pre-wrap">{{
+                scope.row.solution_method
+              }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="maintenance_result" label="输出内容">
+            <template slot-scope="scope">
+              <span style="white-space: pre-wrap">{{
+                scope.row.maintenance_result
+              }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="horizontal_extension" label="横展">
+          </el-table-column>
+          <el-table-column prop="create_time" label="时间"  width="150"> </el-table-column>
+          <!-- <el-table-column prop="creator" label="录入人"> </el-table-column> -->
+          <!-- <el-table-column
+            fixed="right"
+            label="操作"
+            width="200"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+              ></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-time"
+                size="mini"
+                @click="handleHistory(scope.$index, scope.row)"
+              ></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click="handleDelete(scope.$index, scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column> -->
+        </el-table>
+        <div class="block" style="margin-top: 8px">
+          <el-pagination
+            background
+            align="center"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="getlistText.PageIndex"
+            :page-size="getlistText.pageSize"
+            :page-sizes="[5, 10, 20, 50, 100]"
+            layout="total,sizes, prev, pager, next, jumper"
+            :total="total"
+          >
+          </el-pagination>
+        </div>
+      </div>
+    </el-card>
+    <el-dialog
+      title="添加"
+      @close="addCancel()"
+      :visible.sync="dialogVisible"
+      width="1000px"
+    >
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        label-width="100px"
+        inline
+      >
+        <el-form-item label="线体" prop="line_code">
+          <el-input
+            style="width: 300px"
+            :disabled="show"
+            v-model="form.line_code"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="设备型号" prop="device_model">
+          <el-input
+            style="width: 300px"
+            v-model="form.device_model"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="分析步骤" prop="analysis_steps">
+          <el-input
+            style="width: 710px"
+            type="textarea"
+            v-model="form.analysis_steps"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="处理方法" prop="solution_method">
+          <el-input
+            style="width: 710px"
+            type="textarea"
+            v-model="form.solution_method"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="输出内容" prop="maintenance_result">
+          <el-input
+            style="width: 710px"
+            type="textarea"
+            v-model="form.maintenance_result"
+            placeholder=""
+            :row="2"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="横展" prop="horizontal_extension">
+          <el-input
+            style="width: 300px"
+            v-model="form.horizontal_extension"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="故障现象" prop="fault_phenomenon">
+          <el-input
+            style="width: 300px"
+            v-model="form.fault_phenomenon"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="时间" prop="create_time">
+          <el-date-picker
+            style="width: 300px"
+            v-model="form.create_time"
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addCancel()">取 消</el-button>
+        <el-button type="primary" @click="onSubmit()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="修改"
+      @close="editCancel()"
+      :visible.sync="dialogEdVisible"
+      width="500px"
+    >
+      <el-form
+        ref="editForm"
+        :model="edForm"
+        :rules="rules"
+        label-width="100px"
+      >
+        <el-form-item label="容器ID" prop="Containerid">
+          <el-input
+            v-model="edForm.Containerid"
+            placeholder="容器ID"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="名称" prop="ContainerName">
+          <el-input
+            v-model="edForm.ContainerName"
+            placeholder="名称"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="规格" prop="Spec">
+          <el-input
+            type="textarea"
+            v-model="edForm.Spec"
+            placeholder="规格"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="最大容量" prop="Capacity">
+          <el-input v-model="edForm.Capacity" placeholder="最大容量"></el-input>
+        </el-form-item>
+        <el-form-item label="生产类型" prop="ProduceType">
+          <el-select v-model="edForm.ProduceType" placeholder="生产类型">
+            <el-option
+              v-for="item in lineList"
+              :key="item.lineType"
+              :label="item.lineType"
+              :value="item.lineType"
+            ></el-option>
+          </el-select>
+          <!-- </el-input> -->
+        </el-form-item>
+        <el-form-item label="最大使用次数" prop="MaxuseNum">
+          <el-input
+            v-model="edForm.MaxuseNum"
+            placeholder="最大使用次数"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="出厂日期" prop="madata">
+          <!-- <el-input v-model="form.madata" placeholder="出厂日期"></el-input> -->
+          <el-form-item prop="madata">
+            <el-date-picker
+              type="datetime"
+              placeholder="选择日期"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="edForm.madata"
+            ></el-date-picker>
+          </el-form-item>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editCancel()">取 消</el-button>
+        <el-button type="primary" @click="editSubmit()">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import {
+  addEquipmentMaintenance,
+  QueryWarehouseInspectionData,
+} from "@/api/spApi";
+import { getToken } from "@/utils/auth";
+export default {
+  data() {
+    return {
+      dialogVisible: false,
+      dialogEdVisible: false,
+      show: false,
+      dialogTableVisible: false,
+      hositycurrentPage: 1,
+      hositypageSize: 5,
+      lineList: [
+        {
+          lineType: "SMT",
+        },
+        {
+          lineType: "组装",
+        },
+      ],
+      form: {
+        line_code: "",
+        device_model: "",
+        fault_phenomenon: "",
+        analysis_steps: "",
+        solution_method: "",
+        maintenance_result: "",
+        horizontal_extension: "",
+        creator: getToken(),
+        create_time: "",
+      },
+      edForm: {
+        Containerid: "",
+        ContainerName: "",
+        Spec: "",
+        Pn: "", //料号
+        Qty: 0, //数量
+        CellNo: "", //储位
+        Capacity: "",
+        Stts: 0,
+        ProduceType: "",
+        MaxuseNum: "",
+        UsedNum: 0,
+        UpdateTime: "",
+        UpdateUser: "",
+        CreateTime: "",
+        CreateUser: "",
+        ExFactoryDate: "",
+      },
+      tableData: [],
+      total: 0,
+      currentPage: 1, // 当前页码
+      tableHeight: 0,
+      // pageSize: 10, // 每页的数据条数
+      getlistText: {
+        PageIndex: 1,
+        PageSize: 10,
+        SearchText: "",
+        SearchModel: "",
+        StartTime: "",
+        EndTime: "",
+      },
+      rules: {
+        line_code: [{ required: true, message: "请输入", trigger: "blur" }],
+        device_model: [{ required: true, message: "请输入", trigger: "blur" }],
+        fault_phenomenon: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        analysis_steps: [
+          { required: true, message: "请选择", trigger: "blur" },
+        ],
+        solution_method: [
+          { required: true, message: "请选择", trigger: "blur" },
+        ],
+        maintenance_result: [
+          { required: true, message: "请选择", trigger: "blur" },
+        ],
+        horizontal_extension: [
+          { required: true, message: "请选择", trigger: "blur" },
+        ],
+        create_time: [{ required: true, message: "请选择", trigger: "blur" }],
+      },
+      hosity: [],
+    };
+  },
+  created() {
+    this.getData();
+  },
+  beforeMount() {
+    this.getScreenHeight();
+  },
+  mounted() {
+    window.addEventListener("resize", this.getScreenHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.getScreenHeight);
+  },
+  methods: {
+    getData() {
+      this.startLoading();
+      QueryWarehouseInspectionData(this.getlistText)
+        .then(({ data }) => {
+          //  console.log(data);
+          this.total = data.Data.Total;
+          this.tableData = data.Data.list;
+          this.endLoading();
+          console.log(this.tableData);
+        })
+        .catch(() => {
+          this.endLoading();
+        });
+    },
+    openAdd() {
+      this.form.line_code = "";
+      this.form.device_model = "";
+      this.form.fault_phenomenon = "";
+      this.form.analysis_steps = "";
+      this.form.solution_method = "";
+      this.form.maintenance_result = "";
+      this.form.horizontal_extension = "";
+      this.form.create_time = "";
+      this.show = false;
+      this.dialogVisible = true;
+      //  this.form=this.edForm
+    },
+    onSubmit() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (!this.form.create_time || this.form.create_time === "") {
+          }
+          //   console.log(this.form);
+          this.startLoading();
+          // console.log(this.form);
+          addEquipmentMaintenance(this.form)
+            .then(({ data }) => {
+              if (data.Code == 200) {
+                this.dialogVisible = false;
+                this.show = false;
+                this.getData();
+                // console.log(res);
+
+                this.$message({
+                  type: "success",
+                  message: data.Msg,
+                });
+                this.$refs.form.resetFields();
+              } else {
+                this.$message({
+                  type: "error",
+                  message: data.Msg,
+                });
+              }
+              this.endLoading();
+            })
+            .catch((error) => {
+              this.endLoading();
+            });
+        } else {
+          this.$alert("添加失败,请完成必填项", "错误信息", {
+            confirmButtonText: "确定",
+          });
+        }
+      });
+    },
+    addCancel() {
+      this.dialogVisible = false;
+      this.$refs.form.resetFields();
+    },
+    editSubmit() {},
+    editCancel() {
+      this.dialogEdVisible = false;
+    },
+    handleEdit(index, row) {
+      // this.edForm = row;
+      this.show = true;
+      this.formDataPro(row);
+      this.dialogVisible = true;
+      // console.log(row);
+    },
+    handleHistory(index, row) {
+      this.dialogTableVisible = true;
+      // console.log(row);
+      this.hosity = [];
+      this.startLoading();
+      getHistoy(row.Containerid).then(({ data }) => {
+        this.endLoading();
+        let a = JSON.parse(data.Data);
+        // console.log();
+        this.hosity = a.list.reverse();
+        // this.hosity;
+        // console.log(this.hosity);
+      });
+    },
+    handleDelete(index, row) {
+      // console.log(index, row);
+      this.$confirm("确定删除", "确认操作", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          deleteContainer({ Containerid: row.Containerid }).then((res) => {
+            if (this.tableData.length == 1 && this.getlistText.pageIndex >= 0) {
+              this.getlistText.pageIndex--;
+            }
+            // console.log(this.tableData.length, this.getlistText.pageIndex);
+            this.getData();
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    inputValue(value) {
+      // console.log(value);
+      let isExit = this.tableData.find((item) => item.Containerid == value);
+
+      // console.log(value,this.tableData);
+      if (value && isExit != undefined) {
+        this.formDataPro(isExit);
+      } else {
+        // console.log(1);
+        this.formDataPro(this.edForm);
+        this.form.containerid = value;
+      }
+    },
+    formDataPro(row) {
+      // console.log(row);
+      this.form.containerid = row.Containerid;
+      this.form.containerName = row.ContainerName;
+      this.form.spec = row.Spec;
+      this.form.pn = row.Pn;
+      this.form.qty = row.Qty;
+      this.form.cellNo = row.CellNo;
+      this.form.capacity = row.Capacity;
+      this.form.stts = row.Stts;
+      this.form.produceType = row.ProduceType;
+      this.form.maxuseNum = row.MaxuseNum;
+      this.form.usedNum = row.UsedNum;
+      this.form.updateTime = row.UpdateTime;
+      this.form.updateUser = row.UpdateUser;
+      this.form.createTime = row.CreateTime;
+      this.form.createUser = row.CreateUser;
+      this.form.exFactoryDate = row.ExFactoryDate;
+      // console.log(this.form);
+    },
+    getSearchData() {
+      // this.getlistText.pageIndex = 0;
+      // this.getData();
+    },
+    handleSizeChange(value) {
+      this.getlistText.pageSize = value;
+      this.getData();
+      // console.log(this.pageSize);
+    },
+    handleCurrentChange(value) {
+      this.getlistText.pageIndex = value - 1;
+      this.getData();
+    },
+    hosityhandleCurrentChange(currentPage) {
+      //  console.log(currentPage,'currentPage');
+      this.hositycurrentPage = currentPage;
+      // console.log(this.currentPage);
+    },
+    startLoading() {
+      this.loading = this.$loading({
+        lock: true,
+        text: "加载中~",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.2)", //调节透明度
+      });
+    },
+    endLoading() {
+      this.loading.close();
+    },
+    getScreenHeight() {
+      this.$nextTick(() => {
+        this.tableHeight = window.innerHeight - 230;
+        // this.tableHeight1 =
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.smdPro {
+  padding: 8px;
+  .table_header {
+    padding-bottom: 8px;
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    align-items: center;
+    .input_box {
+      width: 400px;
+    }
+  }
+}
+::v-deep .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+}
+::v-deep .el-dialog .el-dialog__body {
+  flex: 1;
+  overflow: auto;
+}
+</style>

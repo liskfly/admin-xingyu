@@ -95,3 +95,19 @@ export function UPdateICTOverStation(data) {
     data
   });
 }
+
+export function addEquipmentMaintenance(data) {
+  return request({
+    url: "/EquipmentMaintenance/addEquipmentMaintenance",
+    method: "post",
+    data
+  });
+}
+
+export function QueryWarehouseInspectionData(data) {
+  return request({
+    url: "/EquipmentMaintenance/QueryWarehouseInspectionData",
+    method: "post",
+    data
+  });
+}

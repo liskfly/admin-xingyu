@@ -4,7 +4,7 @@
       ref="state"
       id="charAgv"
       style="width: 100%; height: 100%"
-      class="state"
+      class="state"                 
     ></div>
   </div>
 </template>
