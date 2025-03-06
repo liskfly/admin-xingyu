@@ -216,29 +216,36 @@ export default {
     },
     handleEdit() {},
     handleAssigned(index, row) {
+      this.startLoading();
       this.changMeun.xyRole.xyRoleId = row.xyRoleId;
       this.changMeun.xyRole.xyRoleName = row.xyRoleName;
-      // console.log(this.changMeun);
-      // this.startLoading()
+      this.roleAllMeun=[]
       this.xqVisible = true;
+
       getMeunRole(row.xyRoleId).then(({ data }) => {
         data.forEach((item) => {
-          item.childs.forEach((i) => {
+          if(item.childs==null){
+            this.roleData.push(item.xyClientMenuId)
+          }else{
+            item.childs.forEach((i) => {
             this.roleData.push(i.xyClientMenuId);
           });
+          }
+          
         });
-        // console.log(this.treeData);
-
+        
         this.$refs.tree1.setCheckedKeys(this.roleData);
         this.roleAllMeun = [
           ...this.$refs.tree1.getCheckedKeys(),
           ...this.$refs.tree1.getHalfCheckedKeys(),
         ];
-
-        //  this.endLoading()
+       
+         this.endLoading()
 
         //  console.log(this.roleData);
-      });
+      }).catch(()=>{
+        this.endLoading()
+      })
       // this.getMeun()
     },
     addSubmit() {

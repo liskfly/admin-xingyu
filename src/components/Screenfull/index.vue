@@ -51,7 +51,7 @@ export default {
         case "/kanban/smt_gpm":
           fullDiv = document.getElementById("fullDiv2");
           break;
-          case "/kanban/oee":
+          case "/OEE/oee":
           fullDiv = document.getElementById("fullDiv3");
           break;
           case "/AGV/AGVKanban":
@@ -60,7 +60,7 @@ export default {
       }
       console.log(fullDiv);
 
-      if (fullDiv) {
+      if (fullDiv) { 
         //找到后调用自带的toggle事件进行放大操作
         screenfull.toggle(fullDiv);
         this.isFullscreen = false;
