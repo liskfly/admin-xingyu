@@ -220,12 +220,16 @@ export default {
       this.changMeun.xyRole.xyRoleId = row.xyRoleId;
       this.changMeun.xyRole.xyRoleName = row.xyRoleName;
       this.roleAllMeun=[]
+     
       this.xqVisible = true;
-
+     
       getMeunRole(row.xyRoleId).then(({ data }) => {
+        this.startLoading();
         data.forEach((item) => {
           if(item.childs==null){
-            this.roleData.push(item.xyClientMenuId)
+            console.log(item.title);
+            
+            // this.roleData.push(item.xyClientMenuId)
           }else{
             item.childs.forEach((i) => {
             this.roleData.push(i.xyClientMenuId);
@@ -276,6 +280,7 @@ export default {
       });
     },
     xqCancel() {
+      this.$refs.tree1.setCheckedKeys([])
       this.xqVisible = false;
       this.roleData = [];
     },
