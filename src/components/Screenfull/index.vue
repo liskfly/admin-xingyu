@@ -51,7 +51,7 @@ export default {
         case "/kanban/smt_gpm":
           fullDiv = document.getElementById("fullDiv2");
           break;
-          case "/kanban/oee":
+          case "/OEE/oee":
           fullDiv = document.getElementById("fullDiv3");
           break;
           case "/AGV/AGVKanban":
