@@ -55,8 +55,19 @@
             </template>
           </el-table-column>
           <el-table-column prop="horizontal_extension" label="横展">
+            <template slot-scope="scope">
+              <span style="white-space: pre-wrap">{{
+                scope.row.horizontal_extension
+              }}</span>
+            </template>
           </el-table-column>
-          <el-table-column prop="create_time" label="时间"  width="150"> </el-table-column>
+          <el-table-column prop="create_time" label="时间"  width="120">
+            <template slot-scope="scope">
+              <span style="white-space: pre-wrap">{{
+                deleteText(scope.row.create_time)
+              }}</span>
+            </template>
+        </el-table-column>
           <!-- <el-table-column prop="creator" label="录入人"> </el-table-column> -->
           <!-- <el-table-column
             fixed="right"
@@ -130,6 +141,13 @@
             placeholder=""
           ></el-input>
         </el-form-item>
+        <el-form-item label="故障现象" prop="fault_phenomenon">
+          <el-input
+            style="width: 710px"
+            v-model="form.fault_phenomenon"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
         <el-form-item label="分析步骤" prop="analysis_steps">
           <el-input
             style="width: 710px"
@@ -152,20 +170,13 @@
             type="textarea"
             v-model="form.maintenance_result"
             placeholder=""
-            :row="2"
           ></el-input>
         </el-form-item>
         <el-form-item label="横展" prop="horizontal_extension">
           <el-input
-            style="width: 300px"
+            style="width: 710px"
+            type="textarea"
             v-model="form.horizontal_extension"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="故障现象" prop="fault_phenomenon">
-          <el-input
-            style="width: 300px"
-            v-model="form.fault_phenomenon"
             placeholder=""
           ></el-input>
         </el-form-item>
@@ -432,6 +443,13 @@ export default {
     editCancel() {
       this.dialogEdVisible = false;
     },
+    deleteText(str) {
+       let a = str.split(' ')[0];
+       let year = a.split('/')[2];
+       let month = a.split('/')[0];
+       let day = a.split('/')[1];
+       return `${year}/${month}/${day}`
+    },
     handleEdit(index, row) {
       // this.edForm = row;
       this.show = true;
@@ -523,7 +541,7 @@ export default {
       // console.log(this.pageSize);
     },
     handleCurrentChange(value) {
-      this.getlistText.pageIndex = value - 1;
+      this.getlistText.PageIndex = value;
       this.getData();
     },
     hosityhandleCurrentChange(currentPage) {
