@@ -18,6 +18,13 @@ module.exports = {
   assetsDir: 'static',
   // lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
+  css: {
+    loaderOptions: {
+      postcss: {
+        implementation: require('postcss'),
+      },
+    }
+  },
   devServer: {
     port: port,
     open: true,
