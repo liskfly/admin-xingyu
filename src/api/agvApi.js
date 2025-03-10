@@ -101,3 +101,14 @@ export function findTaskData() {
     method: "post"
   });
 }
+
+export function LinetaskCall(line,cr_user) {
+  return request({
+    url: "/AGVController/LinetaskCall",
+    method: "post",
+    params:{
+      line,
+      cr_user
+    }
+  });
+}
