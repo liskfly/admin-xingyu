@@ -25,8 +25,8 @@
           </el-table-column>
           <el-table-column prop="code_identifier" label="成品码规则">
           </el-table-column>
-          <el-table-column prop="creator" label="操作人"> </el-table-column>
-          <el-table-column prop="create_time" label="时间"> </el-table-column>
+          <el-table-column prop="updater" label="操作人" width="150"> </el-table-column>
+          <el-table-column prop="create_time" label="时间" width="170"> </el-table-column>
 
           <el-table-column
             fixed="right"
@@ -205,7 +205,10 @@ export default {
       // this.$refs.form.resetFields();
     },
     handleEdit(row) {
-      console.log(row);
+    //   console.log(row);
+    this.editForm.product_name=""
+    this.editForm.product_code=""
+    this.editForm.code_identifier=""
       this.editForm = { ...row };
       this.editVisible = true;
     },
@@ -273,7 +276,10 @@ export default {
       }
     },
     editCancel() {
-      this.$refs.editFormRef.resetFields();
+        this.editForm.product_name=""
+    this.editForm.product_code=""
+    this.editForm.code_identifier=""
+      this.$refs.editFormRef.resetFields()
       this.editVisible = false;
     },
     editSubmit() {
