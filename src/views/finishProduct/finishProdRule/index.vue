@@ -191,6 +191,7 @@ export default {
           return {
             ...item,
             create_time: dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss"),
+            update_time: dayjs(item.update_time).format("YYYY-MM-DD HH:mm:ss"),
           };
         });
       });
