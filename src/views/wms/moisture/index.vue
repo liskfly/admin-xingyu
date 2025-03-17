@@ -3,13 +3,24 @@
     <!-- <el-row :gutter="20">
       <el-col :span="18" :offset="0"> -->
     <el-table
-      :data="tableData"
+    :data="tableData.slice(
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
+        )
+          "
       :height="tableHeight"
       :header-cell-style="heardStyle"
       border
       style="width: 100%"
       size="medium"
     >
+    <el-table-column label="序号" width="55">
+            <template slot-scope="scope">
+              <span>{{
+                scope.$index + 1 + (currentPage - 1) * pageSize
+              }}</span>
+            </template>
+          </el-table-column>
       <af-table-column prop="CompName" label="料号"> </af-table-column>
       <af-table-column prop="ReelID" label="ID"> </af-table-column>
       <el-table-column prop="TimeLeft" label="剩余时间" align="center">
@@ -216,7 +227,7 @@ export default {
     },
      handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
-      this.currentPage = 1;
+      // this.currentPage = 1;
       this.pageSize = val;
     },
     //当前页改变时触发 跳转其他页
@@ -227,7 +238,7 @@ export default {
      getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
-        this.tableHeight = window.innerHeight - 180;
+        this.tableHeight = window.innerHeight - 150;
         //后面的50：根据需求空出的高度，自行调整
       });
     },

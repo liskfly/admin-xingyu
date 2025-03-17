@@ -230,7 +230,7 @@ export default {
               this.getData();
             } else {
               this.$notify({
-                title: "提示信息",
+                title: "提示信息", 
                 type: "error",
                 message: res.Msg,
               });

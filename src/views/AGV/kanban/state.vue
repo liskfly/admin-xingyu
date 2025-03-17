@@ -1,11 +1,6 @@
 <template>
   <div id="state">
-    <div
-      ref="state"
-      id="charAgv"
-      style="width: 100%; height: 100%"
-      class="state"                 
-    ></div>
+    <div ref="state" id="charAgv" style="width: 100%; height: 100%" class="state"></div>
   </div>
 </template>
 
@@ -20,6 +15,7 @@ export default {
       intervalId: null,
       arrData: [],
       option: {
+       
         title: {
           // text: "横向柱状图示例",
           textStyle: {
@@ -150,7 +146,7 @@ export default {
             if (res.data.Success) {
               let data1 = JSON.parse(res.data.Data);
               console.log(data1);
-              
+
               this.option.series[0].data = [
                 count3,
                 count99,
