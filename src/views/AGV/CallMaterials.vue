@@ -12,12 +12,12 @@
           </el-option>
         </el-select>
         <el-button type="" @click="getData()" icon="el-icon-search"
-          >查询1</el-button
+          >查询</el-button
         >
         <el-button type="primary" @click="lineCall()" icon="el-icon-phone-outline"
           >叫料</el-button
         >
-        <el-button type="danger" @click="" icon="el-icon-delete"
+        <el-button type="danger" @click="linecancel()" icon="el-icon-delete"
           >取消</el-button
         >
       </div>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { findLineMaterial, taskCall, cancelTask, LinetaskCall } from "@/api/agvApi";
+import { findLineMaterial, taskCall, cancelTask, LinetaskCall, LinecancelTask } from "@/api/agvApi";
 import { getToken } from "@/utils/auth";
 export default {
   data() {
@@ -296,7 +296,39 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消叫料",
+          });
+        });
+    },
+    linecancel() {
+      this.$confirm("是否取消叫料?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.startLoading();
+          LinecancelTask(this.line, this.operator).then((res) => {
+            if (res && res.data && res.data.Success) {
+              this.getData();
+              this.$success({
+                type: "error",
+                message: res.data.Message,
+              });
+              this.endLoading();
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.Message,
+              });
+              this.endLoading();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已停止取消叫料",
           });
         });
     },

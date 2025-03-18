@@ -6,8 +6,8 @@
           <el-option v-for="item in lineList" :key="item" :label="item" :value="item">
           </el-option>
         </el-select>
-        <el-button type="" @click="getData" icon="el-icon-search">查询</el-button>
-        <el-button type="primary" @click="" icon="el-icon-refresh">空车回收</el-button>
+        <el-button type="" @click="getData()" icon="el-icon-search">查询</el-button>
+        <el-button type="primary" @click="lineCall()" icon="el-icon-refresh">空车回收</el-button>
         <el-button type="danger" @click="" icon="el-icon-delete">取消</el-button>
       </div>
       <div class="table_container">
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { findLineMaterialk, recycleEmptyVehicles, cancelTask1 } from "@/api/agvApi";
+import { findLineMaterialk, recycleEmptyVehicles, cancelTask1, LinerecycleEmptyVehicles } from "@/api/agvApi";
 import { getToken } from "@/utils/auth";
 export default {
   data() {
@@ -120,6 +120,7 @@ export default {
       titleType: "",
       line: "Line1",
       lineList: ["Line1", "Line2", "Line3", "Line4", "Line5", "Line6", "Line7"],
+      operator: getToken(),
     };
   },
   created() {
@@ -242,6 +243,38 @@ export default {
             title: "提示信息",
             message: "取消操作",
             type: "info",
+          });
+        });
+    },
+    lineCall() {
+      this.$confirm("是否空车回收?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.startLoading();
+          LinerecycleEmptyVehicles(this.line, this.operator).then((res) => {
+            if (res && res.data && res.data.Success) {
+              this.getData();
+              this.$success({
+                type: "error",
+                message: res.data.Message,
+              });
+              this.endLoading();
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.Message,
+              });
+              this.endLoading();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已停止空车回收",
           });
         });
     },
