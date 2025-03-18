@@ -28,14 +28,15 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="handleEdit(scope.row)"
-              >详情</el-button
+            <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"
+              ></el-button
             >
             <el-button
               type="danger"
               size="mini"
+              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
-              >删除</el-button
+              ></el-button
             >
           </template>
         </el-table-column>
@@ -127,6 +128,15 @@
                   />
                 </template>
               </el-table-column>
+              <el-table-column label="模组序号">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model="scope.row.moduleNum"
+                    placeholder="请输入内容"
+                    size="mini"
+                  />
+                </template>
+              </el-table-column>
               <el-table-column label="PCB成品编码">
                 <template slot-scope="scope">
                   <el-input
@@ -179,6 +189,7 @@
       :visible.sync="detailVisible"
       width="75%"
       @close="addCancel()"
+      
     >
       <el-form :model="editForm" ref="formRef" label-width="auto" size="mini">
         <el-row :gutter="20">
@@ -227,6 +238,8 @@
               <el-table-column label="PCB物料编码" prop="PCBMaterial">
               </el-table-column>
               <el-table-column label="拼板数量" prop="puzzlesNum">
+              </el-table-column>
+              <el-table-column label="模组序号" prop="moduleNum">
               </el-table-column>
               <el-table-column label="PCB成品编码" prop="PCBFinishCode">
               </el-table-column>
@@ -299,6 +312,7 @@ export default {
             PCBMaterial: "",
             puzzlesNum: "",
             PCBFinishCode: "",
+            moduleNum: "",
             materialName: "",
             materialSpec: "",
           },
@@ -315,13 +329,15 @@ export default {
         {
           PCBMaterial: "1050570595100",
           puzzlesNum: "2",
+          moduleNum: "",
           PCBFinishCode: "4050238313100-2a",
           materialName: "PCB板",
           materialSpec: "E115前照灯2驱动L四层",
-        },
+        }, 
         {
           PCBMaterial: "1050570595200",
           puzzlesNum: "2",
+          moduleNum: "",
           PCBFinishCode: "4050238313200-2a",
           materialName: "PCB板",
           materialSpec: "E115 前照灯2驱动R四层",
