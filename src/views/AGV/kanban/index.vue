@@ -48,7 +48,9 @@
           </div>
         </div>
         <dv-border-Box-9 class="warning">
-          <dv-scroll-board :config="config" style="width: 100%; height: 100%" />
+          <div class="outer_layer">
+            <dv-scroll-board :config="config" style="width: 100%; height: 100%" />
+          </div>
         </dv-border-Box-9>
       </div>
     </div>
@@ -318,8 +320,13 @@ export default {
   .warning {
     width: 1235px;
     height: 200px;
-    padding: 15px;
-    background-color: #00d5ff4d;
+    padding: 5px 5px 5px 9px;
+    .outer_layer {
+      width: 100%;
+      height: 100%;
+      padding: 15px;
+      background-color: #00d5ff4d;
+    }
   }
 
   .detail {
