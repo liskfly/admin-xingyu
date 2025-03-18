@@ -12,7 +12,7 @@
           </el-option>
         </el-select>
         <el-button type="" @click="getData()" icon="el-icon-search"
-          >查询</el-button
+          >查询1</el-button
         >
         <el-button type="primary" @click="lineCall()" icon="el-icon-phone-outline"
           >叫料</el-button
