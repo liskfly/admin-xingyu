@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { find7DaysTaskData } from "@/api/agvApi";
 import * as echarts from "echarts";
 import dayjs from "dayjs";
 export default {
