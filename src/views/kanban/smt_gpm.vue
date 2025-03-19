@@ -24,14 +24,11 @@ export default {
     if (iframe.attachEvent) {
       iframe.attachEvent("onload", () => {
         this.iframeloading = false;
-        // iframe加载完毕以后执行操作
-        // console.log("iframe已加载完毕");
+     
       });
     } else {
       iframe.onload = () => {
         this.iframeloading = false;
-        // iframe加载完毕以后执行操作
-        // console.log("iframe已加载完毕");
       };
     }
   },

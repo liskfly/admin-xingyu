@@ -471,7 +471,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
-  methods: {
+  methods: { 
     openAdd() {
       this.dialogVisible = true;
     },

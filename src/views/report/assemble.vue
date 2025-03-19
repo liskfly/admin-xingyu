@@ -1,8 +1,9 @@
 <template>
-  <div class="smtinstpro">
+  <div class="p-2">
+    <el-card :body-style="{ padding: '8px' }">
     <div>
       <el-form ref="form" class="form" :inline="true" :model="getDataText">
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-select v-model="getDataText.operationType" placeholder="检查类型">
             <el-option
               v-for="item in inquireList"
@@ -13,7 +14,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-show="getDataText.operationType == 'W'">
+        <el-form-item v-show="getDataText.operationType == 'W'" class="mb-2">
           <el-input
             placeholder="请输入单号"
             clearable
@@ -24,7 +25,7 @@
             <!-- @change="getAllData()" -->
           </el-input>
         </el-form-item>
-        <el-form-item v-show="getDataText.operationType != 'W'">
+        <el-form-item v-show="getDataText.operationType != 'W'" class="mb-2">
           <!-- <el-time-picker
             is-range
             v-model="getDataText.date"
@@ -50,12 +51,12 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-button type="primary" @click="getAllData()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <div class="table">
+    <!-- <div class="table"> -->
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -96,7 +97,8 @@
         >
         </el-pagination>
       </div>
-    </div>
+    <!-- </div> -->
+    </el-card>
   </div>
 </template>
 
@@ -154,7 +156,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       // console.log( window.innerHeight);
-      this.tableHeight = window.innerHeight - 260;
+      this.tableHeight = window.innerHeight - 230;
       //后面的50：根据需求空出的高度，自行调整
     });
   },
