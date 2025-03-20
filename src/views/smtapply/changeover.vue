@@ -83,7 +83,7 @@
                 <div class="box-header">
                   <!-- <span>清除</span> -->
                   <div></div>
-                  <div class="title">印刷区</div>
+                  <div class="title1">印刷区</div>
                   <div class="choice" @click="handleCheckAllChange(1)">
                     {{ lineCheck1 ? "取消全选" : "全选" }}
                   </div>
@@ -147,7 +147,7 @@
                 <div class="box-header">
                   <!-- <span>清除</span> -->
                   <div></div>
-                  <div class="title">贴片区</div>
+                  <div class="title1">贴片区</div>
                   <div class="choice" @click="handleCheckAllChange(2)">
                     {{ lineCheck2 ? "取消全选" : "全选" }}
                   </div>
@@ -203,7 +203,7 @@
                 <div class="box-header">
                   <!-- <span>清除</span> -->
                   <div></div>
-                  <div class="title">炉后区</div>
+                  <div class="title1">炉后区</div>
                   <div class="choice" @click="handleCheckAllChange(3)">
                     {{ lineCheck3 ? "取消全选" : "全选" }}
                   </div>
@@ -1082,7 +1082,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 20vh;
+  // height: 20vh;
 
   .change-button {
     padding: 8px 50px;
@@ -1101,6 +1101,7 @@ export default {
   flex-direction: column;
   gap: 5px;
   .box-header {
+    // height:85px ;
     padding-right: 5px;
     display: flex;
     // justify-content: flex-end;
@@ -1110,7 +1111,7 @@ export default {
     // justify-content: end;
     font-size: 2vh;
     cursor: pointer;
-    .title {
+    .title1 {
       font-size: 28px;
       font-weight: 700;
     }
