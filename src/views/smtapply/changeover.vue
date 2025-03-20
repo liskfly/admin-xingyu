@@ -711,7 +711,31 @@ export default {
           changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]] })
             .then((res) => {
               this.endLoading();
-              if (res.data.Status == "NG") {
+              if (res.data.Status == "OK") {
+                console.log(
+                  num === data.mcIDList.length,
+                  this.checkedLine1.length,
+                  this.checkedLine2.length,
+                  this.checkedLine3.length
+                );
+                if (num !== data.mcIDList.length) {
+                  this.changeOver(num + 1);
+                } else if (num === data.mcIDList.length) {
+                  this.questStatus1 =
+                    this.checkedLine1.length === 0 ? "" : "OK";
+                  this.questStatus2 =
+                    this.checkedLine2.length === 0 ? "" : "OK";
+                  this.questStatus3 =
+                    this.checkedLine3.length === 0 ? "" : "OK";
+                  this.checkedLine1 = [];
+                  this.checkedLine2 = [];
+                  this.checkedLine3 = [];
+                  this.lineCheck1 = false;
+                  this.lineCheck2 = false;
+                  this.lineCheck3 = false;
+                  this.getStatus(this.form.lineName);
+                }
+              } else {
                 console.log(lastDigit);
                 if (lastDigit < 4) {
                   this.questStatus1 = "NG";
@@ -739,30 +763,6 @@ export default {
                     });
                   },
                 });
-              } else {
-                console.log(
-                  num === data.mcIDList.length,
-                  this.checkedLine1.length,
-                  this.checkedLine2.length,
-                  this.checkedLine3.length
-                );
-                if (num !== data.mcIDList.length) {
-                  this.changeOver(num + 1);
-                } else if (num === data.mcIDList.length) {
-                  this.questStatus1 =
-                    this.checkedLine1.length === 0 ? "" : "OK";
-                  this.questStatus2 =
-                    this.checkedLine2.length === 0 ? "" : "OK";
-                  this.questStatus3 =
-                    this.checkedLine3.length === 0 ? "" : "OK";
-                  this.checkedLine1 = [];
-                  this.checkedLine2 = [];
-                  this.checkedLine3 = [];
-                  this.lineCheck1 = false;
-                  this.lineCheck2 = false;
-                  this.lineCheck3 = false;
-                  this.getStatus(this.form.lineName);
-                }
               }
             })
             .catch((error) => {
