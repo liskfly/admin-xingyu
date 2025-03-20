@@ -60,7 +60,7 @@
 <script>
 import State from "./state.vue";
 import Number from "./number.vue";
-import { findKanBan } from "@/api/agvApi";
+import { findKanBan, findYcTaskData } from "@/api/agvApi";
 import { loading } from "@jiaminghi/data-view";
 export default {
   // name: "DataView",
