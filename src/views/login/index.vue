@@ -300,7 +300,7 @@ $light_gray: #eee;
   .show-pwd {
     position: absolute;
     right: 10px;
-    top: 7px;
+    top: 15px;
     font-size: 16px;
     color: $dark_gray;
     cursor: pointer;

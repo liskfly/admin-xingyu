@@ -111,7 +111,7 @@
         </div>
       </el-form>
     </div>
-    <div class="table">
+    <!-- <div class="table"> -->
       <div class="btn">
         <el-button type="success" @click="outputFile()" size="small"
           >下载表格</el-button
@@ -167,7 +167,7 @@
         >
         </el-pagination>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 

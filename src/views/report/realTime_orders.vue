@@ -81,7 +81,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="table">
+    <!-- <div class="table"> -->
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -169,7 +169,7 @@
         >
         </el-pagination>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
