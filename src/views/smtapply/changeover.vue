@@ -75,15 +75,15 @@
         </el-card>
       </el-col>
       <el-col :span="16">
-        <div class="box">
-          <div class="box-top">
+        <div class="box1">
+          <div class="box1-top">
             <!-- <el-col :span="12"> -->
-            <div class="box-top-left">
-              <div class="box-content">
-                <div class="box-header">
+            <div class="box1-top-left">
+              <div class="box1-content">
+                <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>
-                  <div class="title1">印刷区</div>
+                  <div class="box1-title">印刷区</div>
                   <div class="choice" @click="handleCheckAllChange(1)">
                     {{ lineCheck1 ? "取消全选" : "全选" }}
                   </div>
@@ -94,7 +94,7 @@
                     @change="handleCheckedChange(checkedLine1, 1)"
                     style="display: flex; align-items: center"
                   >
-                    <div class="box-content-bottom">
+                    <div class="box1-content-bottom">
                       <el-checkbox
                         disabled
                         v-for="(item, index) in lineData1"
@@ -143,11 +143,11 @@
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box-content">
-                <div class="box-header">
+              <div class="box1-content">
+                <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>
-                  <div class="title1">贴片区</div>
+                  <div class="box1-title">贴片区</div>
                   <div class="choice" @click="handleCheckAllChange(2)">
                     {{ lineCheck2 ? "取消全选" : "全选" }}
                   </div>
@@ -158,7 +158,7 @@
                     @change="handleCheckedChange(checkedLine2, 2)"
                     style="display: flex; align-items: center"
                   >
-                    <div class="box-content-bottom">
+                    <div class="box1-content-bottom">
                       <el-checkbox
                         disabled
                         v-for="item in lineData2"
@@ -199,11 +199,11 @@
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box-content">
-                <div class="box-header">
+              <div class="box1-content">
+                <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>
-                  <div class="title1">炉后区</div>
+                  <div class="box1-title">炉后区</div>
                   <div class="choice" @click="handleCheckAllChange(3)">
                     {{ lineCheck3 ? "取消全选" : "全选" }}
                   </div>
@@ -214,7 +214,7 @@
                     @change="handleCheckedChange(checkedLine3, 3)"
                     style="display: flex; align-items: center"
                   >
-                    <div class="box-content-bottom">
+                    <div class="box1-content-bottom">
                       <el-checkbox
                         disabled
                         v-for="item in lineData3"
@@ -286,7 +286,7 @@
               </div>
             </div> -->
           </div>
-          <div class="box-bottom">
+          <div class="box1-bottom">
             <!-- <el-button type="primary" @click="changeOver()" round>换线请求</el-button> -->
             <div class="change-button" @click="changeOver(1)">换线请求</div>
           </div>
@@ -1036,7 +1036,7 @@ export default {
   // padding: 20px 0;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 152px);
+  height: calc(100vh - 143px);
 }
 .qrcode {
   display: flex;
@@ -1044,7 +1044,7 @@ export default {
   align-items: center;
 }
 
-.box {
+.box1 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1053,20 +1053,20 @@ export default {
   padding: 20px 30px;
   background: #f1f4f9;
 }
-.box-top {
+.box1-top {
   flex: 1;
   width: 100%;
-  height: calc(100vh - 110px - 20vh);
+  height: calc(100vh - 101px - 20vh);
   display: flex;
   justify-content: center;
   gap: 30px;
-  .box-top-left {
+  .box1-top-left {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-width: 380px;
-    gap: 5vh;
-    height: calc(100vh - 110px - 20vh);
+    gap: 4vh;
+    height: calc(100vh - 101px - 20vh);
     // flex: 1;
   }
   // .box-top-right {
@@ -1077,7 +1077,7 @@ export default {
   //   height: calc(100vh - 100px -20vh);
   // }
 }
-.box-bottom {
+.box1-bottom {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1096,11 +1096,11 @@ export default {
     cursor: pointer;
   }
 }
-.box-content {
+.box1-content {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  .box-header {
+  .box1-header {
     // height:85px ;
     padding-right: 5px;
     display: flex;
@@ -1111,7 +1111,7 @@ export default {
     // justify-content: end;
     font-size: 2vh;
     cursor: pointer;
-    .title1 {
+    .box1-title {
       font-size: 28px;
       font-weight: 700;
     }
@@ -1121,12 +1121,12 @@ export default {
     }
   }
 }
-.box-content-bottom {
+.box1-content-bottom {
   width: 30rem;
   display: flex;
   flex-direction: column;
   gap: 2vh; //50
-  .box-list {
+  .box1-list {
     width: 100%;
     display: flex;
     justify-content: space-between;
