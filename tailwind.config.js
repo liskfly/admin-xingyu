@@ -4,7 +4,11 @@ module.exports = {
     './src/**/*.jsx'],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        cyan: '#004ea1',
+      }
+    }
   },
   variants: {
     extend: {},
