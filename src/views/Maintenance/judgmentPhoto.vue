@@ -53,12 +53,12 @@
             <el-table
         :data="tableData2"
         border
-        :height="tableHeight2"
+        :height="tableHeight2" 
         style="width: 100%"
 
       >
         <el-table-column type="index" label="序号" width="55" />
-
+ 
         <el-table-column prop="Parameter" label="调整参数"> </el-table-column>
        
         <el-table-column prop="Unit" label="单位"> </el-table-column>
