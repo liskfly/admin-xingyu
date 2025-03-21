@@ -62,6 +62,7 @@ import State from "./state.vue";
 import Number from "./number.vue";
 import { findKanBan, findYcTaskData } from "@/api/agvApi";
 import { loading } from "@jiaminghi/data-view";
+import { get } from "jquery";
 export default {
   // name: "DataView",
   components: {
@@ -197,6 +198,7 @@ export default {
       this.loading = true;
     }, 1000);
     this.startLoop();
+    this.getError();
   },
   beforeDestroy() {
     this.stopLoop();
@@ -212,6 +214,23 @@ export default {
           // console.log(this.machineData);
         }
       });
+    },
+    getError() {
+      findYcTaskData().then((res) => {
+        if (res.data.Success) {
+          // this.machineData = JSON.parse(res.data.Data);
+          console.log(JSON.parse(res.data.Data));
+          let arr = [];
+          JSON.parse(res.data.Data).map((item) => {
+            arr.push([item.desc])
+          })
+      this.config = {
+        data: arr,
+        oddRowBGC: "#00d5ff00",
+        evenRowBGC: "#00d5ff00",
+      };
+        }
+      })
     },
     returnStatus(num) {
       if (num === "0") {
@@ -250,6 +269,7 @@ export default {
     },
     startLoop() {
       this.intervalId = setInterval(() => {
+        this.getError();
         this.getData();
       }, 10000); // Loop every second
     },
