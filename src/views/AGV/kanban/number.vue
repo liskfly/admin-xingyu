@@ -14,6 +14,9 @@ export default {
       state: "",
       intervalId: null,
       option: {
+        animation: true,
+        animationDuration: 1000, // 初始动画持续时间
+        animationDurationUpdate: 1000, // 数据更新时的动画持续时间
         xAxis: {
           type: "category",
           data: ["2/19", "2/20", "2/21", "2/22", "2/23", "2/24", "2/25"],
@@ -43,7 +46,7 @@ export default {
         },
         series: [
           {
-            data: [10, 15, 10, 10, 10, 15, 10],
+            data: [0, 0, 0, 0, 0, 0, 0],
             type: "bar",
             itemStyle: {
               normal: {
@@ -79,10 +82,20 @@ export default {
       //   const num = Math.floor(Math.random() * 6) + 10;
       //   result.push(num);
       // }
-      this.option.series[0].data = [12, 10, 17, 14, 12, 16, 13];
-      
-      this.state.setOption(this.option);
-      this.state.resize();
+      find7DaysTaskData().then((res) => {
+        console.log(JSON.parse(res.data.Data));
+        JSON.parse(res.data.Data).map((item) => {
+          this.option.xAxis.data.map((date, index) => {
+            if (this.convert(item.cr_date) == date) {
+              this.option.series[0].data[index]++;
+            }
+          });
+        });
+
+        this.state.setOption(this.option, false);
+        this.state.resize();
+      });
+      // this.option.series[0].data = [12, 10, 17, 14, 12, 16, 13];
     },
     getWeekDay() {
       const today = dayjs();
@@ -92,7 +105,7 @@ export default {
         dates.push(date);
       }
       this.option.xAxis.data = dates;
-      // console.log(today.subtract(1,'day').format('M/D'));
+      console.log(dates);
 
       this.state.setOption(this.option);
       this.state.resize();
@@ -112,6 +125,18 @@ export default {
           this.getData();
         }
       }, 1000 * 60 * 5); // Loop every second
+    },
+    convert(str) {
+      // 创建 Date 对象
+      const date = new Date(str);
+
+      // 使用 Intl.DateTimeFormat 格式化日期
+      const formattedDate = new Intl.DateTimeFormat("en-US", {
+        month: "numeric", // 月份格式为数字
+        day: "numeric", // 日期格式为数字
+      }).format(date);
+
+      return formattedDate;
     },
   },
 };

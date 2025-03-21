@@ -95,6 +95,7 @@ export function findTaskPage(data) {
   data
   });
 }
+
 export function findTaskData() {
   return request({
     url: "/AGVController/findTaskData",
@@ -110,5 +111,41 @@ export function LinetaskCall(line,cr_user) {
       line,
       cr_user
     }
+  });
+}
+
+export function LinecancelTask(line,cr_user) {
+  return request({
+    url: "/AGVController/LinecancelTask",
+    method: "post",
+    params:{
+      line,
+      cr_user
+    }
+  });
+}
+
+export function LinerecycleEmptyVehicles(line,cr_user) {
+  return request({
+    url: "/AGVController/LinerecycleEmptyVehicles",
+    method: "post",
+    params:{
+      line,
+      cr_user
+    }
+  });
+}
+
+export function find7DaysTaskData() {
+  return request({
+    url: "/AGVController/find7DaysTaskData",
+    method: "post"
+  });
+}
+
+export function findYcTaskData() {
+  return request({
+    url: "/AGVController/findYcTaskData",
+    method: "post"
   });
 }
