@@ -41,3 +41,59 @@ export function QuerySDZHHeadData(data) {
       data
     });
   }
+  export function PSNMoveParam_thtPressFit(data) {
+    return request({
+      url: "/DataCollect/PSNMoveParam_thtPressFit",
+      method: "post",
+      data
+    });
+  }
+  export function PSNMoveParam_AOI(data) {
+    return request({
+      url: "/DataCollect/PSNMoveParam_AOI",
+      method: "post",
+      data
+    });
+  }
+  export function PSNMoveParam_dePanel(data) {
+    return request({
+      url: "/DataCollect/PSNMoveParam_dePanel",
+      method: "post",
+      data
+    });
+  }
+  export function addPressFitBOM(data) {
+    return request({
+      url: "/pressFitBOM/add",
+      method: "post",
+      data
+    });
+  }
+  export function updatePressFitBOM(data) {
+    return request({
+      url: "/pressFitBOM/update",
+      method: "post",
+      data
+    });
+  }
+  export function deletePressFitBOM(data) {
+    return request({
+      url: "/pressFitBOM/delete",
+      method: "post",
+      data
+    });
+  }
+  export function findAllPressFitBOM(data) {
+    return request({
+      url: "/pressFitBOM/findAll",
+      method: "post",
+      data
+    });
+  }
+  export function findAllNamePressFitBOM(data) {
+    return request({
+      url: "/pressFitBOM/findAllName",
+      method: "post",
+      data
+    });
+  }

@@ -8,10 +8,10 @@
             </div>
             <el-table :data="tableData" :height="tableHeight" border stripe :style="{ width: '100%' }">
                 <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-                <el-table-column prop="line" label="线体" width="60"/>
-                <el-table-column prop="judgmemtID" label="照合ID"  />
-                <el-table-column prop="equipmentName" label="设备名称" width="80"/>
-                <el-table-column prop="judgmemtEquipID" label="照合设备ID"  width="100"/>
+                <el-table-column prop="line" label="线体" width="60" />
+                <el-table-column prop="judgmemtID" label="照合ID" />
+                <el-table-column prop="equipmentName" label="设备名称" width="80" />
+                <el-table-column prop="judgmemtEquipID" label="照合设备ID" width="100" />
                 <el-table-column prop="arouseEquipID" label="引起不良设备ID" />
                 <el-table-column prop="equipName" label="设备名称" />
                 <el-table-column prop="state" label="状态" width="100">
@@ -50,20 +50,14 @@
                     layout="total,sizes, prev, pager, next" :total="total">
                 </el-pagination>
             </div>
-            <el-table
-        :data="tableData2"
-        border
-        :height="tableHeight2" 
-        style="width: 100%"
+            <el-table :data="tableData2" border :height="tableHeight2" style="width: 100%">
+                <el-table-column type="index" label="序号" width="55" />
 
-      >
-        <el-table-column type="index" label="序号" width="55" />
- 
-        <el-table-column prop="Parameter" label="调整参数"> </el-table-column>
-       
-        <el-table-column prop="Unit" label="单位"> </el-table-column>
-        <el-table-column prop="Value" label="值"> </el-table-column>
-      </el-table>
+                <el-table-column prop="Parameter" label="调整参数"> </el-table-column>
+
+                <el-table-column prop="Unit" label="单位"> </el-table-column>
+                <el-table-column prop="Value" label="值"> </el-table-column>
+            </el-table>
         </el-card>
         <el-dialog title="参数调整" :visible.sync="dialogVisible" width="80%" @close="">
             <div class="flex flex-col border-solid border-2 border-[#bdbdbd]">
@@ -87,7 +81,8 @@
                         </el-table-column>
                         <el-table-column label="参数">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.parameter" placeholder="请选择" @change="handleChangeParam($event, scope.row.$index)">
+                                <el-select v-model="scope.row.parameter" placeholder="请选择"
+                                    @change="handleChangeParam($event, scope.row.$index)">
                                     <el-option label="上下温区（一温区）（±8）" value="1" />
                                     <el-option label="上下温区（二温区）（±8）" value="2" />
                                     <el-option label="上下温区（三温区）（±8）" value="3" />
@@ -161,7 +156,7 @@ export default {
                 ]
             },
             tableHeight2: 0,
-            tableData2:[
+            tableData2: [
                 {
                     Parameter: "上下温区（一温区）（±8）",
                     Unit: "℃",
@@ -192,7 +187,7 @@ export default {
                     Unit: "℃",
                     Value: "190"
                 },
-              
+
             ]
         };
     },
@@ -219,8 +214,8 @@ export default {
 
             }
         },
-        handleChangeParam($event,index) {
-            console.log($event,index);
+        handleChangeParam($event, index) {
+            console.log($event, index);
 
         },
         addSmallBoard() {
@@ -251,9 +246,9 @@ export default {
         },
         getScreenHeight() {
             this.$nextTick(() => {
-        this.tableHeight = (window.innerHeight - 190 - 40) * 0.6;
-        this.tableHeight2 = (window.innerHeight - 190 - 40) * 0.4;
-      });
+                this.tableHeight = (window.innerHeight - 190 - 40) * 0.6;
+                this.tableHeight2 = (window.innerHeight - 190 - 40) * 0.4;
+            });
         },
     },
 };
