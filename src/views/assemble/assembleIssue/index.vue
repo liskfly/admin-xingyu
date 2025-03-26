@@ -2,22 +2,6 @@
   <div class="inboundRecord">
     <el-card class="box-card" :body-style="{ padding: '8px' }">
     <div class="table_header">
-      <!-- <div class="input_box">
-        <el-input
-          placeholder="工单号，容器ID"
-          clearable
-          v-model="getText.searchText"
-          class="input-with-select"
-          @input="getSearchData"
-          @change="getSearchData"
-        >
-          <el-button
-            size="small"
-            slot="append"
-            icon="el-icon-search"
-          ></el-button>
-        </el-input>
-      </div> -->
     </div>
     <div class="table_container">
       <el-table
