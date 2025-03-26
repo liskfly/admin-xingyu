@@ -3,6 +3,7 @@
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="openAdd">添加</el-button>
+        <div> <el-input v-model="getForm.DataCollectionDefName" placeholder="请输入程序名" style="width: 300px;" @keyup.enter.native="getData"/> <el-button type="primary" @click="getData">查询</el-button></div>
       </div>
       <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         " :style="{ width: '100%' }" border :height="tableHeight" stripe>
@@ -15,7 +16,7 @@
         <el-table-column prop="DataCollectionDefName" label="程序名" />
         <el-table-column prop="PositionType" label="针类型" />
         <el-table-column prop="StandardValue" label="标准值" />
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button icon="el-icon-edit" type="primary" size="mini" @click="handleEdit(scope.row)"></el-button>
             <el-button icon="el-icon-delete" type="danger" size="mini" @click="handleDelete(scope.row)"></el-button>
@@ -96,7 +97,7 @@ import {
   findAllPressFitBOM,
   findAllNamePressFitBOM,
 } from "@/api/sdzApi";
-import { getDate } from "@/utils/getDate";
+
 export default {
   data() {
     return {
@@ -108,8 +109,8 @@ export default {
       getForm: {
         PressFitBOMid: "",
         DataCollectionDefName: "",
-        ColumnPosition: 1,
-        PositionType: 1,
+        ColumnPosition: -1,
+        PositionType: -1,
         StandardValue: "",
       },
       form: {
@@ -152,8 +153,8 @@ export default {
       findAllNamePressFitBOM({
         PressFitBOMid: "",
         DataCollectionDefName: "string",
-        ColumnPosition: 0,
-        PositionType: 0,
+        ColumnPosition: -1,
+        PositionType: -1,
         StandardValue: "",
       }).then((res) => {
         this.dialogVisible = true;
@@ -230,7 +231,7 @@ export default {
           this.$notify({
             title: "提示信息",
             type: "success",
-            message: "添加成功",
+            message: res.Msg,
           });
           this.getData();
           this.$refs.editFormRef.resetFields();
