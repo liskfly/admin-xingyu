@@ -2,7 +2,7 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="mb-2">
-        <el-input v-model="form.PSN" placeholder="请扫入大板SN" style="width: 500px;" @keyup.enter.native="getData" /> <el-button
+        <el-input v-model="form.PSN" ref="inputRef" placeholder="请扫入大板SN" style="width: 500px;" @keyup.enter.native="getData" /> <el-button
           type="primary" @click="getData">查询</el-button>
       </div>
       <el-tabs v-model="activeName" type="card" @tab-click="tabClick">
