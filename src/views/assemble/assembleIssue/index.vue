@@ -32,24 +32,24 @@
       >
         <!-- <el-table-column type="selection" width="55"> </el-table-column> -->
 
-        <el-table-column prop="Issue_type" label="单据类型"> </el-table-column>
-        <el-table-column prop="Line" label="生产线"> </el-table-column>
-        <el-table-column prop="wo_group" label="单合并组"> </el-table-column>
-        <el-table-column prop="PD_model" label="产品型号"> </el-table-column>
-        <el-table-column prop="WO" label="工单号"> </el-table-column>
-        <el-table-column prop="Issue_id" label="领料单"> </el-table-column>
-        <el-table-column prop="Chkout_sht_id" label="出库单"> </el-table-column>
-        <el-table-column prop="Stts" label="状态">
+        <af-table-column prop="Issue_type" label="单据类型"> </af-table-column>
+        <af-table-column prop="Line" label="生产线"> </af-table-column>
+        <af-table-column prop="wo_group" label="单合并组"> </af-table-column>
+        <af-table-column prop="PD_model" label="产品型号"> </af-table-column>
+        <af-table-column prop="WO" label="工单号"> </af-table-column>
+        <af-table-column prop="Issue_id" label="领料单"> </af-table-column>
+        <af-table-column prop="Chkout_sht_id" label="出库单"> </af-table-column>
+        <af-table-column prop="Stts" label="状态">
           <template slot-scope="scope">
             <el-tag size="small " :type="statusStyle(scope.row.Stts)">{{
               statusText(scope.row.Stts)
             }}</el-tag>
           </template>
-        </el-table-column>
-        <el-table-column prop="Plan_qty" label="计划产数量"> </el-table-column>
-        <el-table-column prop="Dsc" label="描述"> </el-table-column>
-        <el-table-column prop="blreason" label="补料原因"> </el-table-column>
-        <el-table-column prop="auditStatus" label="审核状态">
+        </af-table-column>
+        <af-table-column prop="Plan_qty" label="计划产数量"> </af-table-column>
+        <af-table-column prop="Dsc" label="描述"> </af-table-column>
+        <af-table-column prop="blreason" label="补料原因"> </af-table-column>
+        <af-table-column prop="auditStatus" label="审核状态">
           <template slot-scope="scope">
             <el-tag
               v-if="
@@ -62,9 +62,9 @@
               >{{ scope.row.auditStatus == 0 ? "待审核" : "已审核" }}</el-tag
             >
           </template>
-        </el-table-column>
-        <el-table-column prop="auditUser" label="审核人"> </el-table-column>
-        <el-table-column prop="auditDate" label="审核日期"> </el-table-column>
+        </af-table-column>
+        <af-table-column prop="auditUser" label="审核人"> </af-table-column>
+        <af-table-column prop="auditDate" label="审核日期"> </af-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="180">
           <template slot-scope="scope">
             <el-button
@@ -113,14 +113,14 @@
         <el-table-column prop="erp_wo" label="工单"> </el-table-column>
         <el-table-column prop="issue_id" label="领料单"> </el-table-column>
         <el-table-column prop="pn" label="料号"> </el-table-column>
-        <el-table-column prop="Dsc" label="名称">
+        <el-table-column prop="dsc" label="名称">
           <template slot-scope="scope">
-            <span>{{ scope.row.pninfo.name }}</span>
+            <span>{{ scope.row.pninfo?.name }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="seq" label="规格">
           <template slot-scope="scope">
-            <span>{{ scope.row.pninfo.pn_spec }}</span>
+            <span>{{ scope.row.pninfo?.pn_spec }}</span>
             <!-- <el-tag size="small " :type="statusStyle(scope.row.Stts)">{{
               statusText(scope.row.Stts)
             }}</el-tag> -->
@@ -314,6 +314,7 @@ export default {
         Wo: row.WO, //预留工单号
       };
       getAssembleOrderDetail(text).then((res) => {
+        this.tableData1 = [];
         if (res.data.Code == 200) {
           let data = res.data.Data;
           //   this.total = data.Total;
@@ -324,7 +325,6 @@ export default {
             confirmButtonText: "确定",
           });
         }
-        // console.log(this.tableData);
       });
     },
   },
