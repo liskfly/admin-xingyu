@@ -3,7 +3,8 @@
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="openAdd">添加</el-button>
-        <div> <el-input v-model="getForm.DataCollectionDefName" placeholder="请输入程序名" style="width: 300px;" @keyup.enter.native="getData"/> <el-button type="primary" @click="getData">查询</el-button></div>
+        <div> <el-input v-model="getForm.DataCollectionDefName" placeholder="请输入程序名" style="width: 300px;"
+            @keyup.enter.native="getData" /> <el-button type="primary" @click="getData">查询</el-button></div>
       </div>
       <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         " :style="{ width: '100%' }" border :height="tableHeight" stripe>
@@ -13,8 +14,15 @@
           </template>
         </el-table-column>
         <el-table-column prop="ColumnPosition" label="插针头" />
-        <el-table-column prop="DataCollectionDefName" label="程序名" />
-        <el-table-column prop="PositionType" label="针类型" />
+        <el-table-column prop="DataCollectionDefName" label="程式名" />
+        <el-table-column prop="PositionType" label="针类型" >
+          <template slot-scope="scope">
+           
+            <el-tag  v-if="scope.row.PositionType==1" type="info" effect="dark">小针</el-tag>
+            <el-tag  v-if="scope.row.PositionType==2" type="warning" effect="dark">大针</el-tag>
+          
+          </template>
+        </el-table-column>
         <el-table-column prop="StandardValue" label="标准值" />
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
@@ -33,10 +41,10 @@
     <el-dialog :title="'添加'" :visible.sync="dialogVisible" width="350px" @close="addCancel()">
       <el-form :model="form" ref="formRef" label-width="auto">
         <el-form-item label="插针头" prop="ColumnPosition">
-          <el-input v-model="form.ColumnPosition" placeholder="请输入插针头" style="width: 240px" />
+          <el-input  v-model.number="form.ColumnPosition"    type="number"  placeholder="请输入插针头" style="width: 240px" />
         </el-form-item>
         <el-form-item label="程序名" prop="DataCollectionDefName">
-          <el-select v-model="form.DataCollectionDefName" placeholder="请选择" style="width: 240px">
+          <el-select v-model="form.DataCollectionDefName" placeholder="请选择" style="width: 240px" filterable>
             <el-option v-for="item in nameList" :key="item.DataCollectionDefName" :label="item.DataCollectionDefName"
               :value="item.DataCollectionDefName">
             </el-option>
@@ -61,10 +69,10 @@
     <el-dialog :title="'修改'" :visible.sync="editVisible" width="350px" @close="editCancel()">
       <el-form :model="editForm" ref="editFormRef" label-width="auto">
         <el-form-item label="插针头" prop="ColumnPosition">
-          <el-input v-model="editForm.ColumnPosition" placeholder="请输入插针头" style="width: 240px" />
+          <el-input    type="number" v-model.number="editForm.ColumnPosition" placeholder="请输入插针头" style="width: 240px" />
         </el-form-item>
         <el-form-item label="程序名" prop="DataCollectionDefName">
-          <el-select v-model="editForm.DataCollectionDefName" placeholder="请选择" style="width: 240px">
+          <el-select v-model="editForm.DataCollectionDefName" placeholder="请选择" style="width: 240px" filterable>
             <el-option v-for="item in nameList" :key="item.DataCollectionDefName" :label="item.DataCollectionDefName"
               :value="item.DataCollectionDefName">
             </el-option>
@@ -139,27 +147,31 @@ export default {
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
     this.getData();
+    this.getNameData()
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
+    getNameData() {
+      findAllNamePressFitBOM({
+        PressFitBOMid: "",
+        DataCollectionDefName: "",
+        ColumnPosition: -1,
+        PositionType: -1,
+        StandardValue: "",
+      }).then((res) => {
+        this.nameList = res.Data;
+      });
+    },
     getData() {
       findAllPressFitBOM(this.getForm).then((res) => {
         this.tableData = res.Data;
       });
     },
     openAdd() {
-      findAllNamePressFitBOM({
-        PressFitBOMid: "",
-        DataCollectionDefName: "string",
-        ColumnPosition: -1,
-        PositionType: -1,
-        StandardValue: "",
-      }).then((res) => {
-        this.dialogVisible = true;
-        this.nameList = res.Data;
-      });
+      this.dialogVisible = true;
+
     },
     addCancel() {
       this.$refs.formRef.resetFields();
@@ -187,9 +199,10 @@ export default {
     },
     handleEdit(row) {
       this.editForm = { ...row }
+
       this.editVisible = true
     },
-    handleDelete(row){
+    handleDelete(row) {
       this.$confirm("确定删除", "确认操作", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -206,7 +219,7 @@ export default {
               this.getData();
             } else {
               this.$notify({
-                title: "提示信息", 
+                title: "提示信息",
                 type: "error",
                 message: res.Msg,
               });
@@ -221,11 +234,11 @@ export default {
           });
         });
     },
-    editCancel(){
+    editCancel() {
       this.$refs.editFormRef.resetFields();
       this.editVisible = false;
     },
-    editSubmit(){
+    editSubmit() {
       updatePressFitBOM(this.editForm).then((res) => {
         if (res.Success) {
           this.$notify({

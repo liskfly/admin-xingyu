@@ -11,6 +11,11 @@
             (currentPage1 - 1) * pageSize1,
             currentPage1 * pageSize1
           )" style="width: 100%" stripe border :height="tableHeight">
+           <el-table-column width="50" label="序号">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + pageSize1 * (currentPage1- 1) + 1 }}</span>
+          </template>
+        </el-table-column>
             <el-table-column prop="ProgramName" label="程序名"></el-table-column>
             <el-table-column prop="Position" label="插针位"></el-table-column>
             <el-table-column prop="Head" label="插针头"></el-table-column>
@@ -30,14 +35,20 @@
             (currentPage2 - 1) * pageSize2,
             currentPage2 * pageSize2
           )" style="width: 100%" stripe border :height="tableHeight">
-            <el-table-column label="序号" width="60" type="index"></el-table-column>
+          <el-table-column width="50" label="序号">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + pageSize2 * (currentPage2 - 1) + 1 }}</span>
+          </template>
+        </el-table-column>
+            
+            <el-table-column prop="ReferName" label="点位名" width="80"></el-table-column>
             <el-table-column prop="Side" label="面" width="60"></el-table-column>
             <el-table-column prop="InspectDefect" label="检查缺陷"></el-table-column>
             <el-table-column prop="ReviewDefect" label="审查缺陷"></el-table-column>
             <el-table-column prop="InspectTime" label="检查时间" width="180"></el-table-column>
             <el-table-column prop="ReviewTime" label="审查时间" width="180"></el-table-column>
-            <af-table-column prop="Reviewer" label="审查员"></af-table-column>
-            <af-table-column prop="RecipeName" label="程序名称"></af-table-column>
+            <af-table-column prop="Reviewer" label="审查操作员"></af-table-column>
+            <af-table-column prop="RecipeName" label="程式名"></af-table-column>
             <el-table-column prop="GoldenImage" label="Golden图"></el-table-column>
             <el-table-column prop="NGImage" label="NG图"></el-table-column>
           </el-table>
@@ -143,10 +154,12 @@ export default {
 
       if (this.activeName == 1) {
         this.tableData1 = []
+        this.currentPage1=1
         PSNMoveParam_thtPressFit(this.form).then(res => {
           this.tableData1 = res.Data
         })
       } else if (this.activeName == 2) {
+        this.currentPage2=1
         this.tableData2 = []
         PSNMoveParam_AOI(this.form).then(res => {
           this.tableData2 = res.Data.map(item => {
@@ -159,6 +172,7 @@ export default {
         })
 
       } else if (this.activeName == 3) {
+        this.currentPage3=1
         this.tableData3 = []
         PSNMoveParam_dePanel(this.form).then(res => {
           const order = [
@@ -194,16 +208,15 @@ export default {
       }
     },
     tabClick(tab) {
-
-
-
       if (tab.name == 1) {
+        this.currentPage1=1
         this.tableData1 = []
         PSNMoveParam_thtPressFit(this.form).then(res => {
 
           this.tableData1 = res.Data
         })
       } else if (tab.name == 2) {
+        this.currentPage2=1
         this.tableData2 = []
         PSNMoveParam_AOI(this.form).then(res => {
 
@@ -217,6 +230,7 @@ export default {
         })
 
       } else if (tab.name == 3) {
+        this.currentPage3=1
         this.tableData3 = []
         PSNMoveParam_dePanel(this.form).then(res => {
           const order = [
