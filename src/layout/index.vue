@@ -2,15 +2,12 @@
   <div :class="classObj" class="app-wrapper">
     <div class="header-title">
       <div class="text">Siemens Opcenter 中心 -- 智能电子</div>
-      <div class="logo"  v-if="device !== 'mobile'"><img src="../assets/logo_xyl2-modified.png" alt="星宇" width="160"/></div>
+      <div class="logo" v-if="device !== 'mobile'"><img src="../assets/logo_xyl2-modified.png" alt="星宇" width="160" />
+      </div>
     </div>
-    <div
-      v-if="device === 'mobile' && sidebar.opened"
-      class="drawer-bg"
-      @click="handleClickOutside"
-    />
+    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
-
+    <!-- <TabMenu /> -->
     <div class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
@@ -23,7 +20,7 @@
               <span style="text-align: center">消息中心</span>
             </div>
             <div class="list" ref="scrollContainer">
-              <div class="" ref="div1"  v-for="(item, index) in notice" :key="index">
+              <div class="" ref="div1" v-for="(item, index) in notice" :key="index">
                 <p>{{ index + 1 }}.{{ item.text }}</p>
               </div>
             </div>
@@ -35,7 +32,7 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from "./components";
+import { Navbar, Sidebar, AppMain,TabMenu } from "./components";
 import ResizeMixin from "./mixin/ResizeHandler";
 import { mapState } from "vuex";
 
@@ -45,40 +42,41 @@ export default {
     Navbar,
     Sidebar,
     AppMain,
+    TabMenu
   },
   mixins: [ResizeMixin],
   data() {
     return {
       timer: "",
-      notice: [
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-        {
-          text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-        },
-      ],
+      // notice: [
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      //   {
+      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
+      //   },
+      // ],
     };
   },
   computed: {
@@ -101,16 +99,16 @@ export default {
       };
     },
   },
-  watch:{
-    showNotice(n){
-      if(n){
-        setTimeout(()=>{
-           this.start()
-        },500)
-       
-      }else{
-         clearTimeout(this.timer);
-        this.timer=null
+  watch: {
+    showNotice(n) {
+      if (n) {
+        setTimeout(() => {
+          this.start()
+        }, 500)
+
+      } else {
+        clearTimeout(this.timer);
+        this.timer = null
       }
     }
   },
@@ -128,11 +126,11 @@ export default {
     },
     ListScroll() {
       let scrollDom = this.$refs.scrollContainer;
-      let div1=this.$refs.div1
-      let a=(div1[0].clientHeight+32)*this.notice.length
+      let div1 = this.$refs.div1
+      let a = (div1[0].clientHeight + 32) * this.notice.length
       // console.log(a);
       // 如果列表数量过少不进行滚动
-      if (scrollDom.clientHeight >a+20) {
+      if (scrollDom.clientHeight > a + 20) {
         clearTimeout(this.timer);
         return;
       }
@@ -165,11 +163,13 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
+
   &.mobile.openSidebar {
     position: fixed;
     top: 0;
   }
 }
+
 .drawer-bg {
   background: #000;
   opacity: 0.3;
@@ -206,12 +206,14 @@ export default {
   color: #fff;
   background-color: $menuBg;
 }
+
 .text {
   margin-left: 75px;
   letter-spacing: 2px;
   font-size: 23px;
   transform: skew(-10deg);
 }
+
 .logo {
   margin-left: auto;
   // position: absolute;
@@ -223,23 +225,28 @@ export default {
   // width:auto;
   // background-color: #fff;
 }
+
 .noti {
   flex: 0 0 200px;
   height: calc(100vh - 101px);
   width: 100%;
 }
+
 .left-box {
   flex: 1;
   height: calc(100vh - 101px);
   overflow: auto;
 }
+
 .left-box::-webkit-scrollbar {
   display: none;
 }
+
 .list {
   height: calc(100vh - 207px);
   overflow: auto;
 }
+
 .list::-webkit-scrollbar {
   display: none;
 }
