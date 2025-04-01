@@ -1,25 +1,35 @@
 <template>
-    <div class="w-20 bg-cyan fixed left-0 bottom-0 z-40" name="tabMenu">
-        <el-scrollbar style="height: 100%" v-clickoutside="clickOut">
-            <div class="tab-css w-20">
-                <div class="w-20" v-for="item in tabRouters">
-                    <div class="text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1" style="font-size: 13px"
-                        :class="{ isActive: isActive(item.path) }" @click="tabClick(isOnlyChildren(item))">
-                        <!-- <el-icon :size="24" color="#ffffff">
-            <component :is="isOnlyChildren(item).meta?.icon" />
-          </el-icon> -->
-                        <p class="text-white mt-1 px-1">
-                            <!-- {{ item.meta?.title || "" }} -->
-                            {{ isOnlyChildren(item).meta?.title || "" }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </el-scrollbar>
-        <menuItem class="absolute top-0 z-50 h-full left-20 bg-cyan2" :class="{ 'w-48': showMenu, 'w-0': !showMenu }"
-            style="transition: width 0.5s, left 0.5s" :base-path="'/'" @refresh="clickOut">
-        </menuItem>
-    </div>
+  <div class="w-20 bg-cyan fixed left-0 bottom-0 z-40" name="tabMenu">
+    <el-scrollbar style="height: 100%" v-clickoutside="clickOut">
+      <div class="tab-css w-20">
+        <div class="w-20" v-for="item in tabRouters">
+          <div
+            class="text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1"
+            style="font-size: 13px"
+            :class="{ isActive: isActive(item.path) }"
+            @click="tabClick(isOnlyChildren(item))"
+          >
+            <!-- <el-icon :size="24" color="#ffffff">
+              <component :is="isOnlyChildren(item).meta?.icon" />
+            </el-icon> -->
+            <!-- <i class="el-icon-house" style="font-size: 25px;color:#fff"></i> -->
+            <p class="text-white mt-1 px-1">
+              <!-- {{ item.meta?.title || "" }} -->
+              {{ isOnlyChildren(item).meta?.title || "" }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </el-scrollbar>
+    <menuItem
+      class="absolute top-0 z-50 h-full left-20 bg-cyan2"
+      :class="{ 'w-48': showMenu, 'w-0': !showMenu }"
+      style="transition: width 0.5s, left 0.5s"
+      :base-path="'/'"
+      @refresh="clickOut"
+    >
+    </menuItem>
+  </div>
 </template>
 
 <script>
@@ -30,124 +40,119 @@ import cloneDeep from "lodash/cloneDeep";
 import menuItem from "@/components/menu/index.vue";
 import { mapState, mapMutations } from "vuex";
 export default {
-    directives: { Clickoutside },
-    components: {
-        menuItem
+  directives: { Clickoutside },
+  components: {
+    menuItem,
+  },
+  data() {
+    return {
+      showMenu: false,
+      tabActive: "",
+    };
+  },
+  watch: {
+    routers: {
+      handler(newRouters) {
+        initTabMap(newRouters);
+        filterMenusPath(newRouters, newRouters);
+      },
+      immediate: true,
+      deep: true,
     },
-    data() {
+  },
+  computed: {
+    ...mapState("permission", ["menuTabRouters"]),
+    tabRouters() {
+      return this.$router.options.routes.filter((v) => v.hidden != true);
+    },
+    routers() {
+      return this.$router.options.routes;
+    },
+    getIconName(item) {
+      return this.isOnlyChildren(item).meta?.icon || ''
+    }
+  },
+  methods: {
+    ...mapMutations("permission", ["SET_MENU_TAB_ROUTERS"]),
+    tabClick(item) {
+      // console.log(item);
+
+      const newPath = item.children ? item.path : item.path.split("/")[0];
+      const oldPath = this.tabActive;
+      this.tabActive = newPath;
+
+      if (item.children) {
+        if (newPath === oldPath || !this.showMenu) {
+          this.showMenu = !this.showMenu;
+        }
+        if (this.showMenu) {
+          // console.log(this.showMenu);
+          // console.log(this.tabActive);
+
+          this.SET_MENU_TAB_ROUTERS(
+            cloneDeep(item.children).map((v) => {
+              v.path = pathResolve(this.tabActive, v.path);
+              return v;
+            })
+          );
+          // console.log(this.menuTabRouters);
+        }
+      } else {
+        this.$router.push(item.path);
+
+        this.SET_MENU_TAB_ROUTERS([]);
+        this.showMenu = false;
+      }
+      // console.log(this.showMenu);
+
+      // console.log(this.menuTabRouters);
+    },
+    isOnlyChildren(item) {
+      //   console.log(item);
+
+      if (item.path !== "/dashboard") {
+        // console.log(item.children)
+        return item;
+      } else {
         return {
-            showMenu: false,
-            tabActive: "",
+          ...(item.children && item.children[0]),
+          path: pathResolve(
+            item.path,
+            (item.children && item.children[0])?.path
+          ),
         };
+      }
     },
-    watch: {
-        routers: {
-            handler(newRouters) {
-                initTabMap(newRouters);
-                filterMenusPath(newRouters, newRouters);
-            },
-            immediate: true,
-            deep: true,
-        },
+    isActive(currentPath) {
+      // console.log(currentPath, this.$route.path);
+
+      // const { path } = unref(currentRoute);
+
+      //   console.log(this.$route.path);
+      if (currentPath == "/") {
+        // console.log(currentPath, tabPathMap);
+      } else {
+        if (tabPathMap[currentPath].includes(this.$route.path)) {
+          return true;
+        }
+        return false;
+      }
     },
-    computed: {
-        ...mapState('permission', ['menuTabRouters']),
-        tabRouters() {
-            return this.$router.options.routes.filter((v) => v.hidden != true);
-        },
-        routers() {
-            return this.$router.options.routes;
-        },
+
+    clickOut() {
+      this.showMenu = false;
     },
-    methods: {
-        ...mapMutations("permission", ["SET_MENU_TAB_ROUTERS"]),
-        tabClick(item) {
-            // console.log(item);
-
-            const newPath = item.children ? item.path : item.path.split("/")[0];
-            const oldPath = this.tabActive;
-            this.tabActive = newPath;
-
-            if (item.children) {
-                if (newPath === oldPath || !this.showMenu) {
-                    this.showMenu = !this.showMenu;
-                }
-                if (this.showMenu) {
-                    // console.log(this.showMenu);
-                    // console.log(this.tabActive);
-
-                    this.SET_MENU_TAB_ROUTERS(
-                        cloneDeep(item.children).map((v) => {
-                            v.path = pathResolve(this.tabActive, v.path);
-                            return v;
-                        })
-                    );
-                    // console.log(this.menuTabRouters);
-
-                }
-            } else {
-                this.$router.push(item.path);
-
-                this.SET_MENU_TAB_ROUTERS([]);
-                this.showMenu = false;
-            }
-            // console.log(this.showMenu);
-
-            // console.log(this.menuTabRouters);
-        },
-        isOnlyChildren(item) {
-            //   console.log(item);
-
-            if (item.path !== "/dashboard") {
-                // console.log(item.children)
-                return item;
-            } else {
-                return {
-                    ...(item.children && item.children[0]),
-                    path: pathResolve(
-                        item.path,
-                        (item.children && item.children[0])?.path
-                    ),
-                };
-            }
-        },
-        isActive(currentPath) {
-            // console.log(currentPath, this.$route.path);
-
-            // const { path } = unref(currentRoute);
-
-            //   console.log(this.$route.path);
-            if (currentPath == '/') {
-
-                // console.log(currentPath, tabPathMap);
-            } else {
-                if (tabPathMap[currentPath].includes(this.$route.path)) {
-                    return true;
-                }
-                return false;
-            }
-
-
-
-
-        },
-
-        clickOut() {
-            // console.log(111);
-
-            this.showMenu = false;
-        },
-    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .tab-css {
-    height: calc(100vh - 51px);
+  height: calc(100vh - 51px);
 }
 
 .isActive {
-    // color: #004493;
-    background: #013d83;
+  // color: #004493;
+  background: #013d83;
 }
 </style>

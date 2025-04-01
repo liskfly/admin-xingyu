@@ -24,6 +24,7 @@
               :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
             ></el-avatar>
             <span
+            class="mr-2"
               style="padding-left: 5px; font-weight: bold; font-size: 1.1rem"
               >{{ logName }}</span
             >

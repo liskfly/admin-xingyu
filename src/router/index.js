@@ -35,14 +35,14 @@ export const constantRoutes = [
     redirect: '/dashboard/index',
     name: 'Dashboard',
     hidden: true,
-    meta: { title: '首页', icon: 'House' },
+    meta: { title: '首页', icon: 'el-icon-folder-add' },
     children: [
       {
         path: 'index',
         component: () => import('@/views/dashboard/index.vue'),
         name: 'Index',
         hidden: true,
-        meta: { title: '首页', icon: 'House', affix: true }
+        meta: { title: '首页', icon: 'el-icon-folder-add', affix: true }
       }
     ]
   }

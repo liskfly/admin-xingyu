@@ -47,6 +47,7 @@ router.beforeEach(async (to, from, next) => {
           );
           // console.log(systemRouter[0].childMenu);
 
+
           if (systemRouter.length == 0) {
             await store.dispatch('permission/generateRoutes', 'static')
           } else {

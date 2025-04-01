@@ -1,12 +1,6 @@
-import request from "@/request/permissRequest";
-//登录
-export function empolyeeLogin(data) {
-    return request({
-        url: "/employee/login",
-        method: "post",
-        data,
-    });
-}
+import request from "@/request/request";
+
+
 //获取用户信息
 export function getEmpoyeeInfo(data) {
     return request({
@@ -24,12 +18,12 @@ export function getInfo() {
     });
 }
 
-export function getMenu() {
-    return request({
-        url: "/employee/findMenuBytoken",
-        method: "post",
-    });
-}
+// export function getMenu() {
+//     return request1({
+//         url: "/employee/findMenuBytoken",
+//         method: "post",
+//     });
+// }
 
 export function getMenuOPUI() {
     return request({
@@ -173,38 +167,13 @@ export function deletefirstRole(data) {
 
 export function deleteEmployee(data) {
     return request({
-        url: "/employeerole/delete",
+        url: "/employee/DeleteEmployee",
         method: "post",
         params: {
-            empid: data,
+            employeeName: data,
         }
     });
 }
-
-//用户注册
-export function addEmployee(data) {
-    return request({
-        url: "/employee/add",
-        method: "post",
-        data,
-    });
-}
-export function updatePassword(data) {
-    return request({
-        url: "/employee/UpdateEmpPwd",
-        method: "post",
-        params: data
-    });
-}
-//重置密码
-export function ResetPwd(data) {
-    return request({
-        url: "/employee/ResetPwd",
-        method: "post",
-        params: data
-    });
-}
-
 
 export function getOrganization(){
     return request({
@@ -213,14 +182,14 @@ export function getOrganization(){
     });
 }
 
-//获取版本信息
-export function GetVersion(){
+//重置密码
+export function ResetPwd(data) {
     return request({
-        url: "/system/GetVersion",
+        url: "/employee/UpdateEmpPwd",
         method: "post",
+        params: data
     });
 }
-
 
 //重置密码
 export function AddEmployee(data) {

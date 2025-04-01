@@ -1,408 +1,546 @@
 <template>
-  <div class="meun">
-    <el-card class="box-card" :body-style="{ padding: '8px' }">
-      <div class="table_header">
-        <el-button type="primary" @click="dialogVisible = true">新增</el-button>
-      </div>
-      <div class="table_container">
-        <el-table
-          :data="
-            tableData.slice(
-              (currentPage - 1) * pageSize,
-              currentPage * pageSize
-            )
-          "
-          :height="tableHeight"
-          row-key="xyClientMenuId"
-          border
-          style="width: 100%"
-          :tree-props="{ children: 'childs' }"
-        >
+    <div class="p-2">
+      <el-card shadow="always" :body-style="{ padding: '8px' }">
+        <div class="mb-2">
+          <el-button type="primary" @click="openAdd" size="small">添加</el-button>
+        </div>
+        <div class="w-full">
+          <el-table
+            size="small"
+            :data="tableData"
+            stripe
+            border
+            fit
+            :height="tableHeight"
+            row-key="ID"
+            :tree-props="{ children: 'childMenu' }"
           >
-          <el-table-column type="index" label="序号" width="50">
-          </el-table-column>
-          <el-table-column prop="title" label="菜单名称"> </el-table-column>
-          <el-table-column prop="icon" label="图标"> </el-table-column>
-          <el-table-column prop="component" label="组件"> </el-table-column>
-          <el-table-column prop="path" label="路径"> </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="200"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
-                >修改</el-button
-              >
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                @click="handleDelete(scope.$index, scope.row)"
-                >删除</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="block" style="margin-top: 8px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
-        >
-        </el-pagination>
-      </div>
-    </el-card>
-    <el-dialog
-      title="添加"
-      @close="addCancel()"
-      :visible.sync="dialogVisible"
-      width="50%"
-    >
-      <el-form ref="form" :model="form" label-width="100px">
-        <el-form-item label="菜单类型" prop="tabPosition">
-          <el-radio-group v-model="tabPosition">
-            <el-radio-button label="目录">目录</el-radio-button>
-            <el-radio-button label="菜单">菜单</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="父级菜单" prop="chooseName">
-          <el-select
-            :disabled="fmeun"
-            ref="selectUpResId"
-            v-model="chooseName"
-            placeholder="请选择"
-            clearable
-          >
-            <el-option
-              :value="chooseName"
-              disabled
-              style="overflow: auto; height: 100%"
-            >
-              <el-tree
-                style="min-height: 150px; max-height: 300px"
-                :props="defaultProps"
-                :data="tableData"
-                node-key="xyClientMenuId"
-                :expand-on-click-node="false"
-                :check-on-click-node="true"
-                @node-click="handleNodeClick"
-              >
-              </el-tree
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="路径">
-          <el-input v-model="form.path" placeholder="路径"></el-input>
-        </el-form-item>
-        <el-form-item label="菜单名称">
-          <el-input v-model="form.title" placeholder="菜单名称"></el-input>
-        </el-form-item>
-        <el-form-item label="组件">
-          <el-input
-            :disabled="fmeun"
-            v-model="form.component"
-            placeholder="组件"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="组件名称">
-          <el-input
-            v-model="form.xyClientMenuName"
-            placeholder="组件名称"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="图标">
-          <el-input v-model="form.icon" placeholder="图标"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addCancel()">取 消</el-button>
-        <el-button type="primary" @click="onSubmit()">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="修改"
-      @close="editCancel()"
-      :visible.sync="editVisible"
-      width="50%"
-    >
-      <el-form :model="editform" ref="form" label-width="80px">
-        <el-form-item label="父级菜单">
-          <el-select
-            ref="selectUpResId"
-            v-model="editPName"
-            placeholder="请选择"
-            clearable
-          >
-            <el-option
-              :value="editPName"
-              disabled
-              style="overflow: auto; height: 100%"
-            >
-              <el-tree
-                style="min-height: 150px; max-height: 300px"
-                :props="defaultProps"
-                :data="tableData"
-                node-key="xyClientMenuId"
-                :expand-on-click-node="false"
-                :check-on-click-node="true"
-                @node-click="handleENodeClick"
-              >
-              </el-tree
-            ></el-option>
-          </el-select>
-          <!-- <el-input v-model="editform.clientMenuFID">
-
-        </el-input> -->
-        </el-form-item>
-        <el-form-item label="路径">
-          <el-input v-model="editform.path" placeholder="路径"></el-input>
-        </el-form-item>
-        <el-form-item label="菜单名称">
-          <el-input v-model="editform.title" placeholder="菜单名称"></el-input>
-        </el-form-item>
-        <el-form-item label="组件">
-          <el-input
-            :disabled="fmeun"
-            v-model="editform.component"
-            placeholder="组件"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="组件名称">
-          <el-input
-            v-model="editform.xyClientMenuName"
-            placeholder="组件名称"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="图标">
-          <el-input v-model="editform.icon" placeholder="图标"></el-input>
-        </el-form-item>
-        <!-- <el-form-item>
-        <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        <el-button>取消</el-button>
-      </el-form-item> -->
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editCancel()">取 消</el-button>
-        <el-button type="primary" @click="editSubmit()">确 定</el-button>
-      </span>
-    </el-dialog>
-  </div>
-</template>
-
-<script>
-import {
-  getFirstMeun,
-  getChildMeun,
-  addMeun,
-  deleteMeun,
-  updateMeun,
-} from "@/api/index";
-
-export default {
-  data() {
-    return {
-      dialogVisible: false,
-      tableData: [],
-      treeData: [],
-      tableHeight: 0,
-      currentPage: 1, // 当前页码
-      pageSize: 10, // 每页的数据条数,
-      form: {
-        clientLevel: "",
-        clientMenuFID: "",
-        title: "",
-        component: "",
-        xyClientMenuName: "",
-        icon: "",
-      },
-      tabPosition: "菜单",
-      chooseName: "",
-      defaultProps: {
-        label: "title",
-        children: "childs",
-        // isLeaf: "hasChildren",
-      },
-      fmeun: false,
-      // choosePath: "",
-      arrID: [],
-      editVisible: false,
-      editform: {},
-      editPName: "",
-    };
-  },
-  beforeMount() {
-    this.getScreenHeight();
-  },
-  mounted() {
-    window.addEventListener("resize", this.getScreenHeight);
-    this.getData();
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.getScreenHeight);
-  },
-  watch: {
-    tabPosition(a) {
-      if (a == "目录") {
-        this.fmeun = true;
-        this.form.clientLevel = "1";
-        this.form.component = "Layout";
-      } else {
-        this.fmeun = false;
-        this.form.component = "";
-      }
+            <el-table-column prop="title" label="菜单名称"></el-table-column>
+            <el-table-column prop="icon" label="图标" align="center" width="60">
+              <template slot-scope="scope">
+                <i :class="'el-icon-' + scope.row.icon" style="font-size: 20px" v-if="scope.row.icon"></i>
+              </template>
+            </el-table-column>
+            <el-table-column prop="path" label="PATH路径"></el-table-column>
+            <el-table-column prop="MenuName" label="组件名称"></el-table-column>
+            <el-table-column prop="component" label="组件"></el-table-column>
+            
+            <el-table-column prop="sortId" label="排序" width="60" align="center"></el-table-column>
+            
+            <el-table-column fixed="right" label="操作" width="180" align="center">
+              <template slot-scope="scope">
+                <el-tooltip content="复制" placement="top" v-if="
+                  scope.row.MenuName !== 'Portal' &&
+                  scope.row.MenuName !== 'PDA' &&
+                  scope.row.MenuName !== 'OPUI'
+                ">
+                  <el-button type="warning" icon="el-icon-document-copy" size="mini"
+                    @click.prevent="handleCopy(scope.row)"></el-button>
+                </el-tooltip>
+                <el-tooltip content="编辑" placement="top" v-if="
+                  scope.row.MenuName !== 'Portal' &&
+                  scope.row.MenuName !== 'PDA' &&
+                  scope.row.MenuName !== 'OPUI'
+                ">
+                  <el-button type="primary" icon="el-icon-edit" size="mini"
+                    @click.prevent="handleEdit(scope.row)"></el-button>
+                </el-tooltip>
+  
+                <el-tooltip content="删除" placement="top" v-if="
+                  scope.row.MenuName !== 'Portal' &&
+                  scope.row.MenuName !== 'PDA' &&
+                  scope.row.MenuName !== 'OPUI'
+                ">
+                  <el-button type="danger" icon="el-icon-delete" size="mini"
+                    @click.prevent="handleDelete(scope.row)"></el-button>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-card>
+      
+      <!-- 新增对话框 -->
+      <el-dialog
+        :append-to-body="true"
+        :close-on-click-modal="false"
+        :visible.sync="addVisible"
+        title="新增"
+        width="40%"
+        @close="addCancel"
+      >
+        <el-form ref="formRef" :model="form" label-position="left" label-width="auto">
+          <el-form-item label="类型" prop="type">
+            <el-radio-group v-model="tabPosition">
+              <el-radio-button label="目录">目录</el-radio-button>
+              <el-radio-button label="菜单">菜单</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="父级菜单" prop="chooseName">
+            <el-select ref="selectUpResId" v-model="chooseName" placeholder="请选择" clearable>
+              <el-option :value="chooseName" disabled style="height: 100%">
+                <el-tree
+                  style="min-height: 150px;"
+                  :props="defaultProps"
+                  :data="tableData"
+                  node-key="ID"
+                  :expand-on-click-node="false"
+                  :check-on-click-node="true"
+                  @node-click="handleNodeClick"
+                ></el-tree>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="类型" prop="MenuType">
+            <el-select v-model="form.MenuType" placeholder="选择类型" style="width: 240px">
+              <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="菜单名称" prop="title">
+            <el-input v-model="form.title" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="图标" prop="icon">
+            <el-input v-model="form.icon" placeholder="请输入图标"></el-input>
+          </el-form-item>
+          <el-form-item label="PATH路径" prop="path">
+            <el-input v-model="form.path" placeholder="请输入PATH路径"></el-input>
+          </el-form-item>
+          <el-form-item label="路由名称" prop="MenuName">
+            <el-input v-model="form.MenuName" placeholder="请输入路由名称name"></el-input>
+          </el-form-item>
+          <el-form-item label="重定向" prop="redirect">
+            <el-input v-model="form.redirect" placeholder="请输入重定向"></el-input>
+          </el-form-item>
+          <el-form-item label="组件" prop="component">
+            <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入物理路径"></el-input>
+          </el-form-item>
+          <el-form-item label="排序" prop="sortId">
+            <el-input-number :min="0" controls-position="right" v-model="form.sortId" placeholder="请输入"></el-input-number>
+          </el-form-item>
+        </el-form>
+  
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addCancel()">取消</el-button>
+          <el-button type="primary" @click="onSubmit">确定</el-button>
+        </div>
+      </el-dialog>
+      
+      <!-- 编辑对话框 -->
+      <el-dialog
+        title="修改"
+        :append-to-body="true"
+        :close-on-click-modal="false"
+        @close="editCancel()"
+        :visible.sync="editVisible"
+        width="50%"
+      >
+        <el-form :model="editForm" label-width="auto">
+          <el-form-item label="父级菜单">
+            <el-select ref="selectUpResId" v-model="editPName" placeholder="请选择" clearable>
+              <el-option :value="editPName" disabled style="height: 100%">
+                <el-tree
+                  style="min-height: 150px; max-height: 300px"
+                  :props="defaultProps"
+                  :data="tableData"
+                  node-key="ID"
+                  :expand-on-click-node="false"
+                  :check-on-click-node="true"
+                  @node-click="handleENodeClick"
+                ></el-tree>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="类型" prop="MenuType">
+            <el-select v-model="editForm.MenuType" placeholder="选择类型" style="width: 240px">
+              <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="菜单名称" prop="title">
+            <el-input v-model="editForm.title" placeholder="菜单名称"></el-input>
+          </el-form-item>
+          <el-form-item label="图标" prop="icon">
+            <el-input v-model="editForm.icon" placeholder="图标"></el-input>
+          </el-form-item>
+          <el-form-item label="PATH路径" prop="path">
+            <el-input v-model="editForm.path" placeholder="路径"></el-input>
+          </el-form-item>
+          <el-form-item label="组件名称" prop="MenuName">
+            <el-input v-model="editForm.MenuName" placeholder="组件名称"></el-input>
+          </el-form-item>
+          <el-form-item label="重定向" prop="redirect">
+            <el-input v-model="editForm.redirect" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="组件" prop="component">
+            <el-input :disabled="fmeun" v-model="editForm.component" placeholder="组件"></el-input>
+          </el-form-item>
+          <el-form-item label="排序" prop="sortId">
+            <el-input-number :min="0" controls-position="right" v-model="editForm.sortId" placeholder="请输入"></el-input-number>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="editSubmit()">确 定</el-button>
+        </div>
+      </el-dialog>
+      
+      <!-- 复制对话框 -->
+      <el-dialog
+        title="复制"
+        :append-to-body="true"
+        :close-on-click-modal="false"
+        @close="copyCancel()"
+        :visible.sync="copyVisible"
+        width="50%"
+      >
+        <el-form :model="copyform" label-width="auto" ref="copyRef">
+          <el-form-item label="父级菜单">
+            <el-select ref="selectUpResId" v-model="editPName" placeholder="请选择" clearable>
+              <el-option :value="editPName" disabled style="height: 100%">
+                <el-tree
+                  style="min-height: 150px; max-height: 300px"
+                  :props="defaultProps"
+                  :data="tableData"
+                  node-key="ID"
+                  :expand-on-click-node="false"
+                  :check-on-click-node="true"
+                  @node-click="handleCNodeClick"
+                ></el-tree>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="类型" prop="MenuType">
+            <el-select v-model="copyform.MenuType" placeholder="选择类型" style="width: 240px">
+              <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="菜单名称" prop="title">
+            <el-input v-model="copyform.title" placeholder="菜单名称"></el-input>
+          </el-form-item>
+          <el-form-item label="图标" prop="icon">
+            <el-input v-model="copyform.icon" placeholder="图标"></el-input>
+          </el-form-item>
+          <el-form-item label="PATH路径" prop="path">
+            <el-input v-model="copyform.path" placeholder="路径"></el-input>
+          </el-form-item>
+          <el-form-item label="组件名称" prop="MenuName">
+            <el-input v-model="copyform.MenuName" placeholder="组件名称"></el-input>
+          </el-form-item>
+          <el-form-item label="重定向" prop="redirect">
+            <el-input v-model="copyform.redirect" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="组件" prop="component">
+            <el-input :disabled="fmeun" v-model="copyform.component" placeholder="组件"></el-input>
+          </el-form-item>
+          <el-form-item label="排序" prop="sortId">
+            <el-input-number :min="0" controls-position="right" v-model="copyform.sortId" placeholder="请输入"></el-input-number>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="copyCancel()">取消</el-button>
+          <el-button type="primary" @click="copySubmit()">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+  </template>
+  
+  <script>
+  import { getFirstMeun, addMeun, deleteMeun, updateMeun } from "@/api/control/index";
+  import { getToken } from "@/utils/auth";
+  
+  export default {
+    data() {
+      return {
+        tableData: [],
+        pageSize: 10,
+        currentPage: 1,
+        tableHeight: 0,
+        addVisible: false,
+        editVisible: false,
+        copyVisible: false,
+        tabPosition: "菜单",
+        chooseName: "",
+        fmeun: false,
+        defaultProps: { label: "title", children: "childMenu" },
+        form: {
+          title: "",
+          icon: "",
+          path: "",
+          MenuName: "",
+          component: "",
+          MenuLevel: 0,
+          MenuType: '',
+          MenuFID: "",
+          redirect: "",
+          sonNum: 0,
+          sortId: 0,
+          IsDelete: "",
+          CreateBy: getToken(),
+          CreateDate: "",
+          UpdateBy: "",
+          UpdateDate: "",
+        },
+        copyform: {
+          title: "",
+          icon: "",
+          path: "",
+          MenuName: "",
+          component: "",
+          MenuLevel: 0,
+          MenuType: '',
+          MenuFID: "",
+          redirect: "",
+          sonNum: 0,
+          sortId: 0,
+          IsDelete: "",
+          CreateBy: getToken(),
+          CreateDate: "",
+          UpdateBy: "",
+          UpdateDate: "",
+        },
+        editForm: {
+          path: "",
+          title: "",
+          component: "",
+          MenuName: "",
+          icon: "",
+          MenuFID: "",
+          MenuLevel: "",
+          MenuType: '',
+          redirect: "",
+          id: "",
+          sortId: 0,
+          IsDelete: "",
+          CreateBy: "",
+          CreateDate: "",
+          UpdateBy: getToken(),
+          UpdateDate: "",
+        },
+        editPName: "",
+        editid: "",
+        arrID: [],
+        list: [
+          { value: 'Portal', label: 'Portal' },
+          { value: 'PDA', label: 'PDA' },
+          { value: 'OPUI', label: 'OPUI' }
+        ]
+      };
     },
-  },
-  methods: {
-    getData() {
-      getFirstMeun().then(({ data }) => {
-        // console.log(data.content);
-        // this.tableData = data.content;
-        this.tableData = data.content;
-        // this.treeData = data.content.map((item) => {
-        //   // console.log(item);
-        //   if (item.sonNum > 0) {
-        //     return {
-        //       ...item,
-        //       hasChildren: false,
-        //     };
-        //   } else {
-        //     return {
-        //       ...item,
-        //       hasChildren: true,
-        //     };
-        //   }
-        // });
-      });
-    },
-
-    addCancel() {
-      this.dialogVisible = false;
-    },
-    onSubmit() {
-      addMeun(this.form).then((res) => {
-        // console.log(res.data);
-        this.getData();
-        this.dialogVisible = false;
-      });
-    },
-    editCancel() {
-      this.editVisible = false;
-    },
-    editSubmit() {
-      updateMeun(this.editform).then((res) => {
-        // console.log(res);
-        this.editVisible = false;
-        this.getData();
-      });
-    },
-    handleEdit(index, row) {
-      this.editform = row;
-      this.editVisible = true;
-      if (row.clientMenuFID != null) {
-        this.editPName = this.findNameById(row.clientMenuFID, this.tableData);
-      }
-    },
-    findNameById(id, data) {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].xyClientMenuId === id) {
-          // console.log(data[i].title);
-          return data[i].title; //名称
-        } else if (data[i].childs) {
-          const result = this.findNameById(id, data[i].childs);
-          if (result) {
-            return result;
-          }
+    watch: {
+      tabPosition(newValue) {
+        if (newValue == "目录") {
+          this.fmeun = false;
+          this.form.MenuLevel = 0;
+        } else {
+          this.fmeun = false;
+          this.form.component = "";
         }
       }
-      return null;
     },
-    handleENodeClick(data) {
-      this.editPName = data.title;
-      this.editform.clientMenuFID = data.xyClientMenuId;
-      this.editform.clientLevel = data.clientLevel + 1;
-      // console.log(this.editform);
-      this.$refs.selectUpResId.blur();
+    created() {
+      this.getScreenHeight();
+      this.getData();
     },
-    handleDelete(index, row) {
-      // console.log(row);
-      this.arrID.unshift(row.xyClientMenuId);
-      this.dataDispose(row);
-      // console.log(this.arrID);
-      this.arrID.forEach((item) => {
-        deleteMeun(item).then(({ data }) => {
-          console.log(data);
-          this.arrID = this.arrID.filter((id) => id != item);
-          // console.log(this.arrID);
-          if (this.arrID.length == 0) {
-            this.getData();
+    mounted() {
+      window.addEventListener("resize", this.getScreenHeight);
+    },
+    beforeDestroy() {
+      window.removeEventListener("resize", this.getScreenHeight);
+    },
+    methods: {
+      getData() {
+        getFirstMeun().then((data) => {
+          this.tableData = data.Data;
+        });
+      },
+      openAdd() {
+        this.addVisible = true;
+      },
+      addCancel() {
+        this.addVisible = false;
+        this.chooseName = '';
+        this.$refs.formRef.resetFields();
+      },
+      handleNodeClick(data) {
+        this.chooseName = data.title;
+        this.form.MenuFID = data.ID;
+        this.form.MenuLevel = data.MenuLevel + 1;
+        this.$refs.selectUpResId.blur();
+      },
+      onSubmit() {
+        addMeun(this.form).then((res) => {
+          this.getData();
+          this.addVisible = false;
+          this.$notify({
+            title: '成功',
+            message: '添加成功',
+            type: 'success'
+          });
+        }).catch(error => {
+          this.$notify.error({
+            title: '错误',
+            message: '添加失败'
+          });
+        });
+      },
+      handleCopy(row) {
+        this.copyform = { ...row };
+        if (row.MenuFID != null) {
+          this.findNameById(row.MenuFID, this.tableData);
+        }
+        this.copyVisible = true;
+      },
+      copyCancel() {
+        this.copyVisible = false;
+        this.$refs.copyRef.resetFields();
+      },
+      copySubmit() {
+        addMeun(this.copyform).then((res) => {
+          this.getData();
+          this.copyVisible = false;
+          this.$notify({
+            title: '成功',
+            message: '复制成功',
+            type: 'success'
+          });
+        }).catch(error => {
+          this.$notify.error({
+            title: '错误',
+            message: '复制失败'
+          });
+        });
+      },
+      handleCNodeClick(data) {
+        this.editPName = data.title;
+        this.copyform.MenuFID = data.id;
+        this.copyform.MenuLevel = data.MenuLevel;
+        this.$refs.selectUpResId.blur();
+      },
+      handleEdit(row) {
+        this.editForm = {
+          ...this.editForm,
+          MenuFID: row.MenuFID,
+          MenuLevel: row.MenuLevel,
+          MenuName: row.MenuName,
+          component: row.component,
+          icon: row.icon,
+          path: row.path,
+          title: row.title,
+          redirect: row.redirect,
+          id: row.ID,
+          sortId: row.sortId,
+          MenuType: row.MenuType
+        };
+        this.editVisible = true;
+        if (row.MenuFID != null) {
+          this.findNameById(row.MenuFID, this.tableData);
+        }
+      },
+      handleENodeClick(data) {
+        this.editPName = data.title;
+        this.editForm.MenuFID = data.id;
+        this.editForm.MenuLevel = data.MenuLevel;
+        this.$refs.selectUpResId.blur();
+      },
+      handleDelete(row) {
+        this.$confirm("确定删除", "确认操作", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            this.arrID.unshift(row.ID);
+            this.arrID.forEach((item) => {
+              deleteMeun(item).then(({ data }) => {
+                this.arrID = this.arrID.filter((id) => id != item);
+                if (this.arrID.length == 0) {
+                  this.getData();
+                  this.$notify({
+                    title: '成功',
+                    message: '删除成功',
+                    type: 'success'
+                  });
+                }
+              }).catch(error => {
+                this.$notify.error({
+                  title: '错误',
+                  message: '删除失败'
+                });
+              });
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消操作",
+            });
+          });
+      },
+      editCancel() {
+        this.editVisible = false;
+      },
+      editSubmit() {
+        updateMeun(this.editForm).then((res) => {
+          this.editVisible = false;
+          this.getData();
+          this.$notify({
+            title: '成功',
+            message: '修改成功',
+            type: 'success'
+          });
+        }).catch(error => {
+          this.$notify.error({
+            title: '错误',
+            message: '修改失败'
+          });
+        });
+      },
+      changeSortd(row) {
+        console.log(row);
+      },
+      findNameById(id, data) {
+        data.forEach((x, i) => {
+          if (data[i].ID == id) {
+            this.editPName = data[i].title;
+            return;
+          } else if (data[i].childMenu) {
+            const resultData = void this.findNameById(id, data[i].childMenu);
+            if (resultData) {
+              this.editPName = resultData;
+              return;
+            }
           }
         });
-      });
-    },
-    dataDispose(row) {
-      if (row.sonNum != 0) {
-        row.childs.forEach((item) => {
-          this.arrID.unshift(item.xyClientMenuId);
-          if (item.sonNum != 0) {
-            return this.dataDispose(item);
-          }
+      },
+      dataDispose(row) {
+        if (row.sonNum != null) {
+          row.childMenu.forEach((item) => {
+            this.arrID.unshift(row.id);
+            if (item.sonNum != 0) {
+              return this.dataDispose(item);
+            }
+          });
+        } else {
+          return;
+        }
+      },
+      handleSizeChange(val) {
+        this.currentPage = 1;
+        this.pageSize = val;
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
+      getScreenHeight() {
+        this.$nextTick(() => {
+          this.tableHeight = window.innerHeight - 180;
         });
-      } else {
-        return;
       }
-    },
-    handleNodeClick(data) {
-      this.chooseName = data.title;
-      this.form.clientMenuFID = data.xyClientMenuId;
-      this.form.clientLevel = data.clientLevel + 1;
-      // this.choosePath = data.path;
-      this.$refs.selectUpResId.blur();
-    },
-    handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
-      this.currentPage = 1;
-      this.pageSize = val;
-    },
-    //当前页改变时触发 跳转其他页
-    handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`);
-      this.currentPage = val;
-    },
-    getScreenHeight() {
-      this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
-        // this.tableHeight1 =
-      });
-    },
-  },
-};
-</script>
-
-<style lang="scss" scoped>
-.meun {
-  padding: 8px;
-  .table_header {
-    padding-bottom: 8px;
-    display: flex;
-    // gap: 30px;
-    // justify-content: flex-end;
-    align-items: center;
-    .input_box {
-      width: 400px;
     }
+  };
+  </script>
+  
+  <style lang="scss" scoped></style>
+  <style scoped>
+  .el-pagination {
+    justify-content: center;
   }
-}
-</style>
+  </style>
