@@ -25,14 +25,14 @@ export function filterMenusPath(routes, allRoutes) {
     //   console.log(allParentPath);
       const fullPath = allParentPath.join('/');
    
-   
-    
       const data = cloneDeep(v);
       
-      data.path = fullPath=="//dashboard"?"/dashboard":fullPath;
-      console.log( data.path);
+      data.path = fullPath
+      // console.log( data.path);
       
       if (v.children && data) {
+        // console.log();
+        
         data.children = filterMenusPath(v.children, allRoutes);
       }
 
@@ -42,9 +42,15 @@ export function filterMenusPath(routes, allRoutes) {
 
       if (allParentPath.length && Object.prototype.hasOwnProperty.call(tabPathMap, allParentPath[0])) {
         // 直接操作已存在的响应式数组
+        // console.log(fullPath);
+        
         tabPathMap[allParentPath[0]].push(fullPath);
+        // console.log(tabPathMap[allParentPath[0]]);
+        
       }
     }
   });
+  // console.log(res);
+  
   return res;
 }

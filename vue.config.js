@@ -91,6 +91,14 @@ module.exports = {
           '^/agv': ''
         }
       },
+      '/controlApi': {
+        target: 'http://172.20.99.47:8055/api',
+  
+        changeOrigin: true,
+        pathRewrite: {
+          '^/controlApi': ''
+        }
+      },
       //成品
       // '/cp': {
       //   // 需要访问的地址

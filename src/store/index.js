@@ -5,6 +5,8 @@ import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
 import addRoute from './modules/addroute'
+import permission from './modules/permission'
+import tagView from './modules/tagView'
 
 Vue.use(Vuex)
 
@@ -26,7 +28,9 @@ const store = new Vuex.Store({
     app,
     settings,
     user,
-    addRoute
+    addRoute,
+    permission,
+    tagView
   },
   getters
 })

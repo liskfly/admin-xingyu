@@ -1049,7 +1049,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  height: calc(100vh - 101px);
+  height: calc(100vh - 91px);
   padding: 20px 30px;
   background: #f1f4f9;
 }

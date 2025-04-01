@@ -1,143 +1,98 @@
-// import { login, getRoutes } from '@/api/login'
-import { login, info, getRoutes } from "@/api/index";
-import { getToken, setToken, removeToken } from "@/utils/auth";
-import { resetRouter } from "@/router";
-import { dataPro } from "@/utils/asyncRouter";
-// import { xmlTagToJson } from "@/utils/xmlTojson";
+// store/modules/user.js
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-const getDefaultState = () => {
-  return {
-    token: getToken(),
-    name: "",
-    avatar: "",
-    nameID: "",
-    addRoutes: [],
-  };
-};
+import { getToken1, removeToken1 } from "@/utils/auth"
+import router from '@/router/index2'
 
-const state = getDefaultState();
-// const getters = {
-//   nameIDData: (state) => state.nameID,
-// };
+Vue.use(Vuex)
+
+const state = {
+  userInfo: null,
+  tokenKey: 'Authorization',
+  token: getToken1() || '',
+  roleRouters: [],
+  rememberMe: true,
+  loginInfo: null
+}
+
 const mutations = {
-  RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState());
+  SET_TOKEN_KEY(state, tokenKey) {
+    state.tokenKey = tokenKey
   },
-  SET_TOKEN: (state, token) => {
-    state.token = token;
+  SET_TOKEN(state, token) {
+    state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name;
+  SET_USER_INFO(state, userInfo) {
+    state.userInfo = userInfo
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar;
+  SET_ROLE_ROUTERS(state, roleRouters) {
+    state.roleRouters = roleRouters
   },
-  SET_ROUTE(state, data) {
-    // console.log(data);
-    state.addRoutes = data;
+  SET_REMEMBER_ME(state, rememberMe) {
+    state.rememberMe = rememberMe
   },
-  SET_NAMEID(state, data) {
-    // console.log(data);
-    state.nameID = data;
+  SET_LOGIN_INFO(state, loginInfo) {
+    state.loginInfo = loginInfo
   },
-  testMutation(state, callback) {
-    callback.msg = { ...state };
-  },
-};
+  RESET(state) {
+    state.token = ''
+    state.userInfo = null
+    state.roleRouters = []
+  }
+}
 
 const actions = {
-  // user login
-  login({ dispatch, commit }, userInfo) {
-    // return new Promise((resolve, reject) => {
-    //   if (userInfo.employeeName === '30110' && userInfo.docManagerUser === '30110') {
-    //     commit('SET_TOKEN', userInfo.employeeName)
-    //     setToken(userInfo.employeeName)
-    //     resolve(true);
-    //   }else {
-    //     resolve(false);
-    //   }
-    // })
-    return new Promise((resolve, reject) => {
-      login(userInfo)
-        .then(({ data }) => {
-          // const  dataTable= xmlTagToJson(data, "Table")
-          if (data.code == 100200 || data.code === 100500) {
-            commit("SET_TOKEN", userInfo.employeeName);
-            setToken(userInfo.employeeName);
-            // let routeArr = dataPro(data.content);
-            // commit("SET_ROUTE", routeArr);
-
-            // info(userInfo.employeeName).then(({ data }) => {
-            //   // console.log(data.EmployeeId);
-            //    sessionStorage.setItem('employeeId',data.EmployeeId )
-            // });
-            // commit('SET_TOKEN', userInfo.username)
-            // setToken(userInfo.username)
-            // dispatch("getinfo", userInfo.employeeName).then(data=>{
-            //     commit('SET_NAMEID', data)
-            // })
-            resolve(data);
-          } else {
-            reject(data.msg);
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  setTokenKey({ commit }, tokenKey) {
+    commit('SET_TOKEN_KEY', tokenKey)
   },
-  getinfo({ commit, state }, text) {
-    return new Promise((resolve, reject) => {
-      info(text).then(({ data }) => {
-        // console.log(state.nameID);
-        resolve(data.EmployeeId);
-      });
-    });
+  setToken({ commit }, token) {
+    commit('SET_TOKEN', token)
   },
-  getRoute({ commit, state }, data1) {
-    return new Promise((resolve, reject) => {
-      getRoutes(data1).then(({data}) => {
-    // console.log(data);
-        // const dataTable = xmlTagToJson(data, "Table");
-        let routeArr = dataPro(data);
-        commit("SET_ROUTE", routeArr);
-
-        // state.addRoutes=dataTable
-        // console.log(state.addRoutes);
-        resolve(data.content);
-      });
-    });
+  setUserInfo({ commit }, userInfo) {
+    commit('SET_USER_INFO', userInfo)
+  },
+  setRoleRouters({ commit }, roleRouters) {
+    commit('SET_ROLE_ROUTERS', roleRouters)
+  },
+  setRememberMe({ commit }, rememberMe) {
+    commit('SET_REMEMBER_ME', rememberMe)
+  },
+  setLoginInfo({ commit }, loginInfo) {
+    commit('SET_LOGIN_INFO', loginInfo)
   },
 
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      // logout(state.token).then(() => {
-      removeToken(); // must remove  token  first
-      commit("SET_ROUTE", []);
-      resetRouter();
-      commit("RESET_STATE");
-      localStorage.removeItem("employeeId");
-      resolve();
-      // }).catch(error => {
-      //   reject(error)
-      // })
-    });
-  },
-
-  // remove token
-  resetToken({ commit }) {
+  logout({ commit }) {
     return new Promise((resolve) => {
-      removeToken(); // must remove  token  first
-      commit("RESET_STATE");
-      resolve();
-    });
-  },
-};
+      commit('RESET')
+      removeToken1()
+      localStorage.removeItem("OPCENTER_ROLE")
+      
+      // 如果需要清理其他模块数据
+      // commit('tagsView/delAllViews', null, { root: true })
+      
+      router.replace('/login').then(() => {
+        location.reload()
+        resolve()
+      })
+    })
+  }
+}
+
+const getters = {
+  getTokenKey: state => state.tokenKey,
+  getToken: state => state.token,
+  getUserInfo: state => state.userInfo,
+  getRoleRouters: state => state.roleRouters,
+  getRememberMe: state => state.rememberMe,
+  getLoginInfo: state => state.loginInfo
+}
 
 export default {
   namespaced: true,
   state,
   mutations,
   actions,
-};
+  getters,
+
+}

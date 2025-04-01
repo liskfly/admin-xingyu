@@ -19,10 +19,10 @@ import '@/styles/index.scss' // global css
 
 import App from './App'
 import store from './store'
-import router from './router'
+import router from './router/index.js'
 
 import '@/icons' // icon
-import '@/permission' // permission control
+import '@/permission.js' // permission control
 
 import AFTableColumn from 'af-table-column'
 Vue.use(AFTableColumn)

@@ -37,7 +37,7 @@
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="loginForm.DocManagerUser"
+          v-model="loginForm.docManagerUser"
           :type="passwordType"
           placeholder="密码"
           name="password"
@@ -64,14 +64,10 @@
 </template>
 
 <script>
+
 import { mapMutations } from "vuex";
-import { getToken,setToken, setToken1, removeToken } from "@/utils/auth";
-import {
-  empolyeeLogin,
-  getEmpoyeeInfo,
-  findEmployeeRoles,
-  GetVersion,
-} from "@/api/control/index";
+import { findEmployeeRoles, info } from "@/api/index";
+import { getToken } from "@/utils/auth";
 export default {
   name: "Login",
   data() {
@@ -82,15 +78,15 @@ export default {
       // },
       loginForm: {
         employeeName: "",
-        DocManagerUser: "",
+        docManagerUser: "",
       },
       loginRules: {
         employeeName: [{ required: true, trigger: "blur" }],
-        DocManagerUser: [{ required: true, trigger: "blur" }],
+        docManagerUser: [{ required: true, trigger: "blur" }],
       },
       loading: false,
       passwordType: "password",
-      redirect: undefined,
+      redirect: undefined
     };
   },
   watch: {
@@ -102,14 +98,11 @@ export default {
     },
   },
   mounted() {
-    let loginName =
-      localStorage.getItem("LONINNAME") != null
-        ? localStorage.getItem("LONINNAME")
-        : "";
-    this.loginForm.employeeName = loginName;
-    if (this.loginForm.employeeName == "") {
+    let loginName=localStorage.getItem("LONINNAME")!=null?localStorage.getItem("LONINNAME"):""
+    this.loginForm.employeeName=loginName
+    if(this.loginForm.employeeName==""){
       this.$refs.username.focus();
-    } else {
+    }else{
       this.$refs.password.focus();
     }
   },
@@ -126,30 +119,82 @@ export default {
       });
     },
     handleLogin() {
-     
-      empolyeeLogin(this.loginForm).then((res) => {
-        // const dataText = data.content;
-         console.log(res.Data.Token);
-        if (res.Success) {
-          // localStorage.setItem("LOGINNAME", form.value.EmployeeName);
-          // localStorage.setItem("OPCENTER_ROLE", form.value.EmployeeName);
-          setToken(this.loginForm.employeeName);
-          setToken1(res.Data.Token);
-          this.$router.push({ path: "/dashboard/index" });
-          // if (appStore.getSystemType && localStorage.getItem("OPUIData")) {
-          //   let routestr = appStore.getOpuiData.path || "/";
-          //   push({ path: routestr });
-          // } else {
-          //   push({ path: redirect.value });
-          // }
+      this.$refs.loginForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          this.$store
+            .dispatch("user/login", this.loginForm)
+            .then((data) => {
+              // if (data) {
+              //   this.$router.push({ path: "/" });
+              // }
+              // this.loading = false;
+              info(this.loginForm.employeeName).then(({ data }) => {
+                // console.log(data.EmployeeId);
+                localStorage.setItem("LONINNAME", this.loginForm.employeeName);
+                findEmployeeRoles(data.EmployeeId).then((res) => {
+                  // console.log(data.content);
+                  let a = [];
+                  res.data.content.forEach((item) => {
+                    a.push(item.xyRoleId);
+                  });
+                 
+                  a = a.join(",");
+                  //  console.log(a);
+                  localStorage.setItem("employeeId", a);
+                  this.$router.push({ path: "/" });
+                  this.loading = false;
+                });
+              });
+
+              // console.log(this.loginForm.employeeName);
+              //  this.$store.dispatch("user/getinfo",this.loginForm.employeeName)
+              // console.log(111111);
+              // if (data.code == 100200) {
+              // let a = this. dataPro(data.content);
+              //  this.$store.dispatch("user/getRoute",a);
+
+              // } else {
+              //   this.$message({
+              //     type: "error",
+              //     message: data.msg,
+              //   });
+              // }
+            })
+            .catch((data) => {
+              // console.log(data);
+              this.$message({
+                type: "error",
+                message: data,
+              });
+              this.loading = false;
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
         }
       });
     },
+    dataPro(data) {
+      let item = [];
+      data.map((list, i) => {
+        let newData = {};
+        newData.path = list.path;
+        newData.title = list.title;
+        newData.name = list.xyClientMenuName;
+        newData.component = list.component;
+        // console.log(list.childs);
+        newData.children = list.childs ? this.dataPro(list.childs) : []; //如果还有子集，就再次调用自己
+        item.push(newData);
+      });
+      return item;
+    }
   },
 };
 </script>
 
 <style lang="scss">
+
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
@@ -167,7 +212,7 @@ $cursor: #fff;
 .login-container {
   // height: 100vh;
   //   overflow: hidden;
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
 
   .el-input {
     display: inline-block;
@@ -264,5 +309,5 @@ $light_gray: #eee;
 }
 </style>
 <style lang="scss" scoped>
-@import "../../styles/login.css";
+@import '../../styles/login.css';
 </style>

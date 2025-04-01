@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:0 8px ;">
+  <div class="p-0 m-0">
     <!-- <svg-icon
       :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
       @click="click"
@@ -103,6 +103,6 @@ export default {
   fill: #5a5e66;
   width: 15px;
   height: 15px;
-  vertical-align: 10px;
+  /* vertical-align: 10px; */
 }
 </style>

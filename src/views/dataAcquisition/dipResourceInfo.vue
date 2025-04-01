@@ -319,7 +319,7 @@ export default {
 <style lang="scss" scoped>
 .traceability {
   width: 100%;
-  height: calc(100vh - 101px);
+  height: calc(100vh - 91px);
 
   .iframe {
     width: 100%;

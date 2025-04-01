@@ -1,34 +1,31 @@
 <template>
-  <div class="navbar flex items-center justify-between h-10">
-    <bread></bread>
+  <div class="navbar flex items-center justify-between">
+    <!-- <hamburger
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    /> -->
+
+    <!-- <breadcrumb class="breadcrumb-container" /> -->
+    <bread ></bread>
+
     <div class="right-menu">
-      <div class="flex gap-2 items-center">
+      <div class="" style="display: flex; gap: 8px">
         <div>
-          <el-tooltip effect="dark" content="全屏/正常" placement="bottom">
-            <screenfull id="screenfull" class="right-menu-item hover-effect" />
-          </el-tooltip>
-        </div>
-        <div>
-          <router-link to="/">
-            <el-tooltip effect="dark" content="首页" placement="bottom">
-              <img src="../../assets/home.svg" alt="" width="25px" />
-            </el-tooltip>
-            <!-- <img src="../../assets/home.svg" alt="" width="25px" /> -->
-            <!-- <i class="el-icon-house" style="font-size: 25px;margin-top:5px ;"></i> -->
-          </router-link>
+          <screenfull id="screenfull" class="right-menu-item hover-effect" />
         </div>
         <el-dropdown class="avatar-container" trigger="click">
-          <div class="flex items-center" style="cursor: pointer">
-            <el-avatar
-              :size="35"
-              :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
-            ></el-avatar>
-            <span
-              style="padding-left: 5px; font-weight: bold; font-size: 1.1rem"
-              >{{ logName }}</span
-            >
+          <div class="avatar-wrapper" style="cursor: pointer">
+            <el-avatar :size="35"
+              :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar>
+            <span style="padding-left: 8px; font-weight: bold; font-size: 1.1rem">{{ logName }}</span>
+            <!-- <img src="../../assets/profile.jpg" class="user-avatar" /> -->
+            <!-- <i class="el-icon-caret-bottom" /> -->
           </div>
-          <el-dropdown-menu slot="dropdown">
+          <el-dropdown-menu slot="dropdown" class="user-dropdown">
+            <!-- <router-link to="/">
+            <el-dropdown-item> 首页</el-dropdown-item>
+          </router-link> -->
             <el-dropdown-item @click.native="openUpEmpPwd">
               <span style="display: block">修改密码</span>
             </el-dropdown-item>
@@ -39,33 +36,13 @@
         </el-dropdown>
       </div>
     </div>
-    <el-dialog
-      title="修改密码"
-      :visible.sync="upPwVisible"
-      width="400px"
-      @close="upDateCancel()"
-    >
-      <el-form
-        :model="upPwForm"
-        ref="upPwFormRef"
-        :rules="rules"
-        label-width="auto"
-      >
+    <el-dialog title="修改密码" :visible.sync="upPwVisible" width="400px" @close="upDateCancel()">
+      <el-form :model="upPwForm" ref="upPwFormRef" :rules="rules" label-width="auto">
         <el-form-item label="新密码" prop="pwd">
-          <el-input
-            v-model="upPwForm.pwd"
-            placeholder="请输入新密码"
-            show-password
-            clearable
-          ></el-input>
+          <el-input v-model="upPwForm.pwd" placeholder="请输入新密码" show-password clearable></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPwd">
-          <el-input
-            v-model="upPwForm.confirmPwd"
-            placeholder="再次输入新密码"
-            show-password
-            clearable
-          ></el-input>
+          <el-input v-model="upPwForm.confirmPwd" placeholder="再次输入新密码" show-password clearable></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -84,7 +61,7 @@ import Screenfull from "@/components/Screenfull";
 import Message from "@/components/Message";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { updatePassword } from "@/api/control";
-import bread from "@/components/Bread";
+import bread from "@/components/Bread"
 
 export default {
   data() {
@@ -112,7 +89,7 @@ export default {
     Hamburger,
     Screenfull,
     Message,
-    bread,
+    bread
   },
   mounted() {
     this.logName = getToken();
@@ -176,7 +153,7 @@ export default {
       });
     },
     logoutsys() {
-      this.$store.dispatch("user/logout");
+      this.$store.dispatch('user/logout')
     },
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
@@ -191,23 +168,103 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
+  height: 45px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-  .right-menu-item {
-    // display: inline-block;
-    position: relative;
-    // // padding-right:15px;
-    // height: 100%;
-    margin-top: 4px;
-    font-size: 25px;
-    color: #5a5e66;
-    // vertical-align: text-bottom;
 
-    &.hover-effect {
-      cursor: pointer;
-      transition: background 0.3s;
+  .hamburger-container {
+    line-height: 46px;
+    height: 100%;
+    float: left;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
-      &:hover {
-        background: rgba(0, 0, 0, 0.182);
+    &:hover {
+      background: rgba(0, 0, 0, 0.025);
+    }
+  }
+
+  .item {
+    margin-top: -9px;
+    margin-right: 30px;
+  }
+
+  .breadcrumb-container {
+    float: left;
+  }
+
+  .right-menu {
+    float: right;
+    height: 100%;
+    line-height: 50px;
+
+    &:focus {
+      outline: none;
+    }
+
+    .right-menu-item {
+      display: inline-block;
+      position: relative;
+      // padding-right:15px;
+      height: 100%;
+      font-size: 25px;
+      color: #5a5e66;
+      vertical-align: text-bottom;
+
+      .badge {
+        position: absolute;
+        background-color: #f3545d;
+        text-align: center;
+        border-radius: 10px;
+        min-width: 17px;
+        height: 17px;
+        font-size: 10px;
+        color: #fff;
+        font-weight: 300;
+        line-height: 17px;
+        top: 3px;
+        right: 3px;
+        letter-spacing: -1px;
+      }
+
+      &.hover-effect {
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.025);
+        }
+      }
+    }
+
+    .avatar-container {
+      margin-right: 8px;
+
+      .avatar-wrapper {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+
+        // margin-top: 5px;
+        // position: relative;
+
+        // .user-avatar {
+        // cursor: pointer;
+        //   width: 40px;
+        //   height: 40px;
+        //   border-radius: 10px;
+        // }
+
+        // .el-icon-caret-bottom {
+        //   cursor: pointer;
+        //   position: absolute;
+        //   right: -20px;
+        //   top: 25px;
+        //   font-size: 12px;
+        // }
       }
     }
   }

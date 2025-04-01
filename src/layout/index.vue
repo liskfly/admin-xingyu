@@ -1,15 +1,11 @@
 <template>
-  <div :class="classObj" class="app-wrapper">
-    <div class="header-title">
-      <div class="text">Siemens Opcenter 中心 -- 智能电子</div>
-      <div class="logo" v-if="device !== 'mobile'"><img src="../assets/logo_xyl2-modified.png" alt="星宇" width="160" />
-      </div>
-    </div>
+  <div >
+    <HeaderTop></HeaderTop>
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <!-- <TabMenu /> -->
+    <!-- <sidebar class="sidebar-container" /> -->
+    <TabMenu />
     <div class="main-container">
-      <div :class="{ 'fixed-header': fixedHeader }">
+      <div :class="{ 'fixed-header': fixedHeader }" >
         <navbar />
       </div>
       <div style="display: flex">
@@ -32,9 +28,10 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain,TabMenu } from "./components";
+import { Navbar, Sidebar, AppMain,TabMenu ,HeaderTop} from "./components";
 import ResizeMixin from "./mixin/ResizeHandler";
 import { mapState } from "vuex";
+
 
 export default {
   name: "Layout",
@@ -42,7 +39,8 @@ export default {
     Navbar,
     Sidebar,
     AppMain,
-    TabMenu
+    TabMenu,
+    HeaderTop
   },
   mixins: [ResizeMixin],
   data() {
@@ -158,17 +156,6 @@ export default {
 @import "~@/styles/mixin.scss";
 @import "~@/styles/variables.scss";
 
-.app-wrapper {
-  @include clearfix;
-  position: relative;
-  height: 100%;
-  width: 100%;
-
-  &.mobile.openSidebar {
-    position: fixed;
-    top: 0;
-  }
-}
 
 .drawer-bg {
   background: #000;
@@ -185,6 +172,7 @@ export default {
   top: 0;
   right: 0;
   z-index: 9;
+
   width: calc(100% - #{$sideBarWidth});
   transition: width 0.28s;
 }
@@ -228,13 +216,13 @@ export default {
 
 .noti {
   flex: 0 0 200px;
-  height: calc(100vh - 101px);
+  height: calc(100vh - 91px);
   width: 100%;
 }
 
 .left-box {
   flex: 1;
-  height: calc(100vh - 101px);
+  height: calc(100vh - 91px);
   overflow: auto;
 }
 

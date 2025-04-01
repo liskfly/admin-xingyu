@@ -115,3 +115,20 @@ export function param2Obj(url) {
   })
   return obj
 }
+export function findIndex(ary, fn) {
+  // 优先使用原生方法
+  if (Array.prototype.findIndex) {
+    return ary.findIndex(fn)
+  }
+  
+  let index = -1
+  ary.some(function(item, i, arr) {
+    // 执行判断函数
+    const ret = fn(item, i, arr)
+    if (ret) {
+      index = i
+      return true // 终止循环
+    }
+  })
+  return index
+}

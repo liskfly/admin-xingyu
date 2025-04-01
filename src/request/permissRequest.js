@@ -1,7 +1,6 @@
 import axios from "axios";
 import { MessageBox, Message, Loading, alert } from "element-ui";
-// import store from '@/store'
-// import { getToken } from '@/utils/auth'
+import { getToken1, removeToken1 } from "@/utils/auth";
 const loading = {
   //loading加载对象
   loadingInstance: null,
@@ -30,12 +29,14 @@ const loading = {
 
 // 基地址
 const service = axios.create({
-  baseURL: "/agv"
+  baseURL: "/controlApi"
 });
 let source = axios.CancelToken.source();
 // console.log(source);
 service.interceptors.request.use(
   (config) => {
+    const token = getToken1() || '' //getToken是在另一个JS文件中封装好的方法
+    token && (config.headers['authorization'] = token)
     config.cancelToken = source.token; // 取消请求
     if (config.cancelToken && config.cancelObj && config.cancelObj.cancel) {
       config.cancelObj.cancel("中断请求");
@@ -87,6 +88,10 @@ service.interceptors.response.use(
       
       // console.log(response.data.ResultCode);
       // if (response.data.Success==true) {
+        if (response.data.code === 401) {
+            removeToken1()
+            this.$router.push('/login');
+          }
         return response.data;
       // } 
 
