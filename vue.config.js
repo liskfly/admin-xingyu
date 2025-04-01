@@ -91,6 +91,15 @@ module.exports = {
           '^/agv': ''
         }
       },
+      '/meun': {
+        // 需要访问的地址
+        target: 'http://172.20.99.47:8055/api',
+        // 开启代理
+        changeOrigin: true,
+        pathRewrite: {
+          '^/meun': ''
+        }
+      },
       //成品
       // '/cp': {
       //   // 需要访问的地址

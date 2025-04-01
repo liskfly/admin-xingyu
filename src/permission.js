@@ -68,6 +68,7 @@ router.beforeEach(async (to, from, next) => {
                 ...accessRoutes,
                 error404,
               ]);
+              console.log(router.options.routes);
             }
           });
 
