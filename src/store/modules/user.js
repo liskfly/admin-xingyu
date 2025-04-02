@@ -1,7 +1,6 @@
 // store/modules/user.js
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 import { getToken1, removeToken1 } from "@/utils/auth"
 import router from '@/router/index'
 
@@ -67,7 +66,7 @@ const actions = {
       commit('RESET')
       removeToken1()
       localStorage.removeItem("OPCENTER_ROLE")
-      
+      // commit("permission/SET_IS_ADD_ROUTERS",false)
       // 如果需要清理其他模块数据
       // commit('tagsView/delAllViews', null, { root: true })
       // router.push('/login')

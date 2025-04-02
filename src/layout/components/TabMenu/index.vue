@@ -86,7 +86,12 @@ export default {
 
       const newPath = item.children ? item.path : item.path.split("/")[0];
       const oldPath = this.tabActive;
-      if (this.tabActive === newPath && this.showMenu) return;
+      // if (this.tabActive === newPath && this.showMenu) return;
+      if (this.tabActive === newPath && this.showMenu){
+        this.showMenu=false
+        return;
+      } 
+      //  console.log(this.showMenu);
       this.tabActive = newPath;
 
       if (item.children) {
@@ -94,7 +99,7 @@ export default {
           this.showMenu = !this.showMenu;
         }
         if (this.showMenu) {
-          // console.log(this.showMenu);
+         
           // console.log(this.tabActive);
 
           this.SET_MENU_TAB_ROUTERS(

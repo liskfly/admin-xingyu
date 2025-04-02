@@ -84,7 +84,7 @@ import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import Message from "@/components/Message";
 import { getToken, setToken, removeToken } from "@/utils/auth";
-import { updatePassword,getEmpoyeeInfo } from "@/api/control";
+import { ResetPwd,getEmpoyeeInfo } from "@/api/control";
 import bread from "@/components/Bread";
 
 export default {
@@ -152,7 +152,7 @@ export default {
           };
           // console.log(data);
 
-          updatePassword(data).then((res) => {
+          ResetPwd(data).then((res) => {
             if (res.Success) {
               this.$notify({
                 title: "修改成功",
@@ -170,8 +170,8 @@ export default {
                 });
             } else {
               this.$notify({
-                title: "修改失败",
-                message: res.msg,
+                title: "提示信息",
+                message: res.Message,
                 type: "error",
               });
             }
