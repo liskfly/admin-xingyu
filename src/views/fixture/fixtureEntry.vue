@@ -3,11 +3,18 @@
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
+          <div>
+            <el-input v-model="searchName" clearable placeholder="请输入">
+              <template slot="append">
+                <el-button type="primary" icon="el-icon-search"></el-button>
+              </template>
+            </el-input>
+          </div>
       </div>
       <div class="table_container">
         <el-table
           :data="
-            tableData.slice(
+            tableData1.slice(
               (currentPage - 1) * pageSize,
               currentPage * pageSize
             )
@@ -63,7 +70,7 @@
           :page-size="pageSize"
           :page-sizes="[5, 10, 20, 50, 100]"
           layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
+          :total="tableData1.length"
         >
         </el-pagination>
       </div>
@@ -102,6 +109,8 @@ export default {
     return {
       dialogVisible: false,
       tableData: [],
+      tableData1:[],
+      searchName: "",
       currentPage: 1, // 当前页码
       pageSize: 10, // 每页的数据条数
       tableHeight: 0,
@@ -136,6 +145,15 @@ export default {
     };
   },
   created() {},
+  watch: {
+      searchName(newdata) {
+        if (newdata == "") {
+          this.tableData1 = this.tableData;
+        } else {
+          this.tableData1 = this.table1(newdata);
+        }
+      },
+  },
   beforeMount() {
     this.getScreenHeight();
   },
@@ -160,9 +178,13 @@ export default {
           this.endLoading();
           if (data.Status == "OK") {
             this.tableData = data.DataList;
+            this.tableData1 = this.tableData;
+          }else {
+            this.tableData = [];
+            this.tableData1 = [];
           }
           if (
-            this.tableData.length % this.pageSize == 0 &&
+            this.tableData1.length % this.pageSize == 0 &&
             this.currentPage > 1
           ) {
             this.currentPage--;
@@ -184,6 +206,14 @@ export default {
       this.dialogVisible = false;
       this.$refs.form.resetFields();
     },
+      table1(newdata) {
+        let searchName = newdata.toLowerCase();
+        return this.tableData.filter((v) => {
+          return Object.keys(v).some((key) => {
+            return String(v[key]).toLowerCase().indexOf(searchName) > -1;
+          });
+        });
+      },
     handleEdit(index, row) {
       this.getData();
       this.form.operationType = "U";
@@ -351,7 +381,7 @@ export default {
     padding-bottom: 8px;
     display: flex;
     // gap: 30px;
-    // justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     .input_box {
       width: 400px;

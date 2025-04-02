@@ -3,6 +3,13 @@
     <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="dialogVisible = true" size="medium">添加</el-button>
+          <div>
+            <el-input v-model="searchName" clearable placeholder="请输入">
+              <template slot="append">
+                <el-button type="primary" icon="el-icon-search"></el-button>
+              </template>
+            </el-input>
+          </div>
         <!-- <div class="input_box">
           <el-input
             placeholder="请输入内容"
@@ -19,7 +26,7 @@
       <div class="table_container">
         <el-table
           :data="
-            tableData.slice(
+            tableData1.slice(
               (currentPage - 1) * pageSize,
               currentPage * pageSize
             )
@@ -96,7 +103,7 @@
             :page-size="pageSize"
             :page-sizes="[5, 10, 20, 50, 100]"
             layout="total,sizes, prev, pager, next, jumper"
-            :total="tableData.length"
+            :total="tableData1.length"
           >
           </el-pagination>
         </div>
@@ -353,6 +360,7 @@ export default {
       dialogEditVisible: false,
       copyDialogVisible: false,
       tableData: [],
+      tableData1:[],
       rowKey: 1,
       currentPage: 1, // 当前页码
       //   total: 0, // 总条数
@@ -428,6 +436,7 @@ export default {
         inspectType: "FI",
         stepList: [],
       },
+      searchName: "",
       rules: {
         product: [
           {
@@ -468,6 +477,13 @@ export default {
     "addForm.step"(value) {
       this.inputStep(value);
     },
+      searchName(newdata) {
+        if (newdata == "") {
+          this.tableData1 = this.tableData;
+        } else {
+          this.tableData1 = this.table1(newdata);
+        }
+      },
   },
   beforeMount() {
     this.getScreenHeight();
@@ -768,6 +784,12 @@ export default {
           });
         });
     },
+      table1(newdata) {
+        let searchName = newdata.toLowerCase();
+        return this.tableData.filter((v) => {
+          return String(v.Product).toLowerCase().indexOf(searchName) > -1;
+        });
+      },
     handleEdit(index, row) {
       this.eidtData(row);
       this.changeForm.product = row.Product;
