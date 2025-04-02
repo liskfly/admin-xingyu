@@ -74,7 +74,7 @@
                 <el-button type="danger" icon="el-icon-delete-solid" size="small" @click="handleDelete(scope.row)"></el-button>
               </el-tooltip>
               <el-tooltip content="历史登录记录" placement="top">
-                <el-button icon="el-icon-time" size="small" @click="handleHistory(scope.row)"></el-button>
+                <el-button icon="el-icon-time" size="small" type="success" @click="handleHistory(scope.row)"></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
