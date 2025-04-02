@@ -55,7 +55,15 @@ const actions = {
       }
 
       const addRoutes = routerMap.concat([
-       
+        {
+          path: '/:path(.*)*',
+          redirect: '/404',
+          name: '404Page',
+          hidden: true,
+          meta: {
+            hidden: true,
+          }
+        }
       ])
       // console.log(routerMap);
       

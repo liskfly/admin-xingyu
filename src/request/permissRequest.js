@@ -29,7 +29,7 @@ const loading = {
 
 // 基地址
 const service = axios.create({
-  baseURL: "/controlApi"
+  baseURL: "/control"
 });
 let source = axios.CancelToken.source();
 // console.log(source);

@@ -1,7 +1,10 @@
 <template>
   <section class="app-main" ref="appMain">
     <transition name="fade-transform" mode="out-in">
-      <router-view :key="key" />
+      <!-- <keep-alive> -->
+        <router-view :key="key" />
+      <!-- </keep-alive> -->
+      <!-- <router-view :key="key" /> -->
     </transition>
   </section>
 </template>

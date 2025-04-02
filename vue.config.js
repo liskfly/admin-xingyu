@@ -26,13 +26,13 @@ module.exports = {
       errors: true,
     },
     proxy: {
-      "/api": {
+      "/all": {
         // 需要访问的地址
         target: "http://172.20.99.21:5072",
         // 开启代理
         changeOrigin: true,
         pathRewrite: {
-          "^/api": "",
+          "^/all": "",
         },
       },
       "/mjs": {
@@ -90,33 +90,14 @@ module.exports = {
           "^/agv": "",
         },
       },
-
-      "/controlApi": {
+      "/control": {
         target: "http://172.20.99.47:8055/api",
         changeOrigin: true,
         pathRewrite: {
-          "^/controlApi": "",
-        },
+          "^/control": "",
+        }
       }
-      // "/meun": {
-      //   // 需要访问的地址
-      //   target: "http://172.20.99.47:8055/api",
-      //   // 开启代理
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     "^/meun": "",
-      //   },
-      // },
-      //成品
-      // '/cp': {
-      //   // 需要访问的地址
-      //   target: 'http://172.20.120.43:8080/xymes/api',
-      //   // 开启代理
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/cp': ''
-      //   }
-      // },
+ 
     },
   },
   configureWebpack: {

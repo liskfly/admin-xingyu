@@ -72,6 +72,7 @@ import {
   findEmployeeRoles,
   GetVersion,
 } from "@/api/control/index";
+import { find7DaysTaskData } from "@/api/agvApi";
 export default {
   name: "Login",
   data() {
@@ -129,13 +130,13 @@ export default {
      
       empolyeeLogin(this.loginForm).then((res) => {
         // const dataText = data.content;
-         console.log(res.Data.Token);
+        //  console.log(res.Data.Token);
         if (res.Success) {
           // localStorage.setItem("LOGINNAME", form.value.EmployeeName);
           // localStorage.setItem("OPCENTER_ROLE", form.value.EmployeeName);
           setToken(this.loginForm.employeeName);
           setToken1(res.Data.Token);
-          this.$router.push({ path: "/dashboard/index" });
+          this.$router.push({ path: "/" });
           // if (appStore.getSystemType && localStorage.getItem("OPUIData")) {
           //   let routestr = appStore.getOpuiData.path || "/";
           //   push({ path: routestr });

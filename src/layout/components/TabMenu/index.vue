@@ -48,13 +48,18 @@ export default {
     return {
       showMenu: false,
       tabActive: "",
+      cachedTabRouters: [] // 缓存路由数据
     };
+  },
+  created() {
+    this.cachedTabRouters = this.$router.options.routes.filter(v => !v.hidden);
   },
   watch: {
     routers: {
       handler(newRouters) {
-        initTabMap(newRouters);
-        filterMenusPath(newRouters, newRouters);
+        const clonedRouters = cloneDeep(newRouters); // 深拷贝避免污染原始数据
+        initTabMap(clonedRouters);
+        filterMenusPath(clonedRouters, clonedRouters);
       },
       immediate: true,
       deep: true,
@@ -69,8 +74,8 @@ export default {
       return this.$router.options.routes;
     },
     getIconName(item) {
-      return this.isOnlyChildren(item).meta?.icon || ''
-    }
+      return this.isOnlyChildren(item).meta?.icon || "";
+    },
   },
   methods: {
     ...mapMutations("permission", ["SET_MENU_TAB_ROUTERS"]),
@@ -79,6 +84,7 @@ export default {
 
       const newPath = item.children ? item.path : item.path.split("/")[0];
       const oldPath = this.tabActive;
+      if (this.tabActive === newPath && this.showMenu) return;
       this.tabActive = newPath;
 
       if (item.children) {
