@@ -38,7 +38,6 @@ router.beforeEach(async (to, from, next) => {
           const routerArr = res.Data || [];
           const systemRouter = routerArr.filter((v) => v.MenuName == "Portal");
           // console.log(systemRouter[0].childMenu);
-
           if (systemRouter.length == 0) {
             await store.dispatch("permission/generateRoutes", "static");
           } else {

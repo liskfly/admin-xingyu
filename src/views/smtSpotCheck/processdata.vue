@@ -4,9 +4,9 @@
       <div class="table_header">
         <el-button type="primary" @click="dialogVisible = true" size="medium">添加</el-button>
           <div>
-            <el-input v-model="searchName" clearable placeholder="请输入">
+            <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()">
               <template slot="append">
-                <el-button type="primary" icon="el-icon-search"></el-button>
+                <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
               </template>
             </el-input>
           </div>
@@ -579,7 +579,7 @@ export default {
           ) {
             this.currentPage--;
           }
-          console.log(this.tableData);
+          this.tableData1 = this.tableData
           this.endLoading();
         })
         .catch((error) => {
@@ -790,6 +790,13 @@ export default {
           return String(v.Product).toLowerCase().indexOf(searchName) > -1;
         });
       },
+    searchData() {
+      if (this.searchName == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(this.searchName);
+      }
+    },
     handleEdit(index, row) {
       this.eidtData(row);
       this.changeForm.product = row.Product;

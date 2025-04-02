@@ -2,14 +2,25 @@
   <div class="type">
     <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="addOpen"  size="medium">添加</el-button>
-          <div>
-            <el-input v-model="searchName" clearable placeholder="请输入">
-              <template slot="append">
-                <el-button type="primary" icon="el-icon-search"></el-button>
-              </template>
-            </el-input>
-          </div>
+        <el-button type="primary" @click="addOpen" size="medium"
+          >添加</el-button
+        >
+        <div>
+          <el-input
+            v-model="searchName"
+            clearable
+            placeholder="请输入"
+            @keyup.enter.native="searchData()"
+          >
+            <template slot="append">
+              <el-button
+                type="primary"
+                icon="el-icon-search"
+                @click="searchData()"
+              ></el-button>
+            </template>
+          </el-input>
+        </div>
       </div>
       <div class="table_container">
         <el-table
@@ -22,7 +33,7 @@
           border
           :height="tableHeight"
           style="width: 100%"
-           size="medium"
+          size="medium"
         >
           <el-table-column prop="PD_model" label="产品编号"> </el-table-column>
           <el-table-column prop="PN_Model" label="类型"> </el-table-column>
@@ -104,7 +115,7 @@ export default {
     return {
       dialogVisible: false,
       tableData: [],
-      tableData1:[],
+      tableData1: [],
       searchName: "",
       currentPage: 1, // 当前页码
       pageSize: 10, // 每页的数据条数
@@ -134,13 +145,13 @@ export default {
     };
   },
   watch: {
-      searchName(newdata) {
-        if (newdata == "") {
-          this.tableData1 = this.tableData;
-        } else {
-          this.tableData1 = this.table1(newdata);
-        }
-      },
+    searchName(newdata) {
+      if (newdata == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(newdata);
+      }
+    },
   },
   created() {
     // this.getData();
@@ -186,14 +197,26 @@ export default {
           this.$message.error("请求数据失败，请刷新");
         });
     },
-      table1(newdata) {
-        let searchName = newdata.toLowerCase();
-        return this.tableData.filter((v) => {
-          return Object.keys(v).some((key) => {
-            return String(v[key]).toLowerCase().indexOf(searchName) > -1;
-          });
-        });
-      },
+    table1(newdata) {
+      let searchName = newdata.toLowerCase();
+      return this.tableData.filter((v) => {
+        if (
+          String(v.PD_model).toLowerCase().indexOf(searchName) > -1 ||
+          String(v.PN_Model).toLowerCase().indexOf(searchName) > -1
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    },
+    searchData() {
+      if (this.searchName == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(this.searchName);
+      }
+    },
     addOpen() {
       this.getData();
       //  this.$refs.form.resetFields()
