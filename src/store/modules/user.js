@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import { getToken1, removeToken1 } from "@/utils/auth"
-import router from '@/router/index2'
+import router from '@/router/index'
 
 Vue.use(Vuex)
 
@@ -70,7 +70,7 @@ const actions = {
       
       // 如果需要清理其他模块数据
       // commit('tagsView/delAllViews', null, { root: true })
-      
+      // router.push('/login')
       router.replace('/login').then(() => {
         location.reload()
         resolve()

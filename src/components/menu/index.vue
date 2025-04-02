@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-scrollbar>
+  <div >
+    <el-scrollbar class="menu-hiegt">
       <el-menu
         :default-active="activeMenu"
         background-color="#003750"
@@ -64,5 +64,8 @@ export default {
 <style lang="scss" scoped>
 .el-menu-item.is-active {
   color: #ffcd50 !important;
+}
+.menu-hiegt{
+  height: calc(100vh - 35px)
 }
 </style>

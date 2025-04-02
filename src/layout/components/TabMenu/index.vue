@@ -20,6 +20,7 @@
           </div>
         </div>
       </div>
+
     </el-scrollbar>
     <menuItem
       class="absolute top-0 z-50 h-full left-20 bg-cyan2"
@@ -29,6 +30,7 @@
       @refresh="clickOut"
     >
     </menuItem>
+   
   </div>
 </template>
 
@@ -154,7 +156,7 @@ export default {
 
 <style lang="scss" scoped>
 .tab-css {
-  height: calc(100vh - 51px);
+  height: calc(100vh - 50.5px)
 }
 
 .isActive {

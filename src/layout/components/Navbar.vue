@@ -84,7 +84,7 @@ import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import Message from "@/components/Message";
 import { getToken, setToken, removeToken } from "@/utils/auth";
-import { updatePassword } from "@/api/control";
+import { updatePassword,getEmpoyeeInfo } from "@/api/control";
 import bread from "@/components/Bread";
 
 export default {
@@ -98,6 +98,7 @@ export default {
         employeeName: "",
         pwd: "",
         confirmPwd: "",
+        FullName:""
       },
       rules: {
         pwd: [{ required: true, message: "请输入新密码", trigger: "blur" }],
@@ -130,7 +131,12 @@ export default {
       }
     },
     openUpEmpPwd() {
-      this.upPwVisible = true;
+     
+      getEmpoyeeInfo( getToken()).then(res=>{
+        //  console.log(res);
+         this.upPwForm.FullName=res.Data[0].FullName
+        this.upPwVisible = true;
+      })
     },
     upDateCancel() {
       this.upPwVisible = false;
@@ -142,11 +148,12 @@ export default {
           let data = {
             employeeName: getToken(),
             pwd: this.upPwForm.pwd,
+            FullName:this.upPwForm.FullName
           };
-          console.log(data);
+          // console.log(data);
 
           updatePassword(data).then((res) => {
-            if (res.code == 100200) {
+            if (res.Success) {
               this.$notify({
                 title: "修改成功",
                 type: "success",
