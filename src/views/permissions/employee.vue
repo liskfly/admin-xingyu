@@ -335,7 +335,6 @@
       table1(newdata) {
         let searchName = newdata.toLowerCase();
         return this.tableData.filter((v) => {
-          console.log(v);
           return Object.keys(v).some((key) => {
             return String(v[key]).toLowerCase().indexOf(searchName) > -1;
           });

@@ -2,60 +2,22 @@
   <div class="issue">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div>
-        <el-form :model="getDataText" ref="form" class="form" :inline="true" size="medium">
-          <!-- <el-form-item>
-            <el-select
-              v-model="getDataText.operationType"
-              placeholder="选择方式"
-            >
-              <el-option
-                v-for="item in typeList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="getDataText.status" placeholder="选择查询状态">
-              <el-option
-                v-for="item in statusList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item v-show="getDataText.operationType == 'T'">
-            <el-input
-              v-model="getDataText.toolsOrder"
-              placeholder="请输入工单"
-            ></el-input>
-          </el-form-item>
-
-          <el-form-item v-show="getDataText.operationType == 'D'">
-            <el-date-picker
-              v-model="value1"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
-          </el-form-item> -->
-
-          <el-form-item class="form_Bottom">
+        <div class="form_Bottom">
             <el-button type="primary" @click="onSubmit">查询全部工单</el-button>
-          </el-form-item>
-        </el-form>
+            <div>
+              <el-input v-model="searchName" clearable placeholder="请输入">
+                <template slot="append">
+                  <el-button type="primary" icon="el-icon-search"></el-button>
+                </template>
+              </el-input>
+            </div>
+        </div>
       </div>
 
       <div class="table_container">
         <el-table
           :data="
-            tableData.slice(
+            tableData1.slice(
               (currentPage - 1) * pageSize,
               currentPage * pageSize
             )
@@ -65,10 +27,8 @@
           style="width: 100%"
           size="medium"
         >
-          <af-table-column prop="WO" label="治具发料单" >
-          </af-table-column>
-          <af-table-column prop="PD_model" label="料号" >
-          </af-table-column>
+          <af-table-column prop="WO" label="治具发料单"> </af-table-column>
+          <af-table-column prop="PD_model" label="料号"> </af-table-column>
 
           <af-table-column prop="Plan_qty" label="数量" align="center">
           </af-table-column>
@@ -80,10 +40,8 @@
               <!-- <span>{{ scope.row.Stts == 4 ? "已发料" : "已上架" }}</span> -->
             </template>
           </el-table-column>
-          <af-table-column prop="Crt_dt" label="创建时间">
-          </af-table-column>
-          <af-table-column prop="Plan_dt" label="计划时间" >
-          </af-table-column>
+          <af-table-column prop="Crt_dt" label="创建时间"> </af-table-column>
+          <af-table-column prop="Plan_dt" label="计划时间"> </af-table-column>
         </el-table>
       </div>
 
@@ -97,7 +55,7 @@
           :page-size="pageSize"
           :page-sizes="[10, 20, 50, 100]"
           layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
+          :total="tableData1.length"
         >
         </el-pagination>
       </div>
@@ -157,6 +115,8 @@ export default {
         },
       ],
       tableData: [],
+      tableData1: [],
+      searchName: "",
       currentPage: 1, // 当前页码
       pageSize: 10, // 每页的数据条数
     };
@@ -165,7 +125,7 @@ export default {
     this.getScreenHeight();
   },
   mounted() {
-    this.onSubmit()
+    this.onSubmit();
     window.addEventListener("resize", this.getScreenHeight);
     // this.getData();
   },
@@ -186,12 +146,20 @@ export default {
         this.getDataText.toolsOrder = "";
       }
     },
+    searchName(newdata) {
+      if (newdata == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(newdata);
+      }
+    },
   },
   methods: {
     onSubmit() {
       orderControl(this.getDataText).then((res) => {
         // console.log(res.data.DataList);
         this.tableData = res.data.DataList;
+        this.tableData1 = this.tableData;
       });
     },
     handleSizeChange(value) {
@@ -204,8 +172,16 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 235;
+        this.tableHeight = window.innerHeight - 225;
         // this.tableHeight1 =
+      });
+    },
+    table1(newdata) {
+      let searchName = newdata.toLowerCase();
+      return this.tableData.filter((v) => {
+        return Object.keys(v).some((key) => {
+          return String(v[key]).toLowerCase().indexOf(searchName) > -1;
+        });
       });
     },
     tagType(data) {
@@ -266,12 +242,13 @@ export default {
 
 <style lang="scss" scoped>
 .issue {
+  width: 100%;
   padding: 8px;
   .table_header {
     // padding-bottom: 20px;
     .form {
-      display: flex;
-      justify-content: space-between;
+      // display: flex;
+      // justify-content: space-between;
     }
     // display: flex;
     // gap: 30px;
@@ -281,8 +258,11 @@ export default {
       width: 400px;
     }
   }
-  .form_Bottom{
-        margin-bottom: 10px;
+  .form_Bottom {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>

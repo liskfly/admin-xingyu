@@ -3,11 +3,18 @@
     <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="addOpen"  size="medium">添加</el-button>
+          <div>
+            <el-input v-model="searchName" clearable placeholder="请输入">
+              <template slot="append">
+                <el-button type="primary" icon="el-icon-search"></el-button>
+              </template>
+            </el-input>
+          </div>
       </div>
       <div class="table_container">
         <el-table
           :data="
-            tableData.slice(
+            tableData1.slice(
               (currentPage - 1) * pageSize,
               currentPage * pageSize
             )
@@ -55,7 +62,7 @@
           :page-size="pageSize"
           :page-sizes="[5, 10, 20, 50, 100]"
           layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
+          :total="tableData1.length"
         >
         </el-pagination>
       </div>
@@ -97,6 +104,8 @@ export default {
     return {
       dialogVisible: false,
       tableData: [],
+      tableData1:[],
+      searchName: "",
       currentPage: 1, // 当前页码
       pageSize: 10, // 每页的数据条数
       tableHeight: 0,
@@ -123,6 +132,15 @@ export default {
       itemPass1: "",
       titleType: "",
     };
+  },
+  watch: {
+      searchName(newdata) {
+        if (newdata == "") {
+          this.tableData1 = this.tableData;
+        } else {
+          this.tableData1 = this.table1(newdata);
+        }
+      },
   },
   created() {
     // this.getData();
@@ -154,6 +172,7 @@ export default {
             this.tableData.sort((a, b) => {
               return a.PD_model - b.PD_model;
             });
+            this.tableData1 = this.tableData;
           }
           if (
             this.tableData.length % this.pageSize == 0 &&
@@ -167,6 +186,14 @@ export default {
           this.$message.error("请求数据失败，请刷新");
         });
     },
+      table1(newdata) {
+        let searchName = newdata.toLowerCase();
+        return this.tableData.filter((v) => {
+          return Object.keys(v).some((key) => {
+            return String(v[key]).toLowerCase().indexOf(searchName) > -1;
+          });
+        });
+      },
     addOpen() {
       this.getData();
       //  this.$refs.form.resetFields()
@@ -298,7 +325,7 @@ export default {
     padding-bottom: 8px;
     display: flex;
     // gap: 30px;
-    // justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     .input_box {
       width: 400px;
