@@ -586,7 +586,7 @@
                 });
               }
               this.getData();
-              this.addVisible = false;
+              this.addPwdVisible = false;
             });
           }
         });

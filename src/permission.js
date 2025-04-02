@@ -59,7 +59,7 @@ router.beforeEach(async (to, from, next) => {
               router.options.routes = constantRoutes.concat([
                 ...routesArr,
                 error404,
-              ]);
+              ]); 
               next();
             } else {
               const accessRoutes = getAsyncRoutes(routesArr);

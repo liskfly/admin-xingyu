@@ -4,9 +4,9 @@
       <div class="table_header">
         <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
           <div>
-            <el-input v-model="searchName" clearable placeholder="请输入">
+            <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()">
               <template slot="append">
-                <el-button type="primary" icon="el-icon-search"></el-button>
+                <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
               </template>
             </el-input>
           </div>
@@ -201,6 +201,13 @@ export default {
       this.titleType = "添加";
       this.dialogVisible = true;
     },
+    searchData() {
+      if (this.searchName == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(this.searchName);
+      }
+    },
     addCancel() {
       // this.$refs.form.resetFields();
       this.dialogVisible = false;
@@ -208,11 +215,13 @@ export default {
     },
       table1(newdata) {
         let searchName = newdata.toLowerCase();
-        return this.tableData.filter((v) => {
-          return Object.keys(v).some((key) => {
-            return String(v[key]).toLowerCase().indexOf(searchName) > -1;
-          });
-        });
+      return this.tableData.filter((v) => {
+        if(String(v.Tool).toLowerCase().indexOf(searchName) > -1 || String(v.Model).toLowerCase().indexOf(searchName) > -1) {
+          return true;
+        }else {
+          return false;
+        }
+      });
       },
     handleEdit(index, row) {
       this.getData();

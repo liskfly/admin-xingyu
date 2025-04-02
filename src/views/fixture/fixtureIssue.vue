@@ -5,9 +5,9 @@
         <div class="form_Bottom">
             <el-button type="primary" @click="onSubmit">查询全部工单</el-button>
             <div>
-              <el-input v-model="searchName" clearable placeholder="请输入">
+              <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()">
                 <template slot="append">
-                  <el-button type="primary" icon="el-icon-search"></el-button>
+                  <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
                 </template>
               </el-input>
             </div>
@@ -166,6 +166,13 @@ export default {
       this.pageSize = value;
       // console.log(this.pageSize);
     },
+    searchData() {
+      if (this.searchName == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(this.searchName);
+      }
+    },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
@@ -179,9 +186,11 @@ export default {
     table1(newdata) {
       let searchName = newdata.toLowerCase();
       return this.tableData.filter((v) => {
-        return Object.keys(v).some((key) => {
-          return String(v[key]).toLowerCase().indexOf(searchName) > -1;
-        });
+        if(String(v.Issue_id).toLowerCase().indexOf(searchName) > -1 || String(v.PD_model).toLowerCase().indexOf(searchName) > -1) {
+          return true;
+        }else {
+          return false;
+        }
       });
     },
     tagType(data) {
