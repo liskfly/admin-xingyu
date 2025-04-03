@@ -1,11 +1,11 @@
 <template>
   <div class="p-0 m-0">
-    <!-- <svg-icon
-      :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
+    <svg-icon
+      :icon-class="isFullscreen ? 'exit-full' : 'full'"
       @click="click"
-    /> -->
+    />
     <!-- <el-tooltip class="item" effect="dark" :content="isFullScreen ? '退出全屏':'全屏'" placement="bottom"> -->
-    <i :class="isFullscreen ? 'el-icon-aim' : 'el-icon-full-screen'" @click="click" ></i>
+    <!-- <i :class="isFullscreen ? 'el-icon-aim' : 'el-icon-full-screen'" @click="click" ></i> -->
     <!-- </el-tooltip> -->
 
   </div>
@@ -100,7 +100,7 @@ export default {
 .screenfull-svg {
   display: inline-block;
   cursor: pointer;
-  fill: #5a5e66;
+  /* fill: #5a5e66; */
   width: 15px;
   height: 15px;
   /* vertical-align: 10px; */

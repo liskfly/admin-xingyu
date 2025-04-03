@@ -26,12 +26,18 @@ import '@/permission.js' // permission control
 
 import AFTableColumn from 'af-table-column'
 Vue.use(AFTableColumn)
-import dataV from '@jiaminghi/data-view'
 
+import dataV from '@jiaminghi/data-view'
 Vue.use(dataV)
+
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
+Vue.use(Antd);
 
 import moment from "moment";
 Vue.prototype.$moment = moment;
+
+
 
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('../mock')

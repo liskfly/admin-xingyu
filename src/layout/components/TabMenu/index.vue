@@ -4,7 +4,7 @@
       <div class="tab-css w-20">
         <div class="w-20" v-for="item in tabRouters">
           <div
-            class="text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1"
+            class="text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1 flex flex-col"
             style="font-size: 13px"
             :class="{ isActive: isActive(item.path) }"
             @click="tabClick(isOnlyChildren(item))"
@@ -12,11 +12,13 @@
             <!-- <el-icon :size="24" color="#ffffff">
               <component :is="isOnlyChildren(item).meta?.icon" />
             </el-icon> -->
-            <!-- <i class="el-icon-house" style="font-size: 25px;color:#fff"></i> -->
-            <p class="text-white mt-1 px-1">
+            <!-- <i :class="isOnlyChildren(item).meta?.icon" style="font-size: 25px;color:#fff" v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"></i> -->
+            <a-icon :type="isOnlyChildren(item).meta?.icon" :style="{ fontSize: '25px', color: '#fff'}" v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"/>
+            <!-- <SmartIcon :type="'setting'" :style="{ fontSize: '25px', color: '#fff'}"  v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"></SmartIcon> -->
+            <span class="text-white mt-1 px-1">
               <!-- {{ item.meta?.title || "" }} -->
               {{ isOnlyChildren(item).meta?.title || "" }}
-            </p>
+            </span>
           </div>
         </div>
       </div>
@@ -40,11 +42,13 @@ import { tabPathMap, initTabMap, filterMenusPath } from "./helper";
 import { pathResolve } from "@/utils/routerHelper";
 import cloneDeep from "lodash/cloneDeep";
 import menuItem from "@/components/menu/index.vue";
+
 import { mapState, mapMutations } from "vuex";
 export default {
   directives: { Clickoutside },
   components: {
     menuItem,
+
   },
   data() {
     return {

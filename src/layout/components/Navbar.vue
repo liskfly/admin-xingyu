@@ -205,8 +205,8 @@ export default {
     position: relative;
     // // padding-right:15px;
     // height: 100%;
-    margin-top: 4px;
-    font-size: 25px;
+    
+    font-size: 24px;
     color: #5a5e66;
     // vertical-align: text-bottom;
 
