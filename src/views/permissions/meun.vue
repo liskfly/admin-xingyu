@@ -72,12 +72,12 @@
         <el-form ref="formRef" :model="form" label-position="left" label-width="auto">
           <el-form-item label="类型" prop="type">
             <el-radio-group v-model="tabPosition">
-              <el-radio-button label="目录">目录</el-radio-button>
+              <!-- <el-radio-button label="目录">目录</el-radio-button> -->
               <el-radio-button label="菜单">菜单</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="父级菜单" prop="chooseName">
-            <el-select ref="selectUpResId" v-model="chooseName" placeholder="请选择" clearable>
+            <el-select ref="selectUpResId" v-model="chooseName" placeholder="请选择" style="width: 240px" clearable>
               <el-option :value="chooseName" disabled style="height: 100%">
                 <el-tree
                   style="min-height: 150px;"
@@ -91,10 +91,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="类型" prop="MenuType">
-            <el-select v-model="form.MenuType" placeholder="选择类型" style="width: 240px">
-              <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
+          <el-form-item label="是否显示" prop="MenuType">
+            <el-switch
+            class="ml-2"
+              v-model="value1"
+            >
+            </el-switch>
           </el-form-item>
           <el-form-item label="菜单名称" prop="title">
             <el-input v-model="form.title" placeholder="请输入"></el-input>
@@ -106,13 +108,13 @@
             <el-input v-model="form.path" placeholder="请输入PATH路径"></el-input>
           </el-form-item>
           <el-form-item label="路由名称" prop="MenuName">
-            <el-input v-model="form.MenuName" placeholder="请输入路由名称name"></el-input>
+            <el-input v-model="form.MenuName" placeholder="请输入路由名称"></el-input>
           </el-form-item>
           <el-form-item label="重定向" prop="redirect">
             <el-input v-model="form.redirect" placeholder="请输入重定向"></el-input>
           </el-form-item>
           <el-form-item label="组件" prop="component">
-            <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入物理路径"></el-input>
+            <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入组件"></el-input>
           </el-form-item>
           <el-form-item label="排序" prop="sortId">
             <el-input-number :min="0" controls-position="right" v-model="form.sortId" placeholder="请输入"></el-input-number>
