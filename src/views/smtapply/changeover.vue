@@ -16,7 +16,7 @@
                   v-model="form.order"
                   @change="change"
                   filterable
-                  placeholder="点击选择"
+                  placeholder=""
                 >
                   <el-option
                     v-for="item in workOrderList"
@@ -445,10 +445,10 @@ export default {
         order: "",
         lineName: "",
         side: "",
-        product: "产品名",
-        program: "软件名",
-        bomVer: "BOM版本",
-        productVer: "软件版本",
+        product: "",
+        program: "",
+        bomVer: "",
+        productVer: "",
       },
       sideList: [
         {

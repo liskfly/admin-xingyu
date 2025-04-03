@@ -79,7 +79,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="mt-2">
+        <div class="mt-2 flex justify-around">
           <el-pagination
             background
             @size-change="handleSizeChange"
@@ -138,7 +138,7 @@
       <el-dialog :append-to-body="true" :close-on-click-modal="false" title="重置密码" :visible.sync="restVisible" width="400px"
         @close="upDateCancel()">
         <el-form :model="rePwForm" ref="reFormRef" :rules="rules" label-width="auto">
-          <el-form-item label="账号" prop="employeeName">
+          <el-form-item label="工号" prop="employeeName">
             <el-input v-model="rePwForm.employeeName" disabled></el-input>
           </el-form-item>
       <el-form-item label="员工姓名" prop="FullName">
@@ -160,7 +160,7 @@
   <el-dialog :append-to-body="true" :close-on-click-modal="false" title="添加员工" :visible.sync="addPwdVisible" width="400px"
     @close="addPwdCancel()">
     <el-form :model="addForm" ref="addFormRef" :rules="addRules" label-width="auto">
-      <el-form-item label="账号" prop="employeeName">
+      <el-form-item label="工号" prop="employeeName">
         <el-input v-model="addForm.employeeName" clearable></el-input>
       </el-form-item>
       <el-form-item label="员工姓名" prop="FullName">
@@ -188,8 +188,8 @@
           stripe
         >
           <el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
-          <el-table-column label="员工姓名" prop="EmployeeName"></el-table-column>
-          <el-table-column label="时间" prop="LoginTime"></el-table-column>
+          <el-table-column label="工号" prop="EmployeeName"></el-table-column>
+          <el-table-column label="登录时间" prop="LoginTime"></el-table-column>
         </el-table>
     <!-- <div slot="footer" class="dialog-footer">
       <el-button @click="addPwdCancel()">取消</el-button>
