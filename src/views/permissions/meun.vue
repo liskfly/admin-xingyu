@@ -25,7 +25,7 @@
             <el-table-column prop="path" label="PATH路径"></el-table-column>
             <el-table-column prop="MenuName" label="组件名称"></el-table-column>
             <el-table-column prop="component" label="文件路径"></el-table-column>
-            
+
             <el-table-column prop="sortId" label="排序" width="60" align="center"></el-table-column>
             
             <el-table-column fixed="right" label="操作" width="180" align="center">
@@ -92,10 +92,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="是否显示" prop="show">
+          <el-form-item label="是否显示" prop="MenuType">
             <el-switch
             class="ml-2"
-              v-model="form.show"
+              v-model="value1"
             >
             </el-switch>
           </el-form-item>
@@ -153,17 +153,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="类型" prop="MenuType">
+          <el-form-item label="类型" prop="MenuType">
             <el-select v-model="editForm.MenuType" placeholder="选择类型" style="width: 240px">
               <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
-          </el-form-item> -->
-          <el-form-item label="是否显示" prop="show">
-            <el-switch
-            class="ml-2"
-              v-model="form.show"
-            >
-            </el-switch>
           </el-form-item>
           <el-form-item label="菜单名称" prop="title">
             <el-input v-model="editForm.title" placeholder="菜单名称"></el-input>
@@ -217,17 +210,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="类型" prop="MenuType">
+          <el-form-item label="类型" prop="MenuType">
             <el-select v-model="copyform.MenuType" placeholder="选择类型" style="width: 240px">
               <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
-          </el-form-item> -->
-          <el-form-item label="是否显示" prop="show">
-            <el-switch
-            class="ml-2"
-              v-model="form.show"
-            >
-            </el-switch>
           </el-form-item>
           <el-form-item label="菜单名称" prop="title">
             <el-input v-model="copyform.title" placeholder="菜单名称"></el-input>
@@ -294,7 +280,6 @@
           CreateDate: "",
           UpdateBy: "",
           UpdateDate: "",
-          show:true
         },
         copyform: {
           title: "",
@@ -313,7 +298,6 @@
           CreateDate: "",
           UpdateBy: "",
           UpdateDate: "",
-          show:true
         },
         editForm: {
           path: "",
@@ -332,7 +316,6 @@
           CreateDate: "",
           UpdateBy: getToken(),
           UpdateDate: "",
-          show:true
         },
         editPName: "",
         editid: "",
