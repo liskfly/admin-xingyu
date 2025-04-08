@@ -24,6 +24,7 @@
       </div>
 
     </el-scrollbar>
+    <!-- <div class="h-20">1111</div> -->
     <menuItem
       class="absolute top-0 z-50 h-full left-20 bg-cyan2"
       :class="{ 'w-48': showMenu, 'w-0': !showMenu }"
@@ -165,7 +166,8 @@ export default {
 
 <style lang="scss" scoped>
 .tab-css {
-  height: calc(100vh - 50.5px)
+  height: calc(100vh - 50.5px);
+  // height: calc(100vh - 130.5px);
 }
 
 .isActive {

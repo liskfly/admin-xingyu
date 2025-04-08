@@ -11,7 +11,7 @@
         <div>
           <router-link to="/">
             <el-tooltip effect="dark" content="首页" placement="bottom">
-              <img src="../../assets/home.svg" alt="" width="25px" />
+              <img src="../../assets/home.svg" alt="" width="28px" />
             </el-tooltip>
             <!-- <img src="../../assets/home.svg" alt="" width="25px" /> -->
             <!-- <i class="el-icon-house" style="font-size: 25px;margin-top:5px ;"></i> -->

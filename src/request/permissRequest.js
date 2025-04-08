@@ -60,7 +60,10 @@ service.interceptors.request.use(
 );
 service.interceptors.response.use(
   (response) => {
-    loading.close(); //关闭加载窗口
+    setTimeout(() => {
+      loading.close();
+    }, 400);
+     //关闭加载窗口
     //建议打印一下 有些后台返回回来的数据格式不同  可根据自己的数据格式进行调整
 
     //错误提示

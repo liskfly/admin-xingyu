@@ -18,12 +18,13 @@
             <el-table-column prop="title" label="菜单名称"></el-table-column>
             <el-table-column prop="icon" label="图标" align="center" width="60">
               <template slot-scope="scope">
-                <i :class="'el-icon-' + scope.row.icon" style="font-size: 20px" v-if="scope.row.icon"></i>
+                <a-icon :type="scope.row.icon" :style="{ fontSize: '20px'}" />
+                <!-- <i :class="'el-icon-' + scope.row.icon" style="font-size: 20px" v-if="scope.row.icon"></i> -->
               </template>
             </el-table-column>
             <el-table-column prop="path" label="PATH路径"></el-table-column>
             <el-table-column prop="MenuName" label="组件名称"></el-table-column>
-            <el-table-column prop="component" label="组件"></el-table-column>
+            <el-table-column prop="component" label="文件路径"></el-table-column>
             
             <el-table-column prop="sortId" label="排序" width="60" align="center"></el-table-column>
             
@@ -113,7 +114,7 @@
           <el-form-item label="重定向" prop="redirect">
             <el-input v-model="form.redirect" placeholder="请输入重定向"></el-input>
           </el-form-item>
-          <el-form-item label="组件" prop="component">
+          <el-form-item label="文件路径" prop="component">
             <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入组件"></el-input>
           </el-form-item>
           <el-form-item label="排序" prop="sortId">
@@ -172,7 +173,7 @@
           <el-form-item label="重定向" prop="redirect">
             <el-input v-model="editForm.redirect" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="组件" prop="component">
+          <el-form-item label="文件路径" prop="component">
             <el-input :disabled="fmeun" v-model="editForm.component" placeholder="组件"></el-input>
           </el-form-item>
           <el-form-item label="排序" prop="sortId">
@@ -229,8 +230,8 @@
           <el-form-item label="重定向" prop="redirect">
             <el-input v-model="copyform.redirect" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="组件" prop="component">
-            <el-input :disabled="fmeun" v-model="copyform.component" placeholder="组件"></el-input>
+          <el-form-item label="文件路径" prop="component">
+            <el-input :disabled="fmeun" v-model="copyform.component" placeholder="文件路径"></el-input>
           </el-form-item>
           <el-form-item label="排序" prop="sortId">
             <el-input-number :min="0" controls-position="right" v-model="copyform.sortId" placeholder="请输入"></el-input-number>
