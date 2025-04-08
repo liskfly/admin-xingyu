@@ -1,7 +1,7 @@
 <template>
   <div class="puzzles p-2">
     <el-card :body-style="{ padding: '8px' }">
-      <div class="table_header">
+      <div class="mb-2">
         <el-button type="primary" @click="openAdd">添加</el-button>
       </div>
       <el-table
@@ -25,6 +25,8 @@
         <el-table-column prop="materialSpec" label="物料规格">
         </el-table-column>
         <el-table-column prop="face" label="单双面" width="80" align="center">
+        </el-table-column>
+        <el-table-column prop="version" label="版本">
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
@@ -65,26 +67,27 @@
     >
       <el-form :model="form" ref="formRef" label-width="auto" size="mini">
         <el-row :gutter="20">
-          <el-col :span="12" :offset="0">
+          <el-col :span="10" :offset="0">
             <el-form-item label="拼板物料编号" prop="puzzlesCode">
               <el-input v-model="form.puzzlesCode" placeholder="" />
             </el-form-item>
           </el-col>
-          <el-col :span="12" :offset="0">
+          <el-col :span="14" :offset="0">
             <el-form-item label="物料名称" prop="materialName">
               <el-input v-model="form.materialName" placeholder="" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12" :offset="0">
+          <el-col :span="10" :offset="0">
             <el-form-item label="物料规格" prop="materialSpec">
               <el-input
                 v-model="form.materialSpec"
                 placeholder=""
+                type="textarea"
               /> </el-form-item
           ></el-col>
-          <el-col :span="12" :offset="0">
+          <el-col :span="7" :offset="0">
             <el-form-item label="单双面" prop="face">
               <el-select v-model="form.face" placeholder="请选择">
                 <el-option label="单" value="1" />
@@ -92,10 +95,16 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="7" :offset="0">
+            <el-form-item label="版本" prop="version">
+              <el-input v-model="form.version" placeholder="" />
+            
+            </el-form-item>
+          </el-col>
         </el-row>
-        <div class="flex justify-between">
+        <!-- <div class="flex justify-between">
           <el-button type="danger" @click="deleteBoard">删除</el-button>
-        </div>
+        </div> -->
         <el-tabs type="border-card" v-model="activeName">
           <el-tab-pane label="小板明细" name="smallBoard">
             <el-table
@@ -164,7 +173,15 @@
                   />
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="100">
+              <el-table-column label="操作" width="100" align="center">
+              <template v-slot="{ $index }">
+                <el-button v-if="$index === form.smallBoardTable.length - 1" type="text" icon="el-icon-plus"
+                  @click="addSmallBoard" />
+                <el-button v-else type="text" icon="el-icon-delete" class="text-red-500"
+                  @click="removeBoardItem($index)" />
+              </template>
+            </el-table-column>
+              <!-- <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button
                     v-if="scope.$index === form.smallBoardTable.length - 1"
@@ -174,7 +191,7 @@
                     >添加一项</el-button
                   >
                 </template>
-              </el-table-column>
+              </el-table-column> -->
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -285,6 +302,7 @@ export default {
           materialName: "E115 前照灯2日行灯",
           materialSpec: "E115 前照灯2日行灯",
           face: "单",
+          version: "1.0",
           updater: "admin",
           create_time: "2025-03-12 10:00:00",
         },
@@ -306,6 +324,7 @@ export default {
         puzzlesCode: "",
         materialName: "",
         materialSpec: "",
+        version:"",
         face: "",
         smallBoardTable: [
           {
@@ -324,6 +343,7 @@ export default {
         materialName: "",
         materialSpec: "",
         face: "",
+        version:"",
       },
       smallBoardTable: [
         {
