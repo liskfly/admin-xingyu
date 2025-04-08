@@ -121,7 +121,7 @@ export default {
     };
   },
   created() {
-    this.getData();
+    // this.getData();
   },
   beforeMount() {
     this.getScreenHeight();
@@ -140,13 +140,14 @@ export default {
         .then((res) => {
           this.tableData = res.data.DataList;
           this.endLoading();
+          this.currentPage = 1;
           // console.log(res.data.DataList);
-          if (
-            this.tableData.length % this.pageSize == 0 &&
-            this.currentPage > 1
-          ) {
-            this.currentPage--;
-          }
+          // if (
+          //   this.tableData.length % this.pageSize == 0 &&
+          //   this.currentPage > 1
+          // ) {
+          //   this.currentPage--;
+          // }
         })
         .catch(() => {
           this.endLoading();

@@ -92,10 +92,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="是否显示" prop="MenuType">
+          <el-form-item label="是否显示" prop="show">
             <el-switch
             class="ml-2"
-              v-model="value1"
+              v-model="form.show"
             >
             </el-switch>
           </el-form-item>
@@ -153,10 +153,17 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="类型" prop="MenuType">
+          <!-- <el-form-item label="类型" prop="MenuType">
             <el-select v-model="editForm.MenuType" placeholder="选择类型" style="width: 240px">
               <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
+          </el-form-item> -->
+          <el-form-item label="是否显示" prop="show">
+            <el-switch
+            class="ml-2"
+              v-model="form.show"
+            >
+            </el-switch>
           </el-form-item>
           <el-form-item label="菜单名称" prop="title">
             <el-input v-model="editForm.title" placeholder="菜单名称"></el-input>
@@ -210,10 +217,17 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="类型" prop="MenuType">
+          <!-- <el-form-item label="类型" prop="MenuType">
             <el-select v-model="copyform.MenuType" placeholder="选择类型" style="width: 240px">
               <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
+          </el-form-item> -->
+          <el-form-item label="是否显示" prop="show">
+            <el-switch
+            class="ml-2"
+              v-model="form.show"
+            >
+            </el-switch>
           </el-form-item>
           <el-form-item label="菜单名称" prop="title">
             <el-input v-model="copyform.title" placeholder="菜单名称"></el-input>
@@ -280,6 +294,7 @@
           CreateDate: "",
           UpdateBy: "",
           UpdateDate: "",
+          show:true
         },
         copyform: {
           title: "",
@@ -298,6 +313,7 @@
           CreateDate: "",
           UpdateBy: "",
           UpdateDate: "",
+          show:true
         },
         editForm: {
           path: "",
@@ -316,6 +332,7 @@
           CreateDate: "",
           UpdateBy: getToken(),
           UpdateDate: "",
+          show:true
         },
         editPName: "",
         editid: "",
