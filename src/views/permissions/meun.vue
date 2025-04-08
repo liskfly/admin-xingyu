@@ -72,7 +72,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否显示" prop="MenuType">
+        <el-form-item label="是否显示" prop="show">
           <el-switch class="ml-2" v-model="form.show">
           </el-switch>
         </el-form-item>
@@ -153,7 +153,7 @@
         <el-form-item label="菜单名称" prop="title">
           <el-input v-model="editForm.title" placeholder="菜单名称"></el-input>
         </el-form-item>
-        <el-form-item label="是否显示" prop="MenuType">
+        <el-form-item label="是否显示" prop="show">
           <el-switch class="ml-2" v-model="editForm.show">
           </el-switch>
         </el-form-item>
@@ -226,7 +226,7 @@
             <el-option v-for="item in list" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item> -->
-        <el-form-item label="是否显示" prop="MenuType">
+        <el-form-item label="是否显示" prop="show">
           <el-switch class="ml-2" v-model="copyform.show">
           </el-switch>
         </el-form-item>
@@ -459,7 +459,7 @@ export default {
       });
     },
     handleCopy(row) {
-      this.copyform = { ...row };
+      this.copyform = { ...row,show:true };
       if (row.MenuFID != null) {
         this.findNameById(row.MenuFID, this.tableData);
       }
