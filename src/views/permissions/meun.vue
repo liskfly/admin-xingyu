@@ -10,7 +10,8 @@
           <el-table-column prop="title" label="菜单名称"></el-table-column>
           <el-table-column prop="icon" label="图标" align="center" width="60">
             <template slot-scope="scope">
-              <a-icon :type="scope.row.icon" :style="{ fontSize: '20px' }" />
+              <span></span>
+              <a-icon :type="scope.row.icon" :style="{ fontSize: '20px' }"  v-if="scope.row.icon!=null&&scope.row.icon!=''"/>
               <!-- <i :class="'el-icon-' + scope.row.icon" style="font-size: 20px" v-if="scope.row.icon"></i> -->
             </template>
           </el-table-column>
@@ -83,7 +84,7 @@
           </el-form-item> -->
         <!-- 图标选择器 -->
         <el-form-item label="选择图标">
-          <el-popover v-model="iconPickerVisible" placement="bottom" width="350px" trigger="click">
+          <el-popover v-model="iconPickerVisible1" placement="bottom" width="600" trigger="click">
             <!-- 触发按钮 -->
             <template slot="reference">
               <el-button class="icon-trigger">
@@ -100,7 +101,7 @@
               </el-input>
               <div class="icon-grid">
                 <div v-for="(icon, index) in filteredIcons" :key="index" class="icon-item"
-                  :class="{ selected: form.icon === icon }" @click="selectIcon(icon)">
+                  :class="{ selected: form.icon === icon }" @click="selectIcon(icon,'1')">
                   <a-icon :type="icon" style="font-size: 20px" />
                   <div class="icon-name">{{ icon }}</div>
                 </div>
@@ -152,8 +153,34 @@
         <el-form-item label="菜单名称" prop="title">
           <el-input v-model="editForm.title" placeholder="菜单名称"></el-input>
         </el-form-item>
-        <el-form-item label="图标" prop="icon">
+        <!-- <el-form-item label="图标" prop="icon">
           <el-input v-model="editForm.icon" placeholder="图标"></el-input>
+        </el-form-item> -->
+        <el-form-item label="选择图标">
+          <el-popover v-model="iconPickerVisible2" placement="bottom" width="600" trigger="click">
+            <!-- 触发按钮 -->
+            <template slot="reference">
+              <el-button class="icon-trigger">
+                <span v-if="editForm.icon" class="flex items-center">
+                  <a-icon :type="editForm.icon" />
+                  <span style="margin-left: 8px">{{ editForm.icon }}</span>
+                </span>
+                <span v-else>选择图标</span>
+              </el-button>
+            </template>
+            <div class="icon-picker">
+              <el-input v-model="searchText" placeholder="搜索图标..." clearable style="margin-bottom: 10px">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              </el-input>
+              <div class="icon-grid">
+                <div v-for="(icon, index) in filteredIcons" :key="index" class="icon-item"
+                  :class="{ selected: editForm.icon === icon }" @click="selectIcon(icon,'2')">
+                  <a-icon :type="icon" style="font-size: 20px" />
+                  <div class="icon-name">{{ icon }}</div>
+                </div>
+              </div>
+            </div>
+          </el-popover>
         </el-form-item>
         <el-form-item label="PATH路径" prop="path">
           <el-input v-model="editForm.path" placeholder="路径"></el-input>
@@ -198,8 +225,34 @@
         <el-form-item label="菜单名称" prop="title">
           <el-input v-model="copyform.title" placeholder="菜单名称"></el-input>
         </el-form-item>
-        <el-form-item label="图标" prop="icon">
+        <!-- <el-form-item label="图标" prop="icon">
           <el-input v-model="copyform.icon" placeholder="图标"></el-input>
+        </el-form-item> -->
+        <el-form-item label="选择图标">
+          <el-popover v-model="iconPickerVisible3" placement="bottom" width="600" trigger="click">
+            <!-- 触发按钮 -->
+            <template slot="reference">
+              <el-button class="icon-trigger">
+                <span v-if="copyform.icon" class="flex items-center">
+                  <a-icon :type="copyform.icon" />
+                  <span style="margin-left: 8px">{{ copyform.icon }}</span>
+                </span>
+                <span v-else>选择图标</span>
+              </el-button>
+            </template>
+            <div class="icon-picker">
+              <el-input v-model="searchText" placeholder="搜索图标..." clearable style="margin-bottom: 10px">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              </el-input>
+              <div class="icon-grid">
+                <div v-for="(icon, index) in filteredIcons" :key="index" class="icon-item"
+                  :class="{ selected: copyform.icon === icon }" @click="selectIcon(icon,'3')">
+                  <a-icon :type="icon" style="font-size: 20px" />
+                  <div class="icon-name">{{ icon }}</div>
+                </div>
+              </div>
+            </div>
+          </el-popover>
         </el-form-item>
         <el-form-item label="PATH路径" prop="path">
           <el-input v-model="copyform.path" placeholder="路径"></el-input>
@@ -309,7 +362,9 @@ export default {
         { value: 'OPUI', label: 'OPUI' }
       ],
       value1: true,
-      iconPickerVisible: false,
+      iconPickerVisible1: false,
+      iconPickerVisible2: false,
+      iconPickerVisible3: false,
       searchText: '',
       // 提取所有ant图标名称（Vue2适配）
        allIcons: iconName
@@ -344,13 +399,22 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
-    selectIcon(icon) {
-      this.form.icon = icon
-      this.iconPickerVisible = false
+    selectIcon(icon,type) {
+      if(type == 1) {
+        this.form.icon = icon
+        this.iconPickerVisible1 = false
+      } else if(type == 2) {
+        this.editForm.icon = icon
+        this.iconPickerVisible2= false
+      } else if(type == 3) {
+        this.copyform.icon = icon
+        this.iconPickerVisible3= false
+      }
+     
     },
     getData() {
-      getFirstMeun().then((data) => {
-        this.tableData = data.Data;
+      getFirstMeun().then((res) => {
+        this.tableData = res.Data;
       });
     },
     openAdd() {
