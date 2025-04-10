@@ -58,12 +58,12 @@
     <el-dialog :append-to-body="true" :close-on-click-modal="false" :visible.sync="addVisible" title="新增" width="40%"
       @close="addCancel">
       <el-form ref="formRef" :model="form" label-position="left" label-width="auto">
-        <el-form-item label="类型" prop="type">
+        <!-- <el-form-item label="类型" prop="type">
           <el-radio-group v-model="tabPosition">
-            <!-- <el-radio-button label="目录">目录</el-radio-button> -->
+            <el-radio-button label="目录">目录</el-radio-button>
             <el-radio-button label="菜单">菜单</el-radio-button>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="父级菜单" prop="chooseName">
           <el-select ref="selectUpResId" v-model="chooseName" placeholder="请选择" style="width: 240px" clearable>
             <el-option :value="chooseName" disabled style="height: 100%">
@@ -666,5 +666,21 @@ export default {
 <style scoped>
 .el-pagination {
   justify-content: center;
+}
+::v-deep .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+}
+
+::v-deep .el-dialog .el-dialog__body {
+  flex: 1;
+  overflow: auto;
 }
 </style>

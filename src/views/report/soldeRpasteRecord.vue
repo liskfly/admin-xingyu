@@ -37,7 +37,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getAllData()">查询</el-button>
+          <el-button type="primary" @click="getData()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -173,13 +173,6 @@ export default {
         } else {
         }
       })
-    },
-    async getAllData() {
-      this.startLoading();
-      this.tableData = [];
-      await this.getData();
-      this.currentPage = 1;
-      this.endLoading();
     },
     handleSearch(value) {},
     handleChange(query) {
