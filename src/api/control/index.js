@@ -216,3 +216,35 @@ export function findEmpLoginLog(data) {
         }
     });
 }
+
+//获取角色的用户
+export function getEmployeesByRole(data) {
+    return request({
+        url: "/role/getEmployeesByRole",
+        method: "post",
+        params: {
+            roleid:data
+        }
+    });
+}
+
+//获取角色未绑定的用户列表
+export function getUnassignEmployeesByRole(roleid,name) {
+    return request({
+        url: "/role/getUnassignEmployeesByRole",
+        method: "post",
+        params: {
+            roleid,
+            name
+        }
+    });
+}
+
+//修改角色的用户列表
+export function updateEmployeesByRole(data) {
+    return request({
+        url: "/role/updateEmployeesByRole",
+        method: "post",
+        data
+    });
+}

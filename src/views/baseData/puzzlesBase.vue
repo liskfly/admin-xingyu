@@ -375,6 +375,9 @@ export default {
       this.editForm = { ...row };
       this.detailVisible = true;
     },
+    addCancel() {
+      this.detailVisible = false
+    },
     handleDetailEdit() {},
     handleDetailDelete() {},
     handleSizeChange(value) {

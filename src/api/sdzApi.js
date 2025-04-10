@@ -97,3 +97,19 @@ export function QuerySDZHHeadData(data) {
       data
     });
   }
+
+  export function GetCompId(data) {
+    return request({
+      url: "/Pda/GetCompId",
+      method: "post",
+      data
+    });
+  }
+  
+  export function QueryOperator(data) {
+    return request({
+      url: "/Pda/QueryOperator",
+      method: "post",
+      data
+    });
+  }
