@@ -49,7 +49,7 @@
             <el-tooltip content="角色用户编辑" placement="top">
               <el-button
                 type="success"
-                icon="el-icon-delete"
+                icon="el-icon-user"
                 size="mini"
                 @click.prevent="roleEdit(scope.row)"
               ></el-button>
@@ -147,8 +147,8 @@
       :close-on-click-modal="false"
       title="角色所属用户"
       :visible.sync="roleVisible"
-      width="625px"
-      @close=""
+      width="675px"
+      @close="clear()"
     >
       <el-transfer
        :titles="['未绑定用户', '已绑定用户']"
@@ -227,9 +227,12 @@ export default {
       },
       data: [],
       undistributed: [],
+      undistributedList: [],
       Assigned: [],
+      AssignedList: [],
       roleVisible: false,
       roleId: "",
+      
       filterMethod(query, item) {
         return item.key.toLowerCase().includes(query.toLowerCase());
       },
@@ -243,9 +246,6 @@ export default {
         this.tableData1 = this.table1(newVal);
       }
     },
-    // Assigned() {
-    //   this.getList();
-    // }
   },
   created() {
     this.getScreenHeight();
@@ -444,16 +444,15 @@ export default {
     },
     getList() {
       let arr = [];
-      this.undistributed.forEach((item) => {
-        arr.push({ key: item, label: item });
+      this.undistributedList.forEach((item) => {
+        arr.push({ key: item.EmployeeName, label: item.EmployeeName + ' ' + item.FullName });
       });
-      this.Assigned.forEach((item) => {
-        arr.push({ key: item, label: item });
+      this.AssignedList.forEach((item) => {
+        arr.push({ key: item.EmployeeName, label: item.EmployeeName + ' ' + item.FullName });
       });
-
+      console.log();
+      
       this.data = arr;
-
-      console.log(arr, this.undistributed, this.data, this.Assigned);
     },
     async roleEdit(row) {
       this.roleId = row.ID;
@@ -461,8 +460,9 @@ export default {
         if (data.Code == 100200 && data.Data != null) {
           let arr = [];
           data.Data.forEach((item) => {
-            arr.push(item.FullName);
+            arr.push(item.EmployeeName);
           });
+          this.undistributedList = data.Data;
           this.undistributed = arr;
         } else {
           this.undistributed = [];
@@ -477,9 +477,9 @@ export default {
         if (data.Code == 100200 && data.Data != null) {
           let arr = [];
           data.Data.forEach((item) => {
-            arr.push(item.FullName);
+            arr.push(item.EmployeeName);
           });
-
+          this.AssignedList = data.Data;
           this.Assigned = arr;
         } else {
           this.Assigned = [];
@@ -493,6 +493,13 @@ export default {
       this.getList();
       this.roleVisible = true;
     },
+    clear() {
+      this.data = [];
+      this.undistributed = [];
+      this.undistributedList = [];
+      this.Assigned = [];
+      this.AssignedList = [];
+    },
     upData() {
       updateEmployeesByRole({
         EmployeeName: this.undistributed,
@@ -505,6 +512,7 @@ export default {
             message: "更新成功",
             type: "success",
           });
+          this.roleVisible = false
         } else {
           Notification({
             title: "提示信息",
