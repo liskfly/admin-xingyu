@@ -38,20 +38,21 @@
                 @click.prevent="handleAssigned(scope.row)"
               />
             </el-tooltip>
+         
+            <el-tooltip content="角色用户编辑" placement="top">
+              <el-button
+                type="warning"
+                icon="el-icon-user"
+                size="mini"
+                @click.prevent="roleEdit(scope.row)"
+              ></el-button>
+            </el-tooltip>
             <el-tooltip content="删除" placement="top">
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
                 @click.prevent="handleDelete(scope.row)"
-              ></el-button>
-            </el-tooltip>
-            <el-tooltip content="角色用户编辑" placement="top">
-              <el-button
-                type="success"
-                icon="el-icon-user"
-                size="mini"
-                @click.prevent="roleEdit(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -147,15 +148,7 @@
       :close-on-click-modal="false"
       title="角色所属用户"
       :visible.sync="roleVisible"
-      width="675
-      
-      
-      
-      
-      
-      
-      
-      p/x"
+      width="675px"
       @close="clear()"
     >
       <el-transfer
