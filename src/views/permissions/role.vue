@@ -137,7 +137,7 @@
 
       <template slot="footer">
         <span class="dialog-footer">
-          <el-button @click="editCancel()">取消</el-button>
+          <el-button @click="clear()">取消</el-button>
           <el-button type="primary" @click="editSubmit()">确定</el-button>
         </span>
       </template>
@@ -147,7 +147,15 @@
       :close-on-click-modal="false"
       title="角色所属用户"
       :visible.sync="roleVisible"
-      width="675px"
+      width="675
+      
+      
+      
+      
+      
+      
+      
+      p/x"
       @close="clear()"
     >
       <el-transfer
@@ -499,6 +507,7 @@ export default {
       this.undistributedList = [];
       this.Assigned = [];
       this.AssignedList = [];
+      this.roleVisible = false;
     },
     upData() {
       updateEmployeesByRole({
