@@ -137,7 +137,7 @@
 
       <template slot="footer">
         <span class="dialog-footer">
-          <el-button @click="clear()">取消</el-button>
+          <el-button @click="editCancel()">取消</el-button>
           <el-button type="primary" @click="editSubmit()">确定</el-button>
         </span>
       </template>
@@ -171,7 +171,7 @@
 
       <template slot="footer">
         <span class="dialog-footer">
-          <el-button @click="">取消</el-button>
+          <el-button @click="clear()">取消</el-button>
           <el-button type="primary" @click="upData">确认更新</el-button>
         </span>
       </template>
