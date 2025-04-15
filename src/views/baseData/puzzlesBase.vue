@@ -13,12 +13,13 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="PN" label="拼板物料编号"> </el-table-column>
-        <el-table-column prop="name" label="物料名称"> </el-table-column>
-        <el-table-column prop="pn_spec" label="物料规格"> </el-table-column>
+        <af-table-column prop="PN" label="拼板物料编号"> </af-table-column>
+        <af-table-column prop="name" label="物料名称"> </af-table-column>
+        <af-table-column prop="pn_spec" label="物料规格"> </af-table-column>
         <el-table-column prop="faceNumber" label="单双面" width="80" align="center">
         </el-table-column>
-        <el-table-column prop="version" label="版本"> </el-table-column>
+        <af-table-column prop="version" label="BOM版本"> </af-table-column>
+        <af-table-column prop="version" label="软件版本"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"></el-button>
@@ -37,31 +38,36 @@
     <el-dialog :title="'添加'" :visible.sync="dialogVisible" width="80%" @close="addCancel()">
       <el-form :model="form" ref="formRef" label-width="auto">
         <el-row :gutter="20">
-          <el-col :span="10" :offset="0">
-            <el-form-item label="拼板物料编号" prop="pn">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="拼板物料编号" prop="pn" class="mb-2">
               <el-input v-model="form.list.pn" placeholder="" />
             </el-form-item>
           </el-col>
-          <el-col :span="14" :offset="0">
-            <el-form-item label="物料名称" prop="name">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="物料名称" prop="name" class="mb-2">
               <el-input v-model="form.list.name" placeholder="" />
             </el-form-item>
           </el-col>
+          <el-col :span="8" :offset="0">
+            <el-form-item label="物料规格" prop="model" class="mb-2">
+              <el-input v-model="form.list.model" placeholder="" type="textarea" /> </el-form-item></el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="10" :offset="0">
-            <el-form-item label="物料规格" prop="model">
-              <el-input v-model="form.list.model" placeholder="" type="textarea" /> </el-form-item></el-col>
-          <el-col :span="7" :offset="0">
-            <el-form-item label="单双面" prop="side">
-              <el-select v-model="form.list.side" placeholder="请选择">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="单双面" prop="side" class="mb-2">
+              <el-select v-model="form.list.side" placeholder="请选择" style="width: 100%;">
                 <el-option label="单" value="1" />
                 <el-option label="双" value="2" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="7" :offset="0">
-            <el-form-item label="版本" prop="version">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="BOM版本" prop="version" class="mb-2">
+              <el-input v-model="form.list.version" placeholder="" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="0">
+            <el-form-item label="软件版本" prop="version" class="mb-2">
               <el-input v-model="form.list.version" placeholder="" />
             </el-form-item>
           </el-col>
@@ -131,31 +137,37 @@
     <el-dialog :title="'详情'" :visible.sync="detailVisible" width="85%" @close="addDetailCancel()">
       <el-form :model="editForm" ref="editFormRef" label-width="auto">
         <el-row :gutter="20">
-          <el-col :span="10" :offset="0">
+          <el-col :span="8" :offset="0">
             <el-form-item label="拼板物料编号" prop="pn" class="mb-2">
               <el-input v-model="editForm.pn" placeholder="" disabled />
             </el-form-item>
           </el-col>
-          <el-col :span="14" :offset="0">
+          <el-col :span="8" :offset="0">
             <el-form-item label="物料名称" prop="name" class="mb-2">
               <el-input v-model="editForm.name" placeholder="" disabled />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="10" :offset="0">
+          <el-col :span="8" :offset="0">
             <el-form-item label="物料规格" prop="model" class="mb-2">
               <el-input v-model="editForm.model" placeholder="" disabled /> </el-form-item></el-col>
-          <el-col :span="7" :offset="0">
+        </el-row>
+        <el-row :gutter="20">
+         
+          <el-col :span="8" :offset="0">
             <el-form-item label="单双面" prop="sdie" class="mb-2">
-              <el-select v-model="editForm.side" placeholder="请选择" disabled>
+              <el-select v-model="editForm.side" placeholder="请选择" disabled style="width: 100%;">
                 <el-option label="单" value="1" />
                 <el-option label="双" value="2" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="7" :offset="0">
-            <el-form-item label="版本" prop="version" class="mb-2">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="BOM版本" prop="version" class="mb-2">
+              <el-input v-model="editForm.version" placeholder="" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="0">
+            <el-form-item label="软件版本" prop="version" class="mb-2">
               <el-input v-model="editForm.version" placeholder="" disabled />
             </el-form-item>
           </el-col>
@@ -223,61 +235,7 @@
         <el-button type="primary" @click="onDetailSubmit()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加小板信息" :visible.sync="songBoardVisible" width="75%" @close="">
-      <el-table :data="form.smallBoardTable" style="width: 100%" border :height="300" size="mini">
-        <el-table-column label="序号" width="55">
-          <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="PCB物料编码">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.pcb_code" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="拼板数量">
-          <template slot-scope="scope">
-            <el-input type="number" v-model="scope.row.small_board_qty" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="模组开始序号">
-          <template slot-scope="scope">
-            <el-input type="number" v-model="scope.row.module_start" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="模组结束序号">
-          <template slot-scope="scope">
-            <el-input type="number" v-model="scope.row.module_end" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="小板成品编码">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.finished_code" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="物料名称">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.name" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="物料规格">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.model" placeholder="请输入内容" size="mini" />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="100" align="center">
-          <template v-slot="{ $index }">
-            <el-button v-if="$index === form.smallBoardTable.length - 1" type="text" icon="el-icon-plus"
-              @click="addSmallBoard" />
-            <el-button v-else type="text" icon="el-icon-delete" class="text-red-500" @click="removeBoardItem($index)" />
-          </template>
-        </el-table-column>
-      </el-table>
-      <span slot="footer">
-        <el-button @click="songBoardVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="">OK</el-button>
-      </span>
-    </el-dialog>
+   
   </div>
 </template>
 
@@ -498,10 +456,7 @@ export default {
         version: row.version,
       };
       findPnDetail(row.PN).then((res) => {
-       
-        
-        
-       
+
         if(  res.Data==null){
           this.smallBoardTable.push({
             version: "",
@@ -581,8 +536,6 @@ export default {
     addCancel() {
       this.detailVisible = false
     },
-    handleDetailEdit() {},
-    handleDetailDelete() {},
     handleSizeChange(value) {
       //
       this.getForm.PageSize = value;

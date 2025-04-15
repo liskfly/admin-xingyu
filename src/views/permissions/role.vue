@@ -31,12 +31,21 @@
         <el-table-column fixed="right" label="操作" width="180">
           <template slot-scope="scope">
             <el-tooltip content="编辑" placement="top">
-              <el-button
+              <el-button 
                 type="primary"
                 icon="el-icon-edit"
                 size="mini"
                 @click.prevent="handleAssigned(scope.row)"
               />
+            </el-tooltip>
+         
+            <el-tooltip content="角色用户编辑" placement="top">
+              <el-button
+                type="warning"
+                icon="el-icon-user"
+                size="mini"
+                @click.prevent="roleEdit(scope.row)"
+              ></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
               <el-button
@@ -44,14 +53,6 @@
                 icon="el-icon-delete"
                 size="mini"
                 @click.prevent="handleDelete(scope.row)"
-              ></el-button>
-            </el-tooltip>
-            <el-tooltip content="角色用户编辑" placement="top">
-              <el-button
-                type="success"
-                icon="el-icon-user"
-                size="mini"
-                @click.prevent="roleEdit(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -163,7 +164,7 @@
 
       <template slot="footer">
         <span class="dialog-footer">
-          <el-button @click="">取消</el-button>
+          <el-button @click="clear()">取消</el-button>
           <el-button type="primary" @click="upData">确认更新</el-button>
         </span>
       </template>
