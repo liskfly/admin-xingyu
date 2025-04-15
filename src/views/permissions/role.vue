@@ -31,7 +31,7 @@
         <el-table-column fixed="right" label="操作" width="180">
           <template slot-scope="scope">
             <el-tooltip content="编辑" placement="top">
-              <el-button
+              <el-button 
                 type="primary"
                 icon="el-icon-edit"
                 size="mini"

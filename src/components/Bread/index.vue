@@ -4,7 +4,7 @@
               <!-- <router-link to="/">
                 <i class="el-icon-place" style="font-size: 22px;  margin:0  8px  4px 8px"></i>
           </router-link> -->
-            <i class="el-icon-place" style="font-size: 22px;  margin:0  8px  4px 8px"></i>
+            <i class="el-icon-place" style="font-size: 22px;  margin:0  8px  4px 8px" @click="goBack"></i>
             <transition-group name="breadcrumb">
                 <el-breadcrumb-item v-for="item in processedLevelList" :key="item.name" :to="{
                     path:
@@ -47,6 +47,9 @@ export default {
         this.getBreadcrumb();
     },
     methods: {
+        goBack() {
+            this.$router.back();
+        },
         getBreadcrumb() {
             const currentPath = this.$route.matched.slice(-1)[0]?.path || "";
             this.levelList = filter(
