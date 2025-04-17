@@ -334,6 +334,18 @@ export default {
     },
     removeBoardItem(index) {
       this.form.Detail.splice(index, 1);
+      if (this.form.Detail.length === 0) {
+        this.form.Detail.push({
+          version: "",
+          small_board_qty: 0,
+          finished_code: "",
+          name: "",
+          model: "",
+          pcb_code: "",
+          module_start: 0,
+          module_end: 0,
+        });
+      }
     },
     addSmallBoard() {
       this.form.Detail.push({
@@ -457,7 +469,7 @@ export default {
       };
       findPnDetail(row.PN).then((res) => {
 
-        if(  res.Data==null){
+        if(  res.Data==null||res.Data.length===0){
           this.smallBoardTable.push({
             version: "",
             small_board_qty: 0,
@@ -497,6 +509,18 @@ export default {
     handleDetailDelete(row) {
       // console.log(row);
       this.smallBoardTable.splice(row, 1);
+      if (this.smallBoardTable.length === 0) {
+        this.smallBoardTable.push({
+          version: "",
+          small_board_qty: 0,
+          finished_code: "",
+          name: "",
+          model: "",
+          pcb_code: "",
+          module_start: 0,
+          module_end: 0,
+        });
+      }
     },
     onDetailSubmit() {
       // console.log(this.smallBoardTable);

@@ -55,3 +55,41 @@ export function UpdatePanelizationDetail(data) {
         data,
     });
 }
+
+export function QueryPanelmergeAllList(data) {
+    return request({
+        url: "/Panelmerge/QueryPanelmergeAllList",
+        method: "post",
+        data,
+    });
+}
+
+export function QueryPanelmerge(data) {
+    return request({
+        url: "/Panelmerge/QueryPanelmerge",
+        method: "post",
+        data,
+    });
+}
+export function addPanelmergeList(data) {
+    return request({
+        url: "/Panelmerge/addPanelmergeList",
+        method: "post",
+        data,
+    });
+}
+export function DeletePanelmerge(data) {
+    return request({
+        url: "/Panelmerge/DeletePanelmerge",
+        method: "post",
+        data,
+    });
+}
+export function QueryFoundation(data) {
+    return request({
+        url: "/Panelmerge/QueryFoundation",
+        method: "post",
+        data,
+    });
+}
+

@@ -25,7 +25,7 @@
         </el-scrollbar>
       </el-card> -->
   
-      <el-card shadow="always" :body-style="{ padding: '8px 8px 0 8px' }" style="flex: 1">
+      <el-card shadow="always" :body-style="{ padding: '8px' }" style="flex: 1">
         <div class="mb-2" style="display: flex; justify-content: space-between">
           <div>
             <el-button type="primary" @click="handleAdd()" size="small">添加</el-button>
@@ -62,24 +62,25 @@
             </el-tag>
             </template>
           </el-table-column>
+          <el-table-column label="最后登录时间" prop="LastLoginTime"></el-table-column>
           <el-table-column fixed="right" label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-tooltip content="编辑" placement="top">
-                <el-button type="primary" icon="el-icon-edit" size="small" @click="handleEdit(scope.row)"></el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleEdit(scope.row)"></el-button>
               </el-tooltip>
               <el-tooltip content="密码重置" placement="top">
-                <el-button type="warning" icon="el-icon-refresh-left" size="small" @click="handleRest(scope.row)"></el-button>
+                <el-button type="warning" icon="el-icon-refresh-left" size="mini" @click="handleRest(scope.row)"></el-button>
               </el-tooltip>
               <el-tooltip content="删除" placement="top">
-                <el-button type="danger" icon="el-icon-delete-solid" size="small" @click="handleDelete(scope.row)"></el-button>
+                <el-button type="danger" icon="el-icon-delete-solid" size="mini" @click="handleDelete(scope.row)"></el-button>
               </el-tooltip>
               <el-tooltip content="历史登录记录" placement="top">
-                <el-button icon="el-icon-time" size="small" type="success" @click="handleHistory(scope.row)"></el-button>
+                <el-button icon="el-icon-time" size="mini" type="success" @click="handleHistory(scope.row)"></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
-        <div class="mt-2 flex justify-around">
+        <div class="mt-2  flex justify-around">
           <el-pagination
             background
             @size-change="handleSizeChange"
@@ -438,6 +439,7 @@
               OrganizationName: beforeData[i].OrganizationName,
               OrganizationID: beforeData[i].OrganizationID,
               RoleName: beforeData[i].RoleName == null ? [] : [beforeData[i].RoleName],
+              LastLoginTime: beforeData[i].LastLoginTime
             });
             tempArr.push(beforeData[i].EmployeeId);
           } else {
