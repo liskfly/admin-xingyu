@@ -4,7 +4,12 @@
       <div class="mb-2">
         <el-button type="primary" @click="openAdd">添加</el-button>
       </div>
-      <el-table :data="tableData" border :height="tableHeight" style="width: 100%" size="mini">
+      <el-table  :data="
+            tableData.slice(
+              (currentPage - 1) * pageSize,
+              currentPage * pageSize
+            )
+          " border :height="tableHeight" style="width: 100%" size="mini">
         <!-- 序号列 -->
         <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
           <!-- <template v-slot="{ $index }">
@@ -32,8 +37,8 @@
 
         <el-table-column prop="panelmerge_manywo" label="多工单" width="90" align="center">
           <template v-slot="{ row }">
-            <el-tag :type="row.panelmerge_manywo ? 'success' : 'info'">
-              {{ row.order ? "是" : "否" }}
+            <el-tag :type="row.panelmerge_manywo ? 'primary' : 'info'">
+              {{ row.panelmerge_manywo ? "是" : "否" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -49,8 +54,8 @@
 
       <div class="block" style="margin-top: 8px">
         <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="getForm.PageIndex" :page-size="getForm.PageSize" :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next" :total="total">
+          :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100,200]"
+          layout="total,sizes, prev, pager, next" :total="tableData.length">
         </el-pagination>
       </div>
     </el-card>
@@ -390,39 +395,41 @@ export default {
 
     };
   },
-  // watch: {
-  //   "form.panelmerge_left_no"(val) {
-  //     if (val != "") {
-  //       this.form.bomlist[0].panelmergebom_no = val + "-1";
-  //     }
-  //     if (
-  //       this.form.panelmerge_right_no !== "" &&
-  //       this.form.bomlist.length == 1
-  //     ) {
-  //       this.form.bomlist[0].panelmergebom_no =
-  //         this.form.panelmerge_left_no +
-  //         "+" +
-  //         this.form.panelmerge_right_no +
-  //         "-1";
-  //     }
-  //   },
-  //   "form.panelmerge_right_no"(val) {
-  //     if (val != "") {
-  //       this.form.bomlist[0].panelmergebom_no = val + "-1";
-  //     }
-  //     if (
-  //       this.form.panelmerge_left_no !== "" &&
-  //       this.form.bomlist.length == 1
-  //     ) {
-  //       this.form.bomlist[0].panelmergebom_no =
-  //         this.form.panelmerge_left_no +
-  //         "+" +
-  //         this.form.panelmerge_right_no +
-  //         "-1";
-  //     }
-  //   }
+  watch: {
+    "form.panelmerge_left_no"(val) {
+      if (val != "") {
+        this.form.bomlist[0].panelmergebom_no = val + "-1";
+      }
+      if (
+        this.form.panelmerge_right_no !== "" &&
+        this.form.bomlist.length == 1
+      ) {
+        this.form.panelmerge_manywo = true;
+        // this.form.bomlist[0].panelmergebom_no =
+        //   this.form.panelmerge_left_no +
+        //   "+" +
+        //   this.form.panelmerge_right_no +
+        //   "-1";
+      }
+    },
+    "form.panelmerge_right_no"(val) {
+      if (val != "") {
+        this.form.bomlist[0].panelmergebom_no = val + "-1";
+      }
+      if (
+        this.form.panelmerge_left_no !== "" &&
+        this.form.bomlist.length == 1
+      ) {
+        this.form.panelmerge_manywo = true;
+        // this.form.bomlist[0].panelmergebom_no =
+        //   this.form.panelmerge_left_no +
+        //   "+" +
+        //   this.form.panelmerge_right_no +
+        //   "-1";
+      }
+    }
    
-  // },
+  },
   beforeMount() {
     this.getScreenHeight();
     this.getData();
@@ -719,14 +726,22 @@ export default {
         }
       });
     },
+    // handleSizeChange(value) {
+    //   //
+    //   this.getForm.PageSize = value;
+    //   this.getData();
+    // },
+    // handleCurrentChange(val) {
+    //   this.getForm.PageIndex = val;
+    //   this.getData();
+    // },
     handleSizeChange(value) {
-      //
-      this.getForm.PageSize = value;
-      this.getData();
+      this.pageSize = value;
+ 
     },
     handleCurrentChange(val) {
-      this.getForm.PageIndex = val;
-      this.getData();
+      // console.log(`当前页: ${val}`);
+      this.currentPage = val;
     },
     getScreenHeight() {
       this.$nextTick(() => {

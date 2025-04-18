@@ -30,7 +30,7 @@
 
       <div class="block" style="margin-top: 8px">
         <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="getForm.PageIndex" :page-size="getForm.PageSize" :page-sizes="[5, 10, 20, 50, 100]"
+          :current-page="getForm.PageIndex" :page-size="getForm.PageSize" :page-sizes="[10, 20, 50, 100, 150]"
           layout="total,sizes, prev, pager, next" :total="total">
         </el-pagination>
       </div>
@@ -320,9 +320,11 @@ export default {
   methods: {
     getData() {
       findPanelizationList(this.getForm).then((res) => {
+        console.log(res);
+        
         if (res.Success) {
           this.tableData = res.Data.list;
-          this.total = res.Data.total;
+          this.total = res.Data.Total;
         } else {
           this.tableData = [];
           this.total = 0;

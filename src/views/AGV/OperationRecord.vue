@@ -1,8 +1,8 @@
 <template>
-    <div class="type">
-      <el-card>
-        <div class="table_header">
-            <el-input style="width: 240px;" v-model="line"></el-input>
+    <div class="p-2">
+      <el-card :body-style="{ padding: '8px' }">
+        <div class="mb-2">
+            <el-input style="width: 240px;" v-model="line" placeholder="线体" @change="getData"></el-input>
           <el-button type="" style="margin-left: 10px;" @click="getData()" icon="el-icon-search">查询</el-button>
         </div>
         <div class="table_container">
@@ -27,7 +27,7 @@
             <el-table-column prop="status" label="更新时间"></el-table-column>
           </el-table>
         </div>
-        <div class="block" style="margin-top: 15px">
+        <div class="block" style="margin-top: 8px">
           <el-pagination
             align="center"
             background
@@ -46,6 +46,7 @@
   </template>
   
   <script>
+  import { findLineMaterial } from "@/api/agvApi";
   export default {
     data() {
       return {
@@ -95,39 +96,33 @@
     },
     methods: {
       getData() {
-        this.startLoading()
+        // console.log(this.line);
+        if(this.line === '') {
+          this.$message.error('请输入线体');
+          return;
+        }
         findLineMaterial(this.line).then((res) => {
-          if (res && res.data && res.data.Success) {
-            this.tableData = JSON.parse(res.data.Data);
-            this.endLoading();
+          if (res.Success) {
+            this.tableData = JSON.parse(res.Data);
+           
           }else {
             this.tableData = [];
-            this.endLoading();
+            
           }
         });
       },
       handleSizeChange(value) {
         this.pageSize = value;
-        console.log(this.pageSize);
+       
       },
       handleCurrentChange(val) {
         // console.log(`当前页: ${val}`);
         this.currentPage = val;
       },
-      startLoading() {
-        this.loading = this.$loading({
-          lock: true,
-          text: "加载中~",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.2)", //调节透明度
-        });
-      },
-      endLoading() {
-        this.loading.close();
-      },
+     
       getScreenHeight() {
         this.$nextTick(() => {
-          this.tableHeight = window.innerHeight - 300;
+          this.tableHeight = window.innerHeight - 220;
           // this.tableHeight1 =
         });
       },

@@ -2,7 +2,7 @@ import request from "@/utils/agv";
 import request1 from "@/request/AGVRequest";
 // 查询设备数据
 export function findLineMaterial(data) {
-  return request({
+  return request1({
     url: "/AGVController/findLineMaterial",
     method: "post",
     params:{
