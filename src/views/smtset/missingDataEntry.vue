@@ -1,13 +1,13 @@
 <template>
   <div :style="{ height: `${dashboardHeight}px` }">
     <div class="smtinstpro">
-      <el-form ref="form" class="form" :model="addForm">
+      <el-form ref="form" class="form" :model="addForm" label-width="auto">
         <el-form-item label="工单名称">
           <el-input
             placeholder="工单名称"
             v-model="addForm.orderName"
             class="input-with-select"
-            style="width: 300px; margin-right: 20px"
+            style="width: 300px;"
           >
           </el-input>
         </el-form-item>
@@ -16,7 +16,7 @@
             placeholder="pcbID"
             v-model="addForm.pcbId"
             class="input-with-select"
-            style="width: 300px; margin-right: 20px"
+          style="width: 300px;"
           >
           </el-input>
         </el-form-item>
@@ -25,7 +25,7 @@
             placeholder="设备ID"
             v-model="addForm.mcId"
             class="input-with-select"
-            style="width: 300px; margin-right: 20px"
+           style="width: 300px;"
           >
           </el-input>
         </el-form-item>
@@ -36,11 +36,12 @@
             format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
             placeholder="选择日期时间"
+            style="width: 300px;"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="不良代码">
-          <el-select v-model="addForm.status" placeholder="不良代码">
+          <el-select v-model="addForm.status" placeholder="不良代码" style="width: 300px;">
             <el-option
               v-for="item in statusList"
               :key="item.value"
@@ -51,7 +52,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="录入类型">
-          <el-select v-model="addForm.operationType" placeholder="录入类型">
+          <el-select v-model="addForm.operationType" placeholder="录入类型" style="width: 300px;">
             <el-option
               v-for="item in typeList"
               :key="item.value"

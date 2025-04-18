@@ -260,7 +260,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
+        this.tableHeight = window.innerHeight - 210;
         // this.tableHeight1 =
       });
     },

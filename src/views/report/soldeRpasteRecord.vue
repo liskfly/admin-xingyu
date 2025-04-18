@@ -1,31 +1,35 @@
 <template>
-  <div class="smtinstpro">
-    <div>
-      <el-form ref="form" class="form" :inline="true">
-        <el-form-item>
+  <div class="p-2">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
+    
+   
+
+      <el-form ref="form" :inline="true" label-width="auto">
+        <el-form-item class="mb-2">
           <el-date-picker
             v-model="dateValue"
             type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            size="small"
+          
             value-format="yyyy-MM-dd HH:mm:ss"
             :default-time="['00:00:00', '23:59:59']"
             :clearable="false"
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-select
             v-model="ID"
             filterable
             remote
             reserve-keyword
-            placeholder="请输入关键词"
+            placeholder=""
             :remote-method="handleChange"
             :loading="loading"
             @change="getData"
+            style="width: 265px;"
           >
             <el-option
               v-for="item in IDList"
@@ -36,22 +40,26 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="getData()">查询</el-button>
+        <el-form-item class="mb-2">
+          <el-button type="primary" @click="getData(getDataText.CompID)">查询</el-button>
         </el-form-item>
       </el-form>
-    </div>
     <!-- <div class="table"> -->
     <el-table
       :data="
         tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
       "
       :height="tableHeight"
-      size="mini"
+    
       :header-cell-style="heardStyle"
       border
       stripe
     >
+      <el-table-column  label="序号" width="60" align="center">
+        <template slot-scope="scope">
+          <div>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="CompID" label="锡膏ID"></el-table-column>
       <el-table-column prop="OperationID" label="锡膏料号">
         <template slot-scope="scope">
@@ -59,11 +67,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="DescriptionName" label="操作类型"> </el-table-column>
-      <el-table-column prop="McID" label="设备ID"> </el-table-column>
+      <el-table-column prop="McID" label="设备ID" width="100"> </el-table-column>
       <el-table-column prop="OperatorID" label="操作人"> </el-table-column>
-      <el-table-column prop="Timestamp" label="时间"> </el-table-column>
+      <el-table-column prop="Timestamp" label="时间"  width="180"> </el-table-column>
     </el-table>
-    <div class="block" style="margin-top: 15px">
+    <div class="block" style="margin-top: 8px">
       <el-pagination
         align="center"
         background
@@ -77,7 +85,8 @@
       >
       </el-pagination>
     </div>
-    <!-- </div> -->
+    </el-card>
+   
   </div>
 </template>
 
@@ -92,7 +101,6 @@ import { GetCompId, QueryOperator } from "@/api/sdzApi";
 import { getContainerMoves } from "@/api/material";
 import { aW } from "@fullcalendar/core/internal-common";
 import dayjs from "dayjs";
-import { log } from "@ant-design/icons-vue/lib/utils";
 import { getDate } from "@/utils/getDate";
 export default {
   data() {
@@ -160,7 +168,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       // console.log( window.innerHeight);
-      this.tableHeight = window.innerHeight - 260;
+      this.tableHeight = window.innerHeight - 210;
       //后面的50：根据需求空出的高度，自行调整
     });
   },

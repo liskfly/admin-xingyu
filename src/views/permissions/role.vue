@@ -58,7 +58,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="mt-2">
+      <div class="mt-2 flex justify-center">
         <el-pagination
           background
           @size-change="handleSizeChange"
@@ -542,7 +542,7 @@ export default {
 
 <style lang="scss" scoped></style>
 <style scoped>
-.el-pagination {
-  justify-content: center;
-}
+  .el-pagination {
+    justify-content: center;
+  }
 </style>

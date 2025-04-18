@@ -30,7 +30,7 @@ const loading = {
 
 // 基地址
 const service = axios.create({
-  baseURL: "/agv"
+  baseURL: "/agvApi"
 });
 let source = axios.CancelToken.source();
 // console.log(source);
