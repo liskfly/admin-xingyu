@@ -139,7 +139,7 @@
         <el-form-item label="父级菜单">
           <el-select ref="selectUpResId" v-model="editPName" placeholder="请选择" clearable>
             <el-option :value="editPName" disabled style="height: 100%">
-              <el-tree style="min-height: 150px; max-height: 300px" :props="defaultProps" :data="tableData"
+              <el-tree style="min-height: 150px;" :props="defaultProps" :data="tableData"
                 node-key="ID" :expand-on-click-node="false" :check-on-click-node="true"
                 @node-click="handleENodeClick"></el-tree>
             </el-option>
@@ -439,7 +439,7 @@ export default {
     handleNodeClick(data) {
       this.chooseName = data.title;
       this.form.MenuFID = data.ID;
-      this.form.MenuLevel = data.MenuLevel + 1;
+      this.form.MenuLevel = data.MenuLevel;
       this.$refs.selectUpResId.blur();
     },
     onSubmit() {
@@ -487,8 +487,8 @@ export default {
     },
     handleCNodeClick(data) {
       this.editPName = data.title;
-      this.copyform.MenuFID = data.id;
-      this.copyform.MenuLevel = data.MenuLevel;
+      this.copyform.MenuFID = data.ID;
+      this.copyform.MenuLevel = data.MenuLevel + 1;
       this.$refs.selectUpResId.blur();
     },
     handleEdit(row) {
@@ -513,8 +513,8 @@ export default {
     },
     handleENodeClick(data) {
       this.editPName = data.title;
-      this.editForm.MenuFID = data.id;
-      this.editForm.MenuLevel = data.MenuLevel;
+      this.editForm.MenuFID = data.ID;
+      this.editForm.MenuLevel = data.MenuLevel + 1;
       this.$refs.selectUpResId.blur();
     },
     handleDelete(row) {
