@@ -47,6 +47,8 @@ router.beforeEach(async (to, from, next) => {
               routers: systemRouter[0].childMenu,
             });
           }
+     
+          
           let dynamicRoutes = await store.getters["permission/getAddRouters"];
           router.addRoutes(dynamicRoutes);
           router.options.routes = constantRoutes.concat([...dynamicRoutes]);

@@ -21,6 +21,7 @@ const state = {
 const getters = {
   getRouters: state => state.routers,
   getAddRouters: state => flatMultiLevelRoutes(cloneDeep(state.addRouters)),
+  // getAddRouters: state =>cloneDeep(state.addRouters),
   getIsAddRouters: state => state.isAddRouters,
   getMenuTabRouters: state => state.menuTabRouters
 }
@@ -65,7 +66,6 @@ const actions = {
           }
         }
       ])
-      // console.log(routerMap);
       
 
       commit('SET_ADD_ROUTERS', addRoutes)

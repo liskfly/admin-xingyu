@@ -19,7 +19,7 @@
         <el-table-column prop="faceNumber" label="单双面" width="80" align="center">
         </el-table-column>
         <af-table-column prop="version" label="BOM版本"> </af-table-column>
-        <af-table-column prop="version" label="软件版本"> </af-table-column>
+        <af-table-column prop="softwareVersion" label="软件版本"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"></el-button>
@@ -67,8 +67,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
-            <el-form-item label="软件版本" prop="version" class="mb-2">
-              <el-input v-model="form.list.version" placeholder="" />
+            <el-form-item label="软件版本" prop="softwareVersion" class="mb-2">
+              <el-input v-model="form.list.softwareVersion" placeholder="" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,8 +167,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
-            <el-form-item label="软件版本" prop="version" class="mb-2">
-              <el-input v-model="editForm.version" placeholder="" disabled />
+            <el-form-item label="软件版本" prop="softwareVersion" class="mb-2">
+              <el-input v-model="editForm.softwareVersion" placeholder="" disabled />
             </el-form-item>
           </el-col>
         </el-row>
@@ -275,10 +275,12 @@ export default {
           side: "",
           name: "",
           version: "",
+          softwareVersion:""
         },
         Detail: [
           {
             version: "",
+            softwareVersion:"",
             small_board_qty: 0,
             finished_code: "",
             name: "",
@@ -296,6 +298,7 @@ export default {
         sdie: "",
         name: "",
         version: "",
+        softwareVersion:""
       },
       upDateForm: {
         pnl_code: "",
