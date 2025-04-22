@@ -84,12 +84,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="form.panelmerge_left_no" @change="change1" filterable remote reserve-keyword
+                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change1"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="form.panelmerge_left_no" @change="change1" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod1">
                       <el-option v-for="item in options1" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="form.panelmerge_left_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -115,12 +119,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="form.panelmerge_right_no" @change="change2" filterable remote reserve-keyword
+                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change2"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="form.panelmerge_right_no" @change="change2" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod2">
                       <el-option v-for="item in options2" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="form.panelmerge_right_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -217,12 +225,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="editForm.panelmerge_left_no" @change="change3" filterable remote reserve-keyword
+                    <el-autocomplete v-model="editForm.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change3"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="editForm.panelmerge_left_no" @change="change3" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod3">
                       <el-option v-for="item in options3" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="editForm.panelmerge_left_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -248,12 +260,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="editForm.panelmerge_right_no" @change="change4" filterable remote
+                    <el-autocomplete v-model="editForm.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change4"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="editForm.panelmerge_right_no" @change="change4" filterable remote
                       reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod4">
                       <el-option v-for="item in options4" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="editForm.panelmerge_right_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -397,9 +413,7 @@ export default {
   },
   watch: {
     "form.panelmerge_left_no"(val) {
-      if (val != "") {
-        this.form.bomlist[0].panelmergebom_no = val + "-1";
-      }
+ 
       if (
         this.form.panelmerge_right_no !== "" &&
         this.form.bomlist.length == 1
@@ -413,9 +427,7 @@ export default {
       }
     },
     "form.panelmerge_right_no"(val) {
-      if (val != "") {
-        this.form.bomlist[0].panelmergebom_no = val + "-1";
-      }
+
       if (
         this.form.panelmerge_left_no !== "" &&
         this.form.bomlist.length == 1
@@ -482,48 +494,45 @@ export default {
     },
     change1(val) {
       // console.log(val);
-      this.form.panelmerge_left_name = this.options1.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.form.panelmerge_left_desc = this.options1.find(
-        (item) => item.part_no === val
-      ).part_desc;
+      this.form.panelmerge_left_name=val.part_name
+      this.form.panelmerge_left_desc=val.part_desc
+      // this.form.panelmerge_left_name = this.options1.find(
+      //   (item) => item.part_no === val
+      // ).part_name;
+      // this.form.panelmerge_left_desc = this.options1.find(
+      //   (item) => item.part_no === val
+      // ).part_desc;
     },
     change2(val) {
-      // console.log(val);
-      this.form.panelmerge_right_name = this.options2.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.form.panelmerge_right_desc = this.options2.find(
-        (item) => item.part_no === val
-      ).part_desc;
+     
+      this.form.panelmerge_right_name=val.part_name
+      this.form.panelmerge_right_desc=val.part_desc
+   
     },
     change3(val) {
-      // console.log(val);
-      this.editForm.panelmerge_left_name = this.options3.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.editForm.panelmerge_left_desc = this.options3.find(
-        (item) => item.part_no === val
-      ).part_desc;
+      this.editForm.panelmerge_left_name=val.part_name
+      this.editForm.panelmerge_left_desc=val.part_desc
+     
     },
     change4(val) {
-      // console.log(val);
-      this.editForm.panelmerge_right_name = this.options4.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.editForm.panelmerge_right_desc = this.options4.find(
-        (item) => item.part_no === val
-      ).part_desc;
+    
+      this.editForm.panelmerge_right_name=val.part_name
+      this.editForm.panelmerge_right_desc=val.part_desc
+   
     },
-    remoteMethod1(query) {
+    remoteMethod(query,cb) {
       if (query.length >= 7) {
         QueryFoundation({
           part_no: query,
           part_type: "0",
         }).then((res) => {
-          // console.log(res);
-          this.options1 = res.Data;
+          const searchData=res.Data.map((item) => {
+            return {
+              value: item.part_no,
+              ...item
+            };
+          });
+          cb(searchData);
         });
       }
     },

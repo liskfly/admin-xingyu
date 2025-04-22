@@ -1,4 +1,5 @@
 import request from "@/request/puzzleRequest";
+import noRequest from "@/request/puzzleNoRequest";
 export function findPanelizationList(data) {
     return request({
         url: "/Panelization/findPanelizationList",
@@ -92,4 +93,14 @@ export function QueryFoundation(data) {
         data,
     });
 }
+export function findPartNumberData(data) {
+    return noRequest({
+        url: "/Panelization/findPartNumberData",
+        method: "post",
+        params: {
+            pn: data,
+        },
+    });
+}
+
 
