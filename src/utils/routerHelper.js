@@ -15,6 +15,8 @@ viewsContext.keys().forEach((path) => {
 
 /* Layout */
 export const Layout = () => import("@/layout/index.vue");
+export const Layout1 = () => import("@/views/showingChildrene/index.vue");
+
 
 export const getParentLayout = {
   name: "ParentLayout",
@@ -110,30 +112,32 @@ export const generateRoutesByServer1 = (routes) => {
         title: route.title,
         icon: route.icon,
       },
-      component: null
+      component: null,
     };
-   
+
     if (route.component) {
       // const component = route.component
 
       // data.component =
       //   component === 'Layout' ? Layout : modules[`../views${route.component}.vue`]
       const componentPath = route.component.trim();
+    
       if (componentPath === "Layout") {
         data.component = Layout;
       } else {
        
         const moduleKey = `.${componentPath}.vue`;
-        
+
         if (modules[moduleKey]) {
           data.component = modules[moduleKey];
-         
         } else {
           data.component = (resolve) =>
             require([`@/views${componentPath}`], resolve);
         }
-       
       }
+    }else{
+      // console.log(route.component);
+      data.component =Layout1
     }
     // if (route.childMenu != null) {
     //   data.children = generateRoutesByServer1(route.childMenu);
@@ -147,11 +151,10 @@ export const generateRoutesByServer1 = (routes) => {
 };
 
 const resolveComponent1 = (component) => {
-  if (component===''||component===null) return undefined;
+  if (component === "" || component === null) return undefined;
   if (component === "Layout") return Layout;
-  if (component !== "Layout"||component!=="Layout") return (resolve) =>
-    require([`@/views${component}`], resolve);;
- 
+  if (component !== "Layout" || component !== "Layout")
+    return (resolve) => require([`@/views${component}`], resolve);
 };
 
 const resolveComponent = (component) => {
@@ -173,51 +176,65 @@ export const pathResolve = (parentPath, path) => {
 };
 
 // 路由降级处理（Vue2 适配版）
+// 路由降级处理
 export const flatMultiLevelRoutes = (routes) => {
-  // console.log(routes);
-  // const modules = cloneDeep(routes);
-  const modulesArr = cloneDeep(routes);
-  // console.log(routes);
-  
-  for (let i = 0; i < modulesArr.length; i++) {
-    const route = modulesArr[i];
-    if (isMultipleRoute(route)) {
-      promoteRouteLevel(route);
+  const modules = cloneDeep(routes);
+  for (let index = 0; index < modules.length; index++) {
+    const route = modules[index];
+    if (!isMultipleRoute(route)) {
+      continue;
     }
+    // promoteRouteLevel(route);
   }
-  return modulesArr;
+  return modules;
 };
 
 const isMultipleRoute = (route) => {
-  const children = route.children || [];
 
-  
-  return children.some((child) => child.children?.length);
+  if (!route || !route.children || !route.children.length) {
+    return false;
+  }
+
+  const children = route.children;
+  let flag = false;
+  for (let index = 0; index < children.length; index++) {
+    const child = children[index];
+    if (child.children && child.children.length) {
+      flag = true;
+      break;
+    }
+  }
+  return flag;
 };
 
 const promoteRouteLevel = (route) => {
-  const router = new VueRouter({
+  let router = new VueRouter({
     routes: [route],
     mode: "history",
   });
-  
 
   const routes = router.options.routes;
+
   addToChildren(routes, route.children || [], route);
-  route.children = route.children.map((item) => omit(item, "children"));
+  // router = null
+
+  // route.children = route.children?.map((item) => omit(item, 'children'))
+  // console.log(routes);
 };
 
 const addToChildren = (routes, children, routeModule) => {
-  children.forEach((child) => {
-    const route = routes.find((r) => r.name === child.name);
-    if (route) {
-      routeModule.children = routeModule.children || [];
-      if (!routeModule.children.some((r) => r.name === route.name)) {
-        routeModule.children.push(route);
-      }
-      if (child.children) {
-        addToChildren(routes, child.children, routeModule);
-      }
+  for (let index = 0; index < children.length; index++) {
+    const child = children[index];
+    const route = routes.find((item) => item.name === child.name);
+    if (!route) {
+      continue;
     }
-  });
+    routeModule.children = routeModule.children || [];
+    if (!routeModule.children.find((item) => item.name === route.name)) {
+      routeModule.children?.push(route);
+    }
+    if (child.children?.length) {
+      addToChildren(routes, child.children, routeModule);
+    }
+  }
 };

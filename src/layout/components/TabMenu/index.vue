@@ -1,6 +1,7 @@
 <template>
   <div class="w-20 bg-cyan fixed left-0 bottom-0 z-40" name="tabMenu">
-    <el-scrollbar style="height: 100%" v-clickoutside="clickOut">
+    <div v-clickoutside="clickOut">
+    <el-scrollbar style="height: 100%" >
       <div class="tab-css w-20">
         <div class="w-20" v-for="item in tabRouters">
           <div
@@ -24,6 +25,7 @@
       </div>
 
     </el-scrollbar>
+  
     <!-- <div class="h-20">1111</div> -->
     <menuItem
       class="absolute top-0 z-50 h-full left-20 bg-cyan2"
@@ -33,7 +35,7 @@
       @refresh="clickOut"
     >
     </menuItem>
-   
+  </div>
   </div>
 </template>
 
@@ -53,7 +55,7 @@ export default {
   },
   data() {
     return {
-      showMenu: false,
+      // showMenu: false,
       tabActive: "",
       cachedTabRouters: [] // 缓存路由数据
     };
@@ -73,7 +75,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("permission", ["menuTabRouters"]),
+    ...mapState("permission", ["menuTabRouters",'showMenu']),
     tabRouters() {
       return this.$router.options.routes.filter((v) => v.hidden != true);
     },
@@ -85,7 +87,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations("permission", ["SET_MENU_TAB_ROUTERS"]),
+    ...mapMutations("permission", ["SET_MENU_TAB_ROUTERS","SET_SHOW_MENU"]),
     tabClick(item) {
       // console.log(item);
 
@@ -93,20 +95,18 @@ export default {
       const oldPath = this.tabActive;
       // if (this.tabActive === newPath && this.showMenu) return;
       if (this.tabActive === newPath && this.showMenu){
-        this.showMenu=false
+        // this.showMenu=false
+        this.SET_SHOW_MENU(false);
         return;
       } 
-      //  console.log(this.showMenu);
       this.tabActive = newPath;
 
       if (item.children) {
         if (newPath === oldPath || !this.showMenu) {
-          this.showMenu = !this.showMenu;
+          // this.showMenu = !this.showMenu;
+          this.SET_SHOW_MENU(!this.showMenu);
         }
         if (this.showMenu) {
-         
-          // console.log(this.tabActive);
-
           this.SET_MENU_TAB_ROUTERS(
             cloneDeep(item.children).map((v) => {
               v.path = pathResolve(this.tabActive, v.path);
@@ -119,17 +119,15 @@ export default {
         this.$router.push(item.path);
 
         this.SET_MENU_TAB_ROUTERS([]);
-        this.showMenu = false;
+        // this.showMenu = false;
+        this.SET_SHOW_MENU(false);
       }
-      // console.log(this.showMenu);
-
-      // console.log(this.menuTabRouters);
+     
     },
     isOnlyChildren(item) {
-      //   console.log(item);
-
+     
       if (item.path !== "/dashboard") {
-        // console.log(item.children)
+     
         return item;
       } else {
         return {
@@ -142,11 +140,6 @@ export default {
       }
     },
     isActive(currentPath) {
-      // console.log(currentPath, this.$route.path);
-
-      // const { path } = unref(currentRoute);
-
-      //   console.log(this.$route.path);
       if (currentPath == "/") {
         // console.log(currentPath, tabPathMap);
       } else {
@@ -158,7 +151,8 @@ export default {
     },
 
     clickOut() {
-      this.showMenu = false;
+      // this.showMenu = false;
+      this.SET_SHOW_MENU(false);
     },
   },
 };

@@ -49,6 +49,7 @@ export const constantRoutes = [
       }
     ]
   }
+  
 ];
 
 export const error404 = { path: "*", redirect: "/404", hidden: true };

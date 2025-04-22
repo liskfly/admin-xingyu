@@ -1,4 +1,4 @@
-<!--<template>
+<!-- <template>
     <div>
        <template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren)">
         <el-menu-item
@@ -30,7 +30,7 @@
 <template>
   <div>
     <template v-if="shouldRenderSingleChild.isSingle">
-      <el-menu-item :index="pathResolve(basePath, shouldRenderSingleChild.child.path)">
+      <el-menu-item :index="pathResolve(basePath, shouldRenderSingleChild.child.path)"    >
         <span>{{ shouldRenderSingleChild.child.meta.title }}</span>
       </el-menu-item>
     </template>
@@ -70,8 +70,6 @@ export default {
       const { item, basePath } = this;
       const children = item.children || [];
       const showingChildren = children.filter((route) => !route.meta?.hidden);
-      console.log(showingChildren);
-
       if (showingChildren.length === 0) {
         return { isSingle: true, child: { ...item, noShowingChildren: true } };
       }
@@ -105,7 +103,17 @@ export default {
   },
 };
 </script>
-
+<style lang="scss">
+  .el-submenu__title {
+  height: 45px ;
+  line-height: 45px ;
+  &:hover {
+    outline: 0 !important;
+    color: #ffcd50 !important;
+    background-color: #000 !important;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .el-menu-item {
   height: 40px;
@@ -125,8 +133,5 @@ export default {
   }
 }
 
-::deep .el-submenu__title {
-  height: 45px;
-  line-height: 45px;
-}
 </style>
+

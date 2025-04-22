@@ -28,8 +28,6 @@ export function filterMenusPath(routes, allRoutes) {
       const data = cloneDeep(v);
       
       data.path = fullPath
-      // console.log( data.path);
-      
       if (v.children && data) {
         // console.log();
         
@@ -50,7 +48,5 @@ export function filterMenusPath(routes, allRoutes) {
       }
     }
   });
-  // console.log(res);
-  
   return res;
 }

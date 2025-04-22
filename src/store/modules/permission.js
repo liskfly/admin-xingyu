@@ -15,6 +15,7 @@ const state = {
   routers: [],
   addRouters: [],
   isAddRouters: false,
+  showMenu:false,
   menuTabRouters: []
 }
 
@@ -27,6 +28,9 @@ const getters = {
 }
 
 const mutations = {
+  SET_SHOW_MENU: (state, showMenu) => {
+    state.showMenu = showMenu
+  },
   SET_ROUTERS: (state, routers) => {
     state.routers = routers
   },

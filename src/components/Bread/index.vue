@@ -20,6 +20,7 @@
 <script>
 import { filter, treeToList } from "@/utils/tree";
 import { filterBreadcrumb } from "./helper";
+import { mapState, mapMutations } from "vuex";
 export default {
     data() {
         return {
@@ -47,8 +48,10 @@ export default {
         this.getBreadcrumb();
     },
     methods: {
+        ...mapMutations("permission", ["SET_MENU_TAB_ROUTERS","SET_SHOW_MENU"]),
         goBack() {
-            this.$router.back();
+            // this.$router.back();
+            this.SET_SHOW_MENU(true)
         },
         getBreadcrumb() {
             const currentPath = this.$route.matched.slice(-1)[0]?.path || "";
