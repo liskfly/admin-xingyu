@@ -172,12 +172,15 @@ export default {
     getData() {
       this.startLoading();
       getFirstInspectionPage(this.getText).then((res) => {
-        if (res.data.Code == 200) {
+        if (res.data.Code == 200 && res.data.Data != null) {
           this.endLoading();
           let data = res.data.Data;
           this.total = data.Total;
           this.tableData = data.list;
           //   console.log(data);
+        }else if(res.data.Data == null) {
+          this.total = 0;
+          this.tableData = [];
         } else {
           this.$alert(res.data.Msg, "提示信息", {
             confirmButtonText: "确定",
