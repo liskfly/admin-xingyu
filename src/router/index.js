@@ -15,7 +15,7 @@ export const constantRoutes = [
   // 保持你原有的静态路由配置不变
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/home',
     name: 'Root',
     hidden: true,
     meta: { hidden: true }
@@ -33,10 +33,10 @@ export const constantRoutes = [
     meta: { hidden: true }
   },
   {
-    path: '/dashboard',
+    path: '/home',
     component: Layout,
-    redirect: '/dashboard/index',
-    name: 'Dashboard',
+    redirect: '/home/index',
+    name: 'Home',
     hidden: true,
     meta: { title: '首页', icon: 'el-icon-folder-add' },
     children: [
