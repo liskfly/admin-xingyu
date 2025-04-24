@@ -526,7 +526,7 @@ export default {
           part_no: query,
           part_type: "0",
         }).then((res) => {
-          const searchData=res.Data.map((item) => {
+          const searchData=res.Data.map((item) => { 
             return {
               value: item.part_no,
               ...item

@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item class="form_Bottom">
           <el-input
-            placeholder="请输入单号"
+            placeholder="请输入工单号"
             clearable
             v-model="getText.SearchModel.OrderNo"
             class="input-with-select"
