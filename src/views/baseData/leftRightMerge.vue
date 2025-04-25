@@ -70,8 +70,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="合并ID" class="mb-2">
-                <el-input :value="form.panelmerge_left_no + '+' + form.panelmerge_right_no
-                  " readonly placeholder="自动生成" />
+                <el-input v-model="allCode" readonly placeholder="" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -166,7 +165,14 @@
 
             <el-table-column label="拼板物料编码">
               <template v-slot="{ row }">
-                <el-input v-model="row.panelmergebom_no" size="small" />
+                <el-select v-model="row.panelmergebom_no"  placeholder="" size="small"  filterable  @change="changePuzzle1" style="width: 100%;">
+                  <el-option v-for="item in puzzlesOptions"
+                    :key="item.PN"
+                    :label="item.PN"
+                    :value="item.PN">
+                  </el-option>
+                </el-select>
+                <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
               </template>
             </el-table-column>
 
@@ -209,9 +215,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="合并ID" class="mb-2">
-                <el-input :value="editForm.panelmerge_left_no +
-                  '+' +
-                  editForm.panelmerge_right_no
+                <el-input :value="editForm.panelmerge_id
                   " readonly placeholder="自动生成" />
               </el-form-item>
             </el-col>
@@ -307,7 +311,15 @@
             </el-table-column>
             <el-table-column label="拼板物料编码">
               <template v-slot="{ row }">
-                <el-input v-model="row.panelmergebom_no" size="small" />
+                <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
+                <el-select v-model="row.panelmergebom_no"  placeholder=""  size="small" filterable  @change="changePuzzle" style="width: 100%;">
+                  <el-option v-for="item in puzzlesOptions"
+                    :key="item.PN"
+                    :label="item.PN"
+                    :value="item.PN">
+                  </el-option>
+                </el-select>
+                
               </template>
             </el-table-column>
 
@@ -350,6 +362,7 @@ import {
   addPanelmergeList,
   DeletePanelmerge,
   QueryFoundation,
+  findPanelizationList
 } from "@/api/puzzleApi";
 import { getToken } from "@/utils/auth";
 export default {
@@ -408,17 +421,18 @@ export default {
           },
         ],
       },
-
+      allCode:"",
+      puzzlesOptions:[]
     };
   },
   watch: {
     "form.panelmerge_left_no"(val) {
- 
+      this.allCode=val
       if (
-        this.form.panelmerge_right_no !== "" &&
-        this.form.bomlist.length == 1
+        this.form.panelmerge_right_no !== ""
       ) {
         this.form.panelmerge_manywo = true;
+        this.allCode=val+"+"+this.form.panelmerge_right_no
         // this.form.bomlist[0].panelmergebom_no =
         //   this.form.panelmerge_left_no +
         //   "+" +
@@ -427,12 +441,12 @@ export default {
       }
     },
     "form.panelmerge_right_no"(val) {
-
+      this.allCode=val
       if (
-        this.form.panelmerge_left_no !== "" &&
-        this.form.bomlist.length == 1
+        this.form.panelmerge_left_no !== ""
       ) {
         this.form.panelmerge_manywo = true;
+        this.allCode=this.form.panelmerge_left_no+"+"+val
         // this.form.bomlist[0].panelmergebom_no =
         //   this.form.panelmerge_left_no +
         //   "+" +
@@ -445,6 +459,7 @@ export default {
   beforeMount() {
     this.getScreenHeight();
     this.getData();
+    this.getPuzzles();
   },
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
@@ -458,6 +473,19 @@ export default {
         if (res.Success) {
           this.tableData = res.Data;
           // this.total = res.total;
+        }
+      });
+    },
+    getPuzzles() {
+      findPanelizationList({
+        PageIndex: 1,
+        PageSize: 1000,
+        SearchText: "",
+        StartTime: "",
+        EndTime: "",
+      }).then((res) => {
+        if (res.Success) {
+          this.puzzlesOptions = res.Data.list
         }
       });
     },
@@ -536,38 +564,28 @@ export default {
         });
       }
     },
-    remoteMethod2(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options2 = res.Data;
-        });
+    changePuzzle1(val) {
+      // console.log(val);
+      const selectedOption = this.puzzlesOptions.find(
+        (option) => option.PN === val
+      );
+      if (selectedOption) {
+        this.form.bomlist[0].panelmergebom_no = selectedOption.PN;
+        this.form.bomlist[0].panelmergebom_name = selectedOption.name;
+        this.form.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
       }
     },
-    remoteMethod3(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options3 = res.Data;
-        });
+    changePuzzle(val) {
+      // console.log(val);
+      
+      const selectedOption = this.puzzlesOptions.find(
+        (option) => option.PN === val
+      );
+      if (selectedOption) {
+        this.editForm.bomlist[0].panelmergebom_name = selectedOption.name;
+        this.editForm.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
       }
-    },
-    remoteMethod4(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options4 = res.Data;
-        });
-      }
+
     },
     onSubmit() {
       this.form.panelmerge_updateuser = getToken();
@@ -716,6 +734,13 @@ export default {
       };
     },
     onDeailSubmit() {
+      if(this.editForm.bomlist.length===1&&this.editForm.bomlist[0].panelmergebom_no===""){
+        this.$notify.error({
+          title: "提示信息",
+          message: "请添加拼板物料编码",
+        });
+        return
+      }
       this.form.panelmerge_updateuser = getToken();
       addPanelmergeList(this.editForm).then((res) => {
         if (res.Success) {

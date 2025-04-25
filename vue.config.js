@@ -71,13 +71,13 @@ module.exports = {
           "^/pa": "",
         },
       },
-      "/sp": {
+      "/spApi": {
         // 需要访问的地址
         target: "http://172.20.99.32:5998/api",
         // 开启代理
         changeOrigin: true,
         pathRewrite: {
-          "^/sp": "",
+          "^/spApi": "",
         },
       },
       "/agvApi": {
