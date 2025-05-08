@@ -215,7 +215,7 @@
         <el-form-item label="父级菜单">
           <el-select ref="selectUpResId" v-model="editPName" placeholder="请选择" clearable>
             <el-option :value="editPName" disabled style="height: 100%">
-              <el-tree style="min-height: 150px; max-height: 300px" :props="defaultProps" :data="tableData"
+              <el-tree style="min-height: 150px;" :props="defaultProps" :data="tableData"
                 node-key="ID" :expand-on-click-node="false" :check-on-click-node="true"
                 @node-click="handleCNodeClick"></el-tree>
             </el-option>
