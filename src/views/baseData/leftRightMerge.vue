@@ -164,8 +164,8 @@
             </el-table-column>
 
             <el-table-column label="拼板物料编码">
-              <template v-slot="{ row }">
-                <el-select v-model="row.panelmergebom_no"  placeholder="" size="small"  filterable  @change="changePuzzle1" style="width: 100%;">
+              <template v-slot="{ row ,$index}">
+                <el-select v-model="row.panelmergebom_no"  placeholder="" size="small"  filterable  @change="changePuzzle1($event,$index)" style="width: 100%;">
                   <el-option v-for="item in puzzlesOptions"
                     :key="item.PN"
                     :label="item.PN"
@@ -310,9 +310,9 @@
               </template>
             </el-table-column>
             <el-table-column label="拼板物料编码">
-              <template v-slot="{ row }">
+              <template v-slot="{ row,$index}">
                 <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
-                <el-select v-model="row.panelmergebom_no"  placeholder=""  size="small" filterable  @change="changePuzzle" style="width: 100%;">
+                <el-select v-model="row.panelmergebom_no"  placeholder=""  size="small" filterable  @change="changePuzzle($event,$index)" style="width: 100%;">
                   <el-option v-for="item in puzzlesOptions"
                     :key="item.PN"
                     :label="item.PN"
@@ -564,26 +564,27 @@ export default {
         });
       }
     },
-    changePuzzle1(val) {
-      // console.log(val);
+    changePuzzle1(val,index) {
+      // console.log(val,index);
       const selectedOption = this.puzzlesOptions.find(
         (option) => option.PN === val
       );
+
       if (selectedOption) {
-        this.form.bomlist[0].panelmergebom_no = selectedOption.PN;
-        this.form.bomlist[0].panelmergebom_name = selectedOption.name;
-        this.form.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
+        this.form.bomlist[index].panelmergebom_no = selectedOption.PN;
+        this.form.bomlist[index].panelmergebom_name = selectedOption.name;
+        this.form.bomlist[index].panelmergebom_desc = selectedOption.pn_spec;
       }
     },
-    changePuzzle(val) {
-      // console.log(val);
+    changePuzzle(val,index) {
+      // console.log(val,index);
       
       const selectedOption = this.puzzlesOptions.find(
         (option) => option.PN === val
       );
       if (selectedOption) {
-        this.editForm.bomlist[0].panelmergebom_name = selectedOption.name;
-        this.editForm.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
+        this.editForm.bomlist[index].panelmergebom_name = selectedOption.name;
+        this.editForm.bomlist[index].panelmergebom_desc = selectedOption.pn_spec;
       }
 
     },

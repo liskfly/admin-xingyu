@@ -5,7 +5,7 @@
       <div class="tab-css w-20">
         <div class="w-20" v-for="item in tabRouters">
           <div
-            class="text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1 flex flex-col"
+            class="  text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1 flex flex-col"
             style="font-size: 13px"
             :class="{ isActive: isActive(item.path) }"
             @click="tabClick(isOnlyChildren(item))"
@@ -154,7 +154,7 @@ export default {
       // this.showMenu = false;
       this.SET_SHOW_MENU(false);
     },
-  },
+  }, 
 };
 </script>
 
@@ -167,5 +167,8 @@ export default {
 .isActive {
   // color: #004493;
   background: #013d83;
+  // transform: scale(1.1);
+  // font-weight: bold;
+  // transition: all 0.5s;
 }
 </style>
