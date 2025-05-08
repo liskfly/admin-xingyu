@@ -70,8 +70,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="合并ID" class="mb-2">
-                <el-input :value="form.panelmerge_left_no + '+' + form.panelmerge_right_no
-                  " readonly placeholder="自动生成" />
+                <el-input v-model="allCode" readonly placeholder="" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -84,12 +83,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="form.panelmerge_left_no" @change="change1" filterable remote reserve-keyword
+                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change1"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="form.panelmerge_left_no" @change="change1" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod1">
                       <el-option v-for="item in options1" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="form.panelmerge_left_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -115,12 +118,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="form.panelmerge_right_no" @change="change2" filterable remote reserve-keyword
+                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change2"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="form.panelmerge_right_no" @change="change2" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod2">
                       <el-option v-for="item in options2" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="form.panelmerge_right_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -158,7 +165,14 @@
 
             <el-table-column label="拼板物料编码">
               <template v-slot="{ row }">
-                <el-input v-model="row.panelmergebom_no" size="small" />
+                <el-select v-model="row.panelmergebom_no"  placeholder="" size="small"  filterable  @change="changePuzzle1" style="width: 100%;">
+                  <el-option v-for="item in puzzlesOptions"
+                    :key="item.PN"
+                    :label="item.PN"
+                    :value="item.PN">
+                  </el-option>
+                </el-select>
+                <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
               </template>
             </el-table-column>
 
@@ -201,9 +215,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="合并ID" class="mb-2">
-                <el-input :value="editForm.panelmerge_left_no +
-                  '+' +
-                  editForm.panelmerge_right_no
+                <el-input :value="editForm.panelmerge_id
                   " readonly placeholder="自动生成" />
               </el-form-item>
             </el-col>
@@ -217,12 +229,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="editForm.panelmerge_left_no" @change="change3" filterable remote reserve-keyword
+                    <el-autocomplete v-model="editForm.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change3"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="editForm.panelmerge_left_no" @change="change3" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod3">
                       <el-option v-for="item in options3" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="editForm.panelmerge_left_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -248,12 +264,16 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-select v-model="editForm.panelmerge_right_no" @change="change4" filterable remote
+                    <el-autocomplete v-model="editForm.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change4"  >
+                
+                </el-autocomplete>
+                    <!-- <el-select v-model="editForm.panelmerge_right_no" @change="change4" filterable remote
                       reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod4">
                       <el-option v-for="item in options4" :key="item.part_no" :label="item.part_no"
                         :value="item.part_no">
                       </el-option>
-                    </el-select>
+                    </el-select> -->
                     <!-- <el-input v-model="editForm.panelmerge_right_no" placeholder="编码" /> -->
                   </el-form-item>
                 </el-col>
@@ -291,7 +311,15 @@
             </el-table-column>
             <el-table-column label="拼板物料编码">
               <template v-slot="{ row }">
-                <el-input v-model="row.panelmergebom_no" size="small" />
+                <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
+                <el-select v-model="row.panelmergebom_no"  placeholder=""  size="small" filterable  @change="changePuzzle" style="width: 100%;">
+                  <el-option v-for="item in puzzlesOptions"
+                    :key="item.PN"
+                    :label="item.PN"
+                    :value="item.PN">
+                  </el-option>
+                </el-select>
+                
               </template>
             </el-table-column>
 
@@ -334,6 +362,7 @@ import {
   addPanelmergeList,
   DeletePanelmerge,
   QueryFoundation,
+  findPanelizationList
 } from "@/api/puzzleApi";
 import { getToken } from "@/utils/auth";
 export default {
@@ -392,19 +421,18 @@ export default {
           },
         ],
       },
-
+      allCode:"",
+      puzzlesOptions:[]
     };
   },
   watch: {
     "form.panelmerge_left_no"(val) {
-      if (val != "") {
-        this.form.bomlist[0].panelmergebom_no = val + "-1";
-      }
+      this.allCode=val
       if (
-        this.form.panelmerge_right_no !== "" &&
-        this.form.bomlist.length == 1
+        this.form.panelmerge_right_no !== ""
       ) {
         this.form.panelmerge_manywo = true;
+        this.allCode=val+"+"+this.form.panelmerge_right_no
         // this.form.bomlist[0].panelmergebom_no =
         //   this.form.panelmerge_left_no +
         //   "+" +
@@ -413,14 +441,12 @@ export default {
       }
     },
     "form.panelmerge_right_no"(val) {
-      if (val != "") {
-        this.form.bomlist[0].panelmergebom_no = val + "-1";
-      }
+      this.allCode=val
       if (
-        this.form.panelmerge_left_no !== "" &&
-        this.form.bomlist.length == 1
+        this.form.panelmerge_left_no !== ""
       ) {
         this.form.panelmerge_manywo = true;
+        this.allCode=this.form.panelmerge_left_no+"+"+val
         // this.form.bomlist[0].panelmergebom_no =
         //   this.form.panelmerge_left_no +
         //   "+" +
@@ -433,6 +459,7 @@ export default {
   beforeMount() {
     this.getScreenHeight();
     this.getData();
+    this.getPuzzles();
   },
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
@@ -446,6 +473,19 @@ export default {
         if (res.Success) {
           this.tableData = res.Data;
           // this.total = res.total;
+        }
+      });
+    },
+    getPuzzles() {
+      findPanelizationList({
+        PageIndex: 1,
+        PageSize: 1000,
+        SearchText: "",
+        StartTime: "",
+        EndTime: "",
+      }).then((res) => {
+        if (res.Success) {
+          this.puzzlesOptions = res.Data.list
         }
       });
     },
@@ -482,83 +522,70 @@ export default {
     },
     change1(val) {
       // console.log(val);
-      this.form.panelmerge_left_name = this.options1.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.form.panelmerge_left_desc = this.options1.find(
-        (item) => item.part_no === val
-      ).part_desc;
+      this.form.panelmerge_left_name=val.part_name
+      this.form.panelmerge_left_desc=val.part_desc
+      // this.form.panelmerge_left_name = this.options1.find(
+      //   (item) => item.part_no === val
+      // ).part_name;
+      // this.form.panelmerge_left_desc = this.options1.find(
+      //   (item) => item.part_no === val
+      // ).part_desc;
     },
     change2(val) {
-      // console.log(val);
-      this.form.panelmerge_right_name = this.options2.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.form.panelmerge_right_desc = this.options2.find(
-        (item) => item.part_no === val
-      ).part_desc;
+     
+      this.form.panelmerge_right_name=val.part_name
+      this.form.panelmerge_right_desc=val.part_desc
+   
     },
     change3(val) {
-      // console.log(val);
-      this.editForm.panelmerge_left_name = this.options3.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.editForm.panelmerge_left_desc = this.options3.find(
-        (item) => item.part_no === val
-      ).part_desc;
+      this.editForm.panelmerge_left_name=val.part_name
+      this.editForm.panelmerge_left_desc=val.part_desc
+     
     },
     change4(val) {
+    
+      this.editForm.panelmerge_right_name=val.part_name
+      this.editForm.panelmerge_right_desc=val.part_desc
+   
+    },
+    remoteMethod(query,cb) {
+      if (query.length >= 7) {
+        QueryFoundation({
+          part_no: query,
+          part_type: "0",
+        }).then((res) => {
+          const searchData=res.Data.map((item) => { 
+            return {
+              value: item.part_no,
+              ...item
+            };
+          });
+          cb(searchData);
+        });
+      }
+    },
+    changePuzzle1(val) {
       // console.log(val);
-      this.editForm.panelmerge_right_name = this.options4.find(
-        (item) => item.part_no === val
-      ).part_name;
-      this.editForm.panelmerge_right_desc = this.options4.find(
-        (item) => item.part_no === val
-      ).part_desc;
-    },
-    remoteMethod1(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options1 = res.Data;
-        });
+      const selectedOption = this.puzzlesOptions.find(
+        (option) => option.PN === val
+      );
+      if (selectedOption) {
+        this.form.bomlist[0].panelmergebom_no = selectedOption.PN;
+        this.form.bomlist[0].panelmergebom_name = selectedOption.name;
+        this.form.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
       }
     },
-    remoteMethod2(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options2 = res.Data;
-        });
+    changePuzzle(val) {
+      // console.log(val);
+      
+      const selectedOption = this.puzzlesOptions.find(
+        (option) => option.PN === val
+      );
+      if (selectedOption) {
+        this.editForm.bomlist[0].panelmergebom_name = selectedOption.name;
+        this.editForm.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
       }
-    },
-    remoteMethod3(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options3 = res.Data;
-        });
-      }
-    },
-    remoteMethod4(query) {
-      if (query.length >= 7) {
-        QueryFoundation({
-          part_no: query,
-          part_type: "0",
-        }).then((res) => {
-          // console.log(res);
-          this.options4 = res.Data;
-        });
-      }
+
     },
     onSubmit() {
       this.form.panelmerge_updateuser = getToken();
@@ -707,6 +734,13 @@ export default {
       };
     },
     onDeailSubmit() {
+      if(this.editForm.bomlist.length===1&&this.editForm.bomlist[0].panelmergebom_no===""){
+        this.$notify.error({
+          title: "提示信息",
+          message: "请添加拼板物料编码",
+        });
+        return
+      }
       this.form.panelmerge_updateuser = getToken();
       addPanelmergeList(this.editForm).then((res) => {
         if (res.Success) {

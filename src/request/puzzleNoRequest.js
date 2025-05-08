@@ -48,7 +48,7 @@ service.interceptors.request.use(
     }
 
     // 请求拦截进来调用显示loading效果
-    loading.open();
+
 
     // 配置了store持久化的就不需要取localstorage的了
     // const token = store.state.token || localStorage.getItem("token");
@@ -60,9 +60,6 @@ service.interceptors.request.use(
 );
 service.interceptors.response.use(
   (response) => {
-    setTimeout(() => {
-      loading.close();
-    }, 400);
      //关闭加载窗口
     //建议打印一下 有些后台返回回来的数据格式不同  可根据自己的数据格式进行调整
 

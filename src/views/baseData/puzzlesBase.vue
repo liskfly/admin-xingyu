@@ -17,9 +17,14 @@
         <af-table-column prop="name" label="物料名称"> </af-table-column>
         <af-table-column prop="pn_spec" label="物料规格"> </af-table-column>
         <el-table-column prop="faceNumber" label="单双面" width="80" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.faceNumber == 1">单</span>
+            <span v-else>双</span>
+          </template>
         </el-table-column>
-        <af-table-column prop="version" label="BOM版本"> </af-table-column>
-        <af-table-column prop="softwareVersion" label="软件版本"> </af-table-column>
+        <!-- <af-table-column prop="version" label="BOM版本"> </af-table-column> -->
+        <af-table-column prop="softwareVersion" label="软件版本">
+        </af-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"></el-button>
@@ -35,46 +40,43 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="'添加'" :visible.sync="dialogVisible" width="80%" @close="addCancel()">
-      <el-form :model="form" ref="formRef" label-width="auto">
+    <el-dialog :title="'添加'" :visible.sync="dialogVisible" width="85%" @close="addCancel()">
+      <el-form :model="form" ref="formRef" label-width="auto" :rules="rules">
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
-            <el-form-item label="拼板物料编号" prop="pn" class="mb-2">
+            <el-form-item label="拼板物料编号" prop="list.pn" class="mb-2">
               <el-input v-model="form.list.pn" placeholder="" />
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
-            <el-form-item label="物料名称" prop="name" class="mb-2">
+            <el-form-item label="物料名称" prop="list.name" class="mb-2">
               <el-input v-model="form.list.name" placeholder="" />
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
-            <el-form-item label="物料规格" prop="model" class="mb-2">
+            <el-form-item label="物料规格" prop="list.model" class="mb-2">
               <el-input v-model="form.list.model" placeholder="" type="textarea" /> </el-form-item></el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
-            <el-form-item label="单双面" prop="side" class="mb-2">
-              <el-select v-model="form.list.side" placeholder="请选择" style="width: 100%;">
+            <el-form-item label="单双面" prop="list.side" class="mb-2">
+              <el-select v-model="form.list.side" placeholder="请选择" style="width: 100%">
                 <el-option label="单" value="1" />
                 <el-option label="双" value="2" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" :offset="0">
+          <!-- <el-col :span="8" :offset="0">
             <el-form-item label="BOM版本" prop="version" class="mb-2">
               <el-input v-model="form.list.version" placeholder="" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8" :offset="0">
             <el-form-item label="软件版本" prop="softwareVersion" class="mb-2">
               <el-input v-model="form.list.softwareVersion" placeholder="" />
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <div class="flex justify-between">
-          <el-button type="danger" @click="deleteBoard">删除</el-button>
-        </div> -->
         <div class="form-section">
           <h3 class="section-title">小板明细</h3>
           <el-table :data="form.Detail" style="width: 100%" border :height="300" size="mini">
@@ -85,7 +87,16 @@
             </el-table-column>
             <el-table-column label="PCB物料编码">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.pcb_code" placeholder="请输入内容" size="mini" />
+                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change($event, scope.$index)" size="mini">
+
+                </el-autocomplete>
+                <!-- <el-select v-model="scope.row.pcb_code" @change="change($event, scope.$index)" filterable remote
+                  reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod" size="mini" >
+                  <el-option v-for="item in options" :key="item.PN" :label="item.PN" :value="item.PN">
+                  </el-option>
+                </el-select> -->
+                <!-- <el-input v-model="scope.row.pcb_code" placeholder="请输入内容" size="mini" /> -->
               </template>
             </el-table-column>
             <el-table-column label="拼板数量">
@@ -152,20 +163,19 @@
               <el-input v-model="editForm.model" placeholder="" disabled /> </el-form-item></el-col>
         </el-row>
         <el-row :gutter="20">
-         
           <el-col :span="8" :offset="0">
             <el-form-item label="单双面" prop="sdie" class="mb-2">
-              <el-select v-model="editForm.side" placeholder="请选择" disabled style="width: 100%;">
+              <el-select v-model="editForm.side" placeholder="请选择" disabled style="width: 100%">
                 <el-option label="单" value="1" />
                 <el-option label="双" value="2" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" :offset="0">
+          <!-- <el-col :span="8" :offset="0">
             <el-form-item label="BOM版本" prop="version" class="mb-2">
               <el-input v-model="editForm.version" placeholder="" disabled />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8" :offset="0">
             <el-form-item label="软件版本" prop="softwareVersion" class="mb-2">
               <el-input v-model="editForm.softwareVersion" placeholder="" disabled />
@@ -186,17 +196,26 @@
             </el-table-column>
             <el-table-column label="PCB物料编码" prop="pcb_code">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.pcb_code" placeholder=""  />
+                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                  @select="change1($event, scope.$index)" size="mini">
+
+                </el-autocomplete>
+                <!-- <el-select v-model="scope.row.pcb_code" @change="change1($event, scope.$index)" filterable remote
+                  reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod1" size="mini">
+                  <el-option v-for="item in options1" :key="item.PN" :label="item.PN" :value="item.PN">
+                  </el-option>
+                </el-select> -->
+                <!-- <el-input v-model="scope.row.pcb_code" placeholder="" /> -->
               </template>
             </el-table-column>
             <el-table-column label="拼板数量" prop="small_board_qty" width="100">
               <template slot-scope="scope">
                 <el-input type="number" v-model.number="scope.row.small_board_qty" placeholder="" />
               </template>
-            </el-table-column> 
+            </el-table-column>
             <el-table-column label="模组开始序号" prop="module_start" width="120">
               <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.module_start" placeholder=""  />
+                <el-input type="number" v-model.number="scope.row.module_start" placeholder="" />
               </template>
             </el-table-column>
             <el-table-column label="模组结束序号" prop="module_end" width="120">
@@ -206,23 +225,23 @@
             </el-table-column>
             <el-table-column label="小板成品编码" prop="finished_code">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.finished_code" placeholder=""  />
+                <el-input v-model="scope.row.finished_code" placeholder="" />
               </template>
             </el-table-column>
-            <el-table-column label="物料名称" prop="name"> 
+            <el-table-column label="物料名称" prop="name">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.name" placeholder=""  />
+                <el-input v-model="scope.row.name" placeholder="" />
               </template>
             </el-table-column>
-            <el-table-column label="物料规格" prop="model"> 
+            <el-table-column label="物料规格" prop="model">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.model" placeholder=""  />
+                <el-input v-model="scope.row.model" placeholder="" />
               </template>
             </el-table-column>
             <el-table-column label="操作" width="120">
               <template slot-scope="scope">
-                <el-button type="primary" size="mini" icon="el-icon-plus" v-if="scope.$index === smallBoardTable.length - 1"
-                  @click="handleDetailEdit(scope.row)"></el-button>
+                <el-button type="primary" size="mini" icon="el-icon-plus"
+                  v-if="scope.$index === smallBoardTable.length - 1" @click="handleDetailEdit(scope.row)"></el-button>
                 <el-button type="danger" size="mini" icon="el-icon-delete"
                   @click="handleDetailDelete(scope.row)"></el-button>
               </template>
@@ -235,7 +254,6 @@
         <el-button type="primary" @click="onDetailSubmit()">确 定</el-button>
       </span>
     </el-dialog>
-   
   </div>
 </template>
 
@@ -247,10 +265,12 @@ import {
   findPnDetail,
   addPanelizationdetail,
   DeletePanelizationDetail,
-  UpdatePanelizationDetail
+  UpdatePanelizationDetail,
+  findPartNumberData,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
+import { rule } from "postcss";
 export default {
   data() {
     return {
@@ -275,12 +295,12 @@ export default {
           side: "",
           name: "",
           version: "",
-          softwareVersion:""
+          softwareVersion: "",
         },
         Detail: [
           {
             version: "",
-            softwareVersion:"",
+            softwareVersion: "",
             small_board_qty: 0,
             finished_code: "",
             name: "",
@@ -298,16 +318,34 @@ export default {
         sdie: "",
         name: "",
         version: "",
-        softwareVersion:""
+        softwareVersion: "",
       },
       upDateForm: {
         pnl_code: "",
-        list: [
-        ],
+        list: [],
       },
       smallBoardTable: [],
       songBoardVisible: false,
       detailForm: {},
+      options: [],
+      options1: [],
+      rules: {
+        "list.pn": [
+          { required: true, message: "拼板物料编号不能为空", trigger: "blur" },
+
+        ],
+       " list.name": [
+          { required: true, message: "物料名称不能为空", trigger: "change" },
+
+        ],
+        "list.model": [
+          { required: true, message: "物料规格不能为空", trigger: "change" },
+
+        ],
+        "list.side": [
+          { required: true, message: "单双面不能为空", trigger: "change" },
+        ],
+      },
     };
   },
   beforeMount() {
@@ -323,8 +361,6 @@ export default {
   methods: {
     getData() {
       findPanelizationList(this.getForm).then((res) => {
-        console.log(res);
-        
         if (res.Success) {
           this.tableData = res.Data.list;
           this.total = res.Data.Total;
@@ -336,6 +372,50 @@ export default {
     },
     openAdd() {
       this.dialogVisible = true;
+    },
+
+    change(val, index) {
+      this.form.Detail[index].name = val.name;
+      this.form.Detail[index].model = val.pn_spec;
+    },
+    remoteMethod(query, cb) {
+      const reg = /^10505\d*$/;
+      if (query !== "" && reg.test(query)) {
+
+        findPartNumberData(query).then((res) => {
+          if (res.Success) {
+            const searchData = JSON.parse(res.Data);
+            cb(searchData.map((item) => {
+              return {
+                value: item.PN,
+                ...item
+              };
+            }));
+          }
+        });
+      }
+    },
+
+    change1(val, index) {
+
+      this.smallBoardTable[index].name = val.name;
+      this.smallBoardTable[index].model = val.pn_spec;
+    },
+    remoteMethod1(query) {
+      const reg = /^10505\d*$/;
+      if (query !== "" && reg.test(query)) {
+        findPartNumberData(query).then((res) => {
+          if (res.Success) {
+            this.options1 = JSON.parse(res.Data);
+          } else {
+            this.$notify({
+              type: "error",
+              title: "提示信息",
+              message: res.Msg,
+            });
+          }
+        });
+      }
     },
     removeBoardItem(index) {
       this.form.Detail.splice(index, 1);
@@ -398,42 +478,59 @@ export default {
         });
     },
     onSubmit() {
-   this.form.Detail = this.form.Detail.filter((item) => item.finished_code !== "");
-      if (this.form.Detail.length === 0) {
-        this.$notify({
-          type: "error",
-          title: "提示信息",
-          message: "小板明细不能为空",
-        });
-        return;
-      }
-      this.form.list.cr_user = getToken();
-      this.form.list.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
-      this.form.Detail.forEach((item) => {
-        item.cr_user = getToken();
-        item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
-      });
-      addPanelizationdetail(this.form).then((res) => {
-        if (res.Success) {
-          this.$notify({
-            type: "success",
-            title: "提示信息",
-            message: res.Msg,
-          });
-          // this.$refs.formRef.resetFields();
-          // console.log(this.form);
+      // console.log(this.form);
 
-          this.restForm();
-          this.dialogVisible = false;
-          this.getData();
+      this.$refs.formRef.validate((valid) => {
+        if (valid) {
+          // console.log("submit!");
+          if (this.form.Detail.length === 1 && this.form.Detail[0].finished_code === "") {
+            this.$notify({
+              type: "error",
+              title: "提示信息",
+              message: "小板明细不能为空",
+            });
+            return;
+          }
+          this.form.Detail = this.form.Detail.filter(
+            (item) => item.finished_code !== ""
+          );
+          this.form.list.cr_user = getToken();
+          this.form.list.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+          this.form.Detail.forEach((item) => {
+            item.cr_user = getToken();
+            item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+          });
+          addPanelizationdetail(this.form).then((res) => {
+            if (res.Success) {
+              this.$notify({
+                type: "success",
+                title: "提示信息",
+                message: res.Msg,
+              });
+              // this.$refs.formRef.resetFields();
+              // console.log(this.form);
+
+              this.restForm();
+              this.dialogVisible = false;
+              this.getData();
+            } else {
+              this.$notify({
+                type: "error",
+                title: "提示信息",
+                message: res.Msg,
+              });
+            }
+          });
         } else {
           this.$notify({
             type: "error",
             title: "提示信息",
-            message: res.Msg,
+            message: "请检查表单数据",
           });
+          return false;
         }
       });
+
     },
     restForm() {
       this.form = {
@@ -461,6 +558,27 @@ export default {
     addCancel() {
       this.dialogVisible = false;
       this.$refs.formRef.resetFields();
+      this.form = {
+        list: {
+          pn: "",
+          model: "",
+          side: "",
+          name: "",
+          version: "",
+        },
+        Detail: [
+          {
+            version: "",
+            small_board_qty: 0,
+            finished_code: "",
+            name: "",
+            model: "",
+            pcb_code: "",
+            module_start: 0,
+            module_end: 0,
+          },
+        ],
+      };
     },
     handleEdit(row) {
       // console.log(row);
@@ -471,10 +589,10 @@ export default {
         side: row.faceNumber,
         name: row.name,
         version: row.version,
+        softwareVersion: row.softwareVersion,
       };
       findPnDetail(row.PN).then((res) => {
-
-        if(  res.Data==null||res.Data.length===0){
+        if (res.Data == null || res.Data.length === 0) {
           this.smallBoardTable.push({
             version: "",
             small_board_qty: 0,
@@ -485,13 +603,11 @@ export default {
             module_start: 0,
             module_end: 0,
           });
-        }else{
+        } else {
           this.smallBoardTable = JSON.parse(res.Data);
-      
         }
         this.detailVisible = true;
         // console.log(this.smallBoardTable);
-
       });
     },
     addDetailCancel() {
@@ -510,7 +626,7 @@ export default {
         module_start: 0,
         module_end: 0,
       });
-     },
+    },
     handleDetailDelete(row) {
       // console.log(row);
       this.smallBoardTable.splice(row, 1);
@@ -529,41 +645,41 @@ export default {
     },
     onDetailSubmit() {
       // console.log(this.smallBoardTable);
-      // if (this.smallBoardTable.length === 1&& this.smallBoardTable[0].finished_code === "") {
-      //   this.$notify({
-      //     type: "error",
-      //     title: "提示信息",
-      //     message: "小板明细不能为空",
-      //   });
-      //   return;
-      // }
-      this.smallBoardTable= this.smallBoardTable.filter((item) => item.finished_code !== "");
-      this.smallBoardTable.forEach((item) => {
-        item.cr_user = getToken();
-        item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
-      });
-      this.upDateForm.list = this.smallBoardTable;
-      UpdatePanelizationDetail(this.upDateForm).then((res) => {
-        if (res.Success) {
-          this.$notify({
-            type: "success",
-            title: "提示信息",
-            message: res.Msg,
-          });
-          this.detailVisible = false;
-          this.getData();
-        } else {
-          this.$notify({
-            type: "error",
-            title: "提示信息",
-            message: res.Msg,
-          });
-        }
-      });
+      if (this.smallBoardTable.length === 1 && this.smallBoardTable[0].finished_code === "") {
+        this.$notify({
+          type: "error",
+          title: "提示信息",
+          message: "小板明细不能为空",
+        });
+        return;
+      } else {
+        this.smallBoardTable = this.smallBoardTable.filter(
+          (item) => item.finished_code !== ""
+        );
+        this.smallBoardTable.forEach((item) => {
+          item.cr_user = getToken();
+          item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+        });
+        this.upDateForm.list = this.smallBoardTable;
+        UpdatePanelizationDetail(this.upDateForm).then((res) => {
+          if (res.Success) {
+            this.$notify({
+              type: "success",
+              title: "提示信息",
+              message: res.Msg,
+            });
+            this.detailVisible = false;
+            this.getData();
+          } else {
+            this.$notify({
+              type: "error",
+              title: "提示信息",
+              message: res.Msg,
+            });
+          }
+        });
+      }
 
-    },
-    addCancel() {
-      this.detailVisible = false
     },
     handleSizeChange(value) {
       //

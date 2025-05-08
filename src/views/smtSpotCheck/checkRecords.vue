@@ -4,6 +4,15 @@
       <div>
         <el-form ref="form" class="form" :inline="true" :model="getDataText" size="medium">
           <el-form-item class="form_Bottom">
+            <el-select v-model="getDataText.inspectType" placeholder="检查类型">
+              <el-option
+                v-for="item in typeList"
+                :key="item.value"
+                :label="item.lable"
+                :value="item.value"
+              ></el-option> </el-select
+          ></el-form-item>
+          <el-form-item class="form_Bottom">
             <el-select v-model="inquire" placeholder="检查类型"  >
               <el-option
                 v-for="item in inquireList"
@@ -14,23 +23,16 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item class="form_Bottom">
-            <el-select v-model="getDataText.inspectType" placeholder="检查类型">
-              <el-option
-                v-for="item in typeList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              ></el-option> </el-select
-          ></el-form-item>
+         
           <el-form-item v-show="inquire == 'order'" class="form_Bottom">
             <el-input
-              placeholder="请输入单号"
+              placeholder="请输入任务编号"
               clearable
               v-model="getDataText.inspect"
               class="input-with-select"
               @change="getData()"
             >
+            <!-- <template slot="prepend">{{ headerType }}</template> -->
             </el-input>
           </el-form-item>
           <el-form-item v-show="inquire != 'order'" class="form_Bottom">
@@ -128,8 +130,8 @@ export default {
       pageSize: 10, // 每页的数据条数
       tableHeight: 0,
       getDataText: {
-        inspectType: "",
-        inspect: "",
+        inspectType: "EI",
+        inspect: "*",
         dateStart: "",
         dateEnd: "",
       },
@@ -151,10 +153,10 @@ export default {
           value: "WI",
         },
       ],
-      inquire: "order",
+      inquire: "times",
       inquireList: [
         {
-          lable: "单号",
+          lable: "任务编号",
           value: "order",
         },
         {
@@ -163,6 +165,7 @@ export default {
         },
       ],
       value1: [],
+      headerType:"XYEI"
     };
   },
   created() {
@@ -177,10 +180,24 @@ export default {
       if (value == "times") {
         this.getDataText.inspect = "*";
       } else {
+
         this.getDataText.inspect = "";
+        if (this.getDataText.inspectType == "WI" ) {
+          this.headerType="XYWI"
+        this.getDataText.inspect = "XYWI";
       }
-      if (value != value1) {
-        this.getDataText.inspectType = "";
+      if (this.getDataText.inspectType == "FI" ) {
+        this.headerType="XYFI"
+        this.getDataText.inspect = "XYFI";
+      }
+      if (this.getDataText.inspectType == "EI" ) {
+        this.headerType="XYEI"
+        this.getDataText.inspect = "XYEI";
+      }
+      if (this.getDataText.inspectType == "RI" ) {
+        this.headerType="XYRI"
+        this.getDataText.inspect = "XYRI";
+      }
       }
     },
     "getDataText.inspectType"(value) {
