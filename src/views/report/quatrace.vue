@@ -41,48 +41,45 @@
       </el-form>
     </div>
     <!-- <div class="table"> -->
-      <el-table
-        :data="
-          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
-        :height="tableHeight"
-        size="mini"
-        :header-cell-style="heardStyle"
-        border
-        stripe
-      >
-        <el-table-column prop="OrderName" label="工单"></el-table-column>
-        <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
-        <el-table-column prop="OperationName" label="制程名称">
-        </el-table-column>
-        <el-table-column prop="AssemblyName" label="产品料号">
-        </el-table-column>
-        <el-table-column prop="LineName" label="线体"> </el-table-column>
-        <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-        <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
-        <el-table-column prop="EquipmentName" label="设备名称">
-        </el-table-column>
-        <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
-        <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-        <el-table-column prop="StatusCODE" label="不良代码"> </el-table-column>
-        <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
+    <el-table
+      :data="
+        tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+      "
+      :height="tableHeight"
+      size="mini"
+      :header-cell-style="heardStyle"
+      border
+      stripe
+    >
+      <el-table-column prop="OrderName" label="工单"></el-table-column>
+      <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
+      <el-table-column prop="OperationName" label="制程名称"> </el-table-column>
+      <el-table-column prop="AssemblyName" label="产品料号"> </el-table-column>
+      <el-table-column prop="LineName" label="线体"> </el-table-column>
+      <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
+      <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
+      <el-table-column prop="EquipmentName" label="设备名称"> </el-table-column>
+      <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
+      <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
+      <el-table-column prop="StatusCODE" label="不良代码"> </el-table-column>
+      <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
         <el-table-column prop="order" label="流程卡号"> </el-table-column>
         <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
-      </el-table>
-      <div class="block" style="margin-top: 15px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
-        >
-        </el-pagination>
-      </div>
+    </el-table>
+    <div class="block" style="margin-top: 15px">
+      <el-pagination
+        align="center"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        layout="total,sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+      >
+      </el-pagination>
+    </div>
     <!-- </div> -->
   </div>
 </template>
@@ -150,7 +147,12 @@ export default {
         XY_PCBAHisControl(this.getDataText).then(({ data }) => {
           if (data.Status !== "NG") {
             resolve();
-            this.tableData.push(...data.DataList);
+            let arr = [];
+            arr = data.DataList.sort((a, b) => {
+              return new Date(b.DateTime) - new Date(a.DateTime);
+            });
+            this.tableData = arr;
+            // this.tableData.push(...data.DataList);
           } else {
             resolve();
             this.tableData = [];
@@ -178,7 +180,12 @@ export default {
         } else {
           getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
             ({ data }) => {
-              this.tableData.push(...data.content);
+            let arr = [];
+            arr = data.DataList.sort((a, b) => {
+              return new Date(b.DateTime) - new Date(a.DateTime);
+            });
+            this.tableData = arr;
+              // this.tableData.push(...data.content);
               resolve();
             }
           );
