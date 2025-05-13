@@ -57,8 +57,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addCancel()">取 消</el-button>
-        <el-button type="primary" @click="onSubmit()">确 定</el-button>
+        <el-button @click="">取 消</el-button>
+        <el-button type="primary" @click="">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="'修改'" :visible.sync="detailVisible" width="400px" @close="addDetailCancel()">
@@ -80,8 +80,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDetailCancel()">取 消</el-button>
-        <el-button type="primary" @click="onDetailSubmit()">确 定</el-button>
+        <el-button @click="">取 消</el-button>
+        <el-button type="primary" @click="">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="'样件使用记录'" :visible.sync="detailVisible" width="800px" @close="addDetailCancel()">
@@ -93,8 +93,8 @@
         <el-table-column prop="PD_model" label="使用人员"> </el-table-column>
           </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDetailCancel()">取 消</el-button>
-        <el-button type="primary" @click="onDetailSubmit()">确 定</el-button>
+        <el-button @click="">取 消</el-button>
+        <el-button type="primary" @click="">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -235,22 +235,22 @@ export default {
         type: "warning",
       })
         .then(() => {
-          DeletePanelizationList(row.PN).then((res) => {
-            if (res.Success) {
-              this.$notify({
-                type: "success",
-                title: "提示信息",
-                message: res.Msg,
-              });
-              this.getData();
-            } else {
-              this.$notify({
-                type: "error",
-                title: "提示信息",
-                message: res.Msg,
-              });
-            }
-          });
+          // DeletePanelizationList(row.PN).then((res) => {
+          //   if (res.Success) {
+          //     this.$notify({
+          //       type: "success",
+          //       title: "提示信息",
+          //       message: res.Msg,
+          //     });
+          //     this.getData();
+          //   } else {
+          //     this.$notify({
+          //       type: "error",
+          //       title: "提示信息",
+          //       message: res.Msg,
+          //     });
+          //   }
+          // });
         })
         .catch(() => {
           this.$notify({
