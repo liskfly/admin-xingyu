@@ -45,27 +45,104 @@ export function QueryBadCodebasicInformation(data) {
     });
 }
 //新增不良代码
-export function InsertBadCodebasicInformation(data) {
+export function InsertBadCodeInformation(data) {
     return request({
-        url: "/Repair/InsertBadCodebasicInformation",
+        url: "/Repair/InsertBadCodeInformation",
         method: "post",
         data,
     });
 }
 //修改不良代码
-export function UpdateBadCodebasicInformation(data) {
+export function UpdateBadCodeInformation(data) {
     return request({
-        url: "/Repair/UpdateBadCodebasicInformation",
+        url: "/Repair/UpdateBadCodeInformation",
         method: "post",
         data,
     });
 }
 //删除不良代码
-export function DeleteBadCodebasicInformation(data) {
+export function DeleteBadCodeInformation(data) {
     return request({
-        url: "/Repair/DeleteBadCodebasicInformation",
+        url: "/Repair/DeleteBadCodeInformation",
+        method: "post",
+        data,
+    });
+}
+//获取线体
+export function QueryMfgLine(data) {
+    return request({
+        url: "/Repair/QueryMfgLine",
+        method: "post",
+        data,
+    });
+}
+//获取设备
+export function QueryEquipment(data) {
+    return request({
+        url: "/Repair/QueryEquipment",
         method: "post",
         data,
     });
 }
 
+//新增不良产品信息
+export function InsertXYL_BadProductInformation(data) {
+    return request({
+        url: "/Repair/InsertXYL_BadProductInformation",
+        method: "post",
+        data,
+    });
+}
+
+
+
+export function QueryXYL_BadProductInformation(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformation",
+        method: "post",
+        data,
+    });
+}
+//查询不良待维修记录
+export function QueryXYL_BadProductInformationFromContainer(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformationFromContainer",
+        method: "post",
+        data,
+    });
+}
+//维修操作
+export function UpdateXYL_BadProductInformation(data) {
+    return request({
+        url: "/Repair/UpdateXYL_BadProductInformation",
+        method: "post",
+        data,
+    });
+}
+
+//查询报废数据
+export function QueryXYL_BadProductInformationScrap(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformationScrap",
+        method: "post",
+        data,
+    });
+}
+
+//报废确认
+export function UpdateXYL_BadProductInformationScrapRevd(data) {
+    return request({
+        url: "/Repair/UpdateXYL_BadProductInformationScrapRevd",
+        method: "post",
+        data,
+    });
+}
+
+//维修记录
+export function QueryXYL_BadProductInformationRepairRecord(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformationRepairRecord",
+        method: "post",
+        data,
+    });
+}

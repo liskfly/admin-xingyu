@@ -8,8 +8,8 @@
                 <el-form class="inbound" ref="formRef" :inline="true" :model="form" label-width="auto"
                     @submit.native.prevent>
                     <el-form-item label="PCB条码">
-                        <el-input v-model.trim="barCode" ref="inputRef" :autofocus="inputFocus" style="width: 500px"
-                            placeholder="请输入条码" @keyup.enter.native="getChange" />
+                        <el-input v-model.trim="barCode" ref="inputRef" style="width: 500px" placeholder="请输入条码"
+                            @keyup.enter.native="getChange" />
                     </el-form-item>
                 </el-form>
                 <!-- <div class="text-xl font-bold text-[#00B400]" v-show="msgType === true || msgTitle === ''">
@@ -40,19 +40,19 @@
                             <el-input v-model="row.badPartNumber" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="badPhenomenon" label="不良现象">
+                    <el-table-column prop="badphenomena_value" label="不良现象">
                         <template v-slot="{ row }">
-                            <el-input v-model="row.badPhenomenon" />
+                            <el-input v-model="row.badphenomena_value" />
                         </template>
                     </el-table-column>
                     <el-table-column prop="repairAction" label="维修操作">
                         <template v-slot="{ row }">
                             <el-select v-model="row.repairAction" placeholder="请选择">
-                            <el-option label="误判" value="1" />
-                            <el-option label="常规维修" value="2" />
-                            <el-option label="更换元器件" value="3" />
-                            <el-option label="报废" value="4" />
-                        </el-select>
+                                <el-option label="误判" value="1" />
+                                <el-option label="常规维修" value="2" />
+                                <el-option label="更换元器件" value="3" />
+                                <el-option label="报废" value="4" />
+                            </el-select>
                             <!-- <el-input v-model="row.trayId" :disabled="form.repairAction != 3" /> -->
                         </template>
                     </el-table-column>
@@ -64,31 +64,19 @@
                 </el-table>
             </div>
         </div>
-        <!-- <div>
-            <div class="h-8 flex items-center text-lg text-white bg-cyan">
-                <span class="ml-5">维修操作</span>
-            </div>
-            <div class="p-2">
-                <el-form ref="formRef" :model="form" label-width="auto" :inline="true">
-                    <el-form-item label="维修操作" prop="name">
-                        <el-select v-model="form.repairAction" placeholder="请选择">
-                            <el-option label="误判" value="1" />
-                            <el-option label="常规维修" value="2" />
-                            <el-option label="更换元器件" value="3" />
-                            <el-option label="报废" value="4" />
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
-        </div> -->
 
-        <div class="flex justify-end">
-            <el-button>重置</el-button><el-button type="primary">提交</el-button>
+        <div class="flex justify-end p-2">
+            <el-button>重置</el-button><el-button type="primary" @click="onSubmit">提交</el-button>
         </div>
     </div>
 </template>
 
 <script>
+import {
+    QueryXYL_BadProductInformationFromContainer,
+    UpdateXYL_BadProductInformation,
+} from "@/api/repairApi";
+import { getToken } from "@/utils/auth";
 export default {
     data() {
         return {
@@ -109,7 +97,45 @@ export default {
         };
     },
     methods: {
-        getChange() { },
+        getChange() {
+            QueryXYL_BadProductInformationFromContainer({ pcbid: this.barCode }).then(
+                (res) => {
+                    if (res.Success) {
+                        this.form.tableData = res.Data;
+                    } else {
+                    }
+                }
+            );
+        },
+        onSubmit() {
+            let data={
+                repairList:[],
+                UserNo:getToken(),
+            }
+            this.form.tableData.forEach((item) => {
+                data.repairList.push({
+                    baddata_id: item.baddata_id,
+                    baddata_way: item.repairAction,
+                    productid:[]
+                });
+            });
+            UpdateXYL_BadProductInformation(data).then((res) => {
+                if(res.Success) {
+                   this.$notify({
+                    title:"提示信息",
+
+                    message: res.Msg,
+                    type: "success",
+                   })
+                } else {
+                   this.$notify({
+                    title:"提示信息",
+                    message: res.Msg,
+                    type: "error",
+                   })
+                }
+            });
+         },
     },
 };
 </script>

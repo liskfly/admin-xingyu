@@ -141,7 +141,7 @@
     >
       <span class="dio-msg">{{ key.Msg }}</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="key.dialogVisible = false">取 消</el-button>
+        <!-- <el-button @click="key.dialogVisible = false">取 消</el-button> -->
         <el-button type="primary" @click="key.dialogVisible = false"
           >确 定</el-button
         >

@@ -72,7 +72,7 @@
           </el-table-column>
           <el-table-column prop="Spare_Devcie" label="报废设备">
           </el-table-column>
-          <el-table-column prop="Spare_User" label="保废人"> </el-table-column>
+          <el-table-column prop="Spare_User" label="报废人"> </el-table-column>
           <el-table-column prop="create_uid" label="创建人"></el-table-column>
           <el-table-column prop="create_time" label="创建时间">
           </el-table-column>
@@ -148,7 +148,7 @@
         <el-form-item label="报废设备" prop="Spare_Devcie">
           <el-input v-model="addForm.Spare_Devcie"></el-input>
         </el-form-item>
-        <el-form-item label="保废人" prop="Spare_User">
+        <el-form-item label="报废人" prop="Spare_User">
           <el-input v-model="addForm.Spare_User"></el-input>
         </el-form-item>
         <!-- <el-form-item label="状态" prop="status">
@@ -188,7 +188,7 @@
         <el-form-item label="报废设备" prop="Spare_Devcie">
           <el-input v-model="changeForm.Spare_Devcie"></el-input>
         </el-form-item>
-        <el-form-item label="保废人" prop="Spare_User">
+        <el-form-item label="报废人" prop="Spare_User">
           <el-input v-model="changeForm.Spare_User"></el-input>
         </el-form-item>
         <!-- <el-form-item label="状态" prop="status">
