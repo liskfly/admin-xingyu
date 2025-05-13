@@ -1,8 +1,13 @@
 <template>
   <div class="p-2">
     <el-card :body-style="{ padding: '8px' }">
-      <div class="mb-2">
+      <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="openAdd">添加</el-button>
+        <div>
+          <el-input v-model="getForm.panelmerge_id" placeholder="请输入合并ID"  style="width: 350px"  @change="getData" clearable> >
+            <el-button slot="append" icon="el-icon-search" @click="getData"></el-button>
+          </el-input>
+        </div>
       </div>
       <el-table  :data="
             tableData.slice(
@@ -83,7 +88,7 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="40502"
                   @select="change1"  >
                 
                 </el-autocomplete>
@@ -118,7 +123,7 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="40502"
                   @select="change2"  >
                 
                 </el-autocomplete>
@@ -164,8 +169,8 @@
             </el-table-column>
 
             <el-table-column label="拼板物料编码">
-              <template v-slot="{ row }">
-                <el-select v-model="row.panelmergebom_no"  placeholder="" size="small"  filterable  @change="changePuzzle1" style="width: 100%;">
+              <template v-slot="{ row ,$index}">
+                <el-select v-model="row.panelmergebom_no"  placeholder="" size="small"  filterable  @change="changePuzzle1($event,$index)" style="width: 100%;">
                   <el-option v-for="item in puzzlesOptions"
                     :key="item.PN"
                     :label="item.PN"
@@ -310,9 +315,9 @@
               </template>
             </el-table-column>
             <el-table-column label="拼板物料编码">
-              <template v-slot="{ row }">
+              <template v-slot="{ row,$index}">
                 <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
-                <el-select v-model="row.panelmergebom_no"  placeholder=""  size="small" filterable  @change="changePuzzle" style="width: 100%;">
+                <el-select v-model="row.panelmergebom_no"  placeholder=""  size="small" filterable  @change="changePuzzle($event,$index)" style="width: 100%;">
                   <el-option v-for="item in puzzlesOptions"
                     :key="item.PN"
                     :label="item.PN"
@@ -453,7 +458,11 @@ export default {
         //   this.form.panelmerge_right_no +
         //   "-1";
       }
-    }
+    },
+    "getForm.panelmerge_id"(val) {
+     this.currentPage=1
+      this.getData();
+    },
    
   },
   beforeMount() {
@@ -549,7 +558,7 @@ export default {
    
     },
     remoteMethod(query,cb) {
-      if (query.length >= 7) {
+      if (query.length >= 5) {
         QueryFoundation({
           part_no: query,
           part_type: "0",
@@ -564,31 +573,39 @@ export default {
         });
       }
     },
-    changePuzzle1(val) {
-      // console.log(val);
+    changePuzzle1(val,index) {
+      // console.log(val,index);
       const selectedOption = this.puzzlesOptions.find(
         (option) => option.PN === val
       );
+
       if (selectedOption) {
-        this.form.bomlist[0].panelmergebom_no = selectedOption.PN;
-        this.form.bomlist[0].panelmergebom_name = selectedOption.name;
-        this.form.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
+        this.form.bomlist[index].panelmergebom_no = selectedOption.PN;
+        this.form.bomlist[index].panelmergebom_name = selectedOption.name;
+        this.form.bomlist[index].panelmergebom_desc = selectedOption.pn_spec;
       }
     },
-    changePuzzle(val) {
-      // console.log(val);
+    changePuzzle(val,index) {
+      // console.log(val,index);
       
       const selectedOption = this.puzzlesOptions.find(
         (option) => option.PN === val
       );
       if (selectedOption) {
-        this.editForm.bomlist[0].panelmergebom_name = selectedOption.name;
-        this.editForm.bomlist[0].panelmergebom_desc = selectedOption.pn_spec;
+        this.editForm.bomlist[index].panelmergebom_name = selectedOption.name;
+        this.editForm.bomlist[index].panelmergebom_desc = selectedOption.pn_spec;
       }
 
     },
     onSubmit() {
       this.form.panelmerge_updateuser = getToken();
+      if(this.form.bomlist.length===1&&this.form.bomlist[0].panelmergebom_no===""){
+        this.$notify.error({
+          title: "提示信息",
+          message: "请添加拼板物料编码",
+        });
+        return
+      }
       addPanelmergeList(this.form).then((res) => {
         if (res.Success) {
           this.$notify.success({
@@ -734,13 +751,13 @@ export default {
       };
     },
     onDeailSubmit() {
-      if(this.editForm.bomlist.length===1&&this.editForm.bomlist[0].panelmergebom_no===""){
-        this.$notify.error({
-          title: "提示信息",
-          message: "请添加拼板物料编码",
-        });
-        return
-      }
+      // if(this.editForm.bomlist.length===1&&this.editForm.bomlist[0].panelmergebom_no===""){
+      //   this.$notify.error({
+      //     title: "提示信息",
+      //     message: "请添加拼板物料编码",
+      //   });
+      //   return
+      // }
       this.form.panelmerge_updateuser = getToken();
       addPanelmergeList(this.editForm).then((res) => {
         if (res.Success) {

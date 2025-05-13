@@ -1,8 +1,14 @@
 <template>
   <div class="puzzles p-2">
     <el-card :body-style="{ padding: '8px' }">
-      <div class="mb-2">
+      <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="openAdd">添加</el-button>
+        <div>
+          <el-input v-model="getForm.SearchText" placeholder="请输入拼板物料编号" style="width: 350px" @change="getData"
+            clearable>
+            <el-button slot="append" icon="el-icon-search" @click="getData"></el-button>
+          </el-input>
+        </div>
       </div>
       <el-table :data="tableData" border :height="tableHeight" style="width: 100%">
         <!-- <el-table-column type="index" label="序号" width="55" /> -->
@@ -87,9 +93,8 @@
             </el-table-column>
             <el-table-column label="PCB物料编码">
               <template slot-scope="scope">
-                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
-                  @select="change($event, scope.$index)" size="mini">
-
+                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod"
+                  placeholder="10505开头的物料编码" @select="change($event, scope.$index)" size="mini">
                 </el-autocomplete>
                 <!-- <el-select v-model="scope.row.pcb_code" @change="change($event, scope.$index)" filterable remote
                   reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod" size="mini" >
@@ -196,9 +201,8 @@
             </el-table-column>
             <el-table-column label="PCB物料编码" prop="pcb_code">
               <template slot-scope="scope">
-                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" placeholder="10505"
                   @select="change1($event, scope.$index)" size="mini">
-
                 </el-autocomplete>
                 <!-- <el-select v-model="scope.row.pcb_code" @change="change1($event, scope.$index)" filterable remote
                   reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod1" size="mini">
@@ -332,15 +336,12 @@ export default {
       rules: {
         "list.pn": [
           { required: true, message: "拼板物料编号不能为空", trigger: "blur" },
-
         ],
-       " list.name": [
+        " list.name": [
           { required: true, message: "物料名称不能为空", trigger: "change" },
-
         ],
         "list.model": [
           { required: true, message: "物料规格不能为空", trigger: "change" },
-
         ],
         "list.side": [
           { required: true, message: "单双面不能为空", trigger: "change" },
@@ -348,78 +349,96 @@ export default {
       },
     };
   },
-  beforeMount() {
-    this.getScreenHeight();
-    this.getData();
-  },
-  mounted() {
-    window.addEventListener("resize", this.getScreenHeight);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.getScreenHeight);
-  },
-  methods: {
-    getData() {
-      findPanelizationList(this.getForm).then((res) => {
-        if (res.Success) {
-          this.tableData = res.Data.list;
-          this.total = res.Data.Total;
-        } else {
-          this.tableData = [];
-          this.total = 0;
-        }
-      });
+  watch: {
+    "getForm.SearchText": (newVal) => {
+      this.getForm.PageIndex = 1;
+      this.getData();
+    }},
+    beforeMount() {
+      this.getScreenHeight();
+      this.getData();
     },
-    openAdd() {
-      this.dialogVisible = true;
+    mounted() {
+      window.addEventListener("resize", this.getScreenHeight);
     },
-
-    change(val, index) {
-      this.form.Detail[index].name = val.name;
-      this.form.Detail[index].model = val.pn_spec;
+    beforeDestroy() {
+      window.removeEventListener("resize", this.getScreenHeight);
     },
-    remoteMethod(query, cb) {
-      const reg = /^10505\d*$/;
-      if (query !== "" && reg.test(query)) {
-
-        findPartNumberData(query).then((res) => {
+    methods: {
+      getData() {
+        findPanelizationList(this.getForm).then((res) => {
           if (res.Success) {
-            const searchData = JSON.parse(res.Data);
-            cb(searchData.map((item) => {
-              return {
-                value: item.PN,
-                ...item
-              };
-            }));
-          }
-        });
-      }
-    },
-
-    change1(val, index) {
-
-      this.smallBoardTable[index].name = val.name;
-      this.smallBoardTable[index].model = val.pn_spec;
-    },
-    remoteMethod1(query) {
-      const reg = /^10505\d*$/;
-      if (query !== "" && reg.test(query)) {
-        findPartNumberData(query).then((res) => {
-          if (res.Success) {
-            this.options1 = JSON.parse(res.Data);
+            this.tableData = res.Data.list;
+            this.total = res.Data.Total;
           } else {
-            this.$notify({
-              type: "error",
-              title: "提示信息",
-              message: res.Msg,
-            });
+            this.tableData = [];
+            this.total = 0;
           }
         });
-      }
-    },
-    removeBoardItem(index) {
-      this.form.Detail.splice(index, 1);
-      if (this.form.Detail.length === 0) {
+      },
+      openAdd() {
+        this.dialogVisible = true;
+      },
+
+      change(val, index) {
+        this.form.Detail[index].name = val.name;
+        this.form.Detail[index].model = val.pn_spec;
+      },
+      remoteMethod(query, cb) {
+        const reg = /^10505\d*$/;
+        if (query !== "" && reg.test(query)) {
+          findPartNumberData(query).then((res) => {
+            if (res.Success) {
+              const searchData = JSON.parse(res.Data);
+              cb(
+                searchData.map((item) => {
+                  return {
+                    value: item.PN,
+                    ...item,
+                  };
+                })
+              );
+            }
+          });
+        }
+      },
+
+      change1(val, index) {
+        this.smallBoardTable[index].name = val.name;
+        this.smallBoardTable[index].model = val.pn_spec;
+      },
+      remoteMethod1(query) {
+        const reg = /^10505\d*$/;
+        if (query !== "" && reg.test(query)) {
+          findPartNumberData(query).then((res) => {
+            if (res.Success) {
+              this.options1 = JSON.parse(res.Data);
+            } else {
+              this.$notify({
+                type: "error",
+                title: "提示信息",
+                message: res.Msg,
+              });
+            }
+          });
+        }
+      },
+      removeBoardItem(index) {
+        this.form.Detail.splice(index, 1);
+        if (this.form.Detail.length === 0) {
+          this.form.Detail.push({
+            version: "",
+            small_board_qty: 0,
+            finished_code: "",
+            name: "",
+            model: "",
+            pcb_code: "",
+            module_start: 0,
+            module_end: 0,
+          });
+        }
+      },
+      addSmallBoard() {
         this.form.Detail.push({
           version: "",
           small_board_qty: 0,
@@ -430,207 +449,181 @@ export default {
           module_start: 0,
           module_end: 0,
         });
-      }
-    },
-    addSmallBoard() {
-      this.form.Detail.push({
-        version: "",
-        small_board_qty: 0,
-        finished_code: "",
-        name: "",
-        model: "",
-        pcb_code: "",
-        module_start: 0,
-        module_end: 0,
-      });
-    },
-    deleteBoard() {
-      this.form.smallBoardTable.pop();
-    },
-    handleDelete(row) {
-      this.$confirm("是否删除该拼板物料", "提示", {
-        type: "warning",
-      })
-        .then(() => {
-          DeletePanelizationList(row.PN).then((res) => {
-            if (res.Success) {
-              this.$notify({
-                type: "success",
-                title: "提示信息",
-                message: res.Msg,
-              });
-              this.getData();
-            } else {
+      },
+      deleteBoard() {
+        this.form.smallBoardTable.pop();
+      },
+      handleDelete(row) {
+        this.$confirm("是否删除该拼板物料", "提示", {
+          type: "warning",
+        })
+          .then(() => {
+            DeletePanelizationList(row.PN).then((res) => {
+              if (res.Success) {
+                this.$notify({
+                  type: "success",
+                  title: "提示信息",
+                  message: res.Msg,
+                });
+                this.getData();
+              } else {
+                this.$notify({
+                  type: "error",
+                  title: "提示信息",
+                  message: res.Msg,
+                });
+              }
+            });
+          })
+          .catch(() => {
+            this.$notify({
+              type: "info",
+              title: "提示信息",
+              message: "已取消删除",
+            });
+          });
+      },
+      onSubmit() {
+        // console.log(this.form);
+
+        this.$refs.formRef.validate((valid) => {
+          if (valid) {
+            // console.log("submit!");
+            if (
+              this.form.Detail.length === 1 &&
+              this.form.Detail[0].finished_code === ""
+            ) {
               this.$notify({
                 type: "error",
                 title: "提示信息",
-                message: res.Msg,
+                message: "小板明细不能为空",
               });
+              return;
             }
-          });
-        })
-        .catch(() => {
-          this.$notify({
-            type: "info",
-            title: "提示信息",
-            message: "已取消删除",
-          });
-        });
-    },
-    onSubmit() {
-      // console.log(this.form);
+            this.form.Detail = this.form.Detail.filter(
+              (item) => item.finished_code !== ""
+            );
+            this.form.list.cr_user = getToken();
+            this.form.list.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+            this.form.Detail.forEach((item) => {
+              item.cr_user = getToken();
+              item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+            });
+            addPanelizationdetail(this.form).then((res) => {
+              if (res.Success) {
+                this.$notify({
+                  type: "success",
+                  title: "提示信息",
+                  message: res.Msg,
+                });
+                // this.$refs.formRef.resetFields();
+                // console.log(this.form);
 
-      this.$refs.formRef.validate((valid) => {
-        if (valid) {
-          // console.log("submit!");
-          if (this.form.Detail.length === 1 && this.form.Detail[0].finished_code === "") {
+                this.restForm();
+                this.dialogVisible = false;
+                this.getData();
+              } else {
+                this.$notify({
+                  type: "error",
+                  title: "提示信息",
+                  message: res.Msg,
+                });
+              }
+            });
+          } else {
             this.$notify({
               type: "error",
               title: "提示信息",
-              message: "小板明细不能为空",
+              message: "请检查表单数据",
             });
-            return;
+            return false;
           }
-          this.form.Detail = this.form.Detail.filter(
-            (item) => item.finished_code !== ""
-          );
-          this.form.list.cr_user = getToken();
-          this.form.list.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
-          this.form.Detail.forEach((item) => {
-            item.cr_user = getToken();
-            item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
-          });
-          addPanelizationdetail(this.form).then((res) => {
-            if (res.Success) {
-              this.$notify({
-                type: "success",
-                title: "提示信息",
-                message: res.Msg,
-              });
-              // this.$refs.formRef.resetFields();
-              // console.log(this.form);
-
-              this.restForm();
-              this.dialogVisible = false;
-              this.getData();
-            } else {
-              this.$notify({
-                type: "error",
-                title: "提示信息",
-                message: res.Msg,
-              });
-            }
-          });
-        } else {
-          this.$notify({
-            type: "error",
-            title: "提示信息",
-            message: "请检查表单数据",
-          });
-          return false;
-        }
-      });
-
-    },
-    restForm() {
-      this.form = {
-        list: {
-          pn: "",
-          model: "",
-          side: "",
-          name: "",
-          version: "",
-        },
-        Detail: [
-          {
-            version: "",
-            small_board_qty: 0,
-            finished_code: "",
-            name: "",
+        });
+      },
+      restForm() {
+        this.form = {
+          list: {
+            pn: "",
             model: "",
-            pcb_code: "",
-            module_start: 0,
-            module_end: 0,
+            side: "",
+            name: "",
+            version: "",
           },
-        ],
-      };
-    },
-    addCancel() {
-      this.dialogVisible = false;
-      this.$refs.formRef.resetFields();
-      this.form = {
-        list: {
-          pn: "",
-          model: "",
-          side: "",
-          name: "",
-          version: "",
-        },
-        Detail: [
-          {
-            version: "",
-            small_board_qty: 0,
-            finished_code: "",
-            name: "",
+          Detail: [
+            {
+              version: "",
+              small_board_qty: 0,
+              finished_code: "",
+              name: "",
+              model: "",
+              pcb_code: "",
+              module_start: 0,
+              module_end: 0,
+            },
+          ],
+        };
+      },
+      addCancel() {
+        this.dialogVisible = false;
+        this.$refs.formRef.resetFields();
+        this.form = {
+          list: {
+            pn: "",
             model: "",
-            pcb_code: "",
-            module_start: 0,
-            module_end: 0,
+            side: "",
+            name: "",
+            version: "",
           },
-        ],
-      };
-    },
-    handleEdit(row) {
-      // console.log(row);
-      this.upDateForm.pnl_code = row.PN;
-      this.editForm = {
-        pn: row.PN,
-        model: row.pn_spec,
-        side: row.faceNumber,
-        name: row.name,
-        version: row.version,
-        softwareVersion: row.softwareVersion,
-      };
-      findPnDetail(row.PN).then((res) => {
-        if (res.Data == null || res.Data.length === 0) {
-          this.smallBoardTable.push({
-            version: "",
-            small_board_qty: 0,
-            finished_code: "",
-            name: "",
-            model: "",
-            pcb_code: "",
-            module_start: 0,
-            module_end: 0,
-          });
-        } else {
-          this.smallBoardTable = JSON.parse(res.Data);
-        }
-        this.detailVisible = true;
-        // console.log(this.smallBoardTable);
-      });
-    },
-    addDetailCancel() {
-      this.detailVisible = false;
-      this.smallBoardTable = [];
-      this.$refs.editFormRef.resetFields();
-    },
-    handleDetailEdit() {
-      this.smallBoardTable.push({
-        version: "",
-        small_board_qty: 0,
-        finished_code: "",
-        name: "",
-        model: "",
-        pcb_code: "",
-        module_start: 0,
-        module_end: 0,
-      });
-    },
-    handleDetailDelete(row) {
-      // console.log(row);
-      this.smallBoardTable.splice(row, 1);
-      if (this.smallBoardTable.length === 0) {
+          Detail: [
+            {
+              version: "",
+              small_board_qty: 0,
+              finished_code: "",
+              name: "",
+              model: "",
+              pcb_code: "",
+              module_start: 0,
+              module_end: 0,
+            },
+          ],
+        };
+      },
+      handleEdit(row) {
+        // console.log(row);
+        this.upDateForm.pnl_code = row.PN;
+        this.editForm = {
+          pn: row.PN,
+          model: row.pn_spec,
+          side: row.faceNumber,
+          name: row.name,
+          version: row.version,
+          softwareVersion: row.softwareVersion,
+        };
+        findPnDetail(row.PN).then((res) => {
+          if (res.Data == null || res.Data.length === 0) {
+            this.smallBoardTable.push({
+              version: "",
+              small_board_qty: 0,
+              finished_code: "",
+              name: "",
+              model: "",
+              pcb_code: "",
+              module_start: 0,
+              module_end: 0,
+            });
+          } else {
+            this.smallBoardTable = JSON.parse(res.Data);
+          }
+          this.detailVisible = true;
+          // console.log(this.smallBoardTable);
+        });
+      },
+      addDetailCancel() {
+        this.detailVisible = false;
+        this.smallBoardTable = [];
+        this.$refs.editFormRef.resetFields();
+      },
+      handleDetailEdit() {
         this.smallBoardTable.push({
           version: "",
           small_board_qty: 0,
@@ -641,18 +634,33 @@ export default {
           module_start: 0,
           module_end: 0,
         });
-      }
-    },
-    onDetailSubmit() {
-      // console.log(this.smallBoardTable);
-      if (this.smallBoardTable.length === 1 && this.smallBoardTable[0].finished_code === "") {
-        this.$notify({
-          type: "error",
-          title: "提示信息",
-          message: "小板明细不能为空",
-        });
-        return;
-      } else {
+      },
+      handleDetailDelete(row) {
+        // console.log(row);
+        this.smallBoardTable.splice(row, 1);
+        if (this.smallBoardTable.length === 0) {
+          this.smallBoardTable.push({
+            version: "",
+            small_board_qty: 0,
+            finished_code: "",
+            name: "",
+            model: "",
+            pcb_code: "",
+            module_start: 0,
+            module_end: 0,
+          });
+        }
+      },
+      onDetailSubmit() {
+        // console.log(this.smallBoardTable);
+        // if (this.smallBoardTable.length === 1 && this.smallBoardTable[0].finished_code === "") {
+        //   this.$notify({
+        //     type: "error",
+        //     title: "提示信息",
+        //     message: "小板明细不能为空",
+        //   });
+        //   return;
+        // } else {
         this.smallBoardTable = this.smallBoardTable.filter(
           (item) => item.finished_code !== ""
         );
@@ -678,26 +686,25 @@ export default {
             });
           }
         });
-      }
-
+        // }
+      },
+      handleSizeChange(value) {
+        //
+        this.getForm.PageSize = value;
+        this.getData();
+      },
+      handleCurrentChange(val) {
+        this.getForm.PageIndex = val;
+        this.getData();
+      },
+      getScreenHeight() {
+        this.$nextTick(() => {
+          this.tableHeight = window.innerHeight - 220;
+          // this.tableHeight1 =
+        });
+      },
     },
-    handleSizeChange(value) {
-      //
-      this.getForm.PageSize = value;
-      this.getData();
-    },
-    handleCurrentChange(val) {
-      this.getForm.PageIndex = val;
-      this.getData();
-    },
-    getScreenHeight() {
-      this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 220;
-        // this.tableHeight1 =
-      });
-    },
-  },
-};
+  }
 </script>
 
 <style lang="scss" scoped>
