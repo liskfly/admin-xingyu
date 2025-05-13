@@ -44,6 +44,13 @@
                     </el-table-column>
                     <el-table-column prop="baddata_code" label="不良现象">
                         <template v-slot="{ row }">
+                            <el-select v-model="row.baddata_code"   filterable  style="width: 100%;">
+                                <el-option v-for="item in badList"
+                                    :key="item.badphenomena_name"
+                                    :label="item.badphenomena_value"
+                                    :value="item.badphenomena_name">
+                                </el-option>
+                            </el-select>
                             
                             <!-- <el-input v-model="row.baddata_remark" size="small" /> -->
                         </template>
@@ -91,7 +98,7 @@ import {
     QueryMfgLine,
     QueryEquipment,
     InsertXYL_BadProductInformation,
-    
+    QueryBadCodebasicInformation
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 export default {
@@ -118,6 +125,7 @@ export default {
                 line: "",
                 equipment: "",
             },
+            badList:[]
         };
     },
     computed: {
@@ -150,14 +158,21 @@ export default {
     },
     mounted() {
         window.addEventListener("resize", this.getScreenHeight);
-        // this.getData();
+        this.getBadCode();
         this.getLineData();
         this.getEquipmentData();
+      
     },
     beforeDestroy() {
         window.removeEventListener("resize", this.getScreenHeight);
     },
     methods: {
+
+        getBadCode(){
+            QueryBadCodebasicInformation({  badphenomena_name: ""}).then((res) => {
+                this.badList = res.Data;
+            });
+        },
         getLineData() {
             QueryMfgLine({
                 LineName: "",
@@ -195,7 +210,7 @@ export default {
                 baddata_remark: "",
             }];
         },
-        handleSubmit() {   
+        handleSubmit() {  
             InsertXYL_BadProductInformation(this.form).then((res) => {
                 if (res.Success) {
                     this.$notify({

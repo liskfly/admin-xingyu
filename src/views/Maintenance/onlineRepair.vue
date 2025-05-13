@@ -30,35 +30,37 @@
                     <el-table-column type="index" width="50" label="序号">
                     </el-table-column>
 
-                    <el-table-column prop="badTags" label="不良位号">
-                        <template v-slot="{ row }">
-                            <el-input v-model="row.badTags" />
-                        </template>
+                    <el-table-column prop="baddata_item" label="不良位号">
+                        <!-- <template v-slot="{ row }">
+                            <el-input v-model="row.baddata_item" />
+                        </template> -->
                     </el-table-column>
-                    <el-table-column prop="badPartNumber" label="不良料号">
-                        <template v-slot="{ row }">
-                            <el-input v-model="row.badPartNumber" />
-                        </template>
+                    <el-table-column prop="baddata_component" label="不良料号">
+                        <!-- <template v-slot="{ row }">
+                            <el-input v-model="row.baddata_component" />
+                        </template> -->
                     </el-table-column>
                     <el-table-column prop="badphenomena_value" label="不良现象">
-                        <template v-slot="{ row }">
+                        <!-- <template v-slot="{ row }">
                             <el-input v-model="row.badphenomena_value" />
-                        </template>
+                        </template> -->
                     </el-table-column>
                     <el-table-column prop="repairAction" label="维修操作">
-                        <template v-slot="{ row }">
-                            <el-select v-model="row.repairAction" placeholder="请选择">
-                                <el-option label="误判" value="1" />
-                                <el-option label="常规维修" value="2" />
-                                <el-option label="更换元器件" value="3" />
-                                <el-option label="报废" value="4" />
+                        <template v-slot="{ row, $index }">
+                            <el-select v-model="row.repairAction" placeholder="请选择"
+                                @change="handleChange($event, $index)">
+                                <el-option label="误判" value="误判" />
+                                <el-option label="常规维修" value="常规维修" />
+                                <el-option label="更换物料" value="更换物料" />
+                                <el-option label="报废" value="报废" />
                             </el-select>
                             <!-- <el-input v-model="row.trayId" :disabled="form.repairAction != 3" /> -->
                         </template>
                     </el-table-column>
-                    <el-table-column prop="badPhenomenon" label="更换料盘ID">
-                        <template v-slot="{ row }">
-                            <el-input v-model="row.trayId" :disabled="row.repairAction != 3" />
+                    <el-table-column label="更换料盘ID">
+                        <template v-slot="{ row, $index }">
+                            <el-input v-model="row.trayId" :ref="`trayIdRef${$index}`"
+                                :disabled="row.repairAction != '更换物料'" />
                         </template>
                     </el-table-column>
                 </el-table>
@@ -80,21 +82,19 @@ import { getToken } from "@/utils/auth";
 export default {
     data() {
         return {
-            barCode: "",
+            barCode: "4050240864200-1c-----0002",
             tableData: [],
             form: {
                 repairAction: "",
 
-                tableData: [
-                    {
-                        badTags: "D001",
-                        badPartNumber: "40014322",
-                        badPhenomenon: "不良原因1",
-                        trayId: "",
-                    },
-                ],
+                tableData: [],
             },
         };
+    },
+    mounted() {
+        this.$nextTick(() => {
+            this.$refs.inputRef.focus();
+        });
     },
     methods: {
         getChange() {
@@ -107,35 +107,66 @@ export default {
                 }
             );
         },
-        onSubmit() {
-            let data={
-                repairList:[],
-                UserNo:getToken(),
+        handleChange(val, index) {
+           if(val == "更换物料") {
+                 
+            }else{
+                this.form.tableData[index].trayId = null;
             }
+            // if (val == 3) {
+            //     this.$refs.trayIdRef0.focus();
+
+
+            // }
+        },
+        onSubmit() {
+            let data = {
+                repairList: [],
+                UserNo: getToken(),
+            };
             this.form.tableData.forEach((item) => {
-                data.repairList.push({
+                if(item.trayId == null || item.trayId == undefined || item.trayId == "") {
+                    data.repairList.push({
                     baddata_id: item.baddata_id,
                     baddata_way: item.repairAction,
-                    productid:[]
+                    productid: [
+                       
+                    ],
                 });
+                }else{
+                    data.repairList.push({
+                        baddata_id: item.baddata_id,
+                        baddata_way: item.repairAction,
+                        productid: [
+                            item.trayId
+                            
+                        ],
+                    });
+                }
+               
             });
             UpdateXYL_BadProductInformation(data).then((res) => {
-                if(res.Success) {
-                   this.$notify({
-                    title:"提示信息",
+                if (res.Success) {
+                    this.$notify({
+                        title: "提示信息",
 
-                    message: res.Msg,
-                    type: "success",
-                   })
+                        message: res.Msg,
+                        type: "success",
+                    });
+                    this.barCode = "";
+                    this.form.tableData = [];
+                    this.$nextTick(() => {
+                        this.$refs.inputRef.focus();
+                    });
                 } else {
-                   this.$notify({
-                    title:"提示信息",
-                    message: res.Msg,
-                    type: "error",
-                   })
+                    this.$notify({
+                        title: "提示信息",
+                        message: res.Msg,
+                        type: "error",
+                    });
                 }
             });
-         },
+        },
     },
 };
 </script>

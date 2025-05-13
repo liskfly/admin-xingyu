@@ -16,8 +16,7 @@
                         <el-button type="primary" @click="getData()" icon="el-icon-search">查询</el-button></el-form-item>
                 </el-form>
             </div>
-            <el-table :data="tableData
-                " border :height="tableHeight" style="width: 100%" stripe>
+            <el-table :data="tableData" border :height="tableHeight" style="width: 100%" stripe>
                 <!-- 序号列 -->
                 <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
                     <template v-slot="{ $index }">
@@ -26,13 +25,15 @@
                 </el-table-column>
 
                 <!-- 数据列 -->
-                <el-table-column prop="containername" label="PCB条码" />
+                <el-table-column prop="containerName" label="PCB条码" />
                 <el-table-column prop="baddata_line" label="线体" />
                 <el-table-column prop="baddata_equipment" label="设备" />
                 <el-table-column prop="baddata_item" label="不良位号" />
-                <el-table-column prop="badphenomena_value" label="不良现象" />、
-                <el-table-column prop="baddata_user" label="登记人" />
-                <el-table-column prop="baddata_datetime" label="登记时间" />
+                <el-table-column prop="badphenomena_value" label="不良现象" />
+                <el-table-column prop="badphenomena_repairAction" label="维修方法" />
+                <el-table-column prop="badphenomena_repairAction" label="状态" />
+                <el-table-column prop="baddata_confirmuser" label="维修人" />
+                <el-table-column prop="baddata_confirmdatetime" label="维修时间" />
             </el-table>
             <div class="block" style="margin-top: 8px">
                 <el-pagination align="center" background @size-change="handleSizeChange"
@@ -46,7 +47,7 @@
 </template>
 
 <script>
-import { QueryXYL_BadProductInformation } from "@/api/repairApi";
+import { QueryXYL_BadProductInformationRepairRecord } from "@/api/repairApi";
 export default {
     data() {
         return {
@@ -60,11 +61,7 @@ export default {
                 PageSize: 10,
                 SearchText: "",
                 SearchModel: {
-                    baddata_line: "",
-                    baddata_equipment: "",
-                    baddata_pcbid: "",
-                    baddata_item: "",
-                    baddata_code: "",
+                    pcbid: "",
                 },
                 StartTime: "",
                 EndTime: "",
@@ -97,9 +94,9 @@ export default {
     },
     methods: {
         getData() {
-            QueryXYL_BadProductInformation(this.getForm).then((res) => {
-                this.tableData = res.Data.list
-                this.total = res.Data.Total
+            QueryXYL_BadProductInformationRepairRecord(this.getForm).then((res) => {
+                this.tableData = res.Data.list;
+                this.total = res.Data.Total;
             });
             // QueryBadTypebasicInformation(this.getForm).then((res) => {
             //     this.tableData = res.Data;
@@ -121,7 +118,7 @@ export default {
             this.getData();
         },
         getScreenHeight() {
-            this.tableHeight = window.innerHeight - 200;
+            this.tableHeight = window.innerHeight - 210;
         },
     },
 };
