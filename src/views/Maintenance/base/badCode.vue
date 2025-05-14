@@ -14,8 +14,9 @@
                 </el-table-column>
 
                 <!-- 数据列 -->
-                <el-table-column prop="badphenomena_value" label="不良代码" />
-                <el-table-column prop="badphenomena_name" label="不良代码名称" />
+                <el-table-column prop="badphenomena_name" label="不良代码" />
+                <el-table-column prop="badphenomena_value" label="不良描述" />
+               
 
                 <el-table-column prop="badphenomena_fathertype" label="不良代码类别" />
                 <!-- 操作列 -->
@@ -36,16 +37,16 @@
 
             <el-dialog title="添加不良类别" :visible.sync="dialogAddVisible" width="30%" @close="addCancel()">
                 <el-form :model="form" ref="form" label-width="auto">
-                    <el-form-item label="不良类别名称" prop="badphenomena_name">
+                    <el-form-item label="不良代码" prop="badphenomena_name">
                         <el-input v-model="form.badphenomena_name"></el-input>
                     </el-form-item>
-                    <el-form-item label="不良代码" prop="badphenomena_value">
+                    <el-form-item label="不良描述" prop="badphenomena_value">
                         <el-input v-model="form.badphenomena_value"></el-input>
                     </el-form-item>
                     <el-form-item label="不良代码类别" prop="badphenomena_fathertype">
                         <el-select v-model="form.badphenomena_fathertype" placeholder="请选择不良代码类别" style="width: 100%;">
-                            <el-option v-for="item in list" :key="item.badphenomena_id" :label="item.badphenomena_name"
-                                :value="item.badphenomena_id"></el-option>
+                            <el-option v-for="item in list" :key="item.badphenomena_name" :label="item.badphenomena_name"
+                                :value="item.badphenomena_name"></el-option>
                         </el-select>
                         <!-- <el-input v-model="form.badphenomena_fathertype"></el-input> -->
 
@@ -58,17 +59,17 @@
             </el-dialog>
             <el-dialog title="编辑不良类别" :visible.sync="dialogEditVisible" width="30%" @close="editCancel()">
                 <el-form :model="editFrom" ref="editFromRef" label-width="auto">
-                    <el-form-item label="不良类别名称" prop="badphenomena_name">
+                    <el-form-item label="不良代码" prop="badphenomena_name">
                         <el-input v-model="editFrom.badphenomena_name"></el-input>
                     </el-form-item>
-                    <el-form-item label="不良代码" prop="badphenomena_value">
+                    <el-form-item label="不良描述" prop="badphenomena_value">
                         <el-input v-model="editFrom.badphenomena_value"></el-input>
                     </el-form-item>
                     <el-form-item label="不良代码类别" prop="badphenomena_fathertype">
                         <!-- <el-input v-model="editFrom.badphenomena_fathertype"></el-input> -->
                         <el-select v-model="editFrom.badphenomena_fathertype" placeholder="请选择不良代码类别" style="width: 100%;">
-                            <el-option v-for="item in list" :key="item.badphenomena_id" :label="item.badphenomena_name"
-                                :value="item.badphenomena_id"></el-option>      
+                            <el-option v-for="item in list" :key="item.badphenomena_name" :label="item.badphenomena_name"
+                                :value="item.badphenomena_name"></el-option>      
                         </el-select>
                     </el-form-item>
                 </el-form>
@@ -88,7 +89,7 @@ import {
     InsertBadCodeInformation,
     UpdateBadCodeInformation,
     DeleteBadCodeInformation,
-    
+
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 
