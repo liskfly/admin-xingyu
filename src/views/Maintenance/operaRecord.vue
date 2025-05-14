@@ -9,7 +9,7 @@
                             value-format="yyyy-MM-dd">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchText" clearable
+                    <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchModel.pcbid" clearable
                             placeholder="请输入" style="width: 240px" @clear="clearInput"
                             @change="clearInput" /></el-form-item>
                     <el-form-item style="margin-bottom: 0px">
@@ -30,8 +30,14 @@
                 <el-table-column prop="baddata_equipment" label="设备" />
                 <el-table-column prop="baddata_item" label="不良位号" />
                 <el-table-column prop="badphenomena_value" label="不良现象" />
-                <el-table-column prop="badphenomena_repairAction" label="维修方法" />
-                <el-table-column prop="badphenomena_repairAction" label="状态" />
+                <el-table-column prop="baddata_repairway" label="维修方法" />
+                <el-table-column prop="baddata_confirmtype" label="状态" width="100" align="center" >
+                    <template v-slot="{ row }">
+                        <el-tag   effect="dark" v-if="row.baddata_confirmtype == 'Y'" type="success">已维修</el-tag>
+                        <el-tag   effect="dark" v-else-if="row.baddata_confirmtype !='Y' " type="info">未维修</el-tag>
+                       
+                    </template>
+                </el-table-column>
                 <el-table-column prop="baddata_confirmuser" label="维修人" />
                 <el-table-column prop="baddata_confirmdatetime" label="维修时间" />
             </el-table>

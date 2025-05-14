@@ -121,7 +121,7 @@ export default {
             this.getData();
         },
         getScreenHeight() {
-            this.tableHeight = window.innerHeight - 200;
+            this.tableHeight = window.innerHeight - 210;
         },
     },
 };
