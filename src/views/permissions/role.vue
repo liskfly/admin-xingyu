@@ -265,6 +265,7 @@ export default {
     },
     table1(newdata) {
       let searchName = newdata.toLowerCase();
+      this.currentPage = 1;
       return this.tableData.filter((v) => {
         return Object.keys(v).some((key) => {
           return String(v[key]).f().indexOf(searchName) > -1;

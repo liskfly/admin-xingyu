@@ -199,6 +199,7 @@ export default {
     },
     table1(newdata) {
       let searchName = newdata.toLowerCase();
+      this.currentPage = 1;
       return this.tableData.filter((v) => {
         if (
           String(v.PD_model).toLowerCase().indexOf(searchName) > -1 ||
