@@ -88,7 +88,7 @@ export default {
             this.$refs.inputRef.focus();
         });
     },
-    methods: {
+     methods: {
         getChange() {
             QueryXYL_BadProductInformationFromContainer({ pcbid: this.barCode }).then(
                 (res) => {
