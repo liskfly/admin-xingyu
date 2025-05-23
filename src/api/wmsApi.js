@@ -278,3 +278,39 @@ export function QueryPCBBoardData(data) {
     data,
   });
 }
+
+//组装线过站记录查询
+export function GetAssSpecMoveHistory(data) {
+  return request({
+    url: "/AssSpec/GetAssSpecMoveHistory",
+    method: "post",
+    data,
+  });
+}
+
+//组装线过站数据采集记录
+export function GetAssSpecDataList(data) {
+  return request({
+    url: "/AssSpec/GetAssSpecDataList",
+    method: "post",
+    data,
+  });
+}
+
+//组装线过站组件物料记录
+export function GetAssSpecMaterialBind(data) {
+  return request({
+    url: "/AssSpec/GetAssSpecMaterialBind",
+    method: "post",
+    data,
+  });
+}
+
+//组装线过站NG记录
+export function GetAssSpecNGList(data) {
+  return request({
+    url: "/AssSpec/GetAssSpecNGList",
+    method: "post",
+    data,
+  });
+}
