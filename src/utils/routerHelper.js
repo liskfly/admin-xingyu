@@ -85,6 +85,7 @@ export const generateRoutesByFrontEnd = (routes, keys, basePath = "/") => {
 export const generateRoutesByServer = (routes) => {
   const res = [];
   for (const route of routes) {
+
     const data = {
       path: route.path,
       name: route.name,
