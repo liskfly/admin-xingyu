@@ -210,7 +210,7 @@ export function XY_OEE_Calendar(data) {
 
 export function XYL_OEE_ProductCycle(data) {
   return request({
-    url: "/HYCAPI/XYL_OEE_ProductCycle",
+    url: "/XingYuAPI/XYL_OEE_ProductCycle",
     method: "post",
     data
   });
