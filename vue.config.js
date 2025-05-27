@@ -28,7 +28,7 @@ module.exports = {
     proxy: {
       "/all": {
         // 需要访问的地址
-        target: "http://172.20.99.21:5072",
+        target: "http://172.20.99.21:5082",
         // 开启代理
         changeOrigin: true,
         pathRewrite: {
