@@ -1,8 +1,12 @@
 <template>
-  <div class="smtinstpro">
+  <div class="p-2">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
+      
+    
+    
     <div>
       <el-form ref="form" class="form" :inline="true" :model="getDataText">
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-select v-model="getDataText.operationType" placeholder="检查类型">
             <el-option
               v-for="item in inquireList"
@@ -13,7 +17,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-show="getDataText.operationType == 'W'">
+        <el-form-item v-show="getDataText.operationType == 'W'" class="mb-2">
           <el-input
             placeholder="请输入单号"
             clearable
@@ -24,7 +28,7 @@
             <!-- @change="getAllData()" -->
           </el-input>
         </el-form-item>
-        <el-form-item v-show="getDataText.operationType != 'W'">
+        <el-form-item v-show="getDataText.operationType != 'W'" class="mb-2">
           <el-input
             placeholder="请输入seiralNumber"
             clearable
@@ -35,7 +39,7 @@
             <!-- @change="getAllData()" -->
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-button type="primary" @click="getAllData()">查询</el-button>
         </el-form-item>
       </el-form>
@@ -46,22 +50,23 @@
         tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
       "
       :height="tableHeight"
-      size="mini"
+      size="small"
       :header-cell-style="heardStyle"
       border
       stripe
+      :default-sort="{prop: 'DateTime', order: 'ascending'}"
     >
       <el-table-column prop="OrderName" label="工单"></el-table-column>
-      <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
+      <el-table-column prop="OperationID" label="制程ID" width="80"> </el-table-column>
       <el-table-column prop="OperationName" label="制程名称"> </el-table-column>
       <el-table-column prop="AssemblyName" label="产品料号"> </el-table-column>
-      <el-table-column prop="LineName" label="线体"> </el-table-column>
+      <el-table-column prop="LineName" label="线体" width="80"> </el-table-column>
       <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
       <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
-      <el-table-column prop="EquipmentName" label="设备名称"> </el-table-column>
-      <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
+      <el-table-column prop="EquipmentName" label="设备名称" width="120"> </el-table-column>
+      <el-table-column prop="DateTime" label="过站时间" sortable> </el-table-column>
       <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-      <el-table-column prop="StatusCODE" label="不良代码"> </el-table-column>
+      <el-table-column prop="StatusCODE" label="不良代码" width="100"> </el-table-column>
       <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
         <el-table-column prop="order" label="流程卡号"> </el-table-column>
         <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
@@ -81,13 +86,14 @@
       </el-pagination>
     </div>
     <!-- </div> -->
+  </el-card>
   </div>
 </template>
 
 <script>
 import { XY_PCBAHisControl, XY_Prod_MissSNs } from "@/api/all";
 import { getContainerMoves } from "@/api/material";
-import { aW } from "@fullcalendar/core/internal-common";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -134,13 +140,16 @@ export default {
     console.log(this.$route.query);
     this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
   },
-  mounted() {
-    this.$nextTick(() => {
-      // console.log( window.innerHeight);
-      this.tableHeight = window.innerHeight - 260;
-      //后面的50：根据需求空出的高度，自行调整
-    });
-  },
+  beforeMount() {
+      this.getScreenHeight();
+   
+    },
+    mounted() {
+      window.addEventListener("resize", this.getScreenHeight);
+    },
+    beforeDestroy() {
+      window.removeEventListener("resize", this.getScreenHeight);
+    },
   methods: {
     getData() {
       return new Promise((resolve, reject) => {
@@ -148,8 +157,16 @@ export default {
           if (data.Status !== "NG") {
             resolve();
             let arr = [];
-            arr = data.DataList.sort((a, b) => {
-              return new Date(b.DateTime) - new Date(a.DateTime);
+            // arr = data.DataList.sort((a, b) => {
+            //   return new Date(b.DateTime) - new Date(a.DateTime);
+            // });
+            arr = data.DataList.map((item) => {
+              return {
+                ...item,
+                DateTime: dayjs(item.DateTime).format("YYYY-MM-DD HH:mm:ss"),
+              };
+            }).sort((a, b) => {
+              return new Date(a.DateTime) - new Date(b.DateTime);
             });
             this.tableData = arr;
             // this.tableData.push(...data.DataList);
@@ -218,6 +235,12 @@ export default {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
+    getScreenHeight() {
+        this.$nextTick(() => {
+          this.tableHeight = window.innerHeight - 220;
+          // this.tableHeight1 =
+        });
+      },
     startLoading() {
       this.loading = this.$loading({
         lock: true,
@@ -236,6 +259,7 @@ export default {
 <style lang="scss" scoped>
 .smtinstpro {
   padding: 20px;
+  
   // .form{
   //    display: flex;
   //     justify-content: flex-end;

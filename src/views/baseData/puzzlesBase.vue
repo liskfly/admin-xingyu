@@ -274,7 +274,6 @@ import {
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
-import { rule } from "postcss";
 export default {
   data() {
     return {
@@ -350,10 +349,9 @@ export default {
     };
   },
   watch: {
-    "getForm.SearchText": (newVal) => {
-      this.getForm.PageIndex = 1;
-      this.getData();
-    }},
+ 
+      
+    },
     beforeMount() {
       this.getScreenHeight();
       this.getData();
