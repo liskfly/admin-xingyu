@@ -75,6 +75,12 @@ export default {
   mounted() {},
   methods: {
     getData() {
+      if (this.getDataText.orderName === '' || this.getDataText.operationType === '') {
+        this.$alert("查询失败,请完整填写信息", "错误信息", {
+          confirmButtonText: "确定",
+        });
+        return ;
+      }
       this.startLoading();
       XY_Prod_MissSNs(this.getDataText)
         .then(({ data }) => {

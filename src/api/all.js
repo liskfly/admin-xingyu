@@ -114,7 +114,7 @@ export function iDControll(data) {
   return request({
     url: "/XingYuAPI/XY_WMS_Tools_IDControl",
     method: "post",
-    data,
+    data
   });
 }
 
