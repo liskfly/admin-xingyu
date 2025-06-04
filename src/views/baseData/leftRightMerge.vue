@@ -48,6 +48,8 @@
           </template>
         </el-table-column>
 
+        <af-table-column prop="Ud_usr" label="操作人"> </af-table-column>
+        <af-table-column prop="Ud_dt" label="操作时间"> </af-table-column>
         <!-- 操作列 -->
         <el-table-column fixed="right" label="操作" width="140" align="center">
           <template v-slot="{ row }">
