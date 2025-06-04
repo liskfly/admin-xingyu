@@ -30,7 +30,7 @@
                     </el-form-item>
                 </el-form>
             </div>
-            <el-table :data="paginatedData" :height="tableHeight" :header-cell-style="heardStyle" border stripe
+            <el-table :data="paginatedData" :height="tableHeight"   border stripe
                 @sort-change="handleSortChange">
                 <!-- 表格列定义保持不变 -->
                 <el-table-column prop="OrderName" label="工单"></el-table-column>
