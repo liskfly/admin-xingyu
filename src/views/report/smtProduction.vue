@@ -1,8 +1,11 @@
 <template>
-  <div class="smtinstpro">
+  <div class="p-2">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
+    
+   
     <div>
       <el-form ref="form" class="form" :inline="true" :model="getDataText">
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-select v-model="getDataText.operationType" placeholder="检查类型">
             <el-option
               v-for="item in inquireList"
@@ -13,7 +16,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-show="getDataText.operationType == 'W'">
+        <el-form-item v-show="getDataText.operationType == 'W'" class="mb-2">
           <el-input
             placeholder="请输入单号"
             clearable
@@ -24,7 +27,7 @@
             <!-- @change="getAllData()" -->
           </el-input>
         </el-form-item>
-        <el-form-item v-show="getDataText.operationType != 'W'">
+        <el-form-item v-show="getDataText.operationType != 'W'" class="mb-2">
           <!-- <el-time-picker
               is-range
               v-model="getDataText.date"
@@ -50,7 +53,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="mb-2">
           <el-button type="primary" @click="getAllData()">查询</el-button>
         </el-form-item>
       </el-form>
@@ -82,7 +85,7 @@
         <el-table-column prop="QuantityProcessed" label="完成数量">
         </el-table-column>
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <div class="block" style="margin-top: 8px">
         <el-pagination
           align="center"
           background
@@ -96,14 +99,14 @@
         >
         </el-pagination>
       </div>
+    </el-card>
     <!-- </div> -->
   </div>
 </template>
 
 <script>
 import { XY_Assembly_OrderStatus, XY_SMT_OrderStatus } from "@/api/all";
-import { getContainerMoves } from "@/api/material";
-import { aW } from "@fullcalendar/core/internal-common";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -151,13 +154,16 @@ export default {
     console.log(this.$route.query);
     this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
   },
-  mounted() {
-    this.$nextTick(() => {
-      // console.log( window.innerHeight);
-      this.tableHeight = window.innerHeight - 260;
-      //后面的50：根据需求空出的高度，自行调整
-    });
-  },
+  beforeMount() {
+      this.getScreenHeight();
+   
+    },
+    mounted() {
+      window.addEventListener("resize", this.getScreenHeight);
+    },
+    beforeDestroy() {
+      window.removeEventListener("resize", this.getScreenHeight);
+    },
   methods: {
     getData() {
       return new Promise((resolve, reject) => {
@@ -170,7 +176,24 @@ export default {
           .then(({ data }) => {
             if (data.Status !== "NG") {
               resolve();
-              this.tableData.push(...data.DataList);
+              const dataList = data.DataList.map((item) => {
+                return {
+                  ...item,
+                  PlannedStartTime: dayjs(item.PlannedStartTime).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  PlannedFinishTime: dayjs(item.PlannedFinishTime).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  ActualStarted: dayjs(item.ActualStarted).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  ActualFinished: dayjs(item.ActualFinished).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                };
+              });
+              this.tableData.push(...dataList);
             } else {
               resolve();
               this.tableData = [];
@@ -215,7 +238,25 @@ export default {
           .then(({ data }) => {
             if (data.Status !== "NG") {
               resolve();
-              this.tableData.push(...data.DataList);
+
+             const dataList = data.DataList.map((item) => {
+                return {
+                  ...item,
+                  PlannedStartTime: dayjs(item.PlannedStartTime).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  PlannedFinishTime: dayjs(item.PlannedFinishTime).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  ActualStarted: dayjs(item.ActualStarted).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                  ActualFinished: dayjs(item.ActualFinished).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  ),
+                };
+              });
+              this.tableData.push(...dataList);
             } else {
               resolve();
               this.tableData = [];
@@ -252,6 +293,12 @@ export default {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
+    getScreenHeight() {
+        this.$nextTick(() => {
+          this.tableHeight = window.innerHeight - 220;
+          // this.tableHeight1 =
+        });
+      },
     startLoading() {
       this.loading = this.$loading({
         lock: true,

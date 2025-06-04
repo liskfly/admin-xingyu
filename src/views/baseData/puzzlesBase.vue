@@ -10,7 +10,7 @@
           </el-input>
         </div>
       </div>
-      <el-table :data="tableData" border :height="tableHeight" style="width: 100%">
+      <el-table :data="tableData" border :height="tableHeight" size="small" style="width: 100%">
         <!-- <el-table-column type="index" label="序号" width="55" /> -->
         <el-table-column label="序号" width="55">
           <template slot-scope="scope">
@@ -19,9 +19,9 @@
             }}</span>
           </template>
         </el-table-column>
-        <af-table-column prop="PN" label="拼板物料编号"> </af-table-column>
-        <af-table-column prop="name" label="物料名称"> </af-table-column>
-        <af-table-column prop="pn_spec" label="物料规格"> </af-table-column>
+        <af-table-column prop="PN" label="拼板物料编号" width="210"> </af-table-column>
+        <el-table-column prop="name" label="物料名称"> </el-table-column>
+        <el-table-column prop="pn_spec" label="物料规格"> </el-table-column>
         <el-table-column prop="faceNumber" label="单双面" width="80" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.faceNumber == 1">单</span>
@@ -29,8 +29,10 @@
           </template>
         </el-table-column>
         <!-- <af-table-column prop="version" label="BOM版本"> </af-table-column> -->
-        <af-table-column prop="softwareVersion" label="软件版本">
-        </af-table-column>
+        <el-table-column prop="softwareVersion" label="软件版本" width="80" >
+        </el-table-column>
+        <af-table-column prop="Ud_usr" label="操作人" width="130"> </af-table-column>
+        <af-table-column prop="Ud_dt" label="操作时间" width="145"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"></el-button>
@@ -155,22 +157,22 @@
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
             <el-form-item label="拼板物料编号" prop="pn" class="mb-2">
-              <el-input v-model="editForm.pn" placeholder="" disabled />
+              <el-input v-model="editForm.pn" placeholder=""  disabled/>
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
             <el-form-item label="物料名称" prop="name" class="mb-2">
-              <el-input v-model="editForm.name" placeholder="" disabled />
+              <el-input v-model="editForm.name" placeholder=""  />
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
             <el-form-item label="物料规格" prop="model" class="mb-2">
-              <el-input v-model="editForm.model" placeholder="" disabled /> </el-form-item></el-col>
+              <el-input v-model="editForm.model" placeholder=""  /> </el-form-item></el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
             <el-form-item label="单双面" prop="sdie" class="mb-2">
-              <el-select v-model="editForm.side" placeholder="请选择" disabled style="width: 100%">
+              <el-select v-model="editForm.side" placeholder="请选择"  style="width: 100%">
                 <el-option label="单" value="1" />
                 <el-option label="双" value="2" />
               </el-select>
@@ -183,7 +185,13 @@
           </el-col> -->
           <el-col :span="8" :offset="0">
             <el-form-item label="软件版本" prop="softwareVersion" class="mb-2">
-              <el-input v-model="editForm.softwareVersion" placeholder="" disabled />
+              <el-input v-model="editForm.softwareVersion" placeholder=""  />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="0">
+            <el-form-item class="mb-2">
+              <el-button type="primary" @click="upDateSubmit()">修改</el-button>
+             
             </el-form-item>
           </el-col>
         </el-row>
@@ -271,10 +279,11 @@ import {
   DeletePanelizationDetail,
   UpdatePanelizationDetail,
   findPartNumberData,
+  UpdatePanelizationList
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
-import { rule } from "postcss";
+
 export default {
   data() {
     return {
@@ -350,10 +359,9 @@ export default {
     };
   },
   watch: {
-    "getForm.SearchText": (newVal) => {
-      this.getForm.PageIndex = 1;
-      this.getData();
-    }},
+ 
+      
+    },
     beforeMount() {
       this.getScreenHeight();
       this.getData();
@@ -368,7 +376,12 @@ export default {
       getData() {
         findPanelizationList(this.getForm).then((res) => {
           if (res.Success) {
-            this.tableData = res.Data.list;
+            this.tableData = res.Data.list.map((item) => {
+              return {
+                ...item,
+                Ud_dt: dayjs(item.Ud_dt).format("YYYY-MM-DD HH:mm:ss"),
+              };
+            });
             this.total = res.Data.Total;
           } else {
             this.tableData = [];
@@ -616,6 +629,27 @@ export default {
           }
           this.detailVisible = true;
           // console.log(this.smallBoardTable);
+        });
+      },
+      upDateSubmit(){
+        this.editForm.cr_user = getToken();
+        this.editForm.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+        UpdatePanelizationList(this.editForm).then((res) => {
+          if (res.Success) {
+            this.$notify({
+              type: "success",
+              title: "提示信息",
+              message: res.Msg,
+            });
+            // this.detailVisible = false;
+            this.getData();
+          } else {
+            this.$notify({
+              type: "error",
+              title: "提示信息",
+              message: res.Msg,
+            });
+          }
         });
       },
       addDetailCancel() {

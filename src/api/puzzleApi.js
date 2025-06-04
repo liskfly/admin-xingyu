@@ -49,6 +49,16 @@ export function DeletePanelizationDetail(data) {
         data,
     });
 }
+export function UpdatePanelizationList(data) {
+    return request({
+        url: "/Panelization/UpdatePanelizationList",
+        method: "post",
+        data,
+    });
+}
+
+
+
 export function UpdatePanelizationDetail(data) {
     return request({
         url: "/Panelization/UpdatePanelizationDetail",
