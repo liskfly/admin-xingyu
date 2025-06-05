@@ -90,7 +90,7 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="40502"
+                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod" placeholder="请输入40502开头的编码"
                   @select="change1"  >
                 
                 </el-autocomplete>
@@ -125,7 +125,7 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="40502"
+                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入40502开头的编码"
                   @select="change2"  >
                 
                 </el-autocomplete>
@@ -565,13 +565,21 @@ export default {
           part_no: query,
           part_type: "0",
         }).then((res) => {
+          if(res.Data.length===0||!res.Data){
+            this.$notify.error({
+              title: "提示信息",
+              message: "未查询到相关数据",
+            });
+            cb([]);
+            return
+          }
           const searchData=res.Data.map((item) => { 
             return {
               value: item.part_no,
               ...item
             };
           });
-          console.log(searchData);
+         
           cb(searchData);
         });
       }

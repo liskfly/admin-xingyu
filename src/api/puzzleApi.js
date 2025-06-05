@@ -107,9 +107,9 @@ export function findPartNumberData(data) {
     return noRequest({
         url: "/Panelization/findPartNumberData",
         method: "post",
-        params: {
-            pn: data,
-        },
+        params:{
+            pn:data
+        }
     });
 }
 
