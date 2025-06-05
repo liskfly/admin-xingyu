@@ -717,7 +717,7 @@ export default {
                   this.checkedLine1.length,
                   this.checkedLine2.length,
                   this.checkedLine3.length
-                );
+                ); 
                 if (num !== data.mcIDList.length) {
                   this.changeOver(num + 1);
                 } else if (num === data.mcIDList.length) {

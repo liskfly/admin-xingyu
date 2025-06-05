@@ -286,7 +286,6 @@ export default {
     },
     getData() {
       GetAssSpecMoveHistory(this.getText).then((res) => {
-        console.log(res);
         if (res.data.Code == 200) {
           let data = res.data.Data;
           this.total = data.Total;
