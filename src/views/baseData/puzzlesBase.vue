@@ -12,14 +12,14 @@
       </div>
       <el-table :data="tableData" border :height="tableHeight" size="small" style="width: 100%">
         <!-- <el-table-column type="index" label="序号" width="55" /> -->
-        <el-table-column label="序号" width="55">
+        <el-table-column label="序号" width="55" align="center">
           <template slot-scope="scope">
             <span>{{
               scope.$index + 1 + (getForm.PageIndex - 1) * getForm.PageSize
             }}</span>
           </template>
         </el-table-column>
-        <af-table-column prop="PN" label="拼板物料编号" width="210"> </af-table-column>
+        <af-table-column prop="PN" label="拼板物料编号" width="220"> </af-table-column>
         <el-table-column prop="name" label="物料名称"> </el-table-column>
         <el-table-column prop="pn_spec" label="物料规格"> </el-table-column>
         <el-table-column prop="faceNumber" label="单双面" width="80" align="center">
