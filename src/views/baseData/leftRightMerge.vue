@@ -271,7 +271,7 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="editForm.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
+                    <el-autocomplete   v-model="editForm.panelmerge_right_no" :fetch-suggestions="remoteMethod" placeholder="请输入内容"
                   @select="change4"  >
                 
                 </el-autocomplete>
@@ -440,11 +440,10 @@ export default {
       ) {
         this.form.panelmerge_manywo = true;
         this.allCode=val+"+"+this.form.panelmerge_right_no
-        // this.form.bomlist[0].panelmergebom_no =
-        //   this.form.panelmerge_left_no +
-        //   "+" +
-        //   this.form.panelmerge_right_no +
-        //   "-1";
+      }
+      if(val==""){
+        this.form.panelmerge_left_name=""
+        this.form.panelmerge_left_desc=""
       }
     },
     "form.panelmerge_right_no"(val) {
@@ -460,11 +459,27 @@ export default {
         //   this.form.panelmerge_right_no +
         //   "-1";
       }
+      if(val==""){
+        this.form.panelmerge_right_name=""
+        this.form.panelmerge_right_desc=""
+      }
     },
     "getForm.panelmerge_id"(val) {
      this.currentPage=1
       this.getData();
     },
+    "editForm.panelmerge_right_no"(val){
+      if(val==""){
+        this.editForm.panelmerge_right_name=""
+        this.editForm.panelmerge_right_desc=""
+      }
+    },
+    "editForm.panelmerge_left_no"(val){
+      if(val==""){
+        this.editForm.panelmerge_left_name=""
+        this.editForm.panelmerge_left_desc=""
+      }
+    }
    
   },
   beforeMount() {
