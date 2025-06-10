@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar flex items-center justify-between h-10">
+  <div class="navbar flex items-center justify-between " style="height: 40px;">
     <bread></bread>
     <div class="right-menu">
       <div class="flex gap-2 items-center">
@@ -25,7 +25,7 @@
             ></el-avatar>
             <span
             class="mr-2"
-              style="padding-left: 5px; font-weight: bold; font-size: 1.1rem"
+              style="padding-left: 5px; font-weight: bold; font-size: 18px"
               >{{ logName }}</span
             >
           </div>
