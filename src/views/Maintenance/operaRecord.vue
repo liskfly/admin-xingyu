@@ -54,6 +54,10 @@
 
 <script>
 import { QueryXYL_BadProductInformationRepairRecord } from "@/api/repairApi";
+import { shortcuts,
+  disabledDate,
+  setTodayDate,
+  setLastDate, } from "@/utils/dataMenu";
 export default {
     data() {
         return {
@@ -73,6 +77,9 @@ export default {
                 EndTime: "",
             },
             dateValue: [],
+      pickerOptions: {
+        shortcuts: shortcuts,
+      }
         };
     },
     watch: {
@@ -89,6 +96,7 @@ export default {
         },
     },
     beforeMount() {
+        this.dateValue = [setLastDate(),setTodayDate()]
         this.getScreenHeight();
         this.getData();
     },

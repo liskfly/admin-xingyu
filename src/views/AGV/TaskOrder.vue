@@ -63,7 +63,10 @@
 
 <script>
 import { findTaskPage } from "@/api/agvApi";
-import { shortcuts } from "@/utils/dataMenu";
+import { shortcuts,
+  disabledDate,
+  setTodayDate,
+  setLastDate, } from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -88,7 +91,8 @@ export default {
   },
   watch: {
     dateValue(value) {
-
+      console.log(value);
+      
       if (value == null) {
         this.getForm.StartTime = "";
         this.getForm.EndTime = "";
@@ -107,6 +111,7 @@ export default {
   },
   beforeMount() {
     this.getScreenHeight();
+    this.dateValue = [setLastDate(),setTodayDate()]
   },
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);

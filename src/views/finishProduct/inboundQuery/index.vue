@@ -40,6 +40,7 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                :picker-options="pickerOptions"
               >
               </el-date-picker>
             </el-form-item>
@@ -177,6 +178,10 @@ import { QueryWarehouseInspectionData } from "@/api/wmsApi";
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import { getXLSX } from "@/utils/computeXLXS";
+import { shortcuts,
+  disabledDate,
+  setTodayDate,
+  setLastDate, } from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -242,6 +247,9 @@ export default {
           label: "FAIL",
         },
       ],
+      pickerOptions: {
+        shortcuts: shortcuts,
+      }
     };
   },
   watch: {
@@ -258,6 +266,9 @@ export default {
   created() {
     // console.log(this.$route.query);
     // this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
+  },
+  beforeMount() {
+    this.date = [setLastDate(),setTodayDate()]
   },
   mounted() {
     this.getData();
