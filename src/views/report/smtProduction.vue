@@ -107,6 +107,10 @@
 <script>
 import { XY_Assembly_OrderStatus, XY_SMT_OrderStatus } from "@/api/all";
 import dayjs from "dayjs";
+import { shortcuts,
+  disabledDate,
+  setTodayDate,
+  setLastDate, } from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -139,6 +143,9 @@ export default {
         orderName: "",
         operationName: "",
       },
+      pickerOptions: {
+        shortcuts: shortcuts,
+      }
     };
   },
   watch: {
@@ -156,7 +163,7 @@ export default {
   },
   beforeMount() {
       this.getScreenHeight();
-   
+      this.getDataText.date = [setLastDate(),setTodayDate()]
     },
     mounted() {
       window.addEventListener("resize", this.getScreenHeight);

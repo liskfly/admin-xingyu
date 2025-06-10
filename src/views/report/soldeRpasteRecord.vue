@@ -4,7 +4,7 @@
       <el-form ref="form" :inline="true" label-width="auto">
         <el-form-item class="mb-2">
           <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
-            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :default-time="['00:00:00', '23:59:59']"
+            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
             :clearable="false">
           </el-date-picker>
         </el-form-item>
@@ -121,7 +121,10 @@ export default {
       },
       dateValue: [],
       loading: false,
-      autocompleteKey: 0
+      autocompleteKey: 0,
+      // pickerOptions: {
+      //   shortcuts: shortcuts,
+      // }
     };
   },
   watch: {
@@ -146,6 +149,8 @@ export default {
     ];
   },
   mounted() {
+    console.log(setTodayDate(),setLastDate());
+    
     this.$nextTick(() => {
       // console.log( window.innerHeight);
       this.tableHeight = window.innerHeight - 210;

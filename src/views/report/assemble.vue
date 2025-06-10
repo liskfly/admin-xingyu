@@ -106,6 +106,10 @@
 import { XY_Assembly_OrderStatus, XY_SMT_OrderStatus } from "@/api/all";
 import { getContainerMoves } from "@/api/material";
 import { aW } from "@fullcalendar/core/internal-common";
+import { shortcuts,
+  disabledDate,
+  setTodayDate,
+  setLastDate, } from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -138,6 +142,9 @@ export default {
         orderName: "",
         operationName: "",
       },
+      pickerOptions: {
+        shortcuts: shortcuts,
+      }
     };
   },
   watch: {
@@ -152,6 +159,9 @@ export default {
   created() {
     console.log(this.$route.query);
     this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
+  },
+  beforeMount() {
+    this.getDataText.date = [setLastDate(),setTodayDate()]
   },
   mounted() {
     this.$nextTick(() => {

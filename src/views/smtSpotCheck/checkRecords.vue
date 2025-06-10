@@ -44,6 +44,7 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              :picker-options="pickerOptions"
             >
             </el-date-picker>
           </el-form-item>
@@ -122,6 +123,10 @@
 
 <script>
 import { getCheckResults } from "@/api/all";
+import { shortcuts,
+  disabledDate,
+  setTodayDate,
+  setLastDate, } from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -165,7 +170,10 @@ export default {
         },
       ],
       value1: [],
-      headerType:"XYEI"
+      headerType:"XYEI",
+      pickerOptions: {
+        shortcuts: shortcuts,
+      }
     };
   },
   created() {
@@ -218,6 +226,7 @@ export default {
   },
   beforeMount() {
     this.getScreenHeight();
+    this.value1 = [setLastDate(),setTodayDate()];
   },
   mounted() {},
   beforeDestroy() {
