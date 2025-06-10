@@ -1,9 +1,9 @@
 <template>
-  <div class="w-20 bg-cyan fixed left-0 bottom-0 z-40" name="tabMenu">
+  <div class=" bg-cyan fixed left-0 bottom-0 z-40" style="width: 80px;" name="tabMenu">
     <div v-clickoutside="clickOut">
     <el-scrollbar style="height: 100%" >
-      <div class="tab-css w-20">
-        <div class="w-20" v-for="item in tabRouters">
+      <div class="tab-css " style="width: 80px;">
+        <div class=" " v-for="item in tabRouters" style="width: 80px;">
           <div
             class="  text-center text-xs cursor-pointer pt-3 pb-3 hover:bg-cyan1 flex flex-col"
             style="font-size: 13px"
@@ -28,9 +28,9 @@
   
     <!-- <div class="h-20">1111</div> -->
     <menuItem
-      class="absolute top-0 z-50 h-full left-20 bg-cyan2"
-      :class="{ 'w-48': showMenu, 'w-0': !showMenu }"
-      style="transition: width 0.5s, left 0.5s"
+      class="absolute top-0 z-50 h-full  bg-cyan2"
+      :class="{ 'menu-width': showMenu, 'w-0': !showMenu }"
+      style="left: 80px;transition: width 0.5s, left 0.5s"
       :base-path="'/'"
       @refresh="clickOut"
     >
@@ -170,5 +170,9 @@ export default {
   // transform: scale(1.1);
   // font-weight: bold;
   // transition: all 0.5s;
+}
+
+.menu-width{
+  width: 192px;
 }
 </style>

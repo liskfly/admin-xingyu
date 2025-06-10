@@ -13,7 +13,7 @@
       </div>
       <div style="display: flex">
         <div class="left-box"><app-main /></div>
-        <div class="noti" v-if="showNotice">
+        <!-- <div class="noti" v-if="showNotice">
           <el-card shadow="always" :body-style="{ padding: '20px' }">
             <div slot="header">
               <span style="text-align: center">消息中心</span>
@@ -24,7 +24,7 @@
               </div>
             </div>
           </el-card>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
