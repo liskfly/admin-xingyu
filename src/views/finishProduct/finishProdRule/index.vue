@@ -1,8 +1,14 @@
 <template>
-  <div class="type">
+  <div class="p-2">
     <el-card :body-style="{ padding: '8px' }">
-      <div class="table_header">
+      <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="openAdd">添加</el-button>
+        <div>
+          <el-input v-model="getForm.SearchModel.product_code" placeholder="请输入成品编码" style="width: 350px" @change="getData"
+            clearable>
+            <el-button slot="append" icon="el-icon-search" @click="getData"></el-button>
+          </el-input>
+        </div>
       </div>
       <div class="table_container">
         <el-table
