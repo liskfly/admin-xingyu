@@ -220,6 +220,7 @@
         border
         style="width: 100%"
       >
+      <el-table-column prop="RecordDt" label="操作时间" width="160"> </el-table-column>
         <el-table-column prop="MaterialId" label="容器ID" width="80">
         </el-table-column>
         <el-table-column prop="Pn" label="料号" width="130"> </el-table-column>
@@ -229,7 +230,6 @@
         <el-table-column prop="Descript" label="操作事件"> </el-table-column>
         <el-table-column prop="UpdateUserId" label="操作人" width="80">
         </el-table-column>
-        <el-table-column prop="RecordDt" label="操作时间"> </el-table-column>
       </el-table>
       <div class="block" style="margin-top: 15px">
         <el-pagination
@@ -469,7 +469,7 @@ export default {
         this.endLoading();
         let a = JSON.parse(data.Data);
         // console.log();
-        this.hosity = a.list.reverse();
+        this.hosity = a.list;
         // this.hosity;
         // console.log(this.hosity);
       });
