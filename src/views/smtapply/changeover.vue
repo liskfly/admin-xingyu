@@ -56,9 +56,10 @@
               </el-form-item>
               <el-form-item label="产品名">{{ form.product }}</el-form-item>
               <el-form-item label="软件名">{{ form.program }}</el-form-item>
-              <el-form-item label="软件版本">{{
+              <!-- <el-form-item label="软件版本">{{
                 form.productVer
-              }}</el-form-item>
+              }}</el-form-item> -->
+              <el-form-item label="软件版本">-----</el-form-item>
               <el-form-item label="BOM版本">{{ form.bomVer }}</el-form-item>
             </el-form>
             <div v-show="form.order !== ''" class="qrcode">
