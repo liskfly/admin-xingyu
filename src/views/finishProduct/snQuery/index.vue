@@ -10,7 +10,7 @@
       >
         <div class="flex-container">
           <div>
-            <el-form-item label="PcbID">
+            <el-form-item label="大板码">
               <el-input
                 placeholder=""
                 clearable
@@ -53,18 +53,18 @@
               >
             </el-form-item> -->
           </div>
-          <!-- <el-form-item>
-            <el-button type="primary" @click="outputFile()">下载表格</el-button>
-          </el-form-item> -->
+          <el-form-item>
+            <el-button type="success" @click="outputFile()">下载表格</el-button>
+          </el-form-item>
         </div>
       </el-form>
     </div>
     <!-- <div class="table"> -->
-      <div class="btn">
+      <!-- <div class="btn">
         <el-button type="success" @click="outputFile()" size="small"
           >下载表格</el-button
         >
-      </div>
+      </div> -->
       <el-table
         ref="myTable"
         :data="
@@ -77,15 +77,15 @@
         border
         stripe
       >
-        <el-table-column prop="BlockNo" width="55" label="序号">
-        </el-table-column>
         <el-table-column prop="OrderNo" label="工单号"></el-table-column>
         <el-table-column
           prop="PcbID"
           width="310"
-          label="PCB编码"
+          label="大板码"
         ></el-table-column>
         <el-table-column prop="BlockID" width="310" label="板内码">
+        </el-table-column>
+        <el-table-column prop="BlockNo" width="55" label="序列">
         </el-table-column>
         <el-table-column prop="ReadTime" label="读取时间"> </el-table-column>
       </el-table>
@@ -331,7 +331,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 250;
+        this.tableHeight = window.innerHeight - 230;
         // this.tableHeight1 =
       });
     },

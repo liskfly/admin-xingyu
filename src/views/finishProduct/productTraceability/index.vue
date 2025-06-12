@@ -1,7 +1,7 @@
 <template>
   <div class="smtinstpro">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getDataText">
+      <el-form ref="form" class="form" :inline="true" :model="getDataText" size="small">
         <!-- <el-form-item>
             <el-select v-model="getDataText.operationType" placeholder="检查类型">
               <el-option
@@ -50,7 +50,7 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <el-button type="primary" @click="outputFile()">下载表格</el-button>
+            <el-button type="success" @click="outputFile()">下载表格</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -58,7 +58,7 @@
     <!-- <div class="table"> -->
       <el-table
         :data="
-          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+          tableData
         "
         :height="tableHeight"
         id="Table1"
@@ -90,7 +90,7 @@
           <el-table-column prop="order" label="流程卡号"> </el-table-column>
           <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
       </el-table>
-      <div class="block" style="margin-top: 15px">
+      <!-- <div class="block" style="margin-top: 15px">
         <el-pagination
           align="center"
           background
@@ -103,7 +103,7 @@
           :total="tableData.length"
         >
         </el-pagination>
-      </div>
+      </div> -->
     <!-- </div> -->
   </div>
 </template>
@@ -311,7 +311,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 260;
+        this.tableHeight = window.innerHeight - 180;
       });
     },
   },

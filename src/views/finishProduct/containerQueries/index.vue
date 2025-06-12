@@ -51,9 +51,9 @@
             <el-form-item>
               <el-button type="primary" @click="getData()">查询</el-button>
             </el-form-item>
-            <!-- <el-form-item>
-            <el-button type="primary" @click="outputFile()">下载表格</el-button>
-          </el-form-item> -->
+            <el-form-item>
+            <el-button type="success" @click="outputFile()">下载表格</el-button>
+          </el-form-item>
           </div>
           <!-- <el-form-item>
             <el-button type="primary" @click="outputFile()">下载表格</el-button>
@@ -62,11 +62,11 @@
       </el-form>
     </div>
     <!-- <div class="table"> -->
-      <div class="btn">
+      <!-- <div class="btn">
         <el-button type="success" @click="outputFile()" size="small"
           >下载表格</el-button
         >
-      </div>
+      </div> -->
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -302,7 +302,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 260;
+        this.tableHeight = window.innerHeight - 240;
         // this.tableHeight1 =
       });
     },

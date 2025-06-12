@@ -164,7 +164,7 @@
         </af-table-column>
         <af-table-column prop="Erpuid" label="ERP上传Uid"> </af-table-column>
       </el-table>
-      <div class="block" style="margin-top: 8px">
+      <!-- <div class="block" style="margin-top: 8px">
         <el-pagination
           background
           align="center"
@@ -177,7 +177,7 @@
           :total="total2"
         >
         </el-pagination>
-      </div>
+      </div> -->
     </div>
     <el-dialog
       title="组装工单详细信息"
@@ -413,8 +413,8 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = (window.innerHeight - 140 - 68 - 68) * 0.6;
-        this.tableHeight1 = (window.innerHeight - 140 - 68 - 68) * 0.4;
+        this.tableHeight = (window.innerHeight - 140 - 75) * 0.6;
+        this.tableHeight1 = (window.innerHeight - 140 - 75) * 0.4;
         //后面的50：根据需求空出的高度，自行调整
       });
     },
