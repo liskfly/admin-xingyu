@@ -58,7 +58,7 @@
             <el-button type="primary" @click="dataSubmit()">查询</el-button>
           </el-form-item>
           <el-form-item class="mb-2">
-            <el-button type="success" @click="outputFile()" size="small">下载表格</el-button>
+            <el-button type="success" @click="handleExport()" size="small">下载表格</el-button>
           </el-form-item>
           <!-- <el-form-item>
               <el-button type="primary" @click="outputFile()"
@@ -124,7 +124,8 @@ import {
   setTodayDate,
   setLastDate,
 } from "@/utils/dataMenu";
-import  {exportTableToExcel}  from "@/utils/exportExcel";
+import { exportTableToExcel } from "@/utils/exportExcel";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -320,15 +321,18 @@ export default {
         getXLSX(res.data.Data.list, this.$refs.myTable.columns, '入库检验')
       });
     },
-    async handleExport(data) {
+    async handleExport() {
       try {
         await exportTableToExcel({
           tableRef: this.$refs.myTable,
-          fetchAllData: data,
-          fileName: '入库检验',
+          fetchAllData: this.fetchAllUsers,
+          fileName: `入库检验${dayjs().format('YYYYMMDD-HHmmss')}`,
           styles: {
-            headerBgColor: 'FFA0A0A0',  // 灰色表头
-            headerFont: { color: 'FFFFFFFF' }, // 白色文字
+            headerBgColor: 'FF6692d9',  // 灰色表头
+            headerFont: {
+              color: { argb: 'FFFFFFFF' }, // 红色文字
+              bold: true, size: 14
+            }, // 白色文字
             cell: { numFmt: '@' } // 强制文本格式
           }
         });
@@ -338,14 +342,18 @@ export default {
       }
     },
     async fetchAllUsers() {
-      
-      QueryWarehouseInspectionData({ ...this.form, pageSize: this.total }).then((res) => {
 
-        data = res.data.Data.list;
-        // return data;
-        this.handleExport(data)
+      let data = await QueryWarehouseInspectionData({ ...this.form, pageSize: this.total }).then((res) => {
+
+
+
+        return res.data.Data.list.map((item, index) => ({
+          ...item,
+          _id: index // 如果依赖 _id，确保它是数字
+        }));
+        // this.handleExport(data)
       });
-
+      return data;
       //   return this.tableData.map((item, index) => ({ 
       //   ...item,
       //   _id: index // 如果依赖 _id，确保它是数字
