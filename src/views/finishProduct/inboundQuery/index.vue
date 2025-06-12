@@ -19,7 +19,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="检验结果" class="mb-2">
-            <el-select v-model="form.SearchModel.result" placeholder="请选择">
+            <el-select v-model="form.SearchModel.result" placeholder="请选择" style="width: 200px">
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -254,7 +254,7 @@ export default {
     },
     dataSubmit() {
       this.form.PageIndex = 1;
-      this.form.pageSize = 20;
+      this.form.PageSize = 20;
       this.startLoading();
       QueryWarehouseInspectionData(this.form).then(({ data }) => {
         if (data.Success) {
@@ -270,7 +270,7 @@ export default {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
       this.form.PageIndex = 1;
-      this.form.pageSize = val;
+      this.form.PageSize = val;
       this.getData();
     },
     //当前页改变时触发 跳转其他页
@@ -317,11 +317,20 @@ export default {
       //   return wbOut;
       // });
 
-      QueryWarehouseInspectionData({ ...this.form, pageSize: this.total }).then((res) => {
+      QueryWarehouseInspectionData({ ...this.form, PageSize: this.total }).then((res) => {
         getXLSX(res.data.Data.list, this.$refs.myTable.columns, '入库检验')
       });
     },
     async handleExport() {
+      if(this.tableData.length === 0) {
+       this.$notify({
+          title: '提示信息',
+          message: '当前列表为空，下载失败！！',
+          type: 'error'
+        });
+       
+        return;
+      }
       try {
         await exportTableToExcel({
           tableRef: this.$refs.myTable,
@@ -343,14 +352,9 @@ export default {
     },
     async fetchAllUsers() {
 
-      let data = await QueryWarehouseInspectionData({ ...this.form, pageSize: this.total }).then((res) => {
+      let data = await QueryWarehouseInspectionData({ ...this.form, PageSize: this.total }).then((res) => {
 
-
-
-        return res.data.Data.list.map((item, index) => ({
-          ...item,
-          _id: index // 如果依赖 _id，确保它是数字
-        }));
+        return res.data.Data.list
         // this.handleExport(data)
       });
       return data;
