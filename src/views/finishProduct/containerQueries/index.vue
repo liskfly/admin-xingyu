@@ -5,13 +5,12 @@
         <div class="flex-container">
           <div>
             <el-form-item label="">
-              <el-select v-model="value" placeholder="请选择">
+              <el-select v-model="value" placeholder="请选择" @change="change()">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  @change="change()"
                 >
                 </el-option>
               </el-select>
@@ -23,6 +22,7 @@
                 style="width: 400px"
                 v-model="form.SearchModel.rid"
                 class="input-with-select"
+                @keyup.enter.native="getData()"
               >
               </el-input>
             </el-form-item>
@@ -33,6 +33,7 @@
                 style="width: 400px"
                 v-model="form.SearchModel.pcbsn"
                 class="input-with-select"
+                @keyup.enter.native="getData()"
               >
               </el-input>
             </el-form-item>
@@ -43,6 +44,7 @@
                 style="width: 400px"
                 v-model="form.SearchModel.ProductCode"
                 class="input-with-select"
+                @keyup.enter.native="getData()"
               >
               </el-input>
             </el-form-item>
@@ -175,23 +177,23 @@ export default {
       ],
     };
   },
-  watch: {
-    date(newValue) {
-      if (newValue) {
-        this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1] + ' 23:59:59';
-      } else {
-        this.form.StartTime = "";
-        this.form.EndTime = "";
-      }
-    },
-  },
+  // watch: {
+  //   date(newValue) {
+  //     if (newValue) {
+  //       this.form.StartTime = newValue[0];
+  //       this.form.EndTime = newValue[1] + ' 23:59:59';
+  //     } else {
+  //       this.form.StartTime = "";
+  //       this.form.EndTime = "";
+  //     }
+  //   },
+  // },
   created() {
     // console.log(this.$route.query);
     // this.getDataText.seiralNumber = this.$route.query.SerialNumber; // 使用查询参数时使用
   },
   mounted() {
-    this.getData();
+    // this.getData();
     this.$nextTick(() => {
       this.getScreenHeight();
       //后面的50：根据需求空出的高度，自行调整
@@ -203,9 +205,13 @@ export default {
   },
   methods: {
     getData() {
+      if (this.form.SearchModel.rid == '' && this.form.SearchModel.pcbsn == '' && this.form.SearchModel.ProductCode == '') {
+        this.$message.warning("请输入查询内容");
+        return;
+      }
       this.startLoading();
       QueryPackingData(this.form).then(({ data }) => {
-        if (data.Success) {
+        if (data.Success && data.Data.list !== null) {
           this.tableData = data.Data.list;
           this.total = data.Data.Total;
         } else {
@@ -238,6 +244,7 @@ export default {
           barno: "",
           creuser: "",
           cretime: "",
+          ProductCode: ""
         }
     },
     handleSizeChange(val) {

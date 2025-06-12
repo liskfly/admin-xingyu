@@ -111,7 +111,8 @@ export const setTodayDate = () => {
   const formattedDate = `${now.getFullYear()}-${String(
     now.getMonth() + 1
   ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  return formattedDate +" "+"23:59:59";
+  return formattedDate;
+  // return formattedDate +" "+"23:59:59";
 };
 export const setLastDate = () => {
   // 获取当前日期  

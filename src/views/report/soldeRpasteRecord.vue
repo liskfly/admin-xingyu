@@ -149,8 +149,6 @@ export default {
     ];
   },
   mounted() {
-    console.log(setTodayDate(),setLastDate());
-    
     this.$nextTick(() => {
       // console.log( window.innerHeight);
       this.tableHeight = window.innerHeight - 210;

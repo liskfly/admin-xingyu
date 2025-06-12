@@ -182,7 +182,8 @@ export default {
     date(newValue) {
       if (newValue) {
         this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1] + " 23:59:59";
+        this.form.EndTime = newValue[1];
+        // this.form.EndTime = newValue[1] + " ";
       } else {
         this.form.StartTime = "";
         this.form.EndTime = "";

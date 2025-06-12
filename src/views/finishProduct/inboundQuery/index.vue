@@ -1,5 +1,5 @@
 <template>
-  <div class="smtinstpro">
+  <div class="p-2">
     <div>
       <el-form
         ref="form"
@@ -7,6 +7,7 @@
         :inline="true"
         :model="getDataText"
         size="small"
+        label-width="80px"
       >
         <div class="flex-container">
           <div>
@@ -14,7 +15,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 230px"
+                style="width: 200px"
                 v-model="form.SearchModel.wo"
                 class="input-with-select"
               >
@@ -24,7 +25,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 350px"
+                style="width: 300px"
                 v-model="form.SearchModel.pcbsn"
                 class="input-with-select"
               >
@@ -33,7 +34,7 @@
             <el-form-item label="检验时间">
               <el-date-picker
                 v-model="date"
-                style="width: 280px"
+                style="width: 450px"
                 format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd"
                 type="daterange"
@@ -43,6 +44,26 @@
                 :picker-options="pickerOptions"
               >
               </el-date-picker>
+            </el-form-item>
+            <el-form-item label="检验人">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 200px"
+                v-model="form.SearchModel.checkuser"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="产品编码">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 300px"
+                v-model="form.SearchModel.pn"
+                class="input-with-select"
+              >
+              </el-input>
             </el-form-item>
             <el-form-item label="检验结果">
               <el-select v-model="form.SearchModel.result" placeholder="请选择">
@@ -54,26 +75,6 @@
                 >
                 </el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="产品编码">
-              <el-input
-                placeholder=""
-                clearable
-                style="width: 350px"
-                v-model="form.SearchModel.pn"
-                class="input-with-select"
-              >
-              </el-input>
-            </el-form-item>
-            <el-form-item label="检验人">
-              <el-input
-                placeholder=""
-                clearable
-                style="width: 230px"
-                v-model="form.SearchModel.checkuser"
-                class="input-with-select"
-              >
-              </el-input>
             </el-form-item>
             <!-- <el-form-item label="总成编码">
               <el-input
@@ -99,6 +100,11 @@
             <el-form-item>
               <el-button type="primary" @click="dataSubmit()">查询</el-button>
             </el-form-item>
+            <el-form-item>
+        <el-button type="success" @click="outputFile()" size="small"
+          >下载表格</el-button
+        >
+            </el-form-item>
             <!-- <el-form-item>
               <el-button type="primary" @click="outputFile()"
                 >下载表格</el-button
@@ -113,11 +119,11 @@
       </el-form>
     </div>
     <!-- <div class="table"> -->
-      <div class="btn">
+      <!-- <div class="btn">
         <el-button type="success" @click="outputFile()" size="small"
           >下载表格</el-button
         >
-      </div>
+      </div> -->
       <el-table
         :data="
           tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -130,12 +136,12 @@
         border
         stripe
       >
-        <el-table-column prop="wo" label="工单号"></el-table-column>
-        <el-table-column
+        <af-table-column prop="wo" label="工单号"></af-table-column>
+        <af-table-column
           prop="pcbsn"
-          width="210"
           label="pcb编码"
-        ></el-table-column>
+        ></af-table-column>
+        <af-table-column prop="pn" label="产品编码"> </af-table-column>
         <el-table-column prop="name" label="产品名称"> </el-table-column>
         <el-table-column
           prop="spec"
@@ -144,9 +150,10 @@
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="pn" label="产品编码"> </el-table-column>
-        <el-table-column prop="checktime" label="检验时间"> </el-table-column>
-        <el-table-column prop="checkuser" label="检验人"> </el-table-column>
+        <af-table-column prop="productsn" label="成品码"> </af-table-column>
+        <el-table-column prop="result" label="检验结果" width="80"> </el-table-column>
+        <af-table-column prop="checktime" label="检验时间" width="150"> </af-table-column>
+        <el-table-column prop="checkuser" label="检验人" width="80"> </el-table-column>
         <!-- <el-table-column prop="OperationID" label="总成编码">
           </el-table-column>
           <el-table-column prop="OperationID" label="PCB编码">
@@ -226,7 +233,7 @@ export default {
           name: "",
           spec: "",
           pcbsn: "",
-          result: "PASS",
+          result: "",
           checkuser: "",
           checktime: "",
           ProductCode: "",
@@ -238,6 +245,10 @@ export default {
       total: 0,
       value: "PASS",
       options: [
+        {
+          value: "",
+          label: "ALL",
+        },
         {
           value: "PASS",
           label: "PASS",
@@ -256,7 +267,8 @@ export default {
     date(newValue) {
       if (newValue) {
         this.form.StartTime = newValue[0];
-        this.form.EndTime = newValue[1] + ' 23:59:59';
+        this.form.EndTime = newValue[1] + " 23:59:59";
+        // this.form.EndTime = newValue[1];
       } else {
         this.form.StartTime = "";
         this.form.EndTime = "";
