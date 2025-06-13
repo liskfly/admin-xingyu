@@ -14,7 +14,7 @@
               <component :is="isOnlyChildren(item).meta?.icon" />
             </el-icon> -->
             <!-- <i :class="isOnlyChildren(item).meta?.icon" style="font-size: 25px;color:#fff" v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"></i> -->
-            <a-icon :type="isOnlyChildren(item).meta?.icon" :style="{ fontSize: '25px', color: '#fff'}" v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"/>
+            <a-icon :type="isOnlyChildren(item).meta?.icon" :style="{ fontSize: '27px', color: '#fff'}" v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"/>
             <!-- <SmartIcon :type="'setting'" :style="{ fontSize: '25px', color: '#fff'}"  v-if="isOnlyChildren(item).meta?.icon!=null||isOnlyChildren(item).meta?.icon!=''"></SmartIcon> -->
             <span class="text-white mt-1 px-1">
               <!-- {{ item.meta?.title || "" }} -->
