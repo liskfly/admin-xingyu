@@ -351,9 +351,9 @@ export default {
       }
     },
     async fetchAllUsers() {
-
+     this. startLoading() 
       let data = await QueryWarehouseInspectionData({ ...this.form, PageSize: this.total }).then((res) => {
-
+        this.endLoading()
         return res.data.Data.list
         // this.handleExport(data)
       });
