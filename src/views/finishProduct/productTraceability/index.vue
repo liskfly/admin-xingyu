@@ -179,7 +179,7 @@ export default {
     getPcbId() {
       GetCodeBYPcbSN(this.productNumber)
         .then(({ data }) => {
-          if (data.Code === 200) {
+          if (data.Code === 200 && data.Data != null) {
             this.oldProduct = this.productNumber;
             this.getDataText.seiralNumber = data.Data;
             this.getAllData();
