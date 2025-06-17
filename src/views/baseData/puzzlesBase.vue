@@ -272,11 +272,11 @@
 <script>
 import {
   findPanelizationList,
-  addPanelizationList,
+  // addPanelizationList,
   DeletePanelizationList,
   findPnDetail,
   addPanelizationdetail,
-  DeletePanelizationDetail,
+  // DeletePanelizationDetail,
   UpdatePanelizationDetail,
   findPartNumberData,
   UpdatePanelizationList

@@ -91,7 +91,7 @@ service.interceptors.response.use(
       
       // console.log(response.data.ResultCode);
       // if (response.data.Success==true) {
-        if (response.data.code === 401) {
+        if (response.data.code === 401&&response.data.Code === 401) {
             removeToken1()
             this.$router.push('/login');
           }

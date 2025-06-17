@@ -26,6 +26,13 @@ module.exports = {
       errors: true,
     },
     proxy: {
+      "/control": {
+        target: "http://172.20.99.47:8055/api",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/control": "",
+        }
+      },
       "/all": {
         // 需要访问的地址
         target: "http://172.20.99.21:5082",
@@ -51,6 +58,15 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           "^/cm": "",
+        },
+      },
+      "/pa": {
+        // 需要访问的地址
+        target: "http://172.20.99.46:8080/xymes/api",
+        // 开启代理
+        changeOrigin: true,
+        pathRewrite: {
+          "^/pa": "",
         },
       },
       "/ms": {
@@ -81,13 +97,7 @@ module.exports = {
           "^/agvApi": "",
         },
       },
-      "/control": {
-        target: "http://172.20.99.47:8055/api",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/control": "",
-        }
-      }
+     
  
     },
   },
