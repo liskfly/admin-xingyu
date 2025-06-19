@@ -35,7 +35,7 @@
           <el-table-column prop="erp_wo_type" label="类型" align="center">
             <template slot-scope="scope">
               <el-tag :type="scope.row.erp_wo_type == 'D' ? '' : 'warning'">
-                {{ scope.row.erp_wo_type == "D" ? "SMT治具" : "组装治具" }}
+                {{ scope.row.erp_wo_type == "D" ? "印刷工治具" : "组装治具" }}
               </el-tag>
               <!-- <span>{{ scope.row.Stts == 4 ? "已发料" : "已上架" }}</span> -->
             </template>

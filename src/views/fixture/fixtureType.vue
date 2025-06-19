@@ -20,10 +20,10 @@
           <el-table-column prop="Remark" label="描述"> </el-table-column>
           <el-table-column prop="Category" label="类别">
             <template slot-scope="scope">
-              <el-tag type="primary" effect="dark" v-if="scope.row.Category == '1'">SMT工治具</el-tag>
+              <el-tag type="primary" effect="dark" v-if="scope.row.Category == '1'">印刷工治具</el-tag>
               <el-tag type="success" effect="dark" v-else-if="scope.row.Category == '2'">ICT工治具</el-tag>
               <el-tag type="warning" effect="dark" v-else-if="scope.row.Category == '3'">样件</el-tag>
-              <!-- <span v-if="scope.row.Category == '1'">SMT工治具</span> -->
+              <!-- <span v-if="scope.row.Category == '1'">印刷工治具</span> -->
               <!-- <span v-else-if="scope.row.Category == '2'">ICT工治具</span>
               <span v-else-if="scope.row.Category == '3'">样件</span> -->
             </template>
@@ -132,7 +132,7 @@ export default {
         remark: [{ required: true, message: "请输入描述", trigger: "change" }]
       },
       options: [
-        { value: "1", label: "SMT工治具" },
+        { value: "1", label: "印刷工治具" },
         { value: "2", label: "ICT工治具" },
         { value: "3", label: "样件" },
 
