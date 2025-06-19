@@ -2,9 +2,15 @@
   <div class="puzzles p-2">
     <el-card :body-style="{ padding: '8px' }">
       <div class="mb-2">
-        <el-button type="primary" @click="openAdd">添加</el-button>
+        <el-button type="primary" @click="openAdd">新增</el-button>
+        <el-button type="primary" @click="openEdit">编辑</el-button>
       </div>
-      <el-table :data="tableData" border :height="tableHeight" style="width: 100%">
+      <el-table
+        :data="tableData"
+        border
+        :height="tableHeight"
+        style="width: 100%"
+      >
         <!-- <el-table-column type="index" label="序号" width="55" /> -->
         <el-table-column label="序号" width="55">
           <template slot-scope="scope">
@@ -13,47 +19,134 @@
             }}</span>
           </template>
         </el-table-column>
-        <af-table-column prop="PN" label="SN码"> </af-table-column>
-        <af-table-column prop="name" label="物料编码"> </af-table-column>
+        <af-table-column prop="PN" label="样件唯一码"> </af-table-column>
+        <af-table-column prop="name" label="样件编码"> </af-table-column>
         <af-table-column prop="pn_spec" label="样件名称"> </af-table-column>
-        <el-table-column prop="faceNumber" label="规格型号" width="80" align="center">
+        <el-table-column
+          prop="faceNumber"
+          label="样件内容"
+          width="80"
+          align="center"
+        >
         </el-table-column>
-        <af-table-column prop="version" label="状态"> </af-table-column>
-        <af-table-column prop="softwareVersion" label="站位"> </af-table-column>
-        <af-table-column prop="softwareVersion" label="储位"> </af-table-column>
-        <af-table-column prop="softwareVersion" label="有效期"> </af-table-column>
+        <af-table-column prop="version" label="版本号"> </af-table-column>
+        <af-table-column prop="softwareVersion" label="封样日期">
+        </af-table-column>
+        <af-table-column prop="softwareVersion" label="刷新日期">
+        </af-table-column>
+        <af-table-column prop="softwareVersion" label="保质年">
+        </af-table-column>
+        <af-table-column prop="softwareVersion" label="封样人">
+        </af-table-column>
+        <af-table-column prop="softwareVersion" label="备注"> </af-table-column>
+        <af-table-column prop="softwareVersion" label="状态"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="180" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)"></el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
-            <el-button type="success" size="mini" icon="el-icon-document" @click="handleDetail(scope.row)"></el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-edit"
+              @click="handleEdit(scope.row)"
+            ></el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+            ></el-button>
+            <el-button
+              type="success"
+              size="mini"
+              icon="el-icon-document"
+              @click="handleDetail(scope.row)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="block" style="margin-top: 8px">
-        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="getForm.PageIndex" :page-size="getForm.PageSize" :page-sizes="[10, 20, 50, 100, 150]"
-          layout="total,sizes, prev, pager, next" :total="total">
+        <el-pagination
+          align="center"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="getForm.PageIndex"
+          :page-size="getForm.PageSize"
+          :page-sizes="[10, 20, 50, 100, 150]"
+          layout="total,sizes, prev, pager, next"
+          :total="total"
+        >
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="'添加'" :visible.sync="dialogVisible" width="400px" @close="addCancel()">
-      <el-form ref="formRef" :model="form" label-position="left" label-width="auto">
-        <el-form-item label="物料编码" prop="path">
-          <el-input v-model="form.path" placeholder="请输入物料编码"></el-input>
+    <el-dialog
+      :title="'新增'"
+      :visible.sync="dialogVisible"
+      width="1000px"
+      @close="addCancel()"
+    >
+      <el-form
+        ref="formRef"
+        :inline="true"
+        :model="form"
+        label-position="left"
+        label-width="auto"
+      >
+        <el-form-item label="样件唯一码" prop="path">
+          <el-input
+            v-model="form.path"
+            placeholder="请输入样件唯一码"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="样板SN" prop="MenuName">
-          <el-input v-model="form.MenuName" placeholder="请输入样板SN"></el-input>
+        <el-form-item label="样件编码" prop="MenuName">
+          <el-input
+            v-model="form.MenuName"
+            placeholder="请输入样件编码"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="名称" prop="redirect">
-          <el-input v-model="form.redirect" placeholder="请输入名称"></el-input>
+        <el-form-item label="样件名称" prop="redirect">
+          <el-input
+            v-model="form.redirect"
+            placeholder="请输入样件名称"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="规格型号" prop="component">
-          <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入规格型号"></el-input>
+        <el-form-item label="样件内容" prop="component">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入样件内容"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="有效期" prop="sortId">
-          <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入有效期"></el-input>
+        <el-form-item label="版本号" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入版本号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="封样日期" prop="sortId">
+          <el-date-picker
+            v-model="form.component"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="保质年" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入保质年"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入备注"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="状态" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入状态"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -61,22 +154,75 @@
         <el-button type="primary" @click="">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="'修改'" :visible.sync="detailVisible" width="400px" @close="addDetailCancel()">
-      <el-form ref="formRef" :model="form" label-position="left" label-width="auto">
-        <el-form-item label="物料编码" prop="path">
-          <el-input v-model="form.path" placeholder="请输入物料编码"></el-input>
+    <el-dialog
+      :title="'编辑'"
+      :visible.sync="editVisible"
+      width="1000px"
+      @close="addDetailCancel()"
+    >
+      <el-form
+        ref="formRef"
+        :inline="true"
+        :model="form"
+        label-position="left"
+        label-width="auto"
+      >
+        <el-form-item label="样件唯一码" prop="path">
+          <el-input
+          :disabled="false"
+            v-model="form.path"
+            placeholder="请输入样件唯一码"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="样板SN" prop="MenuName">
-          <el-input v-model="form.MenuName" placeholder="请输入样板SN"></el-input>
+        <el-form-item label="样件编码" prop="MenuName">
+          <el-input
+            v-model="form.MenuName"
+            placeholder="请输入样件编码"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="名称" prop="redirect">
-          <el-input v-model="form.redirect" placeholder="请输入名称"></el-input>
+        <el-form-item label="样件名称" prop="redirect">
+          <el-input
+            v-model="form.redirect"
+            placeholder="请输入样件名称"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="规格型号" prop="component">
-          <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入规格型号"></el-input>
+        <el-form-item label="样件内容" prop="component">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入样件内容"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="有效期" prop="sortId">
-          <el-input :disabled="fmeun" v-model="form.component" placeholder="请输入有效期"></el-input>
+        <el-form-item label="版本号" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入版本号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="封样日期" prop="sortId">
+          <el-date-picker
+            v-model="form.component"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="保质年" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入保质年"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入备注"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="状态" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder="请输入状态"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -84,14 +230,24 @@
         <el-button type="primary" @click="">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="'样件使用记录'" :visible.sync="detailVisible" width="800px" @close="addDetailCancel()">
-
-      <el-table :data="tableDetail" style="width: 100%" border :height="300" size="mini">
-            <el-table-column label="序号" width="55"></el-table-column>
+    <el-dialog
+      :title="'样件使用记录'"
+      :visible.sync="detailVisible"
+      width="800px"
+      @close="addDetailCancel()"
+    >
+      <el-table
+        :data="tableDetail"
+        style="width: 100%"
+        border
+        :height="300"
+        size="mini"
+      >
+        <el-table-column label="序号" width="55"></el-table-column>
         <el-table-column prop="PD_model" label="工单号"> </el-table-column>
         <el-table-column prop="PD_model" label="时间"> </el-table-column>
         <el-table-column prop="PD_model" label="使用人员"> </el-table-column>
-          </el-table>
+      </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="">取 消</el-button>
         <el-button type="primary" @click="">确 定</el-button>
@@ -108,7 +264,7 @@ import {
   findPnDetail,
   addPanelizationdetail,
   DeletePanelizationDetail,
-  UpdatePanelizationDetail
+  UpdatePanelizationDetail,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
@@ -129,7 +285,7 @@ export default {
         EndTime: "",
       },
       dialogVisible: false,
-      detailVisible:false,
+      editVisible: false,
       activeName: "smallBoard",
       form: {
         list: {
@@ -138,12 +294,12 @@ export default {
           side: "",
           name: "",
           version: "",
-          softwareVersion:""
+          softwareVersion: "",
         },
         Detail: [
           {
             version: "",
-            softwareVersion:"",
+            softwareVersion: "",
             small_board_qty: 0,
             finished_code: "",
             name: "",
@@ -161,12 +317,11 @@ export default {
         sdie: "",
         name: "",
         version: "",
-        softwareVersion:""
+        softwareVersion: "",
       },
       upDateForm: {
         pnl_code: "",
-        list: [
-        ],
+        list: [],
       },
       smallBoardTable: [],
       songBoardVisible: false,
@@ -187,7 +342,7 @@ export default {
     getData() {
       findPanelizationList(this.getForm).then((res) => {
         console.log(res);
-        
+
         if (res.Success) {
           this.tableData = res.Data.list;
           this.total = res.Data.Total;
@@ -199,6 +354,9 @@ export default {
     },
     openAdd() {
       this.dialogVisible = true;
+    },
+    openEdit() {
+      this.editVisible = true;
     },
     removeBoardItem(index) {
       this.form.Detail.splice(index, 1);
@@ -264,7 +422,9 @@ export default {
       this.detailVisible = true;
     },
     onSubmit() {
-   this.form.Detail = this.form.Detail.filter((item) => item.finished_code !== "");
+      this.form.Detail = this.form.Detail.filter(
+        (item) => item.finished_code !== ""
+      );
       if (this.form.Detail.length === 0) {
         this.$notify({
           type: "error",
@@ -339,8 +499,7 @@ export default {
         version: row.version,
       };
       findPnDetail(row.PN).then((res) => {
-
-        if(  res.Data==null||res.Data.length===0){
+        if (res.Data == null || res.Data.length === 0) {
           this.smallBoardTable.push({
             version: "",
             small_board_qty: 0,
@@ -351,13 +510,11 @@ export default {
             module_start: 0,
             module_end: 0,
           });
-        }else{
+        } else {
           this.smallBoardTable = JSON.parse(res.Data);
-      
         }
         this.dialogVisible = true;
         // console.log(this.smallBoardTable);
-
       });
     },
     addDetailCancel() {
@@ -376,7 +533,7 @@ export default {
         module_start: 0,
         module_end: 0,
       });
-     },
+    },
     handleDetailDelete(row) {
       // console.log(row);
       this.smallBoardTable.splice(row, 1);
@@ -403,7 +560,9 @@ export default {
       //   });
       //   return;
       // }
-      this.smallBoardTable= this.smallBoardTable.filter((item) => item.finished_code !== "");
+      this.smallBoardTable = this.smallBoardTable.filter(
+        (item) => item.finished_code !== ""
+      );
       this.smallBoardTable.forEach((item) => {
         item.cr_user = getToken();
         item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
@@ -426,10 +585,9 @@ export default {
           });
         }
       });
-
     },
     addCancel() {
-      this.detailVisible = false
+      this.detailVisible = false;
     },
     handleSizeChange(value) {
       //
@@ -460,7 +618,6 @@ export default {
 }
 
 .form-section {
-
   // margin-bottom: 20px;
   .section-title {
     color: #409eff;

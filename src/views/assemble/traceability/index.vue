@@ -8,7 +8,7 @@
               <el-input
                 placeholder="请输入"
                 clearable
-                style="width: 400px"
+                style="width: 350px"
                 v-model="getText.SearchModel.SN"
                 class="input-with-select"
               >
@@ -18,14 +18,14 @@
               <el-input
                 placeholder="请输入"
                 clearable
-                style="width: 400px"
+                style="width: 350px"
                 v-model="getText.SearchModel.PreSN"
                 class="input-with-select"
               >
               </el-input>
             </el-form-item>
             <el-form-item label="时间">
-              <el-date-picker
+              <!-- <el-date-picker
                 v-model="date"
                 style="width: 280px"
                 format="yyyy-MM-dd"
@@ -36,7 +36,11 @@
                 end-placeholder="结束日期"
                 :picker-options="pickerOptions"
               >
-              </el-date-picker>
+              </el-date-picker> -->
+          <el-date-picker v-model="date" type="datetimerange" range-separator="至" start-placeholder="开始日期" style="width:350px"
+            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
+            :clearable="false">
+          </el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleSearch()">查询</el-button>
@@ -261,17 +265,19 @@ export default {
     // this.getData();
   },
   mounted() {
-    const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth();
+  //   const date = new Date();
+  // const year = date.getFullYear();
+  // const month = date.getMonth();
   
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
+  // const firstDay = new Date(year, month, 1);
+  // const lastDay = new Date(year, month + 1, 0);
   
-  const format = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    this.date = [format(firstDay), format(lastDay)];
-  this.getText.SearchModel.OperateStartTime = format(firstDay);
-  this.getText.SearchModel.OperateEndTime = format(lastDay);
+  // const format = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  //   this.date = [format(firstDay), format(lastDay)];
+  // this.getText.SearchModel.OperateStartTime = format(firstDay);
+  // this.getText.SearchModel.OperateEndTime = format(lastDay);
+  
+  this.date = [setLastDate(),setTodayDate()]
     this.$nextTick(() => {
       this.tableHeight = (window.innerHeight - 148 - 68 - 68 + 80 - 85) * 0.6;
       this.tableHeight1 = (window.innerHeight - 148 - 68 + 80 - 50 - 85) * 0.4;

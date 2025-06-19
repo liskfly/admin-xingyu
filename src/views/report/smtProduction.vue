@@ -39,7 +39,7 @@
               placeholder="选择时间范围"
             >
             </el-time-picker> -->
-          <el-date-picker
+          <!-- <el-date-picker
             v-model="getDataText.date"
             type="daterange"
             align="right"
@@ -51,6 +51,10 @@
             format="yyyy-MM-dd"
             :picker-options="pickerOptions"
           >
+          </el-date-picker> -->
+          <el-date-picker v-model="getDataText.date" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
+            :clearable="false">
           </el-date-picker>
         </el-form-item>
         <el-form-item class="mb-2">
