@@ -10,7 +10,7 @@
           size="small"
         >
           <el-form-item label="" style="margin-bottom: 8px">
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="dateValue"
               type="daterange"
               range-separator="至"
@@ -19,6 +19,18 @@
               size="small"
               :picker-options="pickerOptions"
               value-format="yyyy-MM-dd"
+            >
+            </el-date-picker> -->
+            <el-date-picker
+              v-model="dateValue"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions"
+              :default-time="['00:00:00', '23:59:59']"
+              :clearable="false"
             >
             </el-date-picker>
           </el-form-item>

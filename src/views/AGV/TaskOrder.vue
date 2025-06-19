@@ -4,9 +4,13 @@
       <div class="table_header" style="display: flex;justify-content: flex-end;">
         <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true" size="small">
           <el-form-item label="" style="margin-bottom: 0px;">
-            <el-date-picker v-model="dateValue" type="daterange" range-separator="至" start-placeholder="开始日期"
+            <!-- <el-date-picker v-model="dateValue" type="daterange" range-separator="至" start-placeholder="开始日期"
               end-placeholder="结束日期" size="small" :picker-options="pickerOptions" value-format="yyyy-MM-dd">
-            </el-date-picker>
+            </el-date-picker> -->
+          <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
+            :clearable="false">
+          </el-date-picker>
           </el-form-item>
           <el-form-item label="" style="margin-bottom: 0px;"><el-input v-model="getForm.SearchText" clearable placeholder="请输入"
               style="width: 240px;"  @clear="clearInput" @change="clearInput"/></el-form-item>

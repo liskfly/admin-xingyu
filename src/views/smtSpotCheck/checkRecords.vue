@@ -36,7 +36,7 @@
             </el-input>
           </el-form-item>
           <el-form-item v-show="inquire != 'order'" class="form_Bottom">
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="value1"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
@@ -46,7 +46,11 @@
               end-placeholder="结束日期"
               :picker-options="pickerOptions"
             >
-            </el-date-picker>
+            </el-date-picker> -->
+          <el-date-picker v-model="value1" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
+            :clearable="false">
+          </el-date-picker>
           </el-form-item>
           <el-form-item class="form_Bottom">
             <el-button type="primary" @click="getData()">查询</el-button>
