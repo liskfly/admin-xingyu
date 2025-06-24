@@ -1,367 +1,565 @@
 <template>
-  <div class="type">
-    <el-card shadow="always" :body-style="{ padding: '8px' }">
-      <div class="table_header">
-        <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
-        <div class="input_box">
-          <el-input placeholder="请输入内容" clearable v-model="searchText" class="input-with-select" @change="getSearchData"
-            size="medium">
-            <el-button slot="append" icon="el-icon-search"></el-button>
-          </el-input>
-        </div>
-      </div>
-      <div class="table_container">
-        <el-table :data="tableData.slice(
-          (currentPage - 1) * pageSize,
-          currentPage * pageSize
-        )
-          " border :height="tableHeight" style="width: 100%" size="medium">
-          <el-table-column prop="ToolsMold" label="类型"> </el-table-column>
-          <el-table-column prop="Remark" label="描述"> </el-table-column>
-          <el-table-column prop="Category" label="类别">
-            <template slot-scope="scope">
-              <el-tag type="primary" effect="dark" v-if="scope.row.Category == '1'">印刷工治具</el-tag>
-              <el-tag type="success" effect="dark" v-else-if="scope.row.Category == '2'">ICT工治具</el-tag>
-              <el-tag type="warning" effect="dark" v-else-if="scope.row.Category == '3'">样件</el-tag>
-              <!-- <span v-if="scope.row.Category == '1'">印刷工治具</span> -->
-              <!-- <span v-else-if="scope.row.Category == '2'">ICT工治具</span>
-              <span v-else-if="scope.row.Category == '3'">样件</span> -->
-            </template>
-          </el-table-column>
-          <!-- <el-table-column prop="UpdateTime" label="创建时间">
+    <div class="p-2">
+        <el-card shadow="always" :body-style="{ padding: '8px' }">
+            <div class="mb-2 flex justify-between">
+                <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
+                <div class="input_box">
+                    <el-input placeholder="请输入内容" clearable v-model="searchText" class="input-with-select"
+                        @change="getSearchData" size="medium">
+                        <el-button slot="append" icon="el-icon-search"></el-button>
+                    </el-input>
+                </div>
+            </div>
+            <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                " border :height="tableHeight" style="width: 100%" size="mini">
+                <el-table-column type="index" label="序号" width="55" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
+                    </template>
+                </el-table-column>
+                <af-table-column prop="Category" label="类别">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.Category == 1">印刷工治具</span>
+                        <span v-else-if="scope.row.Category == 2">ICT工治具</span>
+                        <span v-else-if="scope.row.Category == 3">样件</span>
+                    </template>
+                </af-table-column>
+                <af-table-column prop="ToolsMold" label="工治具型号编码">
+                </af-table-column>
+                <af-table-column prop="MaterialName" label="描述"> </af-table-column>
+                <af-table-column prop="TotalUses" label="自定义总次数">
+                </af-table-column>
+
+                <af-table-column prop="UsesUntilRevalidation" label="停机扫描(生产片数)">
+                </af-table-column>
+                <af-table-column prop="PauseUntilRevalidate" label="停机扫描(暂停时间)">
+                </af-table-column>
+                <af-table-column prop="TimeUntilRevalidation" label="停机扫描(生产时间)">
+                </af-table-column>
+                <af-table-column prop="CleaningTime" label="清洗时间">
+                </af-table-column>
+                <af-table-column prop="TensionLimit" label="张力测试上限值">
+                </af-table-column>
+                <af-table-column prop="LowerTensionLimit" label="张力测试下限值">
+                </af-table-column>
+                <af-table-column prop="TensionPoints" label="测试点位数量">
+                </af-table-column>
+
+                <!-- <el-table-column prop="UpdateTime" label="创建时间">
           </el-table-column> -->
-          <el-table-column fixed="right" label="操作" width="120" align="center">
-            <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini"
-                @click="handleEdit(scope.$index, scope.row)"></el-button>
+                <el-table-column fixed="right" label="操作" width="120" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="primary" icon="el-icon-edit" size="mini"
+                            @click="handleEdit(scope.row)"></el-button>
 
-              <el-button type="danger" icon="el-icon-delete" size="mini"
-                @click="handleDelete(scope.$index, scope.row)"></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="block" style="margin-top: 8px">
-        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper" :total="tableData.length">
-        </el-pagination>
-      </div>
-    </el-card>
-    <el-dialog :title="'添加'" :visible.sync="dialogVisible" @close="addCancel()">
-      <el-form :model="addForm" :rules="rules" ref="formRef" label-width="80px">
-        <el-form-item label="类别" prop="category">
-          <el-select v-model="addForm.category" style="width: 100%;">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
+                        <el-button type="danger" icon="el-icon-delete" size="mini"
+                            @click="handleDelete(scope.row)"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="block" style="margin-top: 8px">
+                <el-pagination align="center" background @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+                    :page-sizes="[5, 10, 20, 50, 100]" layout="total,sizes, prev, pager, next, jumper"
+                    :total="tableData.length">
+                </el-pagination>
+            </div>
+        </el-card>
+        <el-dialog :title="'添加'" :visible.sync="addVisible" @close="addCancel()" width="800px">
+            <el-form :model="addForm" :rules="rules" ref="formRef" label-width="auto">
+                <el-form-item label="类别" prop="category">
+                    <el-select v-model="addForm.category" placeholder="请选择" style="width: 240px" filterable>
+                        <el-option v-for="item in MaterialNameList" :key="item.Value" :label="item.Text"
+                            :value="item.Value" />
+                    </el-select>
+                </el-form-item>
 
-        </el-form-item>
-        <el-form-item label="类型" prop="toolsMold">
-          <el-input v-model="addForm.toolsMold"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="remark">
-          <el-input type="textarea" v-model="addForm.remark"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addCancel()">取 消</el-button>
-        <el-button type="primary" @click="addSubmit()">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog :title="'修改'" :visible.sync="dialogEditVisible" @close="editCancel">
-      <el-form :model="editForm" :rules="rules" ref="editFormRef" label-width="80px">
-        <el-form-item label="类别" prop="category">
-          <el-select v-model="editForm.category" style="width: 100%;">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
+                <el-form-item label="工治具型号编码" prop="toolsMold">
+                    <el-input v-model.trim="addForm.toolsMold" />
+                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="12" :offset="0">
+                        <el-form-item label="描述" prop="materialName">
+                            <el-input type="textarea" v-model="addForm.materialName" style="width: 240px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12" :offset="0">
+                        <el-form-item label="自定义总次数" prop="totalUses">
+                            <el-input v-model.number="addForm.totalUses" placeholder="请输入" type="number"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
 
-        </el-form-item>
-        <el-form-item label="类型" prop="toolsMold">
-          <el-input v-model="editForm.toolsMold"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="remark">
-          <el-input type="textarea" v-model="editForm.remark"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editCancel()">取 消</el-button>
-        <el-button type="primary" @click="editSubmit()">确 定</el-button>
-      </span>
-    </el-dialog>
-  </div>
+
+
+
+
+                <el-form-item label="停机扫描(生产片数)">
+                    <el-input :disabled="!formControl.cleanAfterUses" v-model.number="addForm.usesUntilRevalidation"
+                        style="width: 240px" placeholder="请输入" type="number"></el-input>
+                    <el-checkbox class="ml-3" v-model="formControl.cleanAfterUses" @change="handleCleanAfterUsesChange">
+                        启用
+                    </el-checkbox>
+                </el-form-item>
+
+                <el-form-item label="停机扫描(暂停时间)">
+                    <el-input :disabled="!formControl.cleanAfterPause" v-model.number="addForm.causeUntilRevalidate"
+                        style="width: 240px" placeholder="请输入" type="number"></el-input>
+                    <el-checkbox class="ml-3" v-model="formControl.cleanAfterPause"
+                        @change="handleCleanAfterPauseChange">
+                        启用
+                    </el-checkbox>
+                </el-form-item>
+
+                <el-form-item label="停机扫描(生产时间)">
+                    <el-input :disabled="!formControl.cleanAfterTime" v-model.number="addForm.timeUntilRevalidation"
+                        style="width: 240px" placeholder="请输入" type="number"></el-input>
+                    <el-checkbox class="ml-3" v-model="formControl.cleanAfterTime" @change="handleCleanAfterTimeChange">
+                        启用
+                    </el-checkbox>
+                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="12" :offset="0"> <el-form-item label="清洗时间">
+                            <el-input v-model.number="addForm.cleaningTime" style="width: 240px" placeholder="请输入"
+                                type="number"></el-input>
+                        </el-form-item></el-col>
+                    <el-col :span="12" :offset="0"> <el-form-item label="张力测试上限值">
+                            <el-input v-model.number="addForm.tensionLimit" placeholder="请输入" type="number"></el-input>
+                        </el-form-item> </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="12" :offset="0">
+                        <el-form-item label="测试点位数量">
+                            <el-input v-model.number="addForm.tensionPoints" style="width: 240px" placeholder="请输入"
+                                type="number"></el-input>
+                        </el-form-item></el-col>
+                    <el-col :span="12" :offset="0">
+                        <el-form-item label="张力测试下限值">
+                            <el-input v-model.number="addForm.lowerTensionLimit" placeholder="请输入"
+                                type="number"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addCancel()">取 消</el-button>
+                <el-button type="primary" @click="addSubmit()">确 定</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog :title="'编辑'" :visible.sync="editVisible" @close="editCancel()">
+            <el-form :model="editForm" ref="editFormRef" :rules="rules" label-width="auto">
+                <el-form-item label="类别">
+                    <el-select v-model="editForm.category" placeholder="请选择" style="width: 240px" filterable>
+                        <el-option v-for="item in MaterialNameList" :key="item.Value" :label="item.Text"
+                            :value="item.Value" />
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="工治具型号编码" prop="toolsMold">
+                    <el-input disabled v-model="editForm.toolsMold" style="width: 240px" :rows="2" type="textarea" />
+                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="12" :offset="0"> <el-form-item label="描述" prop="materialName" >
+                    <el-input type="textarea" v-model="editForm.materialName" style="width: 240px"></el-input>
+                </el-form-item></el-col>
+                    <el-col :span="12" :offset="0"><el-form-item label="自定义总次数">
+                    <el-input disabled v-model.number="editForm.totalUses" 
+                        placeholder="请输入"></el-input>
+                </el-form-item> </el-col>
+                </el-row>
+                
+               
+
+                
+                <el-form-item label="停机扫描(生产片数)">
+                    <el-input :disabled="!editFormControl.cleanAfterUses"
+                        v-model.number="editForm.usesUntilRevalidation" style="width: 240px"
+                        placeholder="请输入"></el-input>
+                    <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterUses" @change="
+                        editForm.usesUntilRevalidation = !editFormControl.cleanAfterUses
+                            ? 0
+                            : EditForm.UsesUntilRevalidation
+                        " label="启用" size="large" />
+                </el-form-item>
+                <el-form-item label="停机扫描(暂停时间)">
+                    <el-input :disabled="!editFormControl.cleanAfterPause"
+                        v-model.number="editForm.pauseUntilRevalidate" style="width: 240px"
+                        placeholder="请输入"></el-input>
+                    <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterPause" @change="
+                        editForm.pauseUntilRevalidate = !editFormControl.cleanAfterPause
+                            ? 0
+                            : EditForm.PauseUntilRevalidate
+                        " label="启用" size="large" />
+                </el-form-item>
+                <el-form-item label="停机扫描(生产时间)">
+                    <el-input :disabled="!editFormControl.cleanAfterTime"
+                        v-model.number="editForm.timeUntilRevalidation" style="width: 240px"
+                        placeholder="请输入"></el-input>
+                    <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterTime" @change="
+                        editForm.timeUntilRevalidation = !editFormControl.cleanAfterTime
+                            ? 0
+                            : EditForm.TimeUntilRevalidation
+                        " label="启用" />
+                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="12" :offset="0">  <el-form-item label="清洗时间">
+                    <el-input v-model.number="editForm.cleaningTime" style="width: 240px" placeholder="请输入"
+                        type="number"></el-input>
+                </el-form-item></el-col>
+                    <el-col :span="12" :offset="0"> <el-form-item label="张力测试上限值">
+                    <el-input v-model.number="editForm.tensionLimit"  placeholder="请输入"
+                        type="number"></el-input>
+                </el-form-item></el-col>
+                </el-row>
+                
+              
+                <el-row :gutter="20">
+                    <el-col :span="12" :offset="0"><el-form-item label="测试点位数量">
+                    <el-input v-model.number="editForm.tensionPoints" style="width: 240px" placeholder="请输入"
+                        type="number"></el-input>
+                </el-form-item> </el-col>
+                    <el-col :span="12" :offset="0">  <el-form-item label="张力测试下限值">
+                    <el-input v-model.number="editForm.lowerTensionLimit"  placeholder="请输入"
+                        type="number"></el-input>
+                </el-form-item></el-col>
+                </el-row>
+                
+              
+                
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editCancel()">取 消</el-button>
+                <el-button type="primary" @click="editSubmit()">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
 import { moldControl } from "@/api/all";
-
 export default {
-  data() {
-    return {
-      searchText: "",
-      addForm: {
-        toolsMold: "",
-        category: "",
-        remark: "",
-        operationType: "I",
-      },
-      editForm: {
-        toolsMold: "",
-        category: "",
-        remark: "",
-        operationType: "U",
-      },
-      dialogEditVisible: false,
-      tableHeight: 0,
-      getText: {
-        toolsMold: "*",
-        remark: "",
-        operationType: "Q",
-      },
-      tableData: [],
-      currentPage: 1, // 当前页码
-      pageSize: 10, // 每页的数据条数
-      dialogVisible: false,
-      titleType: "",
-      rules: {
-        toolsMold: [
-          { required: true, message: "请输入治具类型", trigger: "change" },
-        ],
-        category: [{ required: true, message: "请选择类别", trigger: "change" }],
-        remark: [{ required: true, message: "请输入描述", trigger: "change" }]
-      },
-      options: [
-        { value: "1", label: "印刷工治具" },
-        { value: "2", label: "ICT工治具" },
-        { value: "3", label: "样件" },
+    data() {
+        return {
+            searchText: "",
+            tableData: [],
+            currentPage: 1, // 当前页码
+            pageSize: 10, // 每页的数据条数
+            addVisible: false,
+            tableHeight: 0,
+            addForm: {
+                category: "",
+                toolsMold: "",
+                materialName: "",
+                totalUses: 0,
+                usesUntilRevalidation: 0,
+                pauseUntilRevalidate: 0,
+                timeUntilRevalidation: 0,
+                cleaningTime: 0,
+                tensionLimit: 0,
+                lowerTensionLimit: 0,
+                tensionPoints: 0,
+                operationType: "I",
+            },
+            MaterialNameList: [
+                { Value: "1", Text: "印刷工治具" },
+                { Value: "2", Text: "ICT工治具" },
+                { Value: "3", Text: "样件" },
+            ],
+            formControl: {
+                cleanAfterUses: false,
+                cleanAfterPause: false,
+                cleanAfterTime: false,
+            },
+            editForm: {
+                category: "",
+                toolsMold: "",
+                materialName: "",
+                totalUses: 0,
+                usesUntilRevalidation: 0,
+                pauseUntilRevalidate: 0,
+                timeUntilRevalidation: 0,
+                cleaningTime: 0,
+                tensionLimit: 0,
+                lowerTensionLimit: 0,
+                tensionPoints: 0,
+                operationType: "U",
+            },
+            editVisible: false,
+            editFormControl: {
+                cleanAfterUses: false,
+                cleanAfterPause: false,
+                cleanAfterTime: false,
+            },
 
-      ],
-      //  loading: false
-    };
-  },
-  created() {
-    // this.getData();
-  },
-  beforeMount() {
-    this.getScreenHeight();
-  },
-  mounted() {
-    window.addEventListener("resize", this.getScreenHeight);
-    this.getData();
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.getScreenHeight);
-  },
-  methods: {
-    getData() {
-
-      moldControl(this.getText)
-        .then((res) => {
-          this.tableData = res.data.DataList;
-          this.endLoading();
-          // this.currentPage = 1;
-          // console.log(res.data.DataList);
-          // if (
-          //   this.tableData.length % this.pageSize == 0 &&
-          //   this.currentPage > 1
-          // ) {
-          //   this.currentPage--;
-          // }
-        })
-        .catch(() => {
-
-          this.$message.error("请求数据失败，请刷新");
-        });
+            getText: {
+                toolsMold: "*",
+                remark: "",
+                operationType: "Q",
+            },
+            rules: {
+                toolsMold: [
+                    { required: true, message: "请输入治具类型", trigger: "change" },
+                ],
+                category: [
+                    { required: true, message: "请选择类别", trigger: "change" },
+                ],
+                materialName: [
+                    { required: true, message: "请输入描述", trigger: "change" },
+                ],
+            },
+            options: [
+                { value: "1", label: "印刷工治具" },
+                { value: "2", label: "ICT工治具" },
+                { value: "3", label: "样件" },
+            ],
+        };
     },
-    addOpen() {
-      this.addForm.operationType = "I";
-      this.titleType = "添加";
-      this.dialogVisible = true;
+    beforeMount() {
+        this.getScreenHeight();
     },
-    addCancel() {
-
-      this.$refs.formRef.resetFields();
-      this.dialogVisible = false;
+    mounted() {
+        window.addEventListener("resize", this.getScreenHeight);
+        this.getData();
     },
-    addSubmit() {
-      this.$refs.formRef.validate((valid) => {
-        if (!valid) {
-          return false;
-        } else {
-          moldControl(this.addForm).then(({ data }) => {
-            if (data.Status == "OK") {
-              this.getData();
+    beforeDestroy() {
+        window.removeEventListener("resize", this.getScreenHeight);
+    },
+    methods: {
+        addOpen() {
+            this.addVisible = true;
+        },
+        getData() {
+            moldControl(this.getText)
+                .then((res) => {
+                    this.tableData = res.data.DataList;
+                })
+                .catch(() => {
+                    this.$message.error("请求数据失败，请刷新");
+                });
+        },
+        addCancel() {
+            this.addVisible = false;
+            this.$refs.formRef.resetFields();
+        },
+        addSubmit() {
+            // console.log(this.addForm);
+            let formData = {
+                ...this.addForm,
+                cleanAfterUses: `${this.addForm.cleanAfterUses ? "Y" : "N"}`,
+                cleanAfterPause: `${this.addForm.cleanAfterPause ? "Y" : "N"}`,
+                cleanAfterTime: `${this.addForm.cleanAfterTime ? "Y" : "N"}`,
+            };
+            this.$refs.formRef.validate((valid) => {
+                if (!valid) {
+                    return false;
+                } else {
+                    moldControl(formData).then(({ data }) => {
+                        if (data.Status == "OK") {
+                            this.getData();
 
-              this.$notify({
-                title: "提示信息",
-                message: `添加成功!`,
-                type: "success",
-              });
+                            this.$notify({
+                                title: "提示信息",
+                                message: `添加成功!`,
+                                type: "success",
+                            });
+                            this.addForm = {
+                                category: "",
+                                toolsMold: "",
+                                materialName: "",
+                                totalUses: 0,
+                                usesUntilRevalidation: 0,
+                                pauseUntilRevalidate: 0,
+                                timeUntilRevalidation: 0,
+                                cleaningTime: 0,
+                                tensionLimit: 0,
+                                lowerTensionLimit: 0,
+                                tensionPoints: 0,
+                                operationType: "I",
+                            };
+                            // this.$refs.formRef.resetFields();
+                            this.addVisible = false;
+                        } else {
+                            this.$notify({
+                                title: "提示信息",
+                                message: data.Message,
+                                type: "error",
+                            });
+                        }
+                    });
+                }
+            });
+        },
+        handleEdit(row) {
+            this.editForm = {
+                category: row.Category,
+                toolsMold: row.ToolsMold,
+                materialName: row.MaterialName,
+                totalUses: row.TotalUses,
+                usesUntilRevalidation: row.UsesUntilRevalidation,
+                pauseUntilRevalidate: row.PauseUntilRevalidate,
+                timeUntilRevalidation: row.TimeUntilRevalidation,
+                cleaningTime: row.CleaningTime,
+                tensionLimit: row.TensionLimit,
+                lowerTensionLimit: row.LowerTensionLimit,
+                tensionPoints: row.TensionPoints,
+            };
 
-              this.addForm.toolsMold = "";
-              this.addForm.remark = "";
-              this.addForm.category = "";
-              this.$refs.formRef.resetFields();
-              this.dialogVisible = false;
+            this.editVisible = true;
+            this.editFormControl = {
+                cleanAfterUses: row.UsesUntilRevalidation > 0,
+                cleanAfterPause: row.PauseUntilRevalidate > 0,
+                cleanAfterTime: row.TimeUntilRevalidation > 0,
+            };
+        },
+        handleDelete(row) {
+            this.$confirm("确定删除", "确认操作", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(() => {
+                    moldControl({
+                        toolsMold: row.ToolsMold,
+                        // remark: row.Remark,
+                        operationType: "D",
+                    }).then(({ data }) => {
+                        if (data.Status == "OK") {
+                            //  this.currentPage = this.currentPage > 1 ? this.currentPage - 1 : 1;
+                            this.getData();
+                            this.dialogVisible = false;
+
+                            this.$notify({
+                                title: "提示信息",
+                                message: `删除成功!`,
+                                type: "success",
+                            });
+                        } else {
+                            this.$notify({
+                                title: "提示信息",
+                                message: data.Message,
+                                type: "error",
+                            });
+                        }
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消删除",
+                    });
+                });
+        },
+        editCancel() {
+            this.editForm = {
+                Category: "",
+                ToolsMold: "",
+                TotalUses: 0,
+                UsesUntilRevalidation: 0,
+                PauseUntilRevalidate: 0,
+                TimeUntilRevalidation: 0,
+                CleaningTime: 0,
+                TensionLimit: 0,
+                LowerTensionLimit: 0,
+                TensionPoints: 0,
+            };
+            this.editVisible = false;
+            // this.$refs.editFormRef.resetFields();
+        },
+        editSubmit() {
+            let formData = {
+                ...this.editForm,
+                cleanAfterUses: `${this.editFormControl.cleanAfterUses ? "Y" : "N"}`,
+                cleanAfterPause: `${this.editFormControl.cleanAfterPause ? "Y" : "N"}`,
+                cleanAfterTime: `${this.editFormControl.cleanAfterTime ? "Y" : "N"}`,
+                operationType: "U",
+            };
+            moldControl(formData).then(({ data }) => {
+                if (data.Status == "OK") {
+                    this.getData();
+                    this.$notify({
+                        title: "提示信息",
+                        message: `修改成功!`,
+                        type: "success",
+                    });
+                    //   this.$refs.editFormRef.resetFields();
+                    this.editForm = {
+                        Category: "",
+                        ToolsMold: "",
+                        TotalUses: 0,
+                        UsesUntilRevalidation: 0,
+                        PauseUntilRevalidate: 0,
+                        TimeUntilRevalidation: 0,
+                        CleaningTime: 0,
+                        TensionLimit: 0,
+                        LowerTensionLimit: 0,
+                        TensionPoints: 0,
+                    };
+                    this.editVisible = false;
+                } else {
+                    this.$notify({
+                        title: "提示信息",
+                        message: data.Message,
+                        type: "error",
+                    });
+                }
+            });
+            // this.editVisible = false;
+            // this.$refs.editFormRef.resetFields();
+        },
+        getSearchData() {
+            if (this.searchText == "") {
+                this.getText.toolsMold = "*";
             } else {
-              this.$notify({
-                title: "提示信息",
-                message: data.Message,
-                type: "error",
-              });
-
+                this.getText.toolsMold = this.searchText;
             }
-          });
-        }
-      });
-
-    },
-    handleEdit(index, row) {
-
-      this.editForm.toolsMold = row.ToolsMold;
-      this.editForm.remark = row.Remark;
-      this.editForm.category = row.Category;
-      this.editForm.operationType = "U";
-
-      this.dialogEditVisible = true;
-    },
-    editCancel() {
-      this.editForm.toolsMold = "";
-      this.editForm.remark = "";
-      this.editForm.category = "";
-      this.$refs.editFormRef.resetFields();
-      this.dialogEditVisible = false;
-    },
-    editSubmit() {
-      this.$refs.editFormRef.validate((valid) => {
-        if (!valid) {
-          return false;
-        }
-        else {
-          moldControl(this.editForm).then(({ data }) => {
-            if (data.Status == "OK") {
-              this.getData();
-              this.$notify({
-                title: "提示信息",
-                message: `修改成功!`,
-                type: "success",
-              });
-              this.$refs.editFormRef.resetFields();
-              this.dialogEditVisible = false;
-            } else {
-              this.$notify({
-                title: "提示信息",
-                message: data.Message,
-                type: "error",
-              });
+            this.getData();
+        },
+        handleCleanAfterUsesChange() {
+            if (!this.formControl.cleanAfterUses) {
+                this.addForm.usesUntilRevalidation = 0;
             }
-          });
-        }
-      });
-
-    },
-    handleDelete(index, row) {
-      this.$confirm("确定删除", "确认操作", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          moldControl({
-            toolsMold: row.ToolsMold,
-            remark: row.Remark,
-            operationType: "D",
-          }).then(({ data }) => {
-            if (data.Status == "OK") {
-              //  this.currentPage = this.currentPage > 1 ? this.currentPage - 1 : 1;
-              this.getData();
-              this.dialogVisible = false;
-
-             
-              this.$notify({
-                title: "提示信息",
-                message: `删除成功!`,
-                type: "success",
-              });
-            } else {
-             this.$notify({
-                title: "提示信息",
-                message: data.Message,
-                type: "error",
-              });
+        },
+        handleCleanAfterPauseChange() {
+            if (!this.formControl.cleanAfterPause) {
+                this.addForm.pauseUntilRevalidate = 0;
             }
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+        },
+        handleCleanAfterTimeChange() {
+            if (!this.formControl.cleanAfterTime) {
+                this.addForm.timeUntilRevalidation = 0;
+            }
+        },
+        handleSizeChange(val) {
+            this.pageSize = val;
+        },
+        handleCurrentChange(val) {
+            this.currentPage = val;
+        },
+        getScreenHeight() {
+            this.$nextTick(() => {
+                this.tableHeight = window.innerHeight - 220;
+                // this.tableHeight1 =
+            });
+        },
     },
-    getSearchData() {
-      if (this.searchText == "") {
-        this.getText.toolsMold = "*";
-      } else {
-        this.getText.toolsMold = this.searchText;
-      }
-      this.getData();
-    },
-    handleSizeChange(value) {
-      this.pageSize = value;
-
-    },
-    handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`);
-      this.currentPage = val;
-    },
-    startLoading() {
-      this.loading = this.$loading({
-        lock: true,
-        text: "加载中~",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.2)", //调节透明度
-      });
-    },
-    endLoading() {
-      if (this.loading) {
-        this.loading.close();
-      }
-    },
-    getScreenHeight() {
-      this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
-        // this.tableHeight1 =
-      });
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.type {
-  padding: 8px;
-
-  .initBox {
-    width: 500px;
-  }
-
-  .table_header {
-    padding-bottom: 8px;
-    display: flex;
-    gap: 30px;
-    justify-content: space-between;
-    align-items: center;
-
-    .input_box {
-      width: 400px;
-    }
-  }
-
-  .btn {
-    display: flex;
-    justify-content: flex-end;
-  }
+::v-deep .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
 }
-</style>
+
+::v-deep .el-dialog .el-dialog__body {
+  flex: 1;
+  overflow: auto;
+}</style>
