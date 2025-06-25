@@ -12,22 +12,22 @@
             </div>
             <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
                 " border :height="tableHeight" style="width: 100%" size="mini">
-                <el-table-column type="index" label="序号" width="55" align="center">
+                <el-table-column type="index" label="序号" width="55" align="center" fixed>
                     <template slot-scope="scope">
                         <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
                     </template>
                 </el-table-column>
-                <af-table-column prop="Category" label="类别">
+                <af-table-column prop="Category" label="类别" fixed>
                     <template slot-scope="scope">
                         <span v-if="scope.row.Category == 1">印刷工治具</span>
                         <span v-else-if="scope.row.Category == 2">ICT工治具</span>
                         <span v-else-if="scope.row.Category == 3">样件</span>
                     </template>
                 </af-table-column>
-                <af-table-column prop="ToolsMold" label="工治具型号编码">
+                <af-table-column prop="ToolsMold" label="编码" fixed>
                 </af-table-column>
-                <af-table-column prop="MaterialName" label="描述"> </af-table-column>
-                <af-table-column prop="TotalUses" label="自定义总次数">
+                <af-table-column prop="MaterialName" label="描述" fixed> </af-table-column>
+                <af-table-column prop="TotalUses" label="使用寿命(次数)">
                 </af-table-column>
 
                 <af-table-column prop="UsesUntilRevalidation" label="停机扫描(生产片数)">
@@ -74,26 +74,23 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="工治具型号编码" prop="toolsMold">
-                    <el-input v-model.trim="addForm.toolsMold" />
-                </el-form-item>
+               
                 <el-row :gutter="20">
                     <el-col :span="12" :offset="0">
-                        <el-form-item label="描述" prop="materialName">
-                            <el-input type="textarea" v-model="addForm.materialName" style="width: 240px"></el-input>
-                        </el-form-item>
+                        <el-form-item label="编码" prop="toolsMold">
+                    <el-input v-model.trim="addForm.toolsMold"  style="width: 240px"/>
+                </el-form-item>
+                       
                     </el-col>
                     <el-col :span="12" :offset="0">
-                        <el-form-item label="自定义总次数" prop="totalUses">
-                            <el-input v-model.number="addForm.totalUses" placeholder="请输入" type="number"></el-input>
+                        <el-form-item label="描述" prop="materialName">
+                            <el-input type="textarea" v-model="addForm.materialName" ></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-
-
-
-
-
+                <el-form-item label="使用寿命(次数)" prop="totalUses">
+                            <el-input v-model.number="addForm.totalUses"  style="width: 240px" placeholder="请输入" type="number"></el-input>
+                        </el-form-item>
                 <el-form-item label="停机扫描(生产片数)">
                     <el-input :disabled="!formControl.cleanAfterUses" v-model.number="addForm.usesUntilRevalidation"
                         style="width: 240px" placeholder="请输入" type="number"></el-input>
@@ -103,7 +100,7 @@
                 </el-form-item>
 
                 <el-form-item label="停机扫描(暂停时间)">
-                    <el-input :disabled="!formControl.cleanAfterPause" v-model.number="addForm.causeUntilRevalidate"
+                    <el-input :disabled="!formControl.cleanAfterPause" v-model.number="addForm.pauseUntilRevalidate"
                         style="width: 240px" placeholder="请输入" type="number"></el-input>
                     <el-checkbox class="ml-3" v-model="formControl.cleanAfterPause"
                         @change="handleCleanAfterPauseChange">
@@ -156,22 +153,22 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="工治具型号编码" prop="toolsMold">
-                    <el-input disabled v-model="editForm.toolsMold" style="width: 240px" :rows="2" type="textarea" />
-                </el-form-item>
+              
                 <el-row :gutter="20">
-                    <el-col :span="12" :offset="0"> <el-form-item label="描述" prop="materialName" >
-                    <el-input type="textarea" v-model="editForm.materialName" style="width: 240px"></el-input>
-                </el-form-item></el-col>
-                    <el-col :span="12" :offset="0"><el-form-item label="自定义总次数">
-                    <el-input disabled v-model.number="editForm.totalUses" 
-                        placeholder="请输入"></el-input>
+                    <el-col :span="12" :offset="0">  <el-form-item label="编码" prop="toolsMold">
+                    <el-input disabled v-model="editForm.toolsMold" style="width: 240px" />
                 </el-form-item> </el-col>
+                    <el-col :span="12" :offset="0">
+                        <el-form-item label="描述" prop="materialName" >
+                    <el-input type="textarea" v-model="editForm.materialName" ></el-input>
+                </el-form-item>
+                      
+            </el-col>
                 </el-row>
-                
-               
-
-                
+                <el-form-item label="使用寿命(次数)" prop="totalUses">
+                    <el-input disabled v-model.number="editForm.totalUses" style="width: 240px"
+                        placeholder="请输入"></el-input>
+                </el-form-item> 
                 <el-form-item label="停机扫描(生产片数)">
                     <el-input :disabled="!editFormControl.cleanAfterUses"
                         v-model.number="editForm.usesUntilRevalidation" style="width: 240px"
@@ -179,8 +176,8 @@
                     <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterUses" @change="
                         editForm.usesUntilRevalidation = !editFormControl.cleanAfterUses
                             ? 0
-                            : EditForm.UsesUntilRevalidation
-                        " label="启用" size="large" />
+                            : editForm.usesUntilRevalidation
+                        " label="启用"  />
                 </el-form-item>
                 <el-form-item label="停机扫描(暂停时间)">
                     <el-input :disabled="!editFormControl.cleanAfterPause"
@@ -189,8 +186,8 @@
                     <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterPause" @change="
                         editForm.pauseUntilRevalidate = !editFormControl.cleanAfterPause
                             ? 0
-                            : EditForm.PauseUntilRevalidate
-                        " label="启用" size="large" />
+                            : editForm.pauseUntilRevalidate
+                        " label="启用"  />
                 </el-form-item>
                 <el-form-item label="停机扫描(生产时间)">
                     <el-input :disabled="!editFormControl.cleanAfterTime"
@@ -199,7 +196,7 @@
                     <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterTime" @change="
                         editForm.timeUntilRevalidation = !editFormControl.cleanAfterTime
                             ? 0
-                            : EditForm.TimeUntilRevalidation
+                            : editForm.timeUntilRevalidation
                         " label="启用" />
                 </el-form-item>
                 <el-row :gutter="20">
@@ -452,16 +449,17 @@ export default {
         },
         editCancel() {
             this.editForm = {
-                Category: "",
-                ToolsMold: "",
-                TotalUses: 0,
-                UsesUntilRevalidation: 0,
-                PauseUntilRevalidate: 0,
-                TimeUntilRevalidation: 0,
-                CleaningTime: 0,
-                TensionLimit: 0,
-                LowerTensionLimit: 0,
-                TensionPoints: 0,
+                category: "",
+                toolsMold: "",
+                materialName: "",
+                totalUses: 0,
+                usesUntilRevalidation: 0,
+                pauseUntilRevalidate: 0,
+                timeUntilRevalidation: 0,
+                cleaningTime: 0,
+                tensionLimit: 0,
+                lowerTensionLimit: 0,
+                tensionPoints: 0,
             };
             this.editVisible = false;
             // this.$refs.editFormRef.resetFields();
@@ -484,16 +482,17 @@ export default {
                     });
                     //   this.$refs.editFormRef.resetFields();
                     this.editForm = {
-                        Category: "",
-                        ToolsMold: "",
-                        TotalUses: 0,
-                        UsesUntilRevalidation: 0,
-                        PauseUntilRevalidate: 0,
-                        TimeUntilRevalidation: 0,
-                        CleaningTime: 0,
-                        TensionLimit: 0,
-                        LowerTensionLimit: 0,
-                        TensionPoints: 0,
+                        category: "",
+                toolsMold: "",
+                materialName: "",
+                totalUses: 0,
+                usesUntilRevalidation: 0,
+                pauseUntilRevalidate: 0,
+                timeUntilRevalidation: 0,
+                cleaningTime: 0,
+                tensionLimit: 0,
+                lowerTensionLimit: 0,
+                tensionPoints: 0,
                     };
                     this.editVisible = false;
                 } else {
