@@ -83,7 +83,9 @@
           </af-table-column>
           <af-table-column prop="SN" label="过程码或组件码">
           </af-table-column>
+          <af-table-column prop="MoveType" label="类型"> </af-table-column>
           <af-table-column prop="WorkOrder" label="工单号"> </af-table-column>
+          <af-table-column prop="Result" label="结果"> </af-table-column>
           <af-table-column prop="OperateUser" label="操作人"> </af-table-column>
           <af-table-column prop="OperateTime" label="时间"> </af-table-column>
         </el-table>
