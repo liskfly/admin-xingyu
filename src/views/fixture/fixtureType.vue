@@ -75,19 +75,16 @@
                 </el-form-item>
 
                
-                <el-row :gutter="20">
-                    <el-col :span="12" :offset="0">
+                
                         <el-form-item label="编码" prop="toolsMold">
                     <el-input v-model.trim="addForm.toolsMold"  style="width: 240px"/>
                 </el-form-item>
                        
-                    </el-col>
-                    <el-col :span="12" :offset="0">
+                    
                         <el-form-item label="描述" prop="materialName">
-                            <el-input type="textarea" v-model="addForm.materialName" ></el-input>
+                            <el-input  v-model="addForm.materialName" style="width: 100%"></el-input>
                         </el-form-item>
-                    </el-col>
-                </el-row>
+                 
                 <el-form-item label="使用寿命(次数)" prop="totalUses">
                             <el-input v-model.number="addForm.totalUses"  style="width: 240px" placeholder="请输入" type="number"></el-input>
                         </el-form-item>
@@ -154,17 +151,14 @@
                 </el-form-item>
 
               
-                <el-row :gutter="20">
-                    <el-col :span="12" :offset="0">  <el-form-item label="编码" prop="toolsMold">
+                <el-form-item label="编码" prop="toolsMold">
                     <el-input disabled v-model="editForm.toolsMold" style="width: 240px" />
-                </el-form-item> </el-col>
-                    <el-col :span="12" :offset="0">
+                </el-form-item> 
                         <el-form-item label="描述" prop="materialName" >
-                    <el-input type="textarea" v-model="editForm.materialName" ></el-input>
+                    <el-input  v-model="editForm.materialName" style="width: 100%"></el-input>
                 </el-form-item>
                       
-            </el-col>
-                </el-row>
+            
                 <el-form-item label="使用寿命(次数)" prop="totalUses">
                     <el-input disabled v-model.number="editForm.totalUses" style="width: 240px"
                         placeholder="请输入"></el-input>

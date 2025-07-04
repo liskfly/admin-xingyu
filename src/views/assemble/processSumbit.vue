@@ -131,13 +131,17 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 .inbound .el-form-item__label {
     font-size: 20px;
 }
 
-.inbound .el-input__inner,
-.el-textarea__inner {
+.inbound .el-input__inner {
+    font-size: 30px;
+    font-weight: bolder;
+}
+
+.inbound .el-textarea__inner {
     font-size: 30px;
     font-weight: bolder;
 }
