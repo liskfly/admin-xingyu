@@ -97,6 +97,13 @@ module.exports = {
           "^/agvApi": "",
         },
       },
+      "/assembleApi": {
+        target:"http://172.20.99.47:12016/api",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/assembleApi": "",
+        },
+      }
      
  
     },

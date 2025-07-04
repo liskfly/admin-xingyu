@@ -519,7 +519,7 @@ export default {
           this.tableData = res.Data.filter((v) => {
             if (
               String(v.panelmerge_id).toLowerCase().indexOf(searchName) > -1 ||
-              String(v.panelmerge_name).toLowerCase().indexOf(searchName) > -1 
+              String(v.panelmerge_name).toLowerCase().indexOf(searchName) > -1
             ) {
               return true;
             } else {
