@@ -436,6 +436,7 @@ import {
   changeoverRequests,
 } from "@/api/all";
 import "@/utils/protocolcheck.js";
+import { log } from "@ant-design/icons-vue/lib/utils";
 import vueQr from "vue-qr";
 export default {
   components: {
@@ -704,7 +705,7 @@ export default {
       if (this.form.side != "" && this.form.lineName !== "") {
         let data = this.dataProcessing();
         if (data.mcIDList.length !== 0) {
-          console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
+          // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
           this.startLoading();
           let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
             String(data.mcIDList[num - 1].mcId).length - 1
@@ -714,12 +715,12 @@ export default {
             .then((res) => {
               this.endLoading();
               if (res.data.Status == "OK") {
-                console.log(
-                  num === data.mcIDList.length,
-                  this.checkedLine1.length,
-                  this.checkedLine2.length,
-                  this.checkedLine3.length
-                ); 
+                // console.log(
+                //   num === data.mcIDList.length,
+                //   this.checkedLine1.length,
+                //   this.checkedLine2.length,
+                //   this.checkedLine3.length
+                // ); 
                 if (num !== data.mcIDList.length) {
                   this.changeOver(num + 1);
                 } else if (num === data.mcIDList.length) {
@@ -738,7 +739,7 @@ export default {
                   this.getStatus(this.form.lineName);
                 }
               } else {
-                console.log(lastDigit);
+                // console.log(lastDigit);
                 if (lastDigit < 4) {
                   this.questStatus1 = "NG";
                 } else if (lastDigit > 3 && lastDigit < 6) {
@@ -768,7 +769,7 @@ export default {
               }
             })
             .catch((error) => {
-              console.log(lastDigit);
+              // console.log(lastDigit);
               if (lastDigit < 4) {
                 this.questStatus1 = "NG";
               } else if (lastDigit > 3 && lastDigit < 6) {
@@ -933,11 +934,15 @@ export default {
           this.statusData.forEach((element) => {
             this.lineData.forEach((item, index) => {
               if (element.McId === item.id) {
+                console.log(index,element.McIdStatus,element.ConverConveyorStatus);
+                
                 this.lineData[index].equipment = element.McIdStatus;
                 this.lineData[index].orbit = element.ConverConveyorStatus;
               }
             });
           });
+          console.log(this.lineData);
+          
         }
       });
       // .catch(() => {
@@ -994,7 +999,7 @@ export default {
           this.closeCancellation3();
         }
       }
-      console.log(this.dataProcessing());
+      // console.log(this.dataProcessing());
     },
     handleCheckedChange(value, a) {
       if (a == 1) {
