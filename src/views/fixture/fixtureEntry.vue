@@ -238,7 +238,7 @@
       <el-form :model="addForm" :inline="true" ref="formRef" label-width="auto">
         <el-form-item label="工治具编码" prop="compid">
           <el-input
-            v-model="detailForm.compid"
+            v-model="detailForm.CompID"
             disabled
             style="width: 240px"
             placeholder=""
@@ -246,7 +246,7 @@
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
           <el-input
-            v-model="detailForm.compname"
+            v-model="detailForm.CompName"
             disabled
             style="width: 240px"
             placeholder=""
@@ -278,7 +278,7 @@
         </el-form-item>
         <el-form-item label="保养时间" prop="compname">
           <el-input
-            v-model="detailForm.MaintDate"
+            v-model="detailForm.InitialDate"
             disabled
             style="width: 240px"
             placeholder=""
@@ -289,7 +289,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="detailVisible = false">确 定</el-button>
+        <el-button type="primary" @click="detailVisible = false"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -349,7 +351,7 @@ export default {
         InitialDate: "",
         Uses: 0,
         TotalUses: 0,
-        MaintDate: "",
+        MaintDate: null,
         CleanStatus: 0,
       },
     };
@@ -434,20 +436,20 @@ export default {
     },
     handleDetail(raw) {
       this.startLoading();
-    //   iDControll({
-    //     operationType: "QD",
-    //     compid: raw.Tool,
-    //   }).then((res) => {
-    //       if (res.data.Status == "OK") {
-    //         this.detailForm = res.DataList[0]
-    //       } else {
-    //         this.$notify({
-    //           title: "提示信息",
-    //           message: res.data.Message,
-    //           type: "error",
-    //         });
-    //       }
-    //   });
+      iDControll({
+        operationType: "QD",
+        compid: raw.Tool,
+      }).then((res) => {
+        if (res.data.Status == "OK") {
+          this.detailForm = res.data.DataList[0];
+        } else {
+          this.$notify({
+            title: "提示信息",
+            message: res.data.Message,
+            type: "error",
+          });
+        }
+      });
       this.endLoading();
       this.detailVisible = true;
     },
