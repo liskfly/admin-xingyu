@@ -6,7 +6,7 @@
                     <el-form-item label="工单号" class="mb-2">
                         <el-input placeholder="请输入" clearable style="width: 350px"
                             v-model="getForm.SearchModel.WorkOrder" class="input-with-select"
-                            @keyup.enter.native="handleSearch">
+                            @keyup.enter.native="handleSearch" @clear="handleSearch">
                         </el-input>
                     </el-form-item>
 
@@ -37,7 +37,7 @@
                 <af-table-column prop="GenerateQty" label="数量"> </af-table-column>
                 <af-table-column prop="WorkOrder" label="工单号"> </af-table-column>
 
-                <af-table-column prop="UpdatedOn" label="生成时间"> </af-table-column>
+                <af-table-column prop="CreatedOn" label="生成时间"> </af-table-column>
                 <af-table-column prop="UpdatedBy" label="操作人"> </af-table-column>
 
                 <el-table-column fixed="right" label="操作" width="140" align="center">
@@ -178,8 +178,14 @@ export default {
         getData() {
             GetAssGenerateRecord(this.getForm).then((res) => {
                 if (res.Data.list.length === 0) {
+                    this.tableData=[] 
                 } else {
-                    this.tableData = res.Data.list;
+                    this.tableData = res.Data.list.map((item) => {
+                        return {
+                            ...item,
+                            CreatedOn: dayjs(item.CreatedOn).format("YYYY-MM-DD HH:mm:ss"),
+                        };
+                    });
                     this.total = res.Data.Total;
                 }
 
@@ -192,8 +198,8 @@ export default {
         },
         addCancel() {
             this.addVisible = false;
-            this.addForm.wo = "";
-            this.addForm.num = "";
+            this.addForm.WorkOrder = "";
+            this.addForm.GenerateQty = "";
         },
         handleSubmit() {
             this.$refs.addFormRef.validate((valid) => {
