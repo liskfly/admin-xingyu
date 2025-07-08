@@ -11,21 +11,21 @@
                         <el-input v-model="olderSN" disabled></el-input>
                     </el-form-item>
                     <el-form-item label="工单">
-                        <span style="font-size: 30px; font-weight: bolder">
-                            {{ textForm.Wo }}</span>
+                        <span style="font-size: 28px; font-weight: bolder">
+                            {{ textForm.WorkOrder }}</span>
                     </el-form-item>
                     <el-form-item label="产品编码">
-                        <span style="font-size: 30px; font-weight: bolder">
-                            {{ textForm.Pn }}</span>
+                        <span style="font-size: 28px; font-weight: bolder">
+                            {{ textForm.ProductCode }}</span>
                     </el-form-item>
                     <el-form-item label="产品名称">
-                        <span style="font-size: 30px; font-weight: bolder">
-                            {{ textForm.Name }}
+                        <span style="font-size: 28px; font-weight: bolder">
+                            {{ textForm.ProductName }}
                         </span>
                     </el-form-item>
                     <el-form-item label="产品规格">
-                        <span style="font-size: 30px; font-weight: bolder">
-                            {{ textForm.Spec }}
+                        <span style="font-size: 28px; font-weight: bolder">
+                            {{ textForm.ProductSpec }}
                         </span>
                     </el-form-item>
                  
@@ -81,10 +81,10 @@ export default {
             isSuccess: true,
             olderSN: "",
             textForm:{
-                Wo: "",
-                Pn: "",
-                Name: "",
-                Spec: "",
+                WorkOrder: "",
+                ProductCode: "",
+                ProductName: "",
+                ProductSpec: "",
             }
 
         };
@@ -96,7 +96,7 @@ export default {
         },
     },
     beforeMount() {
-        this.getData();
+      
   },
     mounted() {
       
@@ -111,18 +111,30 @@ export default {
             this.form.OperateTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
             processSumbit(this.form).then((res) => {
                 this.isSuccess = res.Success;
-                this.textMessage = res.Message;
+                this.textMessage = res.Msg;
                 this.olderSN = this.form.SN; // 保存当前扫描的过程码
-                if(res.Success) {
-                    // this.textForm = res.Data; // 更新文本信息
-                } else {
-                    this.textForm = {
-                        Wo: "",
-                        Pn: "",
-                        Name: "",
-                        Spec: "",
-                    };
+                console.log(res.Data);
+                console.log(JSON.parse(res.Data));
+                
+               if(res.Data!=null){
+                
+                let data=JSON.parse(res.Data);
+                this.textForm={
+                    WorkOrder: data.WorkOrder || "",
+                    ProductCode: data.ProductCode || "",
+                    ProductName: data.ProductName || "",
+                    ProductSpec: data.ProductSpec || "",
                 }
+               }else{
+                this.textForm={
+                    WorkOrder: "",
+                    ProductCode: "",
+                    ProductName: "",
+                    ProductSpec: "",
+                }
+               }
+
+              
                 this.form.SN = "";
                 this.$refs.inputRef.focus();
             });
@@ -137,12 +149,12 @@ export default {
 }
 
 .inbound .el-input__inner {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bolder;
 }
 
 .inbound .el-textarea__inner {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bolder;
 }
 
