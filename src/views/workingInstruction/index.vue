@@ -763,4 +763,8 @@ export default {
   flex: 1;
   overflow: auto;
 }
+
+.action-buttons {
+  margin-top: 10px;
+}
 </style>

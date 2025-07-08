@@ -14,7 +14,7 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 300px"
+                style="width: 180px"
                 v-model="form.SearchModel.PcbID"
                 class="input-with-select"
               >
@@ -24,8 +24,18 @@
               <el-input
                 placeholder=""
                 clearable
-                style="width: 300px"
+                style="width: 180px"
                 v-model="form.SearchModel.BlockID"
+                class="input-with-select"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item label="工单">
+              <el-input
+                placeholder=""
+                clearable
+                style="width: 180px"
+                v-model="form.SearchModel.OrderNo"
                 class="input-with-select"
               >
               </el-input>
@@ -161,6 +171,7 @@ export default {
         SearchModel: {
           PcbID: "",
           BlockID: "",
+          OrderNo:""
         },
         StartTime: "",
         EndTime: "",
