@@ -4,11 +4,24 @@
       <div class="header">
         <div>
           <el-form ref="form" class="form" :inline="true">
+            <el-form-item label="工序">
+              <el-select v-model="getText.SearchModel.StationCode"
+                clearable
+                style="width: 220px">
+                <el-option
+                  v-for="item in codeList"
+                  :key="item.StationCode"
+                  :label="item.StationName"
+                  :value="item.StationCode"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="过程码">
               <el-input
                 placeholder="请输入"
                 clearable
-                style="width: 350px"
+                style="width: 220px"
                 v-model="getText.SearchModel.SN"
                 class="input-with-select"
               >
@@ -18,7 +31,7 @@
               <el-input
                 placeholder="请输入"
                 clearable
-                style="width: 350px"
+                style="width: 220px"
                 v-model="getText.SearchModel.PreSN"
                 class="input-with-select"
               >
@@ -37,10 +50,19 @@
                 :picker-options="pickerOptions"
               >
               </el-date-picker> -->
-          <el-date-picker v-model="date" type="datetimerange" range-separator="至" start-placeholder="开始日期" style="width:350px"
-            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
-            :clearable="false">
-          </el-date-picker>
+              <el-date-picker
+                v-model="date"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                style="width: 350px"
+                end-placeholder="结束日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :picker-options="pickerOptions"
+                :default-time="['00:00:00', '23:59:59']"
+                :clearable="false"
+              >
+              </el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleSearch()">查询</el-button>
@@ -64,9 +86,7 @@
       </div>
       <div class="table_container">
         <el-table
-          :data="
-            tableData
-          "
+          :data="tableData"
           :height="tableHeight"
           border
           :size="innerHeight < 750 ? 'mini' : 'medium'"
@@ -78,20 +98,18 @@
         >
           <!-- <el-table-column type="selection" width="55"> </el-table-column> -->
 
-          <af-table-column prop="StationCode" label="工序编码"> </af-table-column>
+          <af-table-column prop="StationCode" label="工序编码">
+          </af-table-column>
           <af-table-column prop="StationName" label="工序名称">
           </af-table-column>
-          <af-table-column prop="SN" label="过程码或组件码">
-          </af-table-column>
+          <af-table-column prop="SN" label="过程码或组件码"> </af-table-column>
           <el-table-column prop="MoveType" label="类型" width="80">
             <template slot-scope="scope">
-                {{ scope.row.MoveType=='movein'?'入站':'出站' }}
+              {{ scope.row.MoveType == "movein" ? "入站" : "出站" }}
             </template>
           </el-table-column>
           <af-table-column prop="WorkOrder" label="工单号"> </af-table-column>
-          <el-table-column prop="Result" label="结果"> 
-           
-          </el-table-column>
+          <el-table-column prop="Result" label="结果"> </el-table-column>
           <af-table-column prop="OperateUser" label="操作人"> </af-table-column>
           <af-table-column prop="OperateTime" label="时间"> </af-table-column>
         </el-table>
@@ -121,7 +139,8 @@
               :size="innerHeight < 750 ? 'mini' : 'medium'"
               class="tableAuto"
             >
-              <el-table-column prop="Code" label="组件编码" width="690"> </el-table-column>
+              <el-table-column prop="Code" label="组件编码" width="690">
+              </el-table-column>
               <!-- <el-table-column prop="MaterialCode" label="物料编号"> </el-table-column>
               <el-table-column prop="MaterialName" label="物料名称"> </el-table-column> -->
             </el-table></el-tab-pane
@@ -138,10 +157,12 @@
             >
               <!-- <el-table-column prop="Code" label="清单编码">
               </el-table-column> -->
-              <el-table-column prop="Name" label="名称" width="230"> </el-table-column>
+              <el-table-column prop="Name" label="名称" width="230">
+              </el-table-column>
               <el-table-column prop="Value" label="值" width="230">
               </el-table-column>
-              <el-table-column prop="Unit" label="单位" width="230"> </el-table-column>
+              <el-table-column prop="Unit" label="单位" width="230">
+              </el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="不良代码清单" name="third">
@@ -156,8 +177,10 @@
             >
               <el-table-column prop="Code" label="不良代码" width="230">
               </el-table-column>
-              <el-table-column prop="Name" label="不良名称" width="230"> </el-table-column>
-              <el-table-column prop="Remark" label="备注" width="460"> </el-table-column>
+              <el-table-column prop="Name" label="不良名称" width="230">
+              </el-table-column>
+              <el-table-column prop="Remark" label="备注" width="460">
+              </el-table-column>
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -173,12 +196,15 @@ import {
   GetAssSpecMoveHistory,
   GetAssSpecDataList,
   GetAssSpecMaterialBind,
-  GetAssSpecNGList
+  GetAssSpecNGList,
+  GetAssSpec,
 } from "@/api/wmsApi";
-import { shortcuts,
+import {
+  shortcuts,
   disabledDate,
   setTodayDate,
-  setLastDate, } from "@/utils/dataMenu";
+  setLastDate,
+} from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -244,48 +270,50 @@ export default {
         ChkoutShtList: [],
         ChkoutShtItemsList: [],
       },
-      tableFirst:[],
-      tableSecond:[],
-      tableThird:[],
-      MoveHistoryID:'',
+      tableFirst: [],
+      tableSecond: [],
+      tableThird: [],
+      MoveHistoryID: "",
       pickerOptions: {
         shortcuts: shortcuts,
-      }
+      },
+      codeList:[]
     };
   },
   watch: {
     date(newdata) {
       if (newdata != null) {
-        this.getText.SearchModel.OperateStartTime = newdata[0]
-        this.getText.SearchModel.OperateEndTime = newdata[1]
+        this.getText.SearchModel.OperateStartTime = newdata[0];
+        this.getText.SearchModel.OperateEndTime = newdata[1];
       } else {
-        this.getText.SearchModel.OperateStartTime = ''
-        this.getText.SearchModel.OperateEndTime = ''
+        this.getText.SearchModel.OperateStartTime = "";
+        this.getText.SearchModel.OperateEndTime = "";
       }
     },
     activeName(value) {
-      if (this.MoveHistoryID !== '') {
-        this.getHistory(value)
+      if (this.MoveHistoryID !== "") {
+        this.getHistory(value);
       }
-    }
+    },
   },
   created() {
     // this.getData();
+    this.getCodeList();
   },
   mounted() {
-  //   const date = new Date();
-  // const year = date.getFullYear();
-  // const month = date.getMonth();
-  
-  // const firstDay = new Date(year, month, 1);
-  // const lastDay = new Date(year, month + 1, 0);
-  
-  // const format = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  //   this.date = [format(firstDay), format(lastDay)];
-  // this.getText.SearchModel.OperateStartTime = format(firstDay);
-  // this.getText.SearchModel.OperateEndTime = format(lastDay);
-  
-  this.date = [setLastDate(),setTodayDate()]
+    //   const date = new Date();
+    // const year = date.getFullYear();
+    // const month = date.getMonth();
+
+    // const firstDay = new Date(year, month, 1);
+    // const lastDay = new Date(year, month + 1, 0);
+
+    // const format = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    //   this.date = [format(firstDay), format(lastDay)];
+    // this.getText.SearchModel.OperateStartTime = format(firstDay);
+    // this.getText.SearchModel.OperateEndTime = format(lastDay);
+
+    this.date = [setLastDate(), setTodayDate()];
     this.$nextTick(() => {
       this.tableHeight = (window.innerHeight - 148 - 68 - 68 + 80 - 85) * 0.6;
       this.tableHeight1 = (window.innerHeight - 148 - 68 + 80 - 50 - 85) * 0.4;
@@ -303,6 +331,17 @@ export default {
           return true;
         } else {
           return false;
+        }
+      });
+    },
+    getCodeList() {
+      GetAssSpec().then((res) => {
+        if (res.data.Code == 200) {
+          this.codeList = res.data.Data;
+        } else {
+          this.$alert(res.data.Msg, "错误信息", {
+            confirmButtonText: "确定",
+          });
         }
       });
     },
@@ -390,45 +429,49 @@ export default {
     },
     getHistory(value) {
       this.startLoading();
-      if (value == 'first') {
-        GetAssSpecMaterialBind({MoveHistoryID:this.MoveHistoryID}).then((res) => {
-        if (res.data.Code == 200) {
-          this.tableFirst = res.data.Data;
-        } else {
-          this.$alert(res.data.Msg, "错误信息", {
-            confirmButtonText: "确定",
-          });
-        }
-        this.endLoading();
-        })
-      } else if(value == 'second') {
-        GetAssSpecDataList({MoveHistoryID:this.MoveHistoryID}).then((res) => {
-        if (res.data.Code == 200) {
-          this.tableSecond = res.data.Data;
-        } else {
-          this.$alert(res.data.Msg, "错误信息", {
-            confirmButtonText: "确定",
-          });
-        }
-        this.endLoading();
-        })
-      } else if(value == 'third') {
-        GetAssSpecNGList({MoveHistoryID:this.MoveHistoryID}).then((res) => {
-        if (res.data.Code == 200) {
-          this.tableThird = res.data.Data;
-        } else {
-          this.$alert(res.data.Msg, "错误信息", {
-            confirmButtonText: "确定",
-          });
-        }
-        this.endLoading();
-        })
+      if (value == "first") {
+        GetAssSpecMaterialBind({ MoveHistoryID: this.MoveHistoryID }).then(
+          (res) => {
+            if (res.data.Code == 200) {
+              this.tableFirst = res.data.Data;
+            } else {
+              this.$alert(res.data.Msg, "错误信息", {
+                confirmButtonText: "确定",
+              });
+            }
+            this.endLoading();
+          }
+        );
+      } else if (value == "second") {
+        GetAssSpecDataList({ MoveHistoryID: this.MoveHistoryID }).then(
+          (res) => {
+            if (res.data.Code == 200) {
+              this.tableSecond = res.data.Data;
+            } else {
+              this.$alert(res.data.Msg, "错误信息", {
+                confirmButtonText: "确定",
+              });
+            }
+            this.endLoading();
+          }
+        );
+      } else if (value == "third") {
+        GetAssSpecNGList({ MoveHistoryID: this.MoveHistoryID }).then((res) => {
+          if (res.data.Code == 200) {
+            this.tableThird = res.data.Data;
+          } else {
+            this.$alert(res.data.Msg, "错误信息", {
+              confirmButtonText: "确定",
+            });
+          }
+          this.endLoading();
+        });
       }
     },
     handle(row, column, event) {
       console.log(row);
       this.MoveHistoryID = row.MoveHistoryID;
-      this.getHistory(this.activeName)
+      this.getHistory(this.activeName);
     },
     handleSearch() {
       this.getText.PageIndex = 1;
@@ -436,7 +479,7 @@ export default {
       this.tableSecond = [];
       this.tableThird = [];
       this.getData();
-    }
+    },
   },
 };
 </script>
