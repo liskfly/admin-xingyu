@@ -168,8 +168,8 @@ export default {
     mounted() {
         window.addEventListener("resize", this.getScreenHeight);
         this.dateInterval = [setLastDate(), setTodayDate()];
-        this.getForm.SearchModel.OperateStartTime = this.dateInterval[0];
-        this.getForm.SearchModel.OperateEndTime = this.dateInterval[1];
+        this.getForm.StartTime= this.dateInterval[0];
+        this.getForm.EndTime = this.dateInterval[1];
     },
     beforeDestroy() {
         window.removeEventListener("resize", this.getScreenHeight);
