@@ -12,7 +12,7 @@
             <div>
                 <el-form ref="formRef" :model="form" label-width="auto" class="inbound" @submit.native.prevent>
                     <el-form-item label="PCB条码" prop="baddata_pcbid" class="mb-2">
-                        <el-input v-model="form.baddata_pcbid" placeholder="请输入PCB条码" style="width: 500px" ></el-input>
+                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"  @keyup.enter.native="changeInput"></el-input>
                     </el-form-item>
 
                     <!-- <el-form-item label="不良位号" prop="zone">
@@ -37,22 +37,17 @@
                             <el-input v-model="row.baddata_item" size="small" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="baddata_component" label="不良料号">
+                    <el-table-column prop="baddata_component" label="不良代码">
                         <template v-slot="{ row }">
-                            <el-input v-model="row.baddata_component" size="small" />
+                            <el-select v-model="row.baddata_code" placeholder="请选择不良代码" width="100%">
+                                <el-option v-for="item in badList" :key="item.badphenomena_name"
+                                    :label="item.badphenomena_value" :value="item.badphenomena_name" />
+                            </el-select>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="baddata_code" label="不良现象">
+                    <el-table-column prop="baddata_code" label="备注">
                         <template v-slot="{ row }">
-                            <el-select v-model="row.baddata_code"   filterable  style="width: 100%;">
-                                <el-option v-for="item in badList"
-                                    :key="item.badphenomena_name"
-                                    :label="item.badphenomena_value"
-                                    :value="item.badphenomena_name">
-                                </el-option>
-                            </el-select>
-                            
-                            <!-- <el-input v-model="row.baddata_remark" size="small" /> -->
+                            <el-input v-model="row.baddata_remark" size="small" />
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" width="100" align="center">
@@ -161,7 +156,7 @@ export default {
         this.getBadCode();
         this.getLineData();
         this.getEquipmentData();
-      
+        this.$refs.pcbRef.focus();
     },
     beforeDestroy() {
         window.removeEventListener("resize", this.getScreenHeight);
@@ -209,7 +204,19 @@ export default {
                 baddata_code: "",
                 baddata_remark: "",
             }];
+            this.$refs.pcbRef.focus();
         },
+        removeBoardItem(index) {
+            this.form.badrecodeList.splice(index, 1);
+            if (this.form.badrecodeList.length === 0) {
+                this.form.badrecodeList.push({
+                    baddata_item: "",
+                    baddata_code: "",
+                    baddata_remark: "",
+                });
+            }
+        },
+    
         handleSubmit() {  
             InsertXYL_BadProductInformation(this.form).then((res) => {
                 if (res.Success) {
@@ -218,6 +225,7 @@ export default {
                         message: "不良登记成功",
                         type: "success",
                     });
+                  
                     this.restSubmit();
                 } else {
                     this.$notify({

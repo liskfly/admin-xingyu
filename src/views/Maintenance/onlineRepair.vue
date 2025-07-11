@@ -29,28 +29,39 @@
                 <el-table :data="form.tableData" border style="width: 100%" height="400">
                     <el-table-column type="index" width="50" label="序号">
                     </el-table-column>
-                    <el-table-column prop="baddata_item" label="不良位号">
+                    <el-table-column prop="baddatadetail_item" label="不良位号">
                     </el-table-column>
-                    <el-table-column prop="baddata_component" label="不良料号">
-                    </el-table-column>
+                   
                     <el-table-column prop="badphenomena_value" label="不良现象">
                     </el-table-column>
                     <el-table-column prop="repairAction" label="维修操作">
                         <template v-slot="{ row, $index }">
                             <el-select v-model="row.repairAction" placeholder="请选择"
                                 @change="handleChange($event, $index)">
-                                <el-option label="误判" value="误判" />
+                               
                                 <el-option label="常规维修" value="常规维修" />
                                 <el-option label="更换物料" value="更换物料" />
+                                <el-option label="误判" value="误判" />
                                 <el-option label="报废" value="报废" />
                             </el-select>
                             <!-- <el-input v-model="row.trayId" :disabled="form.repairAction != 3" /> -->
                         </template>
                     </el-table-column>
-                    <el-table-column label="更换料盘ID">
+                    <el-table-column label="更换料号">
                         <template v-slot="{ row, $index }">
                             <el-input v-model="row.trayId" :id="`trayIdRef${$index}`"
                                 :disabled="row.repairAction != '更换物料'" />
+                        </template>
+                    </el-table-column>
+                   
+                    <!-- <el-table-column label="更换料盘数量">
+                        <template v-slot="{ row }">
+                            <el-input v-model="row.trayIdNum"  :disabled="row.repairAction != '更换物料'" />
+                        </template>
+                    </el-table-column> -->
+                    <el-table-column label="备注">
+                        <template v-slot="{ row, $index }">
+                            <el-input v-model="row.baddata_remark"  />
                         </template>
                     </el-table-column>
                 </el-table>
@@ -60,6 +71,18 @@
         <div class="flex justify-end p-2">
             <el-button>重置</el-button><el-button type="primary" @click="onSubmit">提交</el-button>
         </div>
+
+        <!-- <el-dialog :title="'添加'" :visible.sync="addVisible" width="450px" @close="addCancel()">
+            <el-table :data="productid" border style="width: 100%" height="400">
+
+
+                </el-table>
+          
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addCancel()">关闭</el-button>
+                <el-button type="primary" @click="addSubmit()">确 定</el-button>
+            </span>
+        </el-dialog> -->
     </div>
 </template>
 
@@ -115,7 +138,8 @@ export default {
                     trayIdRef.focus();
                 });
             } else {
-                this.form.tableData[index].trayId = null;
+                this.form.tableData[index].trayId = "";
+                this.form.tableData[index].trayIdNum="" 
             }
             // if (val == 3) {
             //     this.$refs.trayIdRef0.focus();
@@ -134,15 +158,17 @@ export default {
                     item.trayId == ""
                 ) {
                     data.repairList.push({
-                        baddata_id: item.baddata_id,
+                        baddatadetail_id: item.baddatadetail_id,
                         baddata_way: item.repairAction,
+                        baddata_remark: item.baddata_remark,
                         productid: [],
                     });
                 } else {
                     data.repairList.push({
-                        baddata_id: item.baddata_id,
+                        baddatadetail_id: item.baddatadetail_id,
                         baddata_way: item.repairAction,
-                        productid: [item.trayId],
+                        baddata_remark: item.baddata_remark,
+                        productid: [{productname:item.trayId}],
                     });
                 }
             });
@@ -170,6 +196,8 @@ export default {
             }
         },
         submitData(data) {
+            // console.log(data);
+            
             UpdateXYL_BadProductInformation(data).then((res) => {
                 if (res.Success) {
                     this.$notify({

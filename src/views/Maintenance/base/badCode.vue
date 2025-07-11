@@ -14,10 +14,10 @@
                 </el-table-column>
 
                 <!-- 数据列 -->
+                <el-table-column prop="badphenomena_value" label="不良名称" />
                 <el-table-column prop="badphenomena_name" label="不良代码" />
-                <el-table-column prop="badphenomena_value" label="不良描述" />
-               
 
+                <el-table-column prop="badphenomena_desc" label="不良描述" />
                 <el-table-column prop="badphenomena_fathertype" label="不良代码类别" />
                 <!-- 操作列 -->
                 <el-table-column fixed="right" label="操作" width="140" align="center">
@@ -37,20 +37,23 @@
 
             <el-dialog title="添加不良类别" :visible.sync="dialogAddVisible" width="30%" @close="addCancel()">
                 <el-form :model="form" ref="form" label-width="auto">
-                    <el-form-item label="不良代码" prop="badphenomena_name">
-                        <el-input v-model="form.badphenomena_name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="不良描述" prop="badphenomena_value">
-                        <el-input v-model="form.badphenomena_value"></el-input>
-                    </el-form-item>
                     <el-form-item label="不良代码类别" prop="badphenomena_fathertype">
                         <el-select v-model="form.badphenomena_fathertype" placeholder="请选择不良代码类别" style="width: 100%;">
-                            <el-option v-for="item in list" :key="item.badphenomena_name" :label="item.badphenomena_name"
-                                :value="item.badphenomena_name"></el-option>
+                            <el-option v-for="item in list" :key="item.badphenomena_name"
+                                :label="item.badphenomena_name" :value="item.badphenomena_name"></el-option>
                         </el-select>
-                        <!-- <el-input v-model="form.badphenomena_fathertype"></el-input> -->
 
                     </el-form-item>
+                    <el-form-item label="不良名称" prop="badphenomena_name">
+                        <el-input v-model="form.badphenomena_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="不良代码" prop="badphenomena_value">
+                        <el-input v-model="form.badphenomena_value"></el-input>
+                    </el-form-item>
+                    <el-form-item label="不良描述" prop="badphenomena_desc">
+                        <el-input v-model="form.badphenomena_desc" type="textarea" ></el-input>
+                    </el-form-item>
+
                 </el-form>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="addCancel">取 消</el-button>
@@ -59,19 +62,24 @@
             </el-dialog>
             <el-dialog title="编辑不良类别" :visible.sync="dialogEditVisible" width="30%" @close="editCancel()">
                 <el-form :model="editFrom" ref="editFromRef" label-width="auto">
-                    <el-form-item label="不良代码" prop="badphenomena_name">
-                        <el-input v-model="editFrom.badphenomena_name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="不良描述" prop="badphenomena_value">
-                        <el-input v-model="editFrom.badphenomena_value"></el-input>
-                    </el-form-item>
                     <el-form-item label="不良代码类别" prop="badphenomena_fathertype">
                         <!-- <el-input v-model="editFrom.badphenomena_fathertype"></el-input> -->
-                        <el-select v-model="editFrom.badphenomena_fathertype" placeholder="请选择不良代码类别" style="width: 100%;">
-                            <el-option v-for="item in list" :key="item.badphenomena_name" :label="item.badphenomena_name"
-                                :value="item.badphenomena_name"></el-option>      
+                        <el-select v-model="editFrom.badphenomena_fathertype" placeholder="请选择不良代码类别"
+                            style="width: 100%;">
+                            <el-option v-for="item in list" :key="item.badphenomena_name"
+                                :label="item.badphenomena_name" :value="item.badphenomena_name"></el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="不良名称" prop="badphenomena_name">
+                        <el-input v-model="editFrom.badphenomena_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="不良代码" prop="badphenomena_value">
+                        <el-input v-model="editFrom.badphenomena_value"></el-input>
+                    </el-form-item>
+                    <el-form-item label="不良描述" prop="badphenomena_desc">
+                        <el-input v-model="editFrom.badphenomena_desc" type="textarea"></el-input>
+                    </el-form-item>
+
                 </el-form>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="editCancel">取 消</el-button>
@@ -96,7 +104,7 @@ import { getToken } from "@/utils/auth";
 export default {
     data() {
         return {
-            list:[],
+            list: [],
             tableData: [],
             currentPage: 1,
             pageSize: 10,
@@ -110,6 +118,7 @@ export default {
                 badphenomena_name: "",
                 badphenomena_value: "",
                 badphenomena_fathertype: "",
+                badphenomena_desc: "",
                 UserNo: getToken(),
             },
             editFrom: {
@@ -117,6 +126,7 @@ export default {
                 badphenomena_name: "",
                 badphenomena_value: "",
                 badphenomena_fathertype: "",
+                badphenomena_desc: "",
                 UserNo: getToken(),
             },
         };
@@ -139,7 +149,7 @@ export default {
             });
         },
         getBadTypeData() {
-            QueryBadTypebasicInformation({badphenomena_name: ""}).then((res) => {
+            QueryBadTypebasicInformation({ badphenomena_name: "" }).then((res) => {
                 this.list = res.Data;
             });
         },
@@ -151,10 +161,11 @@ export default {
             this.form.badphenomena_name = "";
             this.form.badphenomena_value = "";
             this.form.badphenomena_fathertype = "";
+            this.form.badphenomena_desc = "";
         },
         handleSubmit() {
-    
-         
+
+
             InsertBadCodeInformation(this.form).then((res) => {
                 if (res.Success) {
                     this.$notify({
@@ -178,6 +189,7 @@ export default {
             this.editFrom.badphenomena_name = row.badphenomena_name;
             this.editFrom.badphenomena_value = row.badphenomena_value;
             this.editFrom.badphenomena_fathertype = row.badphenomena_fathertype;
+            this.editFrom.badphenomena_desc = row.badphenomena_desc;
             this.dialogEditVisible = true;
         },
         editCancel() {
@@ -185,9 +197,10 @@ export default {
             this.editFrom.badphenomena_name = "";
             this.editFrom.badphenomena_value = "";
             this.editFrom.badphenomena_fathertype = "";
+            this.editFrom.badphenomena_desc = "";
         },
         handleEditSubmit() {
-       
+
             UpdateBadCodeInformation(this.editFrom).then((res) => {
                 if (res.Success) {
                     this.$notify({

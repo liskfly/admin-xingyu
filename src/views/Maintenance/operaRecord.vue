@@ -2,13 +2,7 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div>
-        <el-form
-          ref="formRef"
-          :model="getForm"
-          label-width="auto"
-          :inline="true"
-          size="small"
-        >
+        <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true" size="small">
           <el-form-item label="" style="margin-bottom: 8px">
             <!-- <el-date-picker
               v-model="dateValue"
@@ -21,50 +15,20 @@
               value-format="yyyy-MM-dd"
             >
             </el-date-picker> -->
-            <el-date-picker
-              v-model="dateValue"
-              type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :picker-options="pickerOptions"
-              :default-time="['00:00:00', '23:59:59']"
-              :clearable="false"
-            >
+            <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+              end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"
+              :default-time="['00:00:00', '23:59:59']" :clearable="false">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="" style="margin-bottom: 8px"
-            ><el-input
-              v-model="getForm.SearchModel.pcbid"
-              clearable
-              placeholder="请输入"
-              style="width: 240px"
-              @clear="clearInput"
-              @change="clearInput"
-          /></el-form-item>
+          <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchModel.pcbid" clearable
+              placeholder="请输入" style="width: 240px" @clear="clearInput" @change="clearInput" /></el-form-item>
           <el-form-item style="margin-bottom: 0px">
-            <el-button type="primary" @click="getData()" icon="el-icon-search"
-              >查询</el-button
-            ></el-form-item
-          >
+            <el-button type="primary" @click="getData()" icon="el-icon-search">查询</el-button></el-form-item>
         </el-form>
       </div>
-      <el-table
-        :data="tableData"
-        border
-        :height="tableHeight"
-        style="width: 100%"
-        stripe
-      >
+      <el-table :data="tableData" border :height="tableHeight" style="width: 100%" stripe size="small">
         <!-- 序号列 -->
-        <el-table-column
-          type="index"
-          label="序号"
-          width="55"
-          fixed="left"
-          align="center"
-        >
+        <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
           <template v-slot="{ $index }">
             {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
           </template>
@@ -72,47 +36,26 @@
 
         <!-- 数据列 -->
         <el-table-column prop="containerName" label="PCB条码" />
-        <el-table-column prop="baddata_line" label="线体" />
-        <el-table-column prop="baddata_equipment" label="设备" />
-        <el-table-column prop="baddata_item" label="不良位号" />
+        <el-table-column prop="baddatadetail_line" label="线体" />
+        <el-table-column prop="baddatadetail_equip" label="设备" />
+        <el-table-column prop="baddatadetail_item" label="不良位号" />
         <el-table-column prop="badphenomena_value" label="不良现象" />
-        <el-table-column prop="baddata_repairway" label="维修方法" />
-        <el-table-column
-          prop="baddata_confirmtype"
-          label="状态"
-          width="100"
-          align="center"
-        >
+        <el-table-column prop="repair_way" label="维修方法" />
+        <el-table-column prop="baddatadetail_comp" label="状态" width="100" align="center">
           <template v-slot="{ row }">
-            <el-tag
-              effect="dark"
-              v-if="row.baddata_confirmtype == 'Y'"
-              type="success"
-              >已维修</el-tag
-            >
-            <el-tag
-              effect="dark"
-              v-else-if="row.baddata_confirmtype != 'Y'"
-              type="info"
-              >未维修</el-tag
-            >
+            <el-tag effect="dark" v-if="row.baddatadetail_comp=='完成维修'" type="success">{{row.baddatadetail_comp}}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddatadetail_comp=='维修中'" type="primary">{{row.baddatadetail_comp}}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddatadetail_comp=='未维修'" type="info">{{row.baddatadetail_comp}}</el-tag>
+            <el-tag effect="dark" v-else type="warning">{{row.baddatadetail_comp}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="baddata_confirmuser" label="维修人" />
-        <el-table-column prop="baddata_confirmdatetime" label="维修时间" />
+        <el-table-column prop="baddatadetail_user" label="维修人" />
+        <el-table-column prop="baddatadetail_datetime" label="维修时间" />
       </el-table>
       <div class="block" style="margin-top: 8px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="getForm.PageIndex"
-          :page-size="getForm.PageSize"
-          :page-sizes="[10, 20, 50, 100, 200]"
-          layout="total,sizes, prev, pager, next"
-          :total="total"
-        >
+        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="getForm.PageIndex" :page-size="getForm.PageSize" :page-sizes="[10, 20, 50, 100, 200]"
+          layout="total,sizes, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </el-card>
@@ -148,6 +91,7 @@ export default {
       dateValue: [],
       pickerOptions: {
         shortcuts: shortcuts,
+        disabledDate,
       },
     };
   },
