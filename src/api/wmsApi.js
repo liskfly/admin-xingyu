@@ -314,3 +314,11 @@ export function GetAssSpecNGList(data) {
     data,
   });
 }
+
+//获取工序
+export function GetAssSpec() {
+  return request({
+    url: "/AssSpec/GetAssSpec",
+    method: "post"
+  });
+}
