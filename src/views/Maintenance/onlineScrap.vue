@@ -1,9 +1,9 @@
 <template>
   <div class="p-2">
     <el-card shadow="" :body-style="{ padding: '8px' }">
-      <div class="p-2">
-        <el-input v-model="input" placeholder="请输入" style="width: 400px" />
-        <el-button>查询</el-button>
+      <div class="mb-2">
+        <el-input v-model="input" placeholder="请输入" style="width: 400px"  />
+        <el-button type="primary">查询</el-button>
       </div>
       <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         " :style="{ width: '100%' }" border :height="tableHeight" stripe>

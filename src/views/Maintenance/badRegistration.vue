@@ -39,7 +39,7 @@
                     </el-table-column>
                     <el-table-column prop="baddata_component" label="不良代码">
                         <template v-slot="{ row }">
-                            <el-select v-model="row.baddata_code" placeholder="请选择不良代码" width="100%">
+                            <el-select v-model="row.baddata_code" placeholder="请选择不良代码" style="width: 100%;">
                                 <el-option v-for="item in badList" :key="item.badphenomena_name"
                                     :label="item.badphenomena_value" :value="item.badphenomena_name" />
                             </el-select>

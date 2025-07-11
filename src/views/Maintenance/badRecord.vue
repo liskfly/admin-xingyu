@@ -21,7 +21,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchModel.baddata_pcbid" clearable
-              placeholder="请输入" style="width: 240px" @clear="clearInput" @change="clearInput" /></el-form-item>
+              placeholder="请输入PCB条码" style="width: 240px" @clear="clearInput"  @keyup.enter.native="clearInput" /></el-form-item>
           <el-form-item style="margin-bottom: 0px">
             <el-button type="primary" @click="getData()" icon="el-icon-search">查询</el-button></el-form-item>
         </el-form>
