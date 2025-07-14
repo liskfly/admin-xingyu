@@ -33,7 +33,13 @@
         <af-table-column prop="prosop_product" label="料号"> </af-table-column>
         <!-- <af-table-column prop="PN" label="规格"> </af-table-column>
         <af-table-column prop="PN" label="描述"> </af-table-column> -->
-        <af-table-column prop="prosop_name" label="文件1"> </af-table-column>
+        <af-table-column prop="prosop_name" label="文件1">
+          <template #default="scope">
+            <div style="text-decoration: underline" @click="getPdfSrc(scope.row.prosop_guid)">
+              {{ scope.row.prosop_name }}
+            </div>
+          </template>
+        </af-table-column>
         <af-table-column prop="prosop_name2" label="文件2"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="180" align="center">
           <template slot-scope="scope">
@@ -178,8 +184,7 @@
           type="primary"
           @click="upLoad()"
           :disabled="
-            fileListUp1.length === 0 &&
-            fileListUp2.length === 0 ||
+            (fileListUp1.length === 0 && fileListUp2.length === 0) ||
             productName === ''
           "
           >确 定</el-button
@@ -309,6 +314,16 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :title="'浏览'"
+      :visible.sync="browseVisible"
+      width="1000px"
+      @close=""
+    >
+      <div>
+        <iframe :src="pdfsrc" style="width: 100%;height: 500px;" frameborder="0"></iframe>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -317,6 +332,7 @@ import {
   InsertXYLProductSOP,
   QueryXYLProductSOP,
   GetESReportViewProduct,
+  DQXYLProductSOP,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
@@ -364,6 +380,8 @@ export default {
           },
         ],
       },
+      browseVisible: false,
+      pdfsrc: "",
       detailVisible: false,
       editForm: {
         pn: "",
@@ -424,6 +442,14 @@ export default {
           cb(res.Data);
         });
       }
+    },
+    getPdfSrc(guid) {
+      DQXYLProductSOP({
+        prosop_guid: guid,
+      }).then((res) => {
+        this.pdfsrc = `data:application/pdf;base64,${res.Data}`;
+        this.browseVisible = true;
+      })
     },
     handleSelect(obj) {
       this.productName = obj.ProductName;
@@ -616,7 +642,6 @@ export default {
       this.fileListUp1 = fileList;
       // 初始化自定义文件名
       this.customNames[0] = file.name;
-      
     },
     file1UpRemove(file, fileList) {
       this.fileListUp1 = fileList;
@@ -678,10 +703,10 @@ export default {
         });
       }
       if (this.fileListUp2.length != 0) {
-      await this.blobToBase64(this.fileListUp2[0].raw).then((base64) => {
-        // 如果只需要纯 Base64 部分，可以去掉前缀：
-        file2Base64 = base64.split(",")[1];
-      });
+        await this.blobToBase64(this.fileListUp2[0].raw).then((base64) => {
+          // 如果只需要纯 Base64 部分，可以去掉前缀：
+          file2Base64 = base64.split(",")[1];
+        });
       }
       // const formData = new FormData();
       // if (this.fileListUp1.length !== 0) {

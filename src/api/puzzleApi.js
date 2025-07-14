@@ -112,6 +112,7 @@ export function findPartNumberData(data) {
     });
 }
 
+//新增文件SOP
 export function InsertXYLProductSOP(data) {
     return request({
         url: "/ProductSOP/InsertXYLProductSOP",
@@ -120,6 +121,7 @@ export function InsertXYLProductSOP(data) {
     });
 }
 
+//查询文件SOP
 export function QueryXYLProductSOP(data) {
     return request({
         url: "/ProductSOP/QueryXYLProductSOP",
@@ -128,9 +130,19 @@ export function QueryXYLProductSOP(data) {
     });
 }
 
+//查询MES料号
 export function GetESReportViewProduct(data) {
     return request({
         url: "/ProductSOP/GetESReportViewProduct",
+        method: "post",
+        data
+    });
+}
+
+//文件预览和下载
+export function DQXYLProductSOP(data) {
+    return request({
+        url: "/ProductSOP/DQXYLProductSOP",
         method: "post",
         data
     });
