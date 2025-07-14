@@ -733,30 +733,30 @@ export default {
         });
         return;
       }
-      console.log({
-        id: this.idChange,
-        levelCode: this.levelCodeChange,
-        levelType: this.levelTypeChange,
-        name: this.nameChange,
-        description: `${this.descriptionChange}`,
-        operator: getToken(),
-        // this.operatorChange
-        repeat: this.repeatChange,
-        grade: `${this.gradeChange}`,
-        startTime:
-          this.repeatChange === "Y"
-            ? setStartDate(this.dateRepectChange[0]) + " " + this.timeChange
-            : setStartDate(this.dateChange) + " " + this.timeChange,
-        endTime:
-          this.repeatChange === "Y"
-            ? setStartDate(this.dateRepectChange[1])
-            : "2999-12-30 23:59:59",
-        duration: Number(getMin(this.timeChange, this.durationChange)),
-        isWorking: this.isWorkingChange ? "Y" : "N",
-        isPlanStop: this.isPlanStopChange ? "Y" : "N",
-        lineNumber: this.lineChange,
-        operationType: "U",
-      });
+      // console.log({
+      //   id: this.idChange,
+      //   levelCode: this.levelCodeChange,
+      //   levelType: this.levelTypeChange,
+      //   name: this.nameChange,
+      //   description: `${this.descriptionChange}`,
+      //   operator: getToken(),
+      //   // this.operatorChange
+      //   repeat: this.repeatChange,
+      //   grade: `${this.gradeChange}`,
+      //   startTime:
+      //     this.repeatChange === "Y"
+      //       ? setStartDate(this.dateRepectChange[0]) + " " + this.timeChange
+      //       : setStartDate(this.dateChange) + " " + this.timeChange,
+      //   endTime:
+      //     this.repeatChange === "Y"
+      //       ? setStartDate(this.dateRepectChange[1])
+      //       : "2999-12-30 23:59:59",
+      //   duration: Number(getMin(this.timeChange, this.durationChange)),
+      //   isWorking: this.isWorkingChange ? "Y" : "N",
+      //   isPlanStop: this.isPlanStopChange ? "Y" : "N",
+      //   lineNumber: this.lineChange,
+      //   operationType: "U",
+      // });
       // return;
       XY_OEE_Calendar({
         id: this.idChange,

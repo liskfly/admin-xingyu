@@ -15,7 +15,6 @@ export function addPanelizationList(data) {
     });
 }
 
-
 export function DeletePanelizationList(data) {
     return request({
         url: "/Panelization/DeletePanelizationList",
@@ -113,4 +112,71 @@ export function findPartNumberData(data) {
     });
 }
 
+export function InsertXYLProductSOP(data) {
+    return request({
+        url: "/ProductSOP/InsertXYLProductSOP",
+        method: "post",
+        data
+    });
+}
 
+export function QueryXYLProductSOP(data) {
+    return request({
+        url: "/ProductSOP/QueryXYLProductSOP",
+        method: "post",
+        data
+    });
+}
+
+export function GetESReportViewProduct(data) {
+    return request({
+        url: "/ProductSOP/GetESReportViewProduct",
+        method: "post",
+        data
+    });
+}
+
+//查询核对基础数据
+export function QueryChecProductFoundation(data) {
+    return request({
+        url: "/ProductCheck/QueryChecProductFoundation",
+        method: "post",
+        data
+    });
+}
+
+//新增核对基础数据
+export function InsertChecProductFoundation(data) {
+    return request({
+        url: "/ProductCheck/InsertChecProductFoundation",
+        method: "post",
+        data
+    });
+}
+
+//修改核对基础数据
+export function UpdateChecProductFoundation(data) {
+    return request({
+        url: "/ProductCheck/UpdateChecProductFoundation",
+        method: "post",
+        data
+    });
+}
+
+//删除核对基础数据
+export function DeleteChecProductFoundation(data) {
+    return request({
+        url: "/ProductCheck/DeleteChecProductFoundation",
+        method: "post",
+        data
+    });
+}
+
+//根据id查询核对基础数据(修改时使用)
+export function QueryChecProductFoundationById(data) {
+    return request({
+        url: "/ProductCheck/QueryChecProductFoundationById",
+        method: "post",
+        data
+    });
+}
