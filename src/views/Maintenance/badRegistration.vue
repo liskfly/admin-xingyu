@@ -15,18 +15,6 @@
                         <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"  @keyup.enter.native="changeInput"></el-input>
                     </el-form-item>
 
-                    <!-- <el-form-item label="不良位号" prop="zone">
-                        <el-input v-model="form.zone" placeholder="请输入不良位号" style="width: 240px;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="不良料号" prop="zone">
-                        <el-input v-model="form.zone" placeholder="请输入不良料号" style="width: 240px;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="不良现象" prop="badPhenomenon">
-                        <el-select v-model="form.badPhenomenon" placeholder="请选择" style="width: 240px;">
-                            <el-option label="缺件" value="缺件" />
-                            <el-option label="漏焊" value="漏焊" />
-                        </el-select>
-                    </el-form-item> -->
                 </el-form>
                 <el-table :data="form.badrecodeList" border :style="{ width: '100%' }" :height="tableHeight">
                     <el-table-column label="序号" width="60" align="center">
