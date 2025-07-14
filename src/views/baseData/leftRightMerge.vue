@@ -19,9 +19,9 @@
         " border :height="tableHeight" style="width: 100%" size="mini">
         <!-- 序号列 -->
         <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
-          <!-- <template v-slot="{ $index }">
-            {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
-          </template> -->
+          <template v-slot="{ $index }">
+            {{ ($index + 1) + (currentPage - 1) * pageSize }}
+          </template>
         </el-table-column>
 
         <!-- 数据列 -->

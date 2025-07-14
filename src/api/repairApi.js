@@ -120,14 +120,7 @@ export function UpdateXYL_BadProductInformation(data) {
     });
 }
 
-//查询报废数据
-export function QueryXYL_BadProductInformationScrap(data) {
-    return request({
-        url: "/Repair/QueryXYL_BadProductInformationScrap",
-        method: "post",
-        data,
-    });
-}
+
 
 //报废确认
 export function UpdateXYL_BadProductInformationScrapRevd(data) {
@@ -142,6 +135,48 @@ export function UpdateXYL_BadProductInformationScrapRevd(data) {
 export function QueryXYL_BadProductInformationRepairRecord(data) {
     return request({
         url: "/Repair/QueryXYL_BadProductInformationRepairRecord",
+        method: "post",
+        data,
+    });
+}
+
+//查询审核料号信息
+export function QueryXYL_BadExamine(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadExamine",
+        method: "post",
+        data,
+    });
+}
+//新增审核料号信息
+export function InsertXYL_BadExamine(data) {
+    return request({
+        url: "/Repair/InsertXYL_BadExamine",
+        method: "post",
+        data,
+    });
+}
+//修改审核料号信息
+export function UpdateXYL_BadExamine(data) {
+    return request({
+        url: "/Repair/UpdateXYL_BadExamine",
+        method: "post",
+        data,
+    });
+}
+
+//获取报废审批  
+export function QueryDistinctPCBIDFormScrap(data) {
+    return request({
+        url: "/Repair/QueryDistinctPCBIDFormScrap",
+        method: "post",
+        data,
+    });
+}
+//获取报废审批明细 /Repair/QueryXYL_BadProductInformationScrap
+export function QueryXYL_BadProductInformationScrap(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformationScrap",
         method: "post",
         data,
     });
