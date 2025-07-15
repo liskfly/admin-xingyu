@@ -121,7 +121,7 @@
       <div>
         <el-input
           v-model.trim="historyForm.SearchModel.checkpro_no"
-          placeholder=""
+          placeholder="请输入星宇标签的部分内容"
           style="width: 350px"
           @keyup.enter.native="getHistoy"
           clearable

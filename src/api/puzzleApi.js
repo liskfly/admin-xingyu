@@ -121,6 +121,24 @@ export function InsertXYLProductSOP(data) {
     });
 }
 
+//修改文件SOP
+export function UpdateXYLProductSOP(data) {
+    return request({
+        url: "/ProductSOP/UpdateXYLProductSOP",
+        method: "post",
+        data
+    });
+}
+
+//删除文件SOP
+export function DeleteXYLProductSOP(data) {
+    return request({
+        url: "/ProductSOP/DeleteXYLProductSOP",
+        method: "post",
+        data
+    });
+}
+
 //查询文件SOP
 export function QueryXYLProductSOP(data) {
     return request({
