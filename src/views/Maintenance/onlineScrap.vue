@@ -43,7 +43,7 @@
         </el-table-column>
       </el-table>
       <el-form label-width="auto" class="mt-2">
-        <el-form-item label="备注" class="mb-2">
+        <el-form-item label="报废原因" class="mb-2">
           <el-input v-model="remark" width="100%"></el-input>
         </el-form-item>
 
