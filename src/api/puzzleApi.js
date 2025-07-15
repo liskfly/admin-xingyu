@@ -192,3 +192,12 @@ export function QueryChecProductFoundationById(data) {
         data
     });
 }
+
+//操作历史查询
+export function QueryChecProductLog(data) {
+    return request({
+        url: "/ProductCheck/QueryChecProductLog",
+        method: "post",
+        data
+    });
+}
