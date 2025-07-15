@@ -21,7 +21,8 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchModel.pcbid" clearable
-              placeholder="请输入" style="width: 240px" @clear="clearInput"  @keyup.enter.native="clearInput" /></el-form-item>
+              placeholder="请输入" style="width: 240px" @clear="clearInput"
+              @keyup.enter.native="clearInput" /></el-form-item>
           <el-form-item style="margin-bottom: 0px">
             <el-button type="primary" @click="getData()" icon="el-icon-search">查询</el-button></el-form-item>
         </el-form>
@@ -35,10 +36,10 @@
         </el-table-column>
 
         <!-- 数据列 -->
-        <af-table-column prop="containerName" label="PCB条码"  fixed="left"/>
-        <af-table-column prop="mfgordername" label="工单号"  fixed="left"></af-table-column>
-                <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
-                <af-table-column prop="productvalue" label="产品名称"></af-table-column>
+        <af-table-column prop="containerName" label="PCB条码" fixed="left" />
+        <af-table-column prop="mfgordername" label="工单号" fixed="left"></af-table-column>
+        <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
+        <af-table-column prop="productvalue" label="产品名称"></af-table-column>
         <el-table-column prop="baddatadetail_line" label="线体" />
         <el-table-column prop="baddatadetail_equip" label="设备" />
         <el-table-column prop="baddatadetail_item" label="不良位号" />
@@ -46,10 +47,13 @@
         <el-table-column prop="repair_way" label="维修方法" />
         <el-table-column prop="baddatadetail_comp" label="状态" width="100" align="center">
           <template v-slot="{ row }">
-            <el-tag effect="dark" v-if="row.baddatadetail_comp=='完成维修'" type="success">{{row.baddatadetail_comp}}</el-tag>
-            <el-tag effect="dark" v-else-if="row.baddatadetail_comp=='维修中'" type="primary">{{row.baddatadetail_comp}}</el-tag>
-            <el-tag effect="dark" v-else-if="row.baddatadetail_comp=='未维修'" type="info">{{row.baddatadetail_comp}}</el-tag>
-            <el-tag effect="dark" v-else type="warning">{{row.baddatadetail_comp}}</el-tag>
+            <el-tag effect="dark" v-if="row.baddatadetail_comp == '完成维修'"
+              type="success">{{ row.baddatadetail_comp }}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddatadetail_comp == '维修中'"
+              type="primary">{{ row.baddatadetail_comp }}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddatadetail_comp == '未维修'"
+              type="info">{{ row.baddatadetail_comp }}</el-tag>
+            <el-tag effect="dark" v-else type="warning">{{ row.baddatadetail_comp }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="baddatadetail_user" label="维修人" />
