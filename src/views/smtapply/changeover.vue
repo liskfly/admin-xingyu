@@ -1113,7 +1113,7 @@ export default {
     display: flex;
     // justify-content: flex-end;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
     gap: 5px;
     // justify-content: end;
     font-size: 2vh;
@@ -1199,8 +1199,7 @@ export default {
   text-align: center;
 }
 
-.dialogVisible {
-}
+
 ::v-deep .el-dialog {
   display: flex;
   flex-direction: column;

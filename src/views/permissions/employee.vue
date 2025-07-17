@@ -208,7 +208,6 @@
     addEmployeeRole,
     deletefirstRole,
     deleteEmployee,
-    addEmployee,
     getOrganization,
     ResetPwd,
     AddEmployee,
@@ -398,7 +397,7 @@
         this.editRef.resetFields();
       },
       editSubmit() {
-        addEmployee(this.editForm).then((data) => {
+        AddEmployee(this.editForm).then((data) => {
           if (data.Code == 100200) {
             this.getData();
             this.editVisible = false;

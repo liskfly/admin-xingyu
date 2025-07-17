@@ -57,6 +57,9 @@ export default {
           case "/AGV/AGVKanban":
           fullDiv = document.getElementById("fullDiv4");
           break;
+          case "/kanban/lineDashboard":
+          fullDiv = document.getElementById("fullDiv5");
+          break;
       }
       console.log(fullDiv);
 
