@@ -33,7 +33,7 @@
           border
           :height="tableHeight"
           style="width: 100%"
-          size="medium"
+           size="mini"
         >
           <el-table-column prop="PD_model" label="产品编号"> </el-table-column>
           <el-table-column prop="PN_Model" label="类型"> </el-table-column>
@@ -331,7 +331,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
+        this.tableHeight = window.innerHeight - 210;
         // this.tableHeight1 =
       });
     },

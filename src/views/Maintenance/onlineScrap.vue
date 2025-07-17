@@ -6,7 +6,7 @@
         <el-button type="primary">查询</el-button>
       </div>
       <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        " :style="{ width: '100%' }" border :height="tableHeight" stripe>
+        " :style="{ width: '100%' }" border :height="tableHeight" stripe size="small">
         <el-table-column type="index" width="50" label="序号">
           <template v-slot="{ $index }">
             {{ $index + 1 + (currentPage - 1) * pageSize }}

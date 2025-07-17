@@ -17,13 +17,13 @@
                         <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
                     </template>
                 </el-table-column>
-                <af-table-column prop="Category" label="类别" fixed>
+                <el-table-column prop="Category" label="类别" fixed width="100">
                     <template slot-scope="scope">
                         <span v-if="scope.row.Category == 1">印刷工治具</span>
                         <span v-else-if="scope.row.Category == 2">ICT工治具</span>
                         <span v-else-if="scope.row.Category == 3">样件</span>
                     </template>
-                </af-table-column>
+                </el-table-column>
                 <af-table-column prop="ToolsMold" label="编码" fixed>
                 </af-table-column>
                 <af-table-column prop="MaterialName" label="描述" fixed> </af-table-column>
@@ -504,7 +504,9 @@ export default {
             if (this.searchText == "") {
                 this.getText.toolsMold = "*";
             } else {
+                this.currentPage=1
                 this.getText.toolsMold = this.searchText;
+
             }
             this.getData();
         },

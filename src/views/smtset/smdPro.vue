@@ -24,7 +24,7 @@
           :data="tableData"
           :height="tableHeight"
           border
-           size="medium"
+           size="small"
           style="width: 100%"
         >
           <el-table-column label="序号" width="55" align="center" type="index">

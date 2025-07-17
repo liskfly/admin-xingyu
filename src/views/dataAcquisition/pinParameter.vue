@@ -7,8 +7,8 @@
             @keyup.enter.native="getData" /> <el-button type="primary" @click="getData">查询</el-button></div>
       </div>
       <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        " :style="{ width: '100%' }" border :height="tableHeight" stripe>
-        <el-table-column width="50" label="序号">
+        " :style="{ width: '100%' }" border :height="tableHeight" stripe size="small">
+        <el-table-column width="50" label="序号" align="center">
           <template slot-scope="scope">
             <span>{{ scope.$index + pageSize * (currentPage - 1) + 1 }}</span>
           </template>

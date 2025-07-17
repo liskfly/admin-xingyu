@@ -12,7 +12,7 @@
                 </div>
             </div>
             <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-                " border :height="tableHeight" style="width: 100%" >
+                " border :height="tableHeight" style="width: 100%" size="small">
                  <el-table-column type="index" label="序号" width="55" align="center" fixed>
                     <template slot-scope="scope">
                         <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>

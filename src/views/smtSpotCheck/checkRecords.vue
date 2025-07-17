@@ -70,7 +70,7 @@
           row-key="step1"
           style="width: 100%"
           :tree-props="{ children: 'stepItemList' }"
-          size="medium"
+          size="small"
         >
           <el-table-column prop="InspectOrder" label="任务编号" width="180">
           </el-table-column>

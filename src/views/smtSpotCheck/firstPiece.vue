@@ -45,7 +45,7 @@
         stripe
         class="tableAuto"
         style="width: 100%"
-        size="medium"
+        size="small"
       >
         <el-table-column prop="ProjectName" label="产品编号"> </el-table-column>
         <el-table-column prop="OrderNo" label="工单号"> </el-table-column>

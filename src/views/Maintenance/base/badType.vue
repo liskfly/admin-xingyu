@@ -5,7 +5,7 @@
                 <el-button type="primary" @click="openAdd">添加</el-button>
             </div>
             <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-                " border :height="tableHeight" style="width: 100%" stripe>
+                " border :height="tableHeight" style="width: 100%" stripe size="small">
                 <!-- 序号列 -->
                 <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
                     <template v-slot="{ $index }">

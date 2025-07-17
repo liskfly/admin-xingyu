@@ -26,7 +26,7 @@
                 <af-table-column prop="baddatadetail_user" label="报修人"></af-table-column>
                 <af-table-column prop="repair_user" label="维修人"></af-table-column>
                 <af-table-column prop="repair_datetime" label="维修时间"></af-table-column>
-                <af-table-column label="操作" fixed="right" width="200">
+                <af-table-column label="操作" fixed="right" width="200" align="center">
                     <template v-slot="{ row }">
                         <el-button type="primary" size="mini" @click="handleEdit(row)" :disabled="row.baddatadetail_comp == '报废审核'||row.baddatadetail_comp == '报废'||row.baddatadetail_comp == '完成维修'">维修</el-button>
                         <el-button type="info" size="mini" @click="handleScrap(row)" :disabled="row.baddatadetail_comp == '报废审核'||row.baddatadetail_comp == '报废'||row.baddatadetail_comp == '完成维修'"">报废</el-button>

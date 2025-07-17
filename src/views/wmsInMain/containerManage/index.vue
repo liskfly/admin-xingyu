@@ -22,8 +22,13 @@
           :height="tableHeight"
           border
           stripe
-          style="width: 100%; height: 400"
+          style="width: 100%; height: 400" size="small"
         >
+          <el-table-column label="序号" width="55" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.$index + 1 + (currentPage - 1) * getlistText.pageSize }}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="Containerid" label="容器ID"> </el-table-column>
           <el-table-column prop="ContainerName" label="名称"> </el-table-column>
           <el-table-column prop="Spec" label="规格"> </el-table-column>
@@ -595,7 +600,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
+        this.tableHeight = window.innerHeight - 210;
         // this.tableHeight1 =
       });
     },

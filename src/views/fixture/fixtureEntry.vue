@@ -2,47 +2,24 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="mb-2 flex justify-between">
-        <el-button type="primary" @click="addOpen" size="medium"
-          >添加</el-button
-        >
+        <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
         <div>
-          <el-input
-            v-model="searchName"
-            clearable
-            placeholder="请输入"
-            @keyup.enter.native="searchData()"
-            @clear="clearData"
-          >
+          <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()"
+            @clear="clearData">
             <template slot="append">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                @click="searchData()"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
             </template>
           </el-input>
         </div>
       </div>
-      <el-table
-        :data="
-          tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
-        border
-        :height="tableHeight"
-        style="width: 100%"
-      >
-        <el-table-column
-          type="index"
-          label="序号"
-          width="55"
-          align="center"
-          fixed
-        >
+      <el-table :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        " border :height="tableHeight" style="width: 100%" size="mini">
+        <el-table-column type="index" label="序号" width="55" align="center" fixed="left">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
           </template>
         </el-table-column>
-        <af-table-column prop="Tool" label="工治具编码" fixed>
+        <af-table-column prop="Tool" label="工治具编码" >
         </af-table-column>
         <af-table-column prop="Model" label="工治具类别"> </af-table-column>
         <el-table-column prop="Cell" label="储位" width="100">
@@ -70,101 +47,42 @@
         <!-- <el-table-column prop="Dsc" label="描述"> </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="240" align="center">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              icon="el-icon-edit"
-              :disabled="scope.row.Stts == -1"
-              size="mini"
-              @click="handleEdit(scope.row)"
-            ></el-button>
-            <el-button
-              type="warning"
-              icon="el-icon-s-release"
-              :disabled="scope.row.Stts == -1"
-              size="mini"
-              @click="handleScrap(scope.row)"
-            ></el-button>
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              :disabled="scope.row.Stts == -1"
-              size="mini"
-              @click="handleDelete(scope.row)"
-            ></el-button>
-            <el-button
-              type="success"
-              icon="el-icon-document"
-              :disabled="scope.row.Stts == -1"
-              size="mini"
-              @click="handleDetail(scope.row)"
-            ></el-button>
+            <el-button type="primary" icon="el-icon-edit" :disabled="scope.row.Stts == -1" size="mini"
+              @click="handleEdit(scope.row)"></el-button>
+            <el-button type="warning" icon="el-icon-s-release" :disabled="scope.row.Stts == -1" size="mini"
+              @click="handleScrap(scope.row)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" :disabled="scope.row.Stts == -1" size="mini"
+              @click="handleDelete(scope.row)"></el-button>
+            <el-button type="success" icon="el-icon-document" :disabled="scope.row.Stts == -1" size="mini"
+              @click="handleDetail(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="block" style="margin-top: 8px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next"
-          :total="tableData1.length"
-        >
+        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]"
+          layout="total,sizes, prev, pager, next" :total="tableData1.length">
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      :title="'添加'"
-      :visible.sync="addVisible"
-      @close="addCancel()"
-      width="500px"
-    >
+    <el-dialog :title="'添加'" :visible.sync="addVisible" @close="addCancel()" width="500px">
       <el-form :model="addForm" ref="addFormRef" label-width="auto">
         <el-form-item label="工治具编码" prop="compid">
-          <el-input
-            v-model="addForm.compid"
-            style="width: 280px"
-            placeholder="请输入工治具编码"
-            clearable
-          ></el-input>
+          <el-input v-model="addForm.compid" style="width: 280px" placeholder="请输入工治具编码" clearable></el-input>
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
-          <el-select
-            v-model="addForm.compname"
-            filterable
-            style="width: 280px"
-            placeholder="请选择工治具类别"
-            clearable
-          >
-            <el-option
-              v-for="item in typeList"
-              :key="item.ToolsMold"
-              :label="item.ToolsMold"
-              :value="item.ToolsMold"
-            ></el-option>
+          <el-select v-model="addForm.compname" filterable style="width: 280px" placeholder="请选择工治具类别" clearable>
+            <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
+              :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
-          <el-input
-            v-model="addForm.remark"
-            style="width: 280px"
-            type="textarea"
-            placeholder="请输入描述信息"
-            clearable
-          ></el-input>
+          <el-input v-model="addForm.remark" style="width: 280px" type="textarea" placeholder="请输入描述信息"
+            clearable></el-input>
         </el-form-item>
         <el-form-item label="到期日期" prop="expirationDate">
-          <el-date-picker
-            v-model="addForm.expirationDate"
-            style="width: 280px"
-            type="date"
-            placeholder="选择日期"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
+          <el-date-picker v-model="addForm.expirationDate" style="width: 280px" type="date" placeholder="选择日期"
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -172,56 +90,24 @@
         <el-button type="primary" @click="addSumbit">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      :title="'编辑'"
-      :visible.sync="editVisible"
-      @close="editCancel()"
-      width="500px"
-    >
+    <el-dialog :title="'编辑'" :visible.sync="editVisible" @close="editCancel()" width="500px">
       <el-form :model="editForm" ref="editFormRef" label-width="auto">
         <el-form-item label="工治具编码" prop="compid">
-          <el-input
-            v-model="editForm.compid"
-            disabled
-            style="width: 280px"
-            placeholder="请输入工治具编码"
-            clearable
-          ></el-input>
+          <el-input v-model="editForm.compid" disabled style="width: 280px" placeholder="请输入工治具编码" clearable></el-input>
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
-          <el-select
-            v-model="editForm.compname"
-            filterable
-            style="width: 280px"
-            placeholder="请选择工治具类别"
-            clearable
-          >
-            <el-option
-              v-for="item in typeList"
-              :key="item.ToolsMold"
-              :label="item.ToolsMold"
-              :value="item.ToolsMold"
-            ></el-option>
+          <el-select v-model="editForm.compname" filterable style="width: 280px" placeholder="请选择工治具类别" clearable>
+            <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
+              :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
-          <el-input
-            v-model="editForm.remark"
-            style="width: 280px"
-            type="textarea"
-            placeholder="请输入描述信息"
-            clearable
-          ></el-input>
+          <el-input v-model="editForm.remark" style="width: 280px" type="textarea" placeholder="请输入描述信息"
+            clearable></el-input>
         </el-form-item>
         <el-form-item label="到期日期" prop="expirationDate">
-          <el-date-picker
-            v-model="editForm.expirationDate"
-            style="width: 280px"
-            type="date"
-            placeholder="选择日期"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
+          <el-date-picker v-model="editForm.expirationDate" style="width: 280px" type="date" placeholder="选择日期"
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -229,69 +115,32 @@
         <el-button type="primary" @click="editSumbit">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      :title="'详情'"
-      :visible.sync="detailVisible"
-      @close="addCancel()"
-      width="800px"
-    >
+    <el-dialog :title="'详情'" :visible.sync="detailVisible" @close="addCancel()" width="800px">
       <el-form :model="addForm" :inline="true" ref="formRef" label-width="auto">
         <el-form-item label="工治具编码" prop="compid">
-          <el-input
-            v-model="detailForm.CompID"
-            disabled
-            style="width: 240px"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="detailForm.CompID" disabled style="width: 240px" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
-          <el-input
-            v-model="detailForm.CompName"
-            disabled
-            style="width: 240px"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="detailForm.CompName" disabled style="width: 240px" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="使用次数" prop="totalUses">
-          <el-input
-            v-model.number="detailForm.Uses"
-            style="width: 240px"
-            placeholder=""
-            disabled
-          ></el-input>
+          <el-input v-model.number="detailForm.Uses" style="width: 240px" placeholder="" disabled></el-input>
         </el-form-item>
         <el-form-item label="规定使用总数" prop="totalUses">
-          <el-input
-            v-model.number="detailForm.TotalUses"
-            style="width: 240px"
-            placeholder=""
-            disabled
-          ></el-input>
+          <el-input v-model.number="detailForm.TotalUses" style="width: 240px" placeholder="" disabled></el-input>
         </el-form-item>
         <el-form-item label="初始时间" prop="compname">
-          <el-input
-            v-model="detailForm.InitialDate"
-            disabled
-            style="width: 240px"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="detailForm.InitialDate" disabled style="width: 240px" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="保养时间" prop="compname">
-          <el-input
-            v-model="detailForm.InitialDate"
-            disabled
-            style="width: 240px"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="detailForm.InitialDate" disabled style="width: 240px" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="状态" prop="compname">
           <div>{{ returnStatus(detailForm.CleanStatus) }}</div>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="detailVisible = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="detailVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>

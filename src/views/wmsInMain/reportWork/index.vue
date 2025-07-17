@@ -22,10 +22,17 @@
           border
           stripe
           style="width: 100%"
+          size="small"
         >
+         
+          <el-table-column type="index" label="序号" width="55" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.$index + 1 + (currentPage - 1) * getText.pageSize }}</span>
+            </template>
+            </el-table-column>
           <af-table-column prop="Wo" label="工单号"> </af-table-column>
           <af-table-column prop="Containerid" label="容器ID"> </af-table-column>
-          <af-table-column prop="Pn" label="料号"> </af-table-column>
+          <af-table-column prop="Pn" label="料号"/> 
           <af-table-column prop="Qty" label="数量"> </af-table-column>
           <af-table-column prop="CheckResult" label="结果"> </af-table-column>
           <af-table-column prop="ReportUser" label="操作员"> </af-table-column>
@@ -121,7 +128,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
+        this.tableHeight = window.innerHeight - 210;
         // this.tableHeight1 =
       });
     },

@@ -25,7 +25,7 @@
           border
           :height="tableHeight"
           style="width: 100%"
-          size="medium"
+        size="mini"
         >
           <af-table-column prop="WO" label="治具发料单"> </af-table-column>
           <af-table-column prop="PD_model" label="料号"> </af-table-column>
@@ -179,7 +179,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 225;
+        this.tableHeight = window.innerHeight - 210;
         // this.tableHeight1 =
       });
     },

@@ -36,7 +36,7 @@
           row-key="step1"
           style="width: 100%"
           :tree-props="{ children: 'stepItemList' }"
-          size="medium"
+          size="small"
         >
           <el-table-column prop="Product" label="产品编号" width="180">
           </el-table-column>

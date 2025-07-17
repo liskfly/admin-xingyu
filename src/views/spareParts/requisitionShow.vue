@@ -49,8 +49,12 @@
           border
           :height="tableHeight"
           style="width: 100%"
-          size="medium"
+          size="small"
         >
+          <el-table-column type="index" label="序号" width="60" align="center">
+            <template slot-scope="scope">
+              {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
+            </template></el-table-column>
           <el-table-column prop="Spare_Code" label="编码"> </el-table-column>
           <el-table-column prop="Spare_Name" label="名称"></el-table-column>
           <el-table-column prop="Spare_Model" label="型号/规格">

@@ -22,7 +22,13 @@
           border
           stripe
           style="width: 100%"
+          size="small"
         >
+          <el-table-column type="index" label="序号" width="55" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.$index + 1 + (currentPage - 1) * getText.pageSize }}</span>
+            </template>
+            </el-table-column>
           <el-table-column prop="WO" label="工单号"> </el-table-column>
 
           <el-table-column prop="PdModel" label="料号"> </el-table-column>

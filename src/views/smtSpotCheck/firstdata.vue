@@ -29,7 +29,7 @@
           row-key="Step1"
           style="width: 100%"
           :tree-props="{ children: 'stepItemList', hasChildren: 'hasChildren' }"
-          size="medium"
+          size="small"
         >
           <el-table-column prop="Step1" label="检验工序" width="90">  </el-table-column>
           <el-table-column prop="Name" label="检验设备"> </el-table-column>

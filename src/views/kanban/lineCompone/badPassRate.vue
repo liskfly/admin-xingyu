@@ -64,12 +64,18 @@ export default {
         getData() {
             // 模拟获取数据
 
-            this.option.series[0].data = [{ value: 32, name: '偏移' },
-            { value: 28, name: '少锡' },
-            { value: 18, name: '短路' },
-            { value: 12, name: '漏件' },
-            { value: 8, name: '极性反' },
-            { value: 15, name: '其他' }];
+            const randomData = Array(6)
+                .fill()
+                .map(() => Math.floor(Math.random() * 50) + 10); // 10-60随机数
+
+          
+            this.option.series[0].data = [
+                { value: randomData[0], name: '偏移' },
+                { value: randomData[1], name: '少锡' },
+                { value: randomData[2], name: '短路' },
+                { value: randomData[3], name: '漏件' },
+                { value: randomData[4], name: '极性反' },
+                { value: randomData[5], name: '其他' }]
             this.chart.setOption(this.option);
         },
         initChart() {

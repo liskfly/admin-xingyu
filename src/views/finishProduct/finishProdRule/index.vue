@@ -16,7 +16,9 @@
           border
           :height="tableHeight"
           style="width: 100%"
+          size="small"
         >
+        
           <!-- <el-table-column type="index" label="序号" width="55" /> -->
           <el-table-column label="序号" width="55">
             <template slot-scope="scope">

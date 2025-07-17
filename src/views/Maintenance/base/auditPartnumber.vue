@@ -5,7 +5,7 @@
             <el-button type="primary" @click="openAdd">添加</el-button>
         </div>
         <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-            " border :height="tableHeight" style="width: 100%">
+            " border :height="tableHeight" style="width: 100%" size="small ">
             <el-table-column label="序号" width="55" fixed="left" align="center">
                 <template slot-scope="scope">
                     {{ (currentPage - 1) * pageSize + scope.$index + 1 }}

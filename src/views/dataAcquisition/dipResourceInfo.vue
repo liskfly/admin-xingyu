@@ -10,8 +10,8 @@
           <el-table :data="tableData1.slice(
             (currentPage1 - 1) * pageSize1,
             currentPage1 * pageSize1
-          )" style="width: 100%" stripe border :height="tableHeight">
-           <el-table-column width="50" label="序号">
+          )" style="width: 100%" stripe border :height="tableHeight" size="small">
+           <el-table-column width="50" label="序号" align="center">
           <template slot-scope="scope">
             <span>{{ scope.$index + pageSize1 * (currentPage1- 1) + 1 }}</span>
           </template>
@@ -34,8 +34,8 @@
           <el-table :data="tableData2.slice(
             (currentPage2 - 1) * pageSize2,
             currentPage2 * pageSize2
-          )" style="width: 100%" stripe border :height="tableHeight">
-          <el-table-column width="50" label="序号">
+          )" style="width: 100%" stripe border :height="tableHeight" size="small">
+          <el-table-column width="50" label="序号" align="center">
           <template slot-scope="scope">
             <span>{{ scope.$index + pageSize2 * (currentPage2 - 1) + 1 }}</span>
           </template>
@@ -63,7 +63,7 @@
           <el-table :data="tableData3.slice(
             (currentPage3 - 1) * pageSize3,
             currentPage3 * pageSize3
-          )" style="width: 100%" stripe border :height="tableHeight">
+          )" style="width: 100%" stripe border :height="tableHeight" size="small">
             <el-table-column prop="DataName" label="属性">
               <template slot-scope="scope">
                 <span>{{ changeName(scope.row.DataName) }}</span>
