@@ -35,12 +35,24 @@
         <af-table-column prop="PN" label="描述"> </af-table-column> -->
         <af-table-column prop="prosop_name" label="文件1">
           <template #default="scope">
-            <div style="text-decoration: underline" @click="getPdfSrc(scope.row.prosop_guid)">
+            <div
+              style="text-decoration: underline"
+              @click="getPdfSrc(scope.row.prosop_guid, scope.row.prosop_name)"
+            >
               {{ scope.row.prosop_name }}
             </div>
           </template>
         </af-table-column>
-        <af-table-column prop="prosop_name2" label="文件2"> </af-table-column>
+        <af-table-column prop="prosop_name2" label="文件2">
+          <template #default="scope">
+            <div
+              style="text-decoration: underline"
+              @click="getPdfSrc(scope.row.prosop_guid2, scope.row.prosop_name2)"
+            >
+              {{ scope.row.prosop_name2 }}
+            </div>
+          </template></af-table-column
+        >
         <el-table-column fixed="right" label="操作" width="180" align="center">
           <template slot-scope="scope">
             <el-button
@@ -55,12 +67,6 @@
               icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             ></el-button>
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-document"
-              @click="handleDetail(scope.row)"
-            ></el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -125,7 +131,7 @@
             >
               <el-button size="small" type="primary">点击选择文件1</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
             <el-upload
@@ -143,7 +149,7 @@
             >
               <el-button size="small" type="primary">点击选择文件2</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
 
@@ -195,7 +201,7 @@
       :title="'编辑'"
       :visible.sync="editVisible"
       width="700px"
-      @close=""
+      @close="resetEdit()"
     >
       <el-form
         ref="formRef"
@@ -214,14 +220,14 @@
                 <el-input
                   placeholder=""
                   disabled
-                  v-model="productName"
+                  v-model="editForm.ProductName"
                 ></el-input>
               </el-form-item>
               <el-form-item label="是否只修改文件1名称">
-                <el-checkbox v-model="checked1"></el-checkbox>
+                <el-checkbox v-model="editForm.upfilename1"></el-checkbox>
               </el-form-item>
               <el-form-item label="是否只修改文件2名称">
-                <el-checkbox v-model="checked2"></el-checkbox>
+                <el-checkbox v-model="editForm.upfilename2"></el-checkbox>
               </el-form-item>
             </el-form>
             <!-- 文件上传区域 -->
@@ -232,17 +238,17 @@
               :limit="1"
               :file-list="fileListEdit1"
               :auto-upload="false"
-              :on-change="file1UpChange"
-              :on-remove="file1UpRemove"
+              :on-change="file1EditChange"
+              :on-remove="file1EditRemove"
               :before-upload="beforeUpload"
               accept=".pdf"
               ref="upload"
               class="upload-area"
-              v-if="!checked1"
+              v-if="!editForm.upfilename1"
             >
               <el-button size="small" type="primary">点击选择文件1</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
             <el-upload
@@ -251,17 +257,17 @@
               :limit="1"
               :file-list="fileListEdit2"
               :auto-upload="false"
-              :on-change="file1UpChange"
-              :on-remove="file1UpRemove"
+              :on-change="file2EditChange"
+              :on-remove="file2EditRemove"
               :before-upload="beforeUpload"
               accept=".pdf"
               ref="upload"
               class="upload-area"
-              v-if="!checked1"
+              v-if="!editForm.upfilename2"
             >
-              <el-button size="small" type="primary">点击选择文件1</el-button>
+              <el-button size="small" type="primary">点击选择文件2</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
             <!-- 文件名编辑区域 -->
@@ -269,22 +275,22 @@
               <h4>文件名设置</h4>
               <div class="file-item">
                 <el-input
-                  v-model="customNamesEdit[0]"
+                  v-model="editForm.filename1"
                   clearable
                   :disabled="!checked1"
                 >
                   <template slot="prepend">文件1名称</template>
-                  <template slot="append">.pdf</template>
+                  <!-- <template slot="append">.pdf</template> -->
                 </el-input>
               </div>
               <div class="file-item">
                 <el-input
-                  v-model="customNamesEdit[1]"
+                  v-model="editForm.filename2"
                   clearable
                   :disabled="!checked2"
                 >
                   <template slot="prepend">文件2名称</template>
-                  <template slot="append">.pdf</template>
+                  <!-- <template slot="append">.pdf</template> -->
                 </el-input>
               </div>
             </div>
@@ -306,22 +312,26 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="editVisible = false"
-          :disabled="fileList.length === 0"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="edit">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :title="'浏览'"
+      title="浏览"
       :visible.sync="browseVisible"
       width="1000px"
       @close=""
     >
+      <div slot="title" class="dialog-header">
+        <span>浏览</span>
+        <el-button type="primary" size="mini" class="ml-5" @click="downLoadPdf"
+          >下载</el-button
+        >
+      </div>
+
+      <!-- 弹窗内容 -->
       <div>
-        <iframe :src="pdfsrc" style="width: 100%;height: 500px;" frameborder="0"></iframe>
+        <pdf :src="pdfsrc">
+        </pdf>
       </div>
     </el-dialog>
   </div>
@@ -333,12 +343,18 @@ import {
   QueryXYLProductSOP,
   GetESReportViewProduct,
   DQXYLProductSOP,
+  UpdateXYLProductSOP,
+  DeleteXYLProductSOP,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
+import pdf from 'vue-pdf'
 import { getToken } from "@/utils/auth";
 import { data } from "jquery";
 import { getDate } from "@/utils/getDate";
 export default {
+  components: {
+    pdf,
+  },
   data() {
     return {
       tableData: [],
@@ -382,14 +398,18 @@ export default {
       },
       browseVisible: false,
       pdfsrc: "",
+      pdfBlob: "",
+      pdfName: "",
       detailVisible: false,
       editForm: {
-        pn: "",
-        model: "",
-        sdie: "",
-        name: "",
-        version: "",
-        softwareVersion: "",
+        ProductName: "",
+        upfilename1: true,
+        filename1: "",
+        base64String1: "",
+        upfilename2: true,
+        filename2: "",
+        base64String2: "",
+        UserNo: "",
       },
       upDateForm: {
         pnl_code: "",
@@ -422,6 +442,24 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
+  watch: {
+    "editForm.upfilename1"(val, old) {
+      if (val) {
+        this.editForm.filename1 = this.customNamesEdit[0];
+      } else {
+        this.editForm.filename1 = "";
+        this.fileListEdit1 = [];
+      }
+    },
+    "editForm.upfilename2"(val, old) {
+      if (val) {
+        this.editForm.filename2 = this.customNamesEdit[1];
+      } else {
+        this.editForm.filename2 = "";
+        this.fileListEdit2 = [];
+      }
+    },
+  },
   methods: {
     getData() {
       QueryXYLProductSOP(this.getForm).then((res) => {
@@ -443,13 +481,25 @@ export default {
         });
       }
     },
-    getPdfSrc(guid) {
+    getPdfSrc(guid, name) {
       DQXYLProductSOP({
         prosop_guid: guid,
       }).then((res) => {
         this.pdfsrc = `data:application/pdf;base64,${res.Data}`;
+        this.pdfBlob = res.Data;
+        this.pdfName = name;
         this.browseVisible = true;
-      })
+      });
+    },
+    downLoadPdf() {
+      const url = URL.createObjectURL(
+        new Blob([this.pdfBlob], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = this.pdfName;
+      link.click();
+      URL.revokeObjectURL(url);
     },
     handleSelect(obj) {
       this.productName = obj.ProductName;
@@ -460,57 +510,25 @@ export default {
     openEdit() {
       this.editVisible = true;
     },
-    removeBoardItem(index) {
-      this.form.Detail.splice(index, 1);
-      if (this.form.Detail.length === 0) {
-        this.form.Detail.push({
-          version: "",
-          small_board_qty: 0,
-          finished_code: "",
-          name: "",
-          model: "",
-          pcb_code: "",
-          module_start: 0,
-          module_end: 0,
-        });
-      }
-    },
-    addSmallBoard() {
-      this.form.Detail.push({
-        version: "",
-        small_board_qty: 0,
-        finished_code: "",
-        name: "",
-        model: "",
-        pcb_code: "",
-        module_start: 0,
-        module_end: 0,
-      });
-    },
-    deleteBoard() {
-      this.form.smallBoardTable.pop();
-    },
     handleDelete(row) {
-      this.$confirm("是否删除该拼板物料", "提示", {
+      this.$confirm("是否删除", "提示", {
         type: "warning",
       })
         .then(() => {
-          // DeletePanelizationList(row.PN).then((res) => {
-          //   if (res.Success) {
-          //     this.$notify({
-          //       type: "success",
-          //       title: "提示信息",
-          //       message: res.Msg,
-          //     });
-          //     this.getData();
-          //   } else {
-          //     this.$notify({
-          //       type: "error",
-          //       title: "提示信息",
-          //       message: res.Msg,
-          //     });
-          //   }
-          // });
+          DeleteXYLProductSOP({
+            ProductName: row.prosop_product,
+            UserNo: getToken(),
+          }).then((res) => {
+            if (res.Success) {
+              this.$message({
+                message: res.Msg,
+                type: "success",
+              });
+              this.getData();
+            } else {
+              this.$message.warning(res.Msg);
+            }
+          });
         })
         .catch(() => {
           this.$notify({
@@ -520,15 +538,16 @@ export default {
           });
         });
     },
-    handleDetail() {
-      this.detailVisible = true;
-    },
     addCancel() {
       this.dialogVisible = false;
       this.$refs.formRef.resetFields();
     },
     handleEdit(row) {
       this.editVisible = true;
+      this.editForm.ProductName = row.prosop_product;
+      this.editForm.filename1 = row.prosop_name;
+      this.editForm.filename2 = row.prosop_name2;
+      this.customNamesEdit = [row.prosop_name, row.prosop_name2];
     },
     addCancel() {
       this.detailVisible = false;
@@ -548,77 +567,6 @@ export default {
         // this.tableHeight1 =
       });
     },
-    handleFileChange(file, fileList) {
-      // 限制只能上传1个文件
-      if (fileList.length > 1) {
-        fileList.splice(1, fileList.length - 1);
-        this.$message.warning("最多只能上传2个文件");
-      }
-      this.fileList = fileList;
-      // 初始化自定义文件名
-      this.customNames[0] = file.name;
-    },
-
-    // 移除文件的回调
-    handleRemove(file, fileList) {
-      this.fileList = fileList;
-      // 同步更新自定义文件名数组
-      this.customNames[0] = "";
-    },
-
-    // 提交上传
-    submitUpload() {
-      if (this.fileList.length === 0) {
-        this.$message.warning("请先选择要上传的文件");
-        return;
-      }
-
-      this.uploading = true;
-
-      const formData = new FormData();
-      this.fileList.forEach((file, index) => {
-        // 确定最终文件名
-        let filename = this.customNames[index].trim();
-        if (!filename) {
-          filename = this.getBaseName(file.name);
-        }
-        filename += ".pdf";
-
-        // 添加到FormData
-        formData.append("files", file.raw, filename);
-      });
-
-      // 这里替换为你的实际上传API
-      this.uploadFiles(formData)
-        .then((response) => {
-          this.$message.success("文件上传成功!");
-          this.resetUpload();
-        })
-        .catch((error) => {
-          console.error("上传失败:", error);
-          this.$message.error("文件上传失败");
-        })
-        .finally(() => {
-          this.uploading = false;
-        });
-      this.dialogVisible = false;
-    },
-
-    // 模拟上传API调用
-    uploadFiles(formData) {
-      return new Promise((resolve, reject) => {
-        // 这里替换为实际的API调用
-        console.log("上传的文件数据:", formData);
-
-        // 模拟网络请求延迟
-        setTimeout(() => {
-          // 模拟成功响应
-          resolve({ success: true });
-          // 模拟失败响应
-          // reject(new Error('上传失败'));
-        }, 1500);
-      });
-    },
 
     // 重置上传
     resetUpload() {
@@ -628,11 +576,26 @@ export default {
       this.fileList = [];
       this.customNames = [];
     },
-
+    resetEdit() {
+      this.editForm = {
+        ProductName: "",
+        upfilename1: true,
+        filename1: "",
+        base64String1: "",
+        upfilename2: true,
+        filename2: "",
+        base64String2: "",
+        UserNo: "",
+      };
+      this.fileListEdit1 = [];
+      this.fileListEdit2 = [];
+    },
     // 获取文件名（不含扩展名）
     getBaseName(filename) {
       return filename.replace(/\.pdf$/i, "");
     },
+
+    //上传部分
     file1UpChange(file, fileList) {
       // 限制只能上传1个文件
       if (fileList.length > 1) {
@@ -658,38 +621,13 @@ export default {
       // 初始化自定义文件名
       this.customNames[1] = file.name;
     },
-    file2UpRemove() {
+    file2UpRemove(file, fileList) {
       this.fileListUp2 = fileList;
       // 同步更新自定义文件名数组
       this.customNames[1] = "";
     },
-
-    // 全部的上传前的校验
-    beforeUpload(file) {
-      const isPDF = file.type === "application/pdf";
-      const isLt20M = file.size / 1024 / 1024 < 20;
-
-      if (!isPDF) {
-        this.$message.error("只能上传PDF格式的文件!");
-        return false;
-      }
-      if (!isLt20M) {
-        this.$message.error("文件大小不能超过20MB!");
-        return false;
-      }
-
-      return true;
-    },
-    blobToBase64(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob); // 转换为 Base64
-        reader.onload = () => resolve(reader.result); // 返回 data:URL 格式（如 "data:image/png;base64,..."）
-        reader.onerror = (error) => reject(error);
-      });
-    },
     async upLoad() {
-      if (this.fileListUp1.length === 0 && this.fileListEdit2.length === 0) {
+      if (this.fileListUp1.length === 0 && this.fileListUp2.length === 0) {
         this.$message.warning("请先选择要上传的文件");
         return;
       }
@@ -746,6 +684,133 @@ export default {
           this.$message.error(res.Msg);
         }
         this.endLoading();
+      });
+    },
+
+    //修改部分
+    file1EditChange(file, fileList) {
+      // 限制只能上传1个文件
+      if (fileList.length > 1) {
+        fileList.splice(1, fileList.length - 1);
+        this.$message.warning("最多只能上传1个文件");
+      }
+      this.fileListEdit1 = fileList;
+      // 初始化自定义文件名
+      this.editForm.filename1 = file.name;
+    },
+    file1EditRemove(file, fileList) {
+      this.fileListEdit1 = fileList;
+      // 同步更新自定义文件名数组
+      this.editForm.filename1 = "";
+    },
+    file2EditChange(file, fileList) {
+      // 限制只能上传1个文件
+      if (fileList.length > 1) {
+        fileList.splice(1, fileList.length - 1);
+        this.$message.warning("最多只能上传1个文件");
+      }
+      this.fileListEdit2 = fileList;
+      // 初始化自定义文件名
+      this.editForm.filename2 = file.name;
+    },
+    file2EditRemove(file, fileList) {
+      this.fileListEdit2 = fileList;
+      // 同步更新自定义文件名数组
+      this.editForm.filename2 = "";
+    },
+    async edit() {
+      if (this.fileListEdit1.length === 0 && !this.editForm.upfilename1) {
+        this.$message.warning("请先选择要上传的文件");
+        return;
+      }
+      if (this.fileListEdit2.length === 0 && !this.editForm.upfilename2) {
+        this.$message.warning("请先选择要上传的文件");
+        return;
+      }
+      if (this.editForm.filename1 == "") {
+        this.$message.warning("文件名不能为空");
+        return;
+      }
+      if (this.editForm.filename2 == "") {
+        this.$message.warning("文件名不能为空");
+        return;
+      }
+      this.startLoading();
+      let file1Base64 = "";
+      let file2Base64 = "";
+      if (this.fileListEdit1.length != 0) {
+        await this.blobToBase64(this.fileListEdit1[0].raw).then((base64) => {
+          // 如果只需要纯 Base64 部分，可以去掉前缀：
+          file1Base64 = base64.split(",")[1];
+        });
+      }
+      if (this.fileListEdit2.length != 0) {
+        await this.blobToBase64(this.fileListEdit2[0].raw).then((base64) => {
+          // 如果只需要纯 Base64 部分，可以去掉前缀：
+          file2Base64 = base64.split(",")[1];
+        });
+      }
+      // const formData = new FormData();
+      // if (this.fileListUp1.length !== 0) {
+      //   formData.append("filename1", this.customNames[0]);
+      //   formData.append(
+      //     "base64String1",
+      //     this.fileListUp1[0].raw,
+      //     this.customNames[0]
+      //   );
+      // }
+      // if (this.fileListUp2.length !== 0) {
+      //   formData.append("filename2", this.customNames[0]);
+      //   formData.append(
+      //     "base64String2",
+      //     this.fileListUp2[0].raw,
+      //     this.customNames[1]
+      //   );
+      // }
+      // formData.append("ProductName", "4050212144400");
+      // formData.append("UserNo", getToken());
+      UpdateXYLProductSOP({
+        ...this.editForm,
+        base64String1: file1Base64,
+        base64String2: file2Base64,
+        UserNo: getToken(),
+      }).then((res) => {
+        if (res.Code == 200) {
+          this.$message({
+            message: res.Msg,
+            type: "success",
+          });
+          this.editVisible = false;
+          this.getData();
+        } else {
+          this.$message.error(res.Msg);
+        }
+        this.endLoading();
+      });
+    },
+
+    // 全部的上传前的校验
+    beforeUpload(file) {
+      const isPDF = file.type === "application/pdf";
+      const isLt20M = file.size / 1024 / 1024 < 5;
+
+      if (!isPDF) {
+        this.$message.error("只能上传PDF格式的文件!");
+        return false;
+      }
+      if (!isLt20M) {
+        this.$message.error("文件大小不能超过5MB!");
+        return false;
+      }
+
+      return true;
+    },
+    blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob); // 转换为 Base64
+        reader.onload = () => resolve(reader.result); // 返回 data:URL 格式（如 "data:image/png;base64,..."）
+        reader.onerror = (error) => reject(error);
       });
     },
     startLoading() {
@@ -825,5 +890,19 @@ export default {
 }
 ::v-deep .el-form-item {
   margin-bottom: 10px;
+}
+/* 自定义头部样式 */
+.dialog-header {
+  display: flex;
+  //justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* 固定按钮在顶部右侧 */
+.top-button {
+  position: absolute;
+  right: 20px;
+  top: 12px;
 }
 </style>

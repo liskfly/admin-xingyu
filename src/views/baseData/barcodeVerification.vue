@@ -2,7 +2,12 @@
   <div class="puzzles p-2">
     <el-card :body-style="{ padding: '8px' }">
       <div class="mb-2 flex justify-between">
-        <el-button type="primary" @click="openAdd">添加</el-button>
+        <div>
+          <el-button type="primary" @click="openAdd">添加</el-button>
+          <el-button type="primary" @click="openHistory"
+            >校验查询</el-button
+          >
+        </div>
         <div>
           <el-input
             v-model="getForm.SearchModel.checkpro_no"
@@ -112,6 +117,43 @@
         <el-button type="primary" @click="editData()">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog :title="'校验查询'" :visible.sync="historyVisible" width="1200px" @close="historyClose">
+      <div>
+        <el-input
+          v-model.trim="historyForm.SearchModel.checkpro_no"
+          placeholder="请输入星宇标签的部分内容"
+          style="width: 350px"
+          @keyup.enter.native="getHistoy"
+          clearable
+          @clear="getHistoy"
+        >
+          <el-button slot="append" icon="el-icon-search" @click="getHistoy"></el-button>
+        </el-input>
+      </div>
+      <el-table :height="'500px'" :data="historyData" border size="small">
+        <af-table-column prop="factorybar" label="原厂标签"> </af-table-column>
+        <el-table-column prop="xybar" label="星宇标签" width="300px"> </el-table-column>
+        <el-table-column prop="checkstatus" label="校验状态"> </el-table-column>
+        <af-table-column prop="checkresult" label="校验说明"> </af-table-column>
+        <af-table-column prop="checkdate" label="校验时间"> </af-table-column>
+        <af-table-column prop="checkuser" label="校验人"> </af-table-column>
+      </el-table>
+
+      <div class="block" style="margin-top: 8px">
+        <el-pagination
+          align="center"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="historyForm.PageIndex"
+          :page-size="historyForm.PageSize"
+          :page-sizes="[10, 20, 50, 100, 150]"
+          layout="total,sizes, prev, pager, next"
+          :total="totalHistory"
+        >
+        </el-pagination>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -122,9 +164,11 @@ import {
   UpdateChecProductFoundation,
   DeleteChecProductFoundation,
   QueryChecProductFoundationById,
+  QueryChecProductLog,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
+import { getHistoy } from "@/api/wmsApi";
 
 export default {
   data() {
@@ -174,7 +218,7 @@ export default {
         checkpro_no: "",
         checkpro_id: 0,
         checkpro_sepc: "",
-        checkpro_date:"",
+        checkpro_date: "",
         UserNo: getToken(),
       },
       upDateForm: {
@@ -190,7 +234,17 @@ export default {
         checkpro_no: "",
         checkpro_sepc: "",
         UserNo: getToken(),
-        checkpro_date: '',
+        checkpro_date: "",
+      },
+      historyVisible: false,
+      totalHistory:0,
+      historyData:[],
+      historyForm: {
+        PageIndex: 1,
+        PageSize: 10,
+        SearchModel: {
+          checkpro_no: "",
+        },
       },
     };
   },
@@ -218,7 +272,10 @@ export default {
       });
     },
     addData() {
-      InsertChecProductFoundation({...this.addForm,checkpro_date:dayjs().format("YYYY-MM-DD HH:mm:ss")}).then((res) => {
+      InsertChecProductFoundation({
+        ...this.addForm,
+        checkpro_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      }).then((res) => {
         if (res.Success) {
           this.dialogVisible = false;
           this.getData();
@@ -232,7 +289,10 @@ export default {
       });
     },
     editData() {
-      UpdateChecProductFoundation({...this.editForm,checkpro_date:dayjs().format("YYYY-MM-DD HH:mm:ss")}).then((res) => {
+      UpdateChecProductFoundation({
+        ...this.editForm,
+        checkpro_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      }).then((res) => {
         if (res.Success) {
           this.editVisible = false;
           this.getData();
@@ -245,6 +305,22 @@ export default {
         }
       });
     },
+    getHistoy() {
+      QueryChecProductLog(this.historyForm).then((res) => {
+        if (res.Success) {
+          this.historyData = res.Data.list;
+          this.totalHistory = res.Data.Total;
+        } else {
+          this.historyData = [];
+          this.total = 0;
+        }
+      });
+    },
+    historyClose() {
+      this.historyForm.SearchModel.checkpro_no = '';
+      this.historyData = [];
+      this.totalHistory = 0;
+    },
     clearData() {
       this.searchText = "";
       this.getForm.PageIndex = 1;
@@ -253,7 +329,10 @@ export default {
     openAdd() {
       this.dialogVisible = true;
     },
-
+    openHistory() {
+      this.historyVisible = true;
+      // this.getHistoy();
+    },
     change(val, index) {
       this.form.Detail[index].name = val.name;
       this.form.Detail[index].model = val.pn_spec;
