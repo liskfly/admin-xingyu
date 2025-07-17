@@ -37,7 +37,7 @@
           <template #default="scope">
             <div
               style="text-decoration: underline"
-              @click="getPdfSrc(scope.row.prosop_guid)"
+              @click="getPdfSrc(scope.row.prosop_guid, scope.row.prosop_name)"
             >
               {{ scope.row.prosop_name }}
             </div>
@@ -47,7 +47,7 @@
           <template #default="scope">
             <div
               style="text-decoration: underline"
-              @click="getPdfSrc(scope.row.prosop_guid2)"
+              @click="getPdfSrc(scope.row.prosop_guid2, scope.row.prosop_name2)"
             >
               {{ scope.row.prosop_name2 }}
             </div>
@@ -131,7 +131,7 @@
             >
               <el-button size="small" type="primary">点击选择文件1</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
             <el-upload
@@ -149,7 +149,7 @@
             >
               <el-button size="small" type="primary">点击选择文件2</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
 
@@ -201,7 +201,7 @@
       :title="'编辑'"
       :visible.sync="editVisible"
       width="700px"
-      @close=""
+      @close="resetEdit()"
     >
       <el-form
         ref="formRef"
@@ -248,7 +248,7 @@
             >
               <el-button size="small" type="primary">点击选择文件1</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
             <el-upload
@@ -265,9 +265,9 @@
               class="upload-area"
               v-if="!editForm.upfilename2"
             >
-              <el-button size="small" type="primary">点击选择文件1</el-button>
+              <el-button size="small" type="primary">点击选择文件2</el-button>
               <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过20MB
+                只能上传PDF文件，且不超过5MB
               </div>
             </el-upload>
             <!-- 文件名编辑区域 -->
@@ -316,17 +316,22 @@
       </span>
     </el-dialog>
     <el-dialog
-      :title="'浏览'"
+      title="浏览"
       :visible.sync="browseVisible"
       width="1000px"
       @close=""
     >
+      <div slot="title" class="dialog-header">
+        <span>浏览</span>
+        <el-button type="primary" size="mini" class="ml-5" @click="downLoadPdf"
+          >下载</el-button
+        >
+      </div>
+
+      <!-- 弹窗内容 -->
       <div>
-        <iframe
-          :src="pdfsrc"
-          style="width: 100%; height: 500px"
-          frameborder="0"
-        ></iframe>
+        <pdf :src="pdfsrc">
+        </pdf>
       </div>
     </el-dialog>
   </div>
@@ -342,10 +347,14 @@ import {
   DeleteXYLProductSOP,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
+import pdf from 'vue-pdf'
 import { getToken } from "@/utils/auth";
 import { data } from "jquery";
 import { getDate } from "@/utils/getDate";
 export default {
+  components: {
+    pdf,
+  },
   data() {
     return {
       tableData: [],
@@ -389,6 +398,8 @@ export default {
       },
       browseVisible: false,
       pdfsrc: "",
+      pdfBlob: "",
+      pdfName: "",
       detailVisible: false,
       editForm: {
         ProductName: "",
@@ -434,12 +445,16 @@ export default {
   watch: {
     "editForm.upfilename1"(val, old) {
       if (val) {
+        this.editForm.filename1 = this.customNamesEdit[0];
+      } else {
         this.editForm.filename1 = "";
         this.fileListEdit1 = [];
       }
     },
     "editForm.upfilename2"(val, old) {
       if (val) {
+        this.editForm.filename2 = this.customNamesEdit[1];
+      } else {
         this.editForm.filename2 = "";
         this.fileListEdit2 = [];
       }
@@ -466,13 +481,25 @@ export default {
         });
       }
     },
-    getPdfSrc(guid) {
+    getPdfSrc(guid, name) {
       DQXYLProductSOP({
         prosop_guid: guid,
       }).then((res) => {
         this.pdfsrc = `data:application/pdf;base64,${res.Data}`;
+        this.pdfBlob = res.Data;
+        this.pdfName = name;
         this.browseVisible = true;
       });
+    },
+    downLoadPdf() {
+      const url = URL.createObjectURL(
+        new Blob([this.pdfBlob], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = this.pdfName;
+      link.click();
+      URL.revokeObjectURL(url);
     },
     handleSelect(obj) {
       this.productName = obj.ProductName;
@@ -520,6 +547,7 @@ export default {
       this.editForm.ProductName = row.prosop_product;
       this.editForm.filename1 = row.prosop_name;
       this.editForm.filename2 = row.prosop_name2;
+      this.customNamesEdit = [row.prosop_name, row.prosop_name2];
     },
     addCancel() {
       this.detailVisible = false;
@@ -547,6 +575,20 @@ export default {
       this.$refs.upload.clearFiles();
       this.fileList = [];
       this.customNames = [];
+    },
+    resetEdit() {
+      this.editForm = {
+        ProductName: "",
+        upfilename1: true,
+        filename1: "",
+        base64String1: "",
+        upfilename2: true,
+        filename2: "",
+        base64String2: "",
+        UserNo: "",
+      };
+      this.fileListEdit1 = [];
+      this.fileListEdit2 = [];
     },
     // 获取文件名（不含扩展名）
     getBaseName(filename) {
@@ -579,7 +621,7 @@ export default {
       // 初始化自定义文件名
       this.customNames[1] = file.name;
     },
-    file2UpRemove() {
+    file2UpRemove(file, fileList) {
       this.fileListUp2 = fileList;
       // 同步更新自定义文件名数组
       this.customNames[1] = "";
@@ -671,7 +713,7 @@ export default {
       // 初始化自定义文件名
       this.editForm.filename2 = file.name;
     },
-    file2EditRemove() {
+    file2EditRemove(file, fileList) {
       this.fileListEdit2 = fileList;
       // 同步更新自定义文件名数组
       this.editForm.filename2 = "";
@@ -750,14 +792,14 @@ export default {
     // 全部的上传前的校验
     beforeUpload(file) {
       const isPDF = file.type === "application/pdf";
-      const isLt20M = file.size / 1024 / 1024 < 20;
+      const isLt20M = file.size / 1024 / 1024 < 5;
 
       if (!isPDF) {
         this.$message.error("只能上传PDF格式的文件!");
         return false;
       }
       if (!isLt20M) {
-        this.$message.error("文件大小不能超过20MB!");
+        this.$message.error("文件大小不能超过5MB!");
         return false;
       }
 
@@ -848,5 +890,19 @@ export default {
 }
 ::v-deep .el-form-item {
   margin-bottom: 10px;
+}
+/* 自定义头部样式 */
+.dialog-header {
+  display: flex;
+  //justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* 固定按钮在顶部右侧 */
+.top-button {
+  position: absolute;
+  right: 20px;
+  top: 12px;
 }
 </style>
