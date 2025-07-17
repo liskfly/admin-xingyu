@@ -62,7 +62,7 @@ import State from "./state.vue";
 import Number from "./number.vue";
 import { findKanBan, findYcTaskData } from "@/api/agvApi";
 import { loading } from "@jiaminghi/data-view";
-import { get } from "jquery";
+
 export default {
   // name: "DataView",
   components: {
