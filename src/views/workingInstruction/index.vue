@@ -326,12 +326,33 @@
         <el-button type="primary" size="mini" class="ml-5" @click="downLoadPdf"
           >下载</el-button
         >
+        <!-- <el-button
+          type="primary"
+          size="mini"
+          class="ml-5"
+          @click="changePdfPage(0)"
+          >上一页</el-button
+        >
+        <el-button
+          type="primary"
+          size="mini"
+          class="ml-5"
+          @click="changePdfPage(1)"
+          >下一页</el-button
+        > -->
       </div>
 
       <!-- 弹窗内容 -->
-      <div>
-        <pdf :src="pdfsrc">
-        </pdf>
+      <div style="width: 100%; height: 500px">
+        <!-- <pdf
+          :src="pdfsrc"
+          :page="currentPagePdf"
+          @num-pages="pageCountPdf = $event"
+          @page-loaded="currentPagePdf = $event"
+          @loaded="loadPdfHandler"
+        >
+        </pdf> -->
+        <iframe :src="pdfsrc" style="width: 100%; height: 100%"></iframe>
       </div>
     </el-dialog>
   </div>
@@ -347,14 +368,14 @@ import {
   DeleteXYLProductSOP,
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
-import pdf from 'vue-pdf'
+// import pdf from "vue-pdf";
 import { getToken } from "@/utils/auth";
 import { data } from "jquery";
 import { getDate } from "@/utils/getDate";
 export default {
-  components: {
-    pdf,
-  },
+  // components: {
+  //   pdf,
+  // },
   data() {
     return {
       tableData: [],
@@ -397,7 +418,7 @@ export default {
         ],
       },
       browseVisible: false,
-      pdfsrc: "",
+      pdfsrc: null,
       pdfBlob: "",
       pdfName: "",
       detailVisible: false,
@@ -430,6 +451,8 @@ export default {
       productName: "",
       checked1: true,
       checked2: true,
+      currentPagePdf: 1,
+      pageCountPdf: 0,
     };
   },
   beforeMount() {
@@ -823,6 +846,24 @@ export default {
     },
     endLoading() {
       this.loading.close();
+    },
+    changePdfPage(val) {
+      if (val === 0 && this.currentPagePdf > 1) {
+        this.currentPagePdf--;
+        // console.log(this.currentPage)
+      }
+      if (val === 1 && this.currentPagePdf < this.pageCountPdf) {
+        this.currentPagePdf++;
+        // console.log(this.currentPage)
+      }
+    },
+
+    // pdf加载时
+    loadPdfHandler(e) {
+      this.currentPagePdf = 1; // 加载的时候先加载第一页
+    },
+    pdfError(e) {
+      console.log(e);
     },
   },
 };
