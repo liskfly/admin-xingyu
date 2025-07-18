@@ -7,8 +7,6 @@
         <div class="text decoration-center">
           <div style="margin: auto" class="text-white flex items-center">
             <span>星宇车灯电子二工厂 </span>
-            
-
             <el-dropdown @command="handleCommand" class="custom-dropdown1">
               <span class="el-dropdown-link">
                 {{ line }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -18,13 +16,16 @@
 
               </el-dropdown-menu>
             </el-dropdown>
-
           </div>
         </div>
         <dv-decoration-8 class="dv-dec-8 transform decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']"/>
         <dv-decoration-10 class="dv-dec-10 transform decoration" :color="['#40a0ffb8']"/>
         
+        <div class="text-white flex justify-end timetext" style=" font-size: 24px">
+        <span class="pr-5">{{ currentTime }}</span>
       </div>
+      </div>
+ 
       
       <div class="bg-white h-32 dashboard-header" style="width: 1920px">
         <div class="info-grid">
@@ -52,25 +53,25 @@
       </div>
       <div class="flex" style="gap: 15px;">
         <dv-border-box-13 class="centerh ">
-          <div class="header_title">当前工单完成率</div>
+          <div class="header_title"><i class="fa fa-tasks"></i> 当前工单完成率</div>
           <div>
             <completion />
           </div>
         </dv-border-box-13>
         <dv-border-box-13 class="centerh">
-          <div class="header_title">SPI直通率</div>
+          <div class="header_title"><i class="fa fa-check-circle"></i> SPI直通率</div>
           <div>
             <spiPassRate />
           </div>
         </dv-border-box-13>
         <dv-border-box-13 class="centerh">
-          <div class="header_title">AOI直通率</div>
+          <div class="header_title"><i class="fa fa-search"></i> AOI直通率</div>
           <div>
             <aoiPassRate />
           </div>
         </dv-border-box-13>
         <dv-border-box-13 class="centerh">
-          <div class="header_title">统计不良数</div>
+          <div class="header_title"><i class="fa  fa-exclamation-triangle"></i> 不良数分布</div>
           <div>
             <badPassRate />
           </div>
@@ -78,13 +79,13 @@
       </div>
       <div class="flex gap-4">
         <dv-border-box-12 class="centerh1">
-          <div class="header_title">贴片机单小时产能</div>
+          <div class="header_title"><i class="fa fa-bar-chart"></i> 贴片机单小时产能</div>
           <div>
             <capacityChart />
           </div>
         </dv-border-box-12>
         <dv-border-box-12 class="centerh1">
-          <div class="header_title">抛料TOP10</div>
+          <div class="header_title"><i class="	fa fa-bar-chart"></i> 抛料TOP10</div>
           <div>
             <throwMChart />
           </div>
@@ -136,7 +137,9 @@ export default {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: false
+        weekday: 'short',
+        hour12: false,
+      
       });
     },
     handleCommand(command) {
@@ -255,5 +258,11 @@ export default {
     border-top-color: #46bcff !important;
     border-bottom-color: #46bcff !important;
   }
+}
+
+.timetext{
+  position: absolute;
+  top: 45px;
+  right: 10px;
 }
 </style>

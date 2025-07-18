@@ -7,7 +7,7 @@
                 <el-button class="ml-2" type="primary" @click="getChange">查询</el-button>
             </div>
             <el-table :data="tableData" :height="tableHeight" border stripe :style="{ width: '100%' }"
-                @row-dblclick="dialogVisible = true">
+                @row-dblclick="dialogVisible = true" size="small">
                 <el-table-column type="index" label="序号" width="50" align="center" />
                 <el-table-column prop="ContainerName" label="PCB编码" />
                 <el-table-column prop="line" label="线体" />

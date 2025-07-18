@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 // import './assets/tailwind.css'
 import "tailwindcss/tailwind.css"
 import './utils/directives.js'
+import "font-awesome/css/font-awesome.min.css"
 
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 

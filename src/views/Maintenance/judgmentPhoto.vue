@@ -6,7 +6,7 @@
                     @keyup.enter.native="getChange"></el-input>
                 <el-button class="ml-2" type="primary" @click="getChange">查询</el-button>
             </div>
-            <el-table :data="tableData" :height="tableHeight" border stripe :style="{ width: '100%' }">
+            <el-table :data="tableData" :height="tableHeight" border stripe :style="{ width: '100%' }" size="small">
                 <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
                 <el-table-column prop="line" label="线体" width="60" />
                 <el-table-column prop="judgmemtID" label="照合ID" />

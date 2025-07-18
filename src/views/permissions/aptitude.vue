@@ -5,7 +5,7 @@
       <el-button type="primary" @click="openAdd()">新增</el-button>
     </div>
     <div>
-      <el-table :data="tableData" border :height="tableHeight" stripe>
+      <el-table :data="tableData" border :height="tableHeight" stripe size="small">
         <el-table-column label="序号" type="index" width="50"></el-table-column>
         <af-table-column label="工号" prop="OperatorID" align="center">
         </af-table-column>

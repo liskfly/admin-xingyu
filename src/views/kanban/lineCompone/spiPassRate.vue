@@ -72,6 +72,12 @@
         this.initChart();
         this.startRefreshing();
     },
+    beforeDestroy() {
+    this.stopRefreshing();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  },
     methods: {
       getData() {
         // 模拟获取数据

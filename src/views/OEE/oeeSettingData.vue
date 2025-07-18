@@ -1,47 +1,36 @@
 <template>
-  <div class="parameterSetting">
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <el-input
-          placeholder="OEE参数"
-          v-model="searchiInput"
-          class="input-with-select"
-          style="width: 300px; margin-right: 20px"
-        >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="searchData()"
-          ></el-button>
+  <div class="p-2">
+  
+      <el-card shadow="always" :body-style="{ padding: '8px' }">
+       
+      
+      <div class="mb-2">
+        <el-input placeholder="OEE参数" v-model="searchiInput" class="input-with-select"
+          style="width: 300px; margin-right: 20px">
+          <el-button slot="append" icon="el-icon-search" @click="searchData()"></el-button>
         </el-input>
         <el-button @click="dataInitialization">查看全部</el-button>
+        <el-button type="primary" @click="dialogFormVisible = true">增加</el-button>
       </div>
-      <el-button type="primary" @click="dialogFormVisible = true"
-        >增加</el-button
-      >
-      <el-table
-        :data="
-          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
-      >
+      
+      <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "   border
+        :height="tableHeight"  size="small">
+        <el-table-column label="序号" type="index" width="50" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="LevelType" label="OEE类型">
           <template slot-scope="{ row, $index }">
-            <el-input
-              v-if="isShow[$index]"
-              v-model="row.LevelType"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-if="isShow[$index]" v-model="row.LevelType" placeholder="请输入内容"></el-input>
             <span v-if="!isShow[$index]">{{ row.LevelType }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="LevelCode" label="OEE参数"> </el-table-column>
         <el-table-column prop="Description" label="OEE描述">
           <template slot-scope="{ row, $index }">
-            <el-input
-              v-if="isShow[$index]"
-              v-model="row.Description"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-if="isShow[$index]" v-model="row.Description" placeholder="请输入内容"></el-input>
             <span v-if="!isShow[$index]">{{ row.Description }}</span>
           </template>
         </el-table-column>
@@ -57,37 +46,21 @@
         </el-table-column>
         <el-table-column prop="Operator" label="操作员">
           <template slot-scope="{ row, $index }">
-            <el-input
-              v-if="isShow[$index]"
-              v-model="row.Operator"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-if="isShow[$index]" v-model="row.Operator" placeholder="请输入内容"></el-input>
             <span v-if="!isShow[$index]">{{ row.Operator }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="ChangeShow(scope.$index, scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
-            >
+            <el-button size="mini" @click="ChangeShow(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        style="margin-top: 20px"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.length"
-      >
+      <el-pagination    align="center"
+      background style="margin-top: 8px" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="currentPage" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length">
       </el-pagination>
     </el-card>
 
@@ -105,11 +78,7 @@
           <el-input v-model="levelCodeInput"></el-input>
         </el-form-item>
         <el-form-item label="OEE描述">
-          <el-input
-            class="popul-item"
-            placeholder="请输入内容"
-            v-model="descriptionInput"
-          >
+          <el-input class="popul-item" placeholder="请输入内容" v-model="descriptionInput">
           </el-input>
         </el-form-item>
       </el-form>
@@ -138,10 +107,7 @@
       </div> -->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="(dialogFormVisible = false), insertData()"
-        >
+        <el-button type="primary" @click="(dialogFormVisible = false), insertData()">
           确 定
         </el-button>
       </div>
@@ -149,26 +115,13 @@
 
     <el-dialog title="更改OE参数信息" :visible.sync="OEChange">
       <div>
-        <el-input
-          class="popul-item"
-          placeholder="请输入内容"
-          v-model="levelCodeChange"
-          :disabled="true"
-        >
+        <el-input class="popul-item" placeholder="请输入内容" v-model="levelCodeChange" :disabled="true">
           <template slot="prepend">OE参数</template>
         </el-input>
-        <el-input
-          class="popul-item"
-          placeholder="请输入内容"
-          v-model="levelTypeChange"
-        >
+        <el-input class="popul-item" placeholder="请输入内容" v-model="levelTypeChange">
           <template slot="prepend">OE类型</template>
         </el-input>
-        <el-input
-          class="popul-item"
-          placeholder="请输入内容"
-          v-model="descriptionChange"
-        >
+        <el-input class="popul-item" placeholder="请输入内容" v-model="descriptionChange">
           <template slot="prepend">OE描述</template>
         </el-input>
         <!-- <el-input placeholder="请输入内容" v-model="operatorChange">
@@ -177,10 +130,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="OEChange = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="(dialogFormVisible = false), handleUpdate()"
-        >
+        <el-button type="primary" @click="(dialogFormVisible = false), handleUpdate()">
           确 定
         </el-button>
       </div>
@@ -222,12 +172,18 @@ export default {
         { name: "停机", value: "Stop" },
         { name: "其他", value: "Other" },
       ],
+      tableHeight: 0,
     };
   },
   beforeMount() {
     this.dataInitialization();
+    this.getScreenHeight();
   },
-  mounted() {},
+  mounted() {   window.addEventListener("resize", this.getScreenHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.getScreenHeight);
+  },
   methods: {
     //查询OE参数
     searchData() {
@@ -254,9 +210,9 @@ export default {
     },
     //添加一条数据
     async insertData() {
-        let haveCode = false;
+      let haveCode = false;
       await this.tableData.forEach((item) => {
-        if(item.LevelCode === this.levelCodeInput) {
+        if (item.LevelCode === this.levelCodeInput) {
           haveCode = true
           this.$message({
             type: "error",
@@ -265,7 +221,7 @@ export default {
           return;
         }
       })
-      if(haveCode) {
+      if (haveCode) {
         return;
       };
       this.startLoading();
@@ -452,6 +408,11 @@ export default {
     endLoading() {
       this.loading.close();
     },
+    getScreenHeight() {
+            this.$nextTick(() => {
+                this.tableHeight = window.innerHeight - 210;
+            });
+        },
   },
 };
 </script>

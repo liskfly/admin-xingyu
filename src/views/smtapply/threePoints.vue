@@ -24,6 +24,7 @@
       
         highlight-current-row
         @row-click="rowClick"
+        size="small"
       >
         <el-table-column type="index" label="序号" width="55" align="center">
           <template slot-scope="scope">

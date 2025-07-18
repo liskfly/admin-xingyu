@@ -86,16 +86,22 @@ export default {
         this.initChart();
         this.startRefreshing();
     },
+    beforeDestroy() {
+        this.stopRefreshing();
+        if (this.chart) {
+            this.chart.dispose();
+        }
+    },
     methods: {
         getData() {
-        
-           
-                const randomData = Array(10).fill().map(() =>
-            Math.floor(Math.random() * 91) + 10  // 10-100随机数
-        );
-                this.option.series[0].data = randomData;
-                this.chart.setOption(this.option);
-        
+
+
+            const randomData = Array(10).fill().map(() =>
+                Math.floor(Math.random() * 91) + 10  // 10-100随机数
+            );
+            this.option.series[0].data = randomData;
+            this.chart.setOption(this.option);
+
         },
         initChart() {
             const chartDom = document.getElementById("throwMChart");
