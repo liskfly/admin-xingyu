@@ -116,58 +116,78 @@
               </el-form-item>
             </el-form>
             <!-- 文件上传区域 -->
-            <el-upload
-              action="#"
-              multiple
-              :limit="1"
-              :file-list="fileListUp1"
-              :auto-upload="false"
-              :on-change="file1UpChange"
-              :on-remove="file1UpRemove"
-              :before-upload="beforeUpload"
-              accept=".pdf"
-              ref="upload"
-              class="upload-area"
-            >
-              <el-button size="small" type="primary">点击选择文件1</el-button>
-              <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过5MB
+            <div class="upload">
+              <div class="file1">
+                <el-upload
+                  action="#"
+                  multiple
+                  :limit="1"
+                  :file-list="fileListUp1"
+                  :auto-upload="false"
+                  :on-change="file1UpChange"
+                  :on-remove="file1UpRemove"
+                  :before-upload="beforeUpload"
+                  accept=".pdf"
+                  ref="upload"
+                  class="upload-area"
+                >
+                  <el-button size="small" type="primary"
+                    >点击选择文件1</el-button
+                  >
+                  <!-- <div slot="tip" class="el-upload__tip">
+                    只能上传PDF文件，且不超过5MB
+                  </div> -->
+                </el-upload>
               </div>
-            </el-upload>
-            <el-upload
-              action="#"
-              multiple
-              :limit="1"
-              :file-list="fileListUp2"
-              :auto-upload="false"
-              :on-change="file2UpChange"
-              :on-remove="file2UpRemove"
-              :before-upload="beforeUpload"
-              accept=".pdf"
-              ref="upload"
-              class="upload-area"
-            >
-              <el-button size="small" type="primary">点击选择文件2</el-button>
-              <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过5MB
+              <div class="file2">
+                <el-upload
+                  action="#"
+                  multiple
+                  :limit="1"
+                  :file-list="fileListUp2"
+                  :auto-upload="false"
+                  :on-change="file2UpChange"
+                  :on-remove="file2UpRemove"
+                  :before-upload="beforeUpload"
+                  accept=".pdf"
+                  ref="upload"
+                  class="upload-area"
+                >
+                  <el-button size="small" type="primary"
+                    >点击选择文件2</el-button
+                  >
+                  <!-- <div slot="tip" class="el-upload__tip">
+                    只能上传PDF文件，且不超过5MB
+                  </div> -->
+                </el-upload>
               </div>
-            </el-upload>
+            </div>
 
             <!-- 文件名编辑区域 -->
             <div class="filename-edit-area">
               <h4>文件名设置</h4>
-              <div class="file-item">
+              <!-- <div class="file-item">
                 <el-input v-model="customNames[0]" clearable>
                   <template slot="prepend">文件1名称</template>
-                  <!-- <template slot="append">.pdf</template> -->
+                  <template slot="append">.pdf</template>
                 </el-input>
               </div>
               <div class="file-item">
                 <el-input v-model="customNames[1]" clearable>
                   <template slot="prepend">文件2名称</template>
-                  <!-- <template slot="append">.pdf</template> -->
+                  <template slot="append">.pdf</template>
                 </el-input>
-              </div>
+              </div> -->
+              <el-form :inline="true" size="medium" @submit.native.prevent>
+                <div class="upload-name">
+                  <el-form-item class="file1" label="文件1">
+                    <el-input v-model="customNames[0]" clearable> </el-input>
+                  </el-form-item>
+                  <el-form-item class="file2" label="文件2">
+                    <el-input v-model="customNames[1]" clearable> </el-input>
+                  </el-form-item>
+                </div>
+              </el-form>
             </div>
 
             <!-- 操作按钮 -->
@@ -231,56 +251,64 @@
               </el-form-item>
             </el-form>
             <!-- 文件上传区域 -->
-
-            <el-upload
-              action="#"
-              multiple
-              :limit="1"
-              :file-list="fileListEdit1"
-              :auto-upload="false"
-              :on-change="file1EditChange"
-              :on-remove="file1EditRemove"
-              :before-upload="beforeUpload"
-              accept=".pdf"
-              ref="upload"
-              class="upload-area"
-              v-if="!editForm.upfilename1"
-            >
-              <el-button size="small" type="primary">点击选择文件1</el-button>
-              <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过5MB
+            <div class="upload">
+              <div class="file1">
+                <el-upload
+                  action="#"
+                  multiple
+                  :limit="1"
+                  :file-list="fileListEdit1"
+                  :auto-upload="false"
+                  :on-change="file1EditChange"
+                  :on-remove="file1EditRemove"
+                  :before-upload="beforeUpload"
+                  accept=".pdf"
+                  ref="upload"
+                  class="upload-area" v-if="!editForm.upfilename1"
+                >
+                  <el-button size="small" type="primary"
+                    >点击选择文件1</el-button
+                  >
+                  <!-- <div slot="tip" class="el-upload__tip">
+                    只能上传PDF文件，且不超过5MB
+                  </div> -->
+                </el-upload>
               </div>
-            </el-upload>
-            <el-upload
-              action="#"
-              multiple
-              :limit="1"
-              :file-list="fileListEdit2"
-              :auto-upload="false"
-              :on-change="file2EditChange"
-              :on-remove="file2EditRemove"
-              :before-upload="beforeUpload"
-              accept=".pdf"
-              ref="upload"
-              class="upload-area"
-              v-if="!editForm.upfilename2"
-            >
-              <el-button size="small" type="primary">点击选择文件2</el-button>
-              <div slot="tip" class="el-upload__tip">
-                只能上传PDF文件，且不超过5MB
+              <div class="file2">
+                <el-upload
+                  action="#"
+                  multiple
+                  :limit="1"
+                  :file-list="fileListEdit2"
+                  :auto-upload="false"
+                  :on-change="file2EditChange"
+                  :on-remove="file2EditRemove"
+                  :before-upload="beforeUpload"
+                  accept=".pdf"
+                  ref="upload"
+                  class="upload-area"
+                   v-if="!editForm.upfilename2"
+                >
+                  <el-button size="small" type="primary"
+                    >点击选择文件2</el-button
+                  >
+                  <!-- <div slot="tip" class="el-upload__tip">
+                    只能上传PDF文件，且不超过5MB
+                  </div> -->
+                </el-upload>
               </div>
-            </el-upload>
+            </div>
             <!-- 文件名编辑区域 -->
             <div class="filename-edit-area">
               <h4>文件名设置</h4>
-              <div class="file-item">
+              <!-- <div class="file-item">
                 <el-input
                   v-model="editForm.filename1"
                   clearable
                   :disabled="!checked1"
                 >
                   <template slot="prepend">文件1名称</template>
-                  <!-- <template slot="append">.pdf</template> -->
+                  <template slot="append">.pdf</template>
                 </el-input>
               </div>
               <div class="file-item">
@@ -290,9 +318,19 @@
                   :disabled="!checked2"
                 >
                   <template slot="prepend">文件2名称</template>
-                  <!-- <template slot="append">.pdf</template> -->
+                  <template slot="append">.pdf</template>
                 </el-input>
-              </div>
+              </div> -->
+              <el-form :inline="true" size="medium" @submit.native.prevent>
+                <div class="upload-name">
+                  <el-form-item class="file1" label="文件1">
+                    <el-input v-model="editForm.filename1" clearable> </el-input>
+                  </el-form-item>
+                  <el-form-item class="file2" label="文件2">
+                    <el-input v-model="editForm.filename2" clearable> </el-input>
+                  </el-form-item>
+                </div>
+              </el-form>
             </div>
 
             <!-- 操作按钮 -->
@@ -326,6 +364,9 @@
         <el-button type="primary" size="mini" class="ml-5" @click="downLoadPdf"
           >下载</el-button
         >
+        <el-button type="primary" size="mini" class="ml-5" @click="srcFull"
+          >全屏</el-button
+        >
         <!-- <el-button
           type="primary"
           size="mini"
@@ -343,7 +384,7 @@
       </div>
 
       <!-- 弹窗内容 -->
-      <div style="width: 100%; height: 500px">
+      <div style="width: 100%; height: 600px" id="src">
         <!-- <pdf
           :src="pdfsrc"
           :page="currentPagePdf"
@@ -359,6 +400,7 @@
 </template>
 
 <script>
+import screenfull from "screenfull";
 import {
   InsertXYLProductSOP,
   QueryXYLProductSOP,
@@ -453,6 +495,7 @@ export default {
       checked2: true,
       currentPagePdf: 1,
       pageCountPdf: 0,
+      isFullscreen: true,
     };
   },
   beforeMount() {
@@ -589,6 +632,43 @@ export default {
         this.tableHeight = window.innerHeight - 220;
         // this.tableHeight1 =
       });
+    },
+    srcFull() {
+      let full = document.fullscreenElement;
+      if (!full) {
+        // document自带的全屏方法
+        // document.documentElement.requestFullscreen();
+        this.isFullscreen = true;
+      } else {
+        // document自带的推出全屏方法
+        // document.exitFullscreen();
+        this.isFullscreen = false;
+      }
+      // console.log(full);
+
+      let fullDiv = "";
+      // console.log(this.$route.path);
+
+      fullDiv = document.getElementById("src");
+      // console.log(fullDiv);
+
+      if (fullDiv) {
+        //找到后调用自带的toggle事件进行放大操作
+        screenfull.toggle(fullDiv);
+        this.isFullscreen = false;
+      } else {
+        //判断浏览器是否支持该组件
+        if (!screenfull.enabled) {
+          // this.$message({
+          //   message: "you browser can not work",
+          //   type: "warning",
+          // });
+          // return false;
+          // this.isFullscreen = false;
+        }
+        //放大页面 左侧菜单栏不会隐藏
+        screenfull.toggle();
+      }
     },
 
     // 重置上传
@@ -945,5 +1025,27 @@ export default {
   position: absolute;
   right: 20px;
   top: 12px;
+}
+
+.upload {
+  display: flex;
+  justify-content: space-between;
+  .file1 {
+    width: 50%;
+  }
+  .file2 {
+    width: 50%;
+  }
+}
+
+.upload-name {
+  display: flex;
+  justify-content: space-between;
+  .file1 {
+    width: 50%;
+  }
+  .file2 {
+    width: 50%;
+  }
 }
 </style>

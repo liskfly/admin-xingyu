@@ -757,6 +757,7 @@ export default {
                 this.checkedLine2 = [];
                 this.checkedLine3 = [];
                 this.initialize();
+                console.log(res.data);
                 this.$alert(res.data.Message, "错误信息", {
                   confirmButtonText: "确定",
                   callback: () => {
