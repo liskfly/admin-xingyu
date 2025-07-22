@@ -140,6 +140,14 @@ export function QueryXYL_BadProductInformationRepairRecord(data) {
     });
 }
 
+
+export function QueryXYL_BadProductInformationFromByNo(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformationFromByNo",
+        method: "post",
+        data,
+    });
+}
 //查询审核料号信息
 export function QueryXYL_BadExamine(data) {
     return request({

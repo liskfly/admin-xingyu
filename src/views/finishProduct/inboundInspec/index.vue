@@ -456,7 +456,7 @@ export default {
                 });
               } else {
                 this.dialogForm.smt.dialogVisible = true;
-                this.dialogForm.smt.Msg = res.Message;
+                this.dialogForm.smt.Msg = data.Message;
               }
             });
 

@@ -1,41 +1,26 @@
 <template>
-  <div class="checkRecord">
+  <div class="p-2">
     <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div>
         <el-form ref="form" class="form" :inline="true" :model="getDataText" size="medium">
-          <el-form-item class="form_Bottom">
+          <el-form-item class="mb-2">
             <el-select v-model="getDataText.inspectType" placeholder="检查类型">
-              <el-option
-                v-for="item in typeList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              ></el-option> </el-select
-          ></el-form-item>
-          <el-form-item class="form_Bottom">
-            <el-select v-model="inquire" placeholder="检查类型"  >
-              <el-option
-                v-for="item in inquireList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              >
+              <el-option v-for="item in typeList" :key="item.value" :label="item.lable" :value="item.value"></el-option>
+            </el-select></el-form-item>
+          <el-form-item class="mb-2">
+            <el-select v-model="inquire" placeholder="检查类型">
+              <el-option v-for="item in inquireList" :key="item.value" :label="item.lable" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
-         
-          <el-form-item v-show="inquire == 'order'" class="form_Bottom">
-            <el-input
-              placeholder="请输入任务编号"
-              clearable
-              v-model="getDataText.inspect"
-              class="input-with-select"
-              @change="getData()"
-            >
-            <!-- <template slot="prepend">{{ headerType }}</template> -->
+
+          <el-form-item v-show="inquire == 'order'" class="mb-2">
+            <el-input placeholder="请输入任务编号" clearable v-model="getDataText.inspect" class="input-with-select"
+              @change="getData()">
+              <!-- <template slot="prepend">{{ headerType }}</template> -->
             </el-input>
           </el-form-item>
-          <el-form-item v-show="inquire != 'order'" class="form_Bottom">
+          <el-form-item v-show="inquire != 'order'" class="mb-2">
             <!-- <el-date-picker
               v-model="value1"
               format="yyyy-MM-dd"
@@ -47,34 +32,32 @@
               :picker-options="pickerOptions"
             >
             </el-date-picker> -->
-          <el-date-picker v-model="value1" type="datetimerange" range-separator="至" start-placeholder="开始日期"
-            end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" :default-time="['00:00:00', '23:59:59']"
-            :clearable="false">
-          </el-date-picker>
+            <el-date-picker v-model="value1" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+              end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"
+              :default-time="['00:00:00', '23:59:59']" :clearable="false">
+            </el-date-picker>
           </el-form-item>
-          <el-form-item class="form_Bottom">
+          <el-form-item class="mb-2">
             <el-button type="primary" @click="getData()">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
       <div class="table_container">
-        <el-table
-          :data="
-            tableData.slice(
-              (currentPage - 1) * pageSize,
-              currentPage * pageSize
-            )
-          "
-          border
-          :height="tableHeight"
-          row-key="step1"
-          style="width: 100%"
-          :tree-props="{ children: 'stepItemList' }"
-          size="small"
-        >
+        <el-table :data="tableData.slice(
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
+        )
+          " border :height="tableHeight" row-key="step1" style="width: 100%" :tree-props="{ children: 'stepItemList' }"
+          size="small">
           <el-table-column prop="InspectOrder" label="任务编号" width="180">
           </el-table-column>
           <el-table-column prop="Name" label="检验设备"> </el-table-column>
+          <el-table-column prop="InspectStatus" label="状态">
+            <template slot-scope="scope" v-if="scope.row.InspectStatus">
+              <el-tag :type="resultTag1(scope.row.InspectStatus)" effect="plain">{{
+                resultText1(scope.row.InspectStatus)
+              }}</el-tag></template>
+          </el-table-column>
           <el-table-column prop="Status" label="检查结果">
             <template slot-scope="scope" v-if="scope.row.Status">
               <el-tag :type="resultTag(scope.row.Status)" effect="dark">{{
@@ -85,11 +68,8 @@
           <el-table-column prop="Attachment" label="记录图片">
             <template slot-scope="scope">
               <span v-for="(item, i) in scope.row.Attachment" :key="i">
-                <el-image
-                  style="max-height: 70px; max-width: 70px; padding: 5px"
-                  :src="item"
-                  :preview-src-list="[item]"
-                >
+                <el-image style="max-height: 70px; max-width: 70px; padding: 5px" :src="item"
+                  :preview-src-list="[item]">
                 </el-image>
                 <!-- <el-popover placement="left" trigger="click" width="300">
                   <img :src="item" width="100%" />
@@ -107,17 +87,9 @@
           <el-table-column prop="Remark" label="备注"> </el-table-column>
         </el-table>
         <div class="block" style="margin-top: 8px">
-          <el-pagination
-            align="center"
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            :page-sizes="[5, 10, 20, 50, 100]"
-            layout="total,sizes, prev, pager, next, jumper"
-            :total="tableData.length"
-          >
+          <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+            :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 50, 100]"
+            layout="total,sizes, prev, pager, next, jumper" :total="tableData.length">
           </el-pagination>
         </div>
       </div>
@@ -127,10 +99,12 @@
 
 <script>
 import { getCheckResults } from "@/api/all";
-import { shortcuts,
+import {
+  shortcuts,
   disabledDate,
   setTodayDate,
-  setLastDate, } from "@/utils/dataMenu";
+  setLastDate,
+} from "@/utils/dataMenu";
 export default {
   data() {
     return {
@@ -174,7 +148,7 @@ export default {
         },
       ],
       value1: [],
-      headerType:"XYEI",
+      headerType: "XYEI",
       pickerOptions: {
         shortcuts: shortcuts,
       }
@@ -194,22 +168,22 @@ export default {
       } else {
 
         this.getDataText.inspect = "";
-        if (this.getDataText.inspectType == "WI" ) {
-          this.headerType="XYWI"
-        this.getDataText.inspect = "XYWI";
-      }
-      if (this.getDataText.inspectType == "FI" ) {
-        this.headerType="XYFI"
-        this.getDataText.inspect = "XYFI";
-      }
-      if (this.getDataText.inspectType == "EI" ) {
-        this.headerType="XYEI"
-        this.getDataText.inspect = "XYEI";
-      }
-      if (this.getDataText.inspectType == "RI" ) {
-        this.headerType="XYRI"
-        this.getDataText.inspect = "XYRI";
-      }
+        if (this.getDataText.inspectType == "WI") {
+          this.headerType = "XYWI"
+          this.getDataText.inspect = "XYWI";
+        }
+        if (this.getDataText.inspectType == "FI") {
+          this.headerType = "XYFI"
+          this.getDataText.inspect = "XYFI";
+        }
+        if (this.getDataText.inspectType == "EI") {
+          this.headerType = "XYEI"
+          this.getDataText.inspect = "XYEI";
+        }
+        if (this.getDataText.inspectType == "RI") {
+          this.headerType = "XYRI"
+          this.getDataText.inspect = "XYRI";
+        }
       }
     },
     "getDataText.inspectType"(value) {
@@ -230,9 +204,9 @@ export default {
   },
   beforeMount() {
     this.getScreenHeight();
-    this.value1 = [setLastDate(),setTodayDate()];
+    this.value1 = [setLastDate(), setTodayDate()];
   },
-  mounted() {},
+  mounted() { },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
@@ -249,106 +223,129 @@ export default {
             confirmButtonText: "确定",
           });
         }
-      }).catch((msg)=>{
+      }).catch((msg) => {
         this.$alert(msg, "提示信息", {
-            confirmButtonText: "确定",
-          });
+          confirmButtonText: "确定",
+        });
       })
     },
-    dataProcessing(data) {
-      let a = [];
-      data.forEach((item, i) => {
-        let isExist = a.findIndex(
-          (ela) => ela.InspectOrder == item.InspectOrder
-        );
-        if (isExist != -1) {
-          let b = a[isExist].stepItemList.findIndex((t) => t.Name == item.Name);
-          if (b == -1) {
-            let Attachment = [];
-            if (item.Attachment1) {
-              Attachment.push(item.Attachment1);
-            }
-            if (item.Attachment2) {
-              Attachment.push(item.Attachment2);
-            }
-            if (item.Attachment3) {
-              Attachment.push(item.Attachment3);
-            }
-            if (item.Attachment4) {
-              Attachment.push(item.Attachment4);
-            }
-            a[isExist].stepItemList.push({
-              Name: item.Name,
-              Step: item.Step,
-              Status: item.Status,
-              Remark: item.Remark,
-              Attachment: Attachment,
-              InspectContent: item.InspectContent,
-              step1: item.InspectOrder + "-" + item.Step,
-            });
-            // console.log(a[isExist].stepItemList.Attachment);
-          }
-          //   if (b != -1) {
-          //     a[isExist].stepItemList[b].stepItemList.push({
-          //       ...item,
-          //       step1:
-          //         item.InspectOrder +
-          //         "-" +
-          //         item.Step +
-          //         "-" +
-          //         (a[isExist].stepItemList[b].stepItemList.length + 1),
-          //     });
-          //   } else {
-          //     a[isExist].stepItemList.push({
-          //       Name: item.Name,
-          //       Step: item.Step,
-          //       Status: item.Status,
-          //       InspectContent: item.InspectContent,
-          //       step1: item.InspectOrder + "-" + item.Step,
-          //       stepItemList: [
-          //         {
-          //           ...item,
-          //           step1:
-          //             item.InspectOrder + "-" + item.Step + "-" + (isExist + 1),
-          //         },
-          //       ],
-          //     });
-          //   }
-        } else {
-          let obj = {
-            InspectOrder: item.InspectOrder,
-            step1: item.InspectOrder,
-            stepItemList: [
-              {
-                Name: item.Name,
-                InspectContent: item.InspectContent,
-                Step: item.Step,
-                Status: item.Status,
-                Remark: item.Remark,
-                Attachment: [],
-                step1: item.InspectOrder + "-" + item.Step,
-                // stepItemList: [],
-              },
-            ],
-          };
-          if (item.Attachment1) {
-            obj.stepItemList[0].Attachment.push(item.Attachment1);
-          }
-          if (item.Attachment2) {
-            obj.stepItemList[0].Attachment.push(item.Attachment2);
-          }
-          if (item.Attachment3) {
-            obj.stepItemList[0].Attachment.push(item.Attachment3);
-          }
-          if (item.Attachment4) {
-            obj.stepItemList[0].Attachment.push(item.Attachment4);
-          }
+    // dataProcessing(data) {
+    //   let a = [];
+    //   data.forEach((item, i) => {
+    //     let isExist = a.findIndex(
+    //       (ela) => ela.InspectOrder == item.InspectOrder
+    //     );
+    //     if (isExist != -1) {
+    //       let b = a[isExist].stepItemList.findIndex((t) => t.Name == item.Name);
+    //       if (b == -1) {
+    //         let Attachment = [];
+    //         if (item.Attachment1) {
+    //           Attachment.push(item.Attachment1);
+    //         }
+    //         if (item.Attachment2) {
+    //           Attachment.push(item.Attachment2);
+    //         }
+    //         if (item.Attachment3) {
+    //           Attachment.push(item.Attachment3);
+    //         }
+    //         if (item.Attachment4) {
+    //           Attachment.push(item.Attachment4);
+    //         }
+    //         a[isExist].stepItemList.push({
+    //           Name: item.Name,
+    //           Step: item.Step,
+    //           Status: item.Status,
+    //           Remark: item.Remark,
+    //           Attachment: Attachment,
+    //           InspectContent: item.InspectContent,
+    //           step1: item.InspectOrder + "-" + item.Step,
+    //         });
+    //         // console.log(a[isExist].stepItemList.Attachment);
+    //       }
 
-          a.push(obj);
+    //     } else {
+    //       let obj = {
+    //         InspectOrder: item.InspectOrder,
+    //         step1: item.InspectOrder,
+    //         stepItemList: [
+    //           {
+    //             Name: item.Name,
+    //             InspectContent: item.InspectContent,
+    //             Step: item.Step,
+    //             Status: item.Status,
+    //             Remark: item.Remark,
+    //             Attachment: [],
+    //             step1: item.InspectOrder + "-" + item.Step,
+    //             // stepItemList: [],
+    //           },
+    //         ],
+    //       };
+    //       if (item.Attachment1) {
+    //         obj.stepItemList[0].Attachment.push(item.Attachment1);
+    //       }
+    //       if (item.Attachment2) {
+    //         obj.stepItemList[0].Attachment.push(item.Attachment2);
+    //       }
+    //       if (item.Attachment3) {
+    //         obj.stepItemList[0].Attachment.push(item.Attachment3);
+    //       }
+    //       if (item.Attachment4) {
+    //         obj.stepItemList[0].Attachment.push(item.Attachment4);
+    //       }
+
+    //       a.push(obj);
+    //     }
+    //   });
+    //   this.tableData = a;
+    // },
+    dataProcessing(data) {
+      const resultMap = new Map();
+
+      data.forEach(item => {
+        const { InspectOrder, Name, Step, Status, Remark, InspectContent,InspectStatus } = item;
+
+        // 处理附件数组（优化点1：动态处理任意数量的附件）
+        const attachments = [];
+        for (let i = 1; i <= 4; i++) {
+          const attachment = item[`Attachment${i}`];
+          if (attachment) attachments.push(attachment);
+        }
+
+        // 主处理逻辑
+        if (resultMap.has(InspectOrder)) {
+          const group = resultMap.get(InspectOrder);
+          const itemExists = group.stepItemList.some(el => el.Name === Name);
+
+          if (!itemExists) {
+            group.stepItemList.push({
+              Name,
+              Step,
+              Status,
+              Remark,
+              Attachment: attachments,
+              InspectContent,
+              step1: `${InspectOrder}-${Step}`
+            });
+          }
+        } else {
+          resultMap.set(InspectOrder, {
+            InspectOrder,
+            step1: InspectOrder,
+            InspectStatus:InspectStatus,
+            stepItemList: [{
+              Name,
+              Step,
+              Status,
+              Remark,
+              Attachment: attachments,
+              InspectContent,
+              step1: `${InspectOrder}-${Step}`
+            }]
+          });
         }
       });
-      this.tableData = a;
-      console.log(a);
+
+      this.tableData = Array.from(resultMap.values());
     },
     resultText(value) {
       let text = "";
@@ -392,6 +389,44 @@ export default {
       }
       return text;
     },
+    resultText1(value) {
+      let text = "";
+      switch (value) {
+        case "C":
+          text = "已检验";
+          break;
+        case "D":
+          text = "已删除";
+          break;
+        case "P":
+          text = "进行中";
+          break;
+        case "I":
+          text = "未开始";
+          break;
+
+      }
+      return text;
+    },
+    resultTag1(value) {
+      let text = "";
+      switch (value) {
+
+        case "C":
+          text = "success";
+          break;
+        case "D":
+          text = "danger";
+          break;
+        case "P":
+          text = "warning";
+          break;
+        case "I":
+          text = "info";
+          break;
+      }
+      return text;
+    },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
       this.currentPage = 1;
@@ -405,11 +440,11 @@ export default {
     getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
-        this.tableHeight = window.innerHeight - 230;
+        this.tableHeight = window.innerHeight - 210;
         //后面的50：根据需求空出的高度，自行调整
       });
     },
-       startLoading() {
+    startLoading() {
       this.loading = this.$loading({
         lock: true,
         text: "加载中~",
@@ -427,15 +462,17 @@ export default {
 <style lang="scss" scoped>
 .checkRecord {
   padding: 8px;
+
   .table_header {
     .form {
       display: flex;
       justify-content: space-between;
-    
+
     }
   }
-  .form_Bottom{
-        margin-bottom: 10px;
-      }
+
+  .form_Bottom {
+    margin-bottom: 10px;
+  }
 }
 </style>

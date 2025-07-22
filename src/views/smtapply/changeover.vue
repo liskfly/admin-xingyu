@@ -4,54 +4,23 @@
       <el-col :span="8">
         <el-card shadow="always" :body-style="{ padding: '20px' }">
           <div class="left-box">
-            <el-form
-              label-position="left"
-              :model="form"
-              ref="form"
-              label-width="80px"
-              size="normal"
-            >
+            <el-form label-position="left" :model="form" ref="form" label-width="80px" size="normal">
               <el-form-item label="工单">
-                <el-select
-                  v-model="form.order"
-                  @change="change"
-                  filterable
-                  placeholder=""
-                >
-                  <el-option
-                    v-for="item in workOrderList"
-                    :key="item.WorkOrder"
-                    :label="item.WorkOrder"
-                    :value="item.WorkOrder"
-                  ></el-option>
+                <el-select v-model="form.order" @change="change" filterable placeholder="">
+                  <el-option v-for="item in workOrderList" :key="item.WorkOrder" :label="item.WorkOrder"
+                    :value="item.WorkOrder"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="线别">
-                <el-select
-                  v-model="form.lineName"
-                  placeholder="选择线别"
-                  @change="getStatus(), clearAll()"
-                >
-                  <el-option
-                    v-for="item in lineList"
-                    :key="item.lineType"
-                    :label="item.lineType"
-                    :value="item.lineType"
-                  ></el-option>
+                <el-select v-model="form.lineName" placeholder="选择线别" @change="getStatus(), clearAll()">
+                  <el-option v-for="item in lineList" :key="item.lineType" :label="item.lineType"
+                    :value="item.lineType"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="SIDE">
-                <el-select
-                  v-model="form.side"
-                  placeholder="选择SIDE"
-                  @change="getStatus(), clearAll()"
-                >
-                  <el-option
-                    v-for="item in sideList"
-                    :key="item.sideType"
-                    :label="item.sideType"
-                    :value="item.sideType"
-                  ></el-option>
+                <el-select v-model="form.side" placeholder="选择SIDE" @change="getStatus(), clearAll()">
+                  <el-option v-for="item in sideList" :key="item.sideType" :label="item.sideType"
+                    :value="item.sideType"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="产品名">{{ form.product }}</el-form-item>
@@ -64,14 +33,8 @@
               <el-form-item label="BOM版本">{{ form.bomVer }}</el-form-item>
             </el-form>
             <div v-show="form.order !== ''" class="qrcode">
-              <vue-qr
-                :text="form.order"
-                :margin="0"
-                colorDark="#000000"
-                colorLight="#fff"
-                :logoScale="0.3"
-                :size="150"
-              ></vue-qr>
+              <vue-qr :text="form.order" :margin="0" colorDark="#000000" colorLight="#fff" :logoScale="0.3"
+                :size="150"></vue-qr>
             </div>
           </div>
         </el-card>
@@ -91,44 +54,27 @@
                   </div>
                 </div>
                 <el-card shadow="always" :body-style="{ padding: '15px' }">
-                  <el-checkbox-group
-                    v-model="checkedLine1"
-                    @change="handleCheckedChange(checkedLine1, 1)"
-                    style="display: flex; align-items: center"
-                  >
+                  <el-checkbox-group v-model="checkedLine1" @change="handleCheckedChange(checkedLine1, 1)"
+                    style="display: flex; align-items: center">
                     <div class="box1-content-bottom">
-                      <el-checkbox
-                        disabled
-                        v-for="(item, index) in lineData1"
-                        :label="item"
-                        :key="item.id"
-                      >
+                      <el-checkbox disabled v-for="(item, index) in lineData1" :label="item" :key="item.id">
                         <div class="list-content">
                           <div class="light">
-                            设备<i
-                              class="icon"
-                              :style="{
-                                background:
-                                  item.equipment == '1' ? '#5ab059' : 'red',
-                              }"
-                            ></i>
+                            设备<i class="icon" :style="{
+                              background:
+                                item.equipment == '1' ? '#5ab059' : 'red',
+                            }"></i>
                           </div>
-                          <div
-                            class="light"
-                            :style="{
-                              opacity:
-                                form.lineName === 'Line1' && index === 2
-                                  ? 0
-                                  : 1,
-                            }"
-                          >
-                            轨道<i
-                              class="icon"
-                              :style="{
-                                background:
-                                  item.orbit == '1' ? '#5ab059' : 'red',
-                              }"
-                            ></i>
+                          <div class="light" :style="{
+                            opacity:
+                              form.lineName === 'Line1' && index === 2
+                                ? 0
+                                : 1,
+                          }">
+                            轨道<i class="icon" :style="{
+                              background:
+                                item.orbit == '1' ? '#5ab059' : 'red',
+                            }"></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
                         </div>
@@ -155,36 +101,22 @@
                   </div>
                 </div>
                 <el-card shadow="always" :body-style="{ padding: '15px' }">
-                  <el-checkbox-group
-                    v-model="checkedLine2"
-                    @change="handleCheckedChange(checkedLine2, 2)"
-                    style="display: flex; align-items: center"
-                  >
+                  <el-checkbox-group v-model="checkedLine2" @change="handleCheckedChange(checkedLine2, 2)"
+                    style="display: flex; align-items: center">
                     <div class="box1-content-bottom">
-                      <el-checkbox
-                        disabled
-                        v-for="item in lineData2"
-                        :label="item"
-                        :key="item.id"
-                      >
+                      <el-checkbox disabled v-for="item in lineData2" :label="item" :key="item.id">
                         <div class="list-content">
                           <div class="light">
-                            设备<i
-                              class="icon"
-                              :style="{
-                                background:
-                                  item.equipment == '1' ? '#5ab059' : 'red',
-                              }"
-                            ></i>
+                            设备<i class="icon" :style="{
+                              background:
+                                item.equipment == '1' ? '#5ab059' : 'red',
+                            }"></i>
                           </div>
                           <div class="light">
-                            轨道<i
-                              class="icon"
-                              :style="{
-                                background:
-                                  item.orbit == '1' ? '#5ab059' : 'red',
-                              }"
-                            ></i>
+                            轨道<i class="icon" :style="{
+                              background:
+                                item.orbit == '1' ? '#5ab059' : 'red',
+                            }"></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
                         </div>
@@ -211,37 +143,22 @@
                   </div>
                 </div>
                 <el-card shadow="always" :body-style="{ padding: '15px' }">
-                  <el-checkbox-group
-                    v-model="checkedLine3"
-                    @change="handleCheckedChange(checkedLine3, 3)"
-                    style="display: flex; align-items: center"
-                  >
+                  <el-checkbox-group v-model="checkedLine3" @change="handleCheckedChange(checkedLine3, 3)"
+                    style="display: flex; align-items: center">
                     <div class="box1-content-bottom">
-                      <el-checkbox
-                        disabled
-                        v-for="item in lineData3"
-                        size=""
-                        :label="item"
-                        :key="item.id"
-                      >
+                      <el-checkbox disabled v-for="item in lineData3" size="" :label="item" :key="item.id">
                         <div class="list-content">
                           <div class="light">
-                            设备<i
-                              class="icon"
-                              :style="{
-                                background:
-                                  item.equipment == '1' ? '#5ab059' : 'red',
-                              }"
-                            ></i>
+                            设备<i class="icon" :style="{
+                              background:
+                                item.equipment == '1' ? '#5ab059' : 'red',
+                            }"></i>
                           </div>
                           <div class="light">
-                            轨道<i
-                              class="icon"
-                              :style="{
-                                background:
-                                  item.orbit == '1' ? '#5ab059' : 'red',
-                              }"
-                            ></i>
+                            轨道<i class="icon" :style="{
+                              background:
+                                item.orbit == '1' ? '#5ab059' : 'red',
+                            }"></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
                         </div>
@@ -295,27 +212,11 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="80%"
-      :show-close="cancellation"
-      custom-class="vertical-centered"
-    >
-      <el-carousel
-        ref="carousel"
-        arrow="never"
-        indicator-position="none"
-        height="80vh"
-        :interval="4000"
-        v-if="dialogVisible"
-        @mouseenter.native="delHandleMouseEnter()"
-      >
-        <el-carousel-item
-          v-for="(item, index) in pic1"
-          :key="item.img"
-          class="carousel"
-        >
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="80%" :show-close="cancellation"
+      custom-class="vertical-centered">
+      <el-carousel ref="carousel" arrow="never" indicator-position="none" height="80vh" :interval="4000"
+        v-if="dialogVisible" @mouseenter.native="delHandleMouseEnter()">
+        <el-carousel-item v-for="(item, index) in pic1" :key="item.img" class="carousel">
           <div class="remind">
             <div class="num">{{ index + 1 }}</div>
             <img :src="item.img" alt="" />
@@ -368,27 +269,11 @@
         </el-form-item>
       </el-form> -->
     </el-dialog>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible2"
-      width="80%"
-      :show-close="cancellation2"
-      custom-class="vertical-centered"
-    >
-      <el-carousel
-        ref="carousel"
-        arrow="never"
-        indicator-position="none"
-        height="80vh"
-        :interval="4000"
-        v-if="dialogVisible2"
-        @mouseenter.native="delHandleMouseEnter()"
-      >
-        <el-carousel-item
-          v-for="(item, index) in pic2"
-          :key="item.img"
-          class="carousel"
-        >
+    <el-dialog title="提示" :visible.sync="dialogVisible2" width="80%" :show-close="cancellation2"
+      custom-class="vertical-centered">
+      <el-carousel ref="carousel" arrow="never" indicator-position="none" height="80vh" :interval="4000"
+        v-if="dialogVisible2" @mouseenter.native="delHandleMouseEnter()">
+        <el-carousel-item v-for="(item, index) in pic2" :key="item.img" class="carousel">
           <div class="remind">
             <div class="num">{{ index + 1 }}</div>
             <img :src="item.img" alt="" />
@@ -396,27 +281,11 @@
         </el-carousel-item>
       </el-carousel>
     </el-dialog>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible3"
-      width="80%"
-      :show-close="cancellation3"
-      custom-class="vertical-centered"
-    >
-      <el-carousel
-        ref="carousel"
-        arrow="never"
-        indicator-position="none"
-        height="80vh"
-        :interval="4000"
-        v-if="dialogVisible3"
-        @mouseenter.native="delHandleMouseEnter()"
-      >
-        <el-carousel-item
-          v-for="(item, index) in pic3"
-          :key="item.img"
-          class="carousel"
-        >
+    <el-dialog title="提示" :visible.sync="dialogVisible3" width="80%" :show-close="cancellation3"
+      custom-class="vertical-centered">
+      <el-carousel ref="carousel" arrow="never" indicator-position="none" height="80vh" :interval="4000"
+        v-if="dialogVisible3" @mouseenter.native="delHandleMouseEnter()">
+        <el-carousel-item v-for="(item, index) in pic3" :key="item.img" class="carousel">
           <div class="remind">
             <div class="num">{{ index + 1 }}</div>
             <img :src="item.img" alt="" />
@@ -436,7 +305,7 @@ import {
   changeoverRequests,
 } from "@/api/all";
 import "@/utils/protocolcheck.js";
-import { log } from "@ant-design/icons-vue/lib/utils";
+import { getToken } from "@/utils/auth";
 import vueQr from "vue-qr";
 export default {
   components: {
@@ -473,6 +342,22 @@ export default {
         {
           id: 3,
           lineType: "Line3",
+        },
+        {
+          id: 4,
+          lineType: "Line4",
+        },
+        {
+          id: 5,
+          lineType: "Line5",
+        },
+        {
+          id: 6,
+          lineType: "Line6",
+        },
+        {
+          id: 7,
+          lineType: "Line7",
         },
       ],
       workOrderList: [],
@@ -605,6 +490,7 @@ export default {
     },
   },
   mounted() {
+    
     // console.log(this.$refs.ElCarousel);
     // this.$refs.carousel.forEach((item, index) => {
     //   this.$refs.carousel[index].handleMouseEnter = () => {}
@@ -696,7 +582,7 @@ export default {
     //     this.$message.error("请先完成线和SIDE的选择");
     //   }
     // },
-    changeOver(num) {
+    changeOver(num) {     
       if (num === 1) {
         this.questStatus1 = "";
         this.questStatus2 = "";
@@ -711,16 +597,12 @@ export default {
             String(data.mcIDList[num - 1].mcId).length - 1
           );
           let lastDigit = parseInt(lastDigitAsString, 10);
-          changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]] })
+          // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]],OperatorUser:getToken() });
+          changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]],operatorUser:getToken() })
             .then((res) => {
               this.endLoading();
               if (res.data.Status == "OK") {
-                // console.log(
-                //   num === data.mcIDList.length,
-                //   this.checkedLine1.length,
-                //   this.checkedLine2.length,
-                //   this.checkedLine3.length
-                // ); 
+            
                 if (num !== data.mcIDList.length) {
                   this.changeOver(num + 1);
                 } else if (num === data.mcIDList.length) {
@@ -739,7 +621,7 @@ export default {
                   this.getStatus(this.form.lineName);
                 }
               } else {
-                // console.log(lastDigit);
+              
                 if (lastDigit < 4) {
                   this.questStatus1 = "NG";
                 } else if (lastDigit > 3 && lastDigit < 6) {
@@ -792,8 +674,13 @@ export default {
           if (
             data.mcIDList[0].mcId === 101 ||
             data.mcIDList[0].mcId === 201 ||
-            data.mcIDList[0].mcId === 301
+            data.mcIDList[0].mcId === 301 ||
+            data.mcIDList[0].mcId === 401 ||
+            data.mcIDList[0].mcId === 501 ||
+            data.mcIDList[0].mcId === 601 ||
+            data.mcIDList[0].mcId === 701
           ) {
+            
             oneChangingLine([
               {
                 lineNumber: data.lineName,
@@ -801,6 +688,7 @@ export default {
                 product: data.product,
                 side: data.side,
                 mcid: data.mcIDList[num - 1].mcId,
+                operatorUser:getToken()
               },
             ]).then(() => {
               this.endLoading();
@@ -817,11 +705,11 @@ export default {
       }
     },
     delHandleMouseEnter() {
-      this.$refs.carousel.handleMouseEnter = () => {};
+      this.$refs.carousel.handleMouseEnter = () => { };
     },
     closeCancellation1() {
       this.$nextTick(() => {
-        this.$refs.carousel.handleMouseEnter = () => {};
+        this.$refs.carousel.handleMouseEnter = () => { };
       });
       this.cancellation = false;
       this.dialogVisible = true;
@@ -831,7 +719,7 @@ export default {
     },
     closeCancellation2() {
       this.$nextTick(() => {
-        this.$refs.carousel.handleMouseEnter = () => {};
+        this.$refs.carousel.handleMouseEnter = () => { };
       });
       this.cancellation2 = false;
       this.dialogVisible2 = true;
@@ -841,7 +729,7 @@ export default {
     },
     closeCancellation3() {
       this.$nextTick(() => {
-        this.$refs.carousel.handleMouseEnter = () => {};
+        this.$refs.carousel.handleMouseEnter = () => { };
       });
       this.cancellation3 = false;
       this.dialogVisible3 = true;
@@ -849,6 +737,8 @@ export default {
         this.cancellation3 = true;
       }, 16000);
     },
+
+
     getStatus(value) {
       if (
         this.form.order === "" ||
@@ -935,15 +825,15 @@ export default {
           this.statusData.forEach((element) => {
             this.lineData.forEach((item, index) => {
               if (element.McId === item.id) {
-                console.log(index,element.McIdStatus,element.ConverConveyorStatus);
-                
+                console.log(index, element.McIdStatus, element.ConverConveyorStatus);
+
                 this.lineData[index].equipment = element.McIdStatus;
                 this.lineData[index].orbit = element.ConverConveyorStatus;
               }
             });
           });
           console.log(this.lineData);
-          
+
         }
       });
       // .catch(() => {
@@ -1061,6 +951,7 @@ export default {
   padding: 20px 30px;
   background: #f1f4f9;
 }
+
 .box1-top {
   flex: 1;
   width: 100%;
@@ -1068,6 +959,7 @@ export default {
   display: flex;
   justify-content: center;
   gap: 30px;
+
   .box1-top-left {
     display: flex;
     flex-direction: column;
@@ -1077,6 +969,7 @@ export default {
     height: calc(100vh - 101px - 20vh);
     // flex: 1;
   }
+
   // .box-top-right {
   //   flex: 1;
   //   display: flex;
@@ -1085,6 +978,7 @@ export default {
   //   height: calc(100vh - 100px -20vh);
   // }
 }
+
 .box1-bottom {
   display: flex;
   justify-content: center;
@@ -1104,10 +998,12 @@ export default {
     cursor: pointer;
   }
 }
+
 .box1-content {
   display: flex;
   flex-direction: column;
   gap: 5px;
+
   .box1-header {
     // height:85px ;
     padding-right: 5px;
@@ -1119,21 +1015,25 @@ export default {
     // justify-content: end;
     font-size: 2vh;
     cursor: pointer;
+
     .box1-title {
       font-size: 28px;
       font-weight: 700;
     }
+
     .choice {
       width: 5rem;
       text-align: right;
     }
   }
 }
+
 .box1-content-bottom {
   width: 30rem;
   display: flex;
   flex-direction: column;
   gap: 2vh; //50
+
   .box1-list {
     width: 100%;
     display: flex;
@@ -1141,6 +1041,7 @@ export default {
     align-items: center;
   }
 }
+
 .list-content {
   flex: 1;
   display: flex;
@@ -1153,10 +1054,12 @@ export default {
     font-size: 2.6vh;
     margin-left: 5px;
   }
+
   .light {
     display: flex;
     gap: 1vw;
     align-items: center;
+
     .icon {
       display: inline-block;
       border-radius: 999px;
@@ -1166,9 +1069,11 @@ export default {
     }
   }
 }
+
 .active {
   background: #5ab059;
 }
+
 .tongzi {
   display: flex;
   flex-direction: column;
@@ -1176,6 +1081,7 @@ export default {
   height: 400px;
   overflow: auto;
 }
+
 .tongzi::-webkit-scrollbar {
   display: none;
 }
@@ -1212,6 +1118,7 @@ export default {
   max-height: calc(100% - 30px);
   max-width: calc(100% - 30px);
 }
+
 ::v-deep .el-dialog .el-dialog__body {
   flex: 1;
   overflow: auto;
@@ -1220,6 +1127,7 @@ export default {
 .remind {
   width: 100%;
   height: 100%;
+
   img {
     width: 100%;
     height: 100%;
