@@ -2,27 +2,17 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div>
-        <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true" size="small">
-          <el-form-item label="" style="margin-bottom: 8px">
-            <!-- <el-date-picker
-              v-model="dateValue"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              size="small"
-              :picker-options="pickerOptions"
-              value-format="yyyy-MM-dd"
-            >
-            </el-date-picker> -->
+        <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true">
+          <!-- <el-form-item label="时间"  class="mb-2">
+    
             <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
               end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"
               :default-time="['00:00:00', '23:59:59']" :clearable="false">
             </el-date-picker>
-          </el-form-item>
-          <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchModel.pcbid" clearable
-              placeholder="请输入" style="width: 240px" @clear="clearInput"  @keyup.enter.native="clearInput" /></el-form-item>
-          <el-form-item style="margin-bottom: 0px">
+          </el-form-item> -->
+          <el-form-item label="产品SN" class="mb-2"><el-input v-model="getForm.SearchModel.pcbid" clearable
+              placeholder="请输入" style="width: 300px" @clear="clearInput"  @keyup.enter.native="clearInput" /></el-form-item>
+          <el-form-item  class="mb-2">
             <el-button type="primary" @click="getData()" icon="el-icon-search">查询</el-button></el-form-item>
         </el-form>
       </div>
@@ -35,25 +25,26 @@
         </el-table-column>
 
         <!-- 数据列 -->
-        <af-table-column prop="containerName" label="PCB条码"  fixed="left"/>
+        <af-table-column prop="repair_no" label="维修单号"  fixed="left"/>
+        <af-table-column prop="baddata_pcbid" label="产品SN"  fixed="left"/>
         <af-table-column prop="mfgordername" label="工单号"  fixed="left"></af-table-column>
                 <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
-                <af-table-column prop="productvalue" label="产品名称"></af-table-column>
-        <el-table-column prop="baddatadetail_line" label="线体" />
-        <el-table-column prop="baddatadetail_equip" label="设备" />
-        <el-table-column prop="baddatadetail_item" label="不良位号" />
-        <el-table-column prop="badphenomena_value" label="不良现象" />
+                <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
+        <el-table-column prop="baddata_line" label="线体" />
+        <af-table-column prop="baddata_equip" label="设备" />
+        <!-- <el-table-column prop="baddatadetail_item" label="不良位号" />
+        <el-table-column prop="badphenomena_value" label="不良现象" /> -->
         <el-table-column prop="repair_way" label="维修方法" />
-        <el-table-column prop="baddatadetail_comp" label="状态" width="100" align="center">
+        <el-table-column prop="baddata_stts" label="状态" width="100" align="center">
           <template v-slot="{ row }">
-            <el-tag effect="dark" v-if="row.baddatadetail_comp=='完成维修'" type="success">{{row.baddatadetail_comp}}</el-tag>
-            <el-tag effect="dark" v-else-if="row.baddatadetail_comp=='维修中'" type="primary">{{row.baddatadetail_comp}}</el-tag>
-            <el-tag effect="dark" v-else-if="row.baddatadetail_comp=='未维修'" type="info">{{row.baddatadetail_comp}}</el-tag>
-            <el-tag effect="dark" v-else type="warning">{{row.baddatadetail_comp}}</el-tag>
+            <el-tag effect="dark" v-if="row.baddata_stts=='完成维修'" type="success">{{row.baddata_stts}}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddata_stts=='维修中'" type="primary">{{row.baddata_stts}}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddata_stts=='未维修'" type="info">{{row.baddata_stts}}</el-tag>
+            <el-tag effect="dark" v-else type="danger">{{row.baddata_stts}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="baddatadetail_user" label="维修人" />
-        <el-table-column prop="baddatadetail_datetime" label="维修时间" />
+        <af-table-column prop="baddata_user" label="维修人" />
+        <af-table-column prop="repair_datetime" label="维修时间" />
       </el-table>
       <div class="block" style="margin-top: 8px">
         <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -83,10 +74,11 @@ export default {
       tableHeight: 0,
       getForm: {
         PageIndex: 1,
-        PageSize: 10,
+        PageSize: 50,
         SearchText: "",
         SearchModel: {
           pcbid: "",
+          stts: "N"
         },
         StartTime: "",
         EndTime: "",
@@ -107,8 +99,8 @@ export default {
         this.getForm.StartTime = value[0];
         this.getForm.EndTime = value[1];
       }
-      this.getForm.PageIndex = 1;
-      this.getData();
+      // this.getForm.PageIndex = 1;
+      // this.getData();
     },
   },
   beforeMount() {

@@ -67,7 +67,9 @@
                           </div>
                           <div class="light" :style="{
                             opacity:
-                              form.lineName === 'Line1' && index === 2
+                              (form.lineName === 'Line1' && index === 2) ||
+                                (form.lineName === 'Line2' && index === 2) ||
+                                (form.lineName === 'Line3' && (index === 2 || index === 1))
                                 ? 0
                                 : 1,
                           }">
@@ -480,6 +482,19 @@ export default {
   },
   computed: {
     lineData1() {
+      // if (this.form.lineName !== "") {
+      //   if (this.form.lineName == "Line2") {
+      //     return this.lineData.filter((item, index) => index < 3 && index !== 2);
+      //   }
+      //   else if (this.form.lineName == "Line3") {
+      //     return this.lineData.filter((item, index) => index < 1);
+      //   }
+      //   else {
+      //     return this.lineData.filter((item, index) => index < 3);
+      //   }
+      // } else {
+      //   return this.lineData.filter((item, index) => index < 3);
+      // }
       return this.lineData.filter((item, index) => index < 3);
     },
     lineData2() {
@@ -490,7 +505,6 @@ export default {
     },
   },
   mounted() {
-    
     // console.log(this.$refs.ElCarousel);
     // this.$refs.carousel.forEach((item, index) => {
     //   this.$refs.carousel[index].handleMouseEnter = () => {}
@@ -582,7 +596,7 @@ export default {
     //     this.$message.error("请先完成线和SIDE的选择");
     //   }
     // },
-    changeOver(num) {     
+    changeOver(num) {
       if (num === 1) {
         this.questStatus1 = "";
         this.questStatus2 = "";
@@ -598,11 +612,14 @@ export default {
           );
           let lastDigit = parseInt(lastDigitAsString, 10);
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]],OperatorUser:getToken() });
-          changeoverRequests({ ...data, mcIDList: [data.mcIDList[num - 1]],operatorUser:getToken() })
+          changeoverRequests({
+            ...data,
+            mcIDList: [data.mcIDList[num - 1]],
+            operatorUser: getToken(),
+          })
             .then((res) => {
               this.endLoading();
               if (res.data.Status == "OK") {
-            
                 if (num !== data.mcIDList.length) {
                   this.changeOver(num + 1);
                 } else if (num === data.mcIDList.length) {
@@ -621,7 +638,6 @@ export default {
                   this.getStatus(this.form.lineName);
                 }
               } else {
-              
                 if (lastDigit < 4) {
                   this.questStatus1 = "NG";
                 } else if (lastDigit > 3 && lastDigit < 6) {
@@ -680,7 +696,6 @@ export default {
             data.mcIDList[0].mcId === 601 ||
             data.mcIDList[0].mcId === 701
           ) {
-            
             oneChangingLine([
               {
                 lineNumber: data.lineName,
@@ -688,7 +703,7 @@ export default {
                 product: data.product,
                 side: data.side,
                 mcid: data.mcIDList[num - 1].mcId,
-                operatorUser:getToken()
+                operatorUser: getToken(),
               },
             ]).then(() => {
               this.endLoading();
@@ -737,8 +752,6 @@ export default {
         this.cancellation3 = true;
       }, 16000);
     },
-
-
     getStatus(value) {
       if (
         this.form.order === "" ||
@@ -825,7 +838,11 @@ export default {
           this.statusData.forEach((element) => {
             this.lineData.forEach((item, index) => {
               if (element.McId === item.id) {
-                console.log(index, element.McIdStatus, element.ConverConveyorStatus);
+                console.log(
+                  index,
+                  element.McIdStatus,
+                  element.ConverConveyorStatus
+                );
 
                 this.lineData[index].equipment = element.McIdStatus;
                 this.lineData[index].orbit = element.ConverConveyorStatus;
@@ -833,7 +850,6 @@ export default {
             });
           });
           console.log(this.lineData);
-
         }
       });
       // .catch(() => {
@@ -934,8 +950,9 @@ export default {
   // padding: 20px 0;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 143px);
+  height: calc(100vh - 133px);
 }
+
 .qrcode {
   display: flex;
   justify-content: center;
@@ -1105,7 +1122,6 @@ export default {
   border: 3px solid red;
   text-align: center;
 }
-
 
 ::v-deep .el-dialog {
   display: flex;

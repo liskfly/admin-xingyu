@@ -92,7 +92,7 @@ export default {
       tableData: [],
       tableHeight: 0,
          currentPage: 1, // 当前页码
-      pageSize: 10, // 每页的数据条数
+      pageSize: 50, // 每页的数据条数
       reelID: "",
       cell: "",
       type: "movein",
