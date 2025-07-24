@@ -343,19 +343,14 @@ export default {
               }
             });
 
-            // getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
-            //   if (data.code == 100200) {
-            //     this.tableData = [...this.tableData, ...data.content];
-            //     // this.tableData.sort((a, b) => {
-            //     //   let aTime = new Date(a.DateTime);
-            //     //   let bTime = new Date(b.DateTime);
-            //     //   return bTime - aTime;
-            //     // });
-            //   } else {
-            //     this.dialogForm.dip.dialogVisible = true;
-            //     this.dialogForm.dip.Msg = data.msg;
-            //   }
-            // });
+            getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
+              if (data.code == 100200) {
+                this.tableData = [...this.tableData, ...data.content];
+              } else {
+                this.dialogForm.dip.dialogVisible = true;
+                this.dialogForm.dip.Msg = data.msg;
+              }
+            });
 
             SaveIntactProduct(this.form, this.stringcode)
               .then(({ data }) => {

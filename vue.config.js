@@ -60,13 +60,13 @@ transpileDependencies: ['pdfjs-dist'],
           "^/cm": "",
         },
       },
-      "/pa": {
+      "/paApi": {
         // 需要访问的地址
-        target: "http://172.20.99.46:8080/xymes/api",
+        target: "http://172.20.99.27:8080/xymes/api",
         // 开启代理
         changeOrigin: true,
         pathRewrite: {
-          "^/pa": "",
+          "^/paApi": "",
         },
       },
       "/ms": {
