@@ -1,16 +1,30 @@
 <template>
     <div class="p-2">
         <el-card shadow="always" :body-style="{ padding: '8px' }">
-            <div class="mb-2 flex justify-between">
+            <div class="flex justify-between items-center">
+                <el-form ref="form" :inline="true" :model="getForm" label-width="auto">
+                    <!-- <el-form-item label="时间" class="mb-2">
+                        <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至"
+                            start-placeholder="开始日期" end-placeholder="结束日期" size="small" :picker-options="pickerOptions"
+                            value-format="yyyy-MM-dd HH:mm:ss" :default-time="['00:00:00', '23:59:59']"
+                            :clearable="false">
+                        </el-date-picker>
+                    </el-form-item> -->
+
+                    <el-form-item label="SN码" class="mb-2">
+                        <el-input placeholder="" clearable style="width: 300px"
+                            v-model="getForm.SearchModel.baddata_pcbid"  size="small" @clear="clearInput"  @keyup.enter.native="clearInput">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item class="mb-2">
+                        <el-button type="primary" @click="getData">查询</el-button>
+                    </el-form-item>
+
+                </el-form>
+
                 <!-- <el-button type="primary" @click="">维修</el-button> -->
-                <!-- <el-button type="success" @click="deducedClick">导出</el-button> -->
-                <div></div>
-                <div>
-                    <el-input v-model="getForm.SearchModel.pcbid" placeholder="请输入SN" style="width: 350px"
-                        @keyup.enter.native="getSearchData" clearable @clear="clearData">
-                        <el-button slot="append" icon="el-icon-search" @click="getSearchData"></el-button>
-                    </el-input>
-                </div>
+                 <div class="mb-2"><el-button type="success" @click="deducedClick">导出</el-button></div>
+                
             </div>
             <el-table :data="tableData" ref="repairRoomRef" border :height="tableHeight" style="width: 100%" stripe
                 size="small">
@@ -32,12 +46,13 @@
                 <el-table-column prop="baddata_type" label="说明"></el-table-column>
                 <el-table-column prop="baddata_stts" label="状态" align="center" width="100">
                     <template v-slot="{ row }">
-                        <el-tag effect="dark" v-if="row.baddata_stts == '完成维修'||row.baddata_stts == '完成报废'"
-                            type="success">{{ row.baddata_stts }}</el-tag>
-                        <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'"
-                            type="warning">{{ row.baddata_stts }}</el-tag>
-                        <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'"
-                            type="info">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="plain" v-if="
+                            row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'
+                        " type="success">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="plain" v-else-if="row.baddata_stts == '维修中'" type="warning">{{ row.baddata_stts
+                        }}</el-tag>
+                        <el-tag effect="plain" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
+                        }}</el-tag>
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
@@ -46,21 +61,17 @@
 
                 <af-table-column prop="baddata_uuser" label="维修人"></af-table-column>
                 <el-table-column prop="baddata_udatetime" label="维修时间" width="150"></el-table-column>
-                <af-table-column label="操作" fixed="right" width="200" align="center">
+                <!-- <af-table-column label="操作" fixed="right" width="200" align="center">
                     <template v-slot="{ row }">
-                        <el-button type="primary" size="mini" @click="handleEdit(row)" :disabled="row.baddata_stts == '报废审核' ||
-                            row.baddata_stts == '完成报废' ||
-                            row.baddata_stts == '完成维修'
-                            ">维修</el-button>
-                        <el-button type="info" size="mini" @click="handleScrap(row)" :disabled="row.baddata_stts == '报废审核' ||
-                            row.baddata_stts == '完成报废' ||
-                            row.baddata_stts == '完成维修'
-                            ">报废</el-button>
-                        <!-- <el-button type="danger" size="mini"
+                        <el-button type="primary" size="mini" @click="handleEdit(row)"
+                            :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '完成报废' || row.baddata_stts == '完成维修'">维修</el-button>
+                        <el-button type="info" size="mini" @click="handleScrap(row)"
+                            :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '完成报废' || row.baddata_stts == '完成维修'">报废</el-button>
+                        <el-button type="danger" size="mini"
                             :disabled="row.baddata_stts != '未维修' || row.baddata_stts == '完成维修'"
-                            icon="el-icon-delete" @click="handleDelete(row)"></el-button> -->
+                            icon="el-icon-delete" @click="handleDelete(row)"></el-button>
                     </template>
-                </af-table-column>
+                </af-table-column> -->
             </el-table>
             <div class="block" style="margin-top: 8px">
                 <el-pagination align="center" background @size-change="handleSizeChange"
@@ -97,6 +108,24 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+
+                <!-- <el-row :gutter="20">
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="不良代码" prop="badphenomena_name">
+                            <el-input v-model="repairForm.badphenomena_name" disabled readonly></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="不良描述" prop="badphenomena_value">
+                            <el-input v-model="repairForm.badphenomena_value" disabled readonly></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="不良点位" prop="baddatadetail_item">
+                            <el-input v-model="repairForm.baddatadetail_item" disabled readonly></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row> -->
                 <el-table :data="repairForm.tableData" border stripe height="300">
                     <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
                     <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
@@ -198,14 +227,24 @@ import {
     QueryXYL_BadProductInformation,
     UpdateXYL_BadProductInformation,
     QueryXYL_BadProductInformationFromByNo,
-    QueryXYL_BadProductInformationFromContainer,
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 import { exportTableToExcel } from "@/utils/exportExcel";
 import dayjs from "dayjs";
+import {
+    shortcuts1,
+    disabledDate,
+    setTodayDate,
+    setLastDate,
+} from "@/utils/dataMenu";
 export default {
     data() {
         return {
+            pickerOptions: {
+                shortcuts: shortcuts1,
+                disabledDate: disabledDate,
+            },
+            dateValue: [],
             tableData: [],
             tableHeight: 0,
             total: 0,
@@ -214,7 +253,7 @@ export default {
                 PageSize: 50,
                 SearchText: "",
                 SearchModel: {
-                    pcbid: "",
+                    baddata_pcbid:"",
                     stts: "Y",
                 },
                 StartTime: "",
@@ -255,7 +294,27 @@ export default {
             repairVisible: false,
         };
     },
+    watch: {
+        dateValue(val) {
+            if (val == null) {
+                this.getForm.StartTime = "";
+                this.getForm.EndTime = "";
+            } else {
+                this.getForm.StartTime = val[0];
+                this.getForm.EndTime = val[1];
+            }
+            // this.getForm.PageIndex = 1;
+            // console.log(111);
+
+            // this.getData();
+        },
+    },
     beforeMount() {
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0); // 今天的开始时间
+        // let start= setLastDate();
+        this.dateValue = [setLastDate(), setTodayDate()];
+
         this.getScreenHeight();
         this.getData();
     },
@@ -267,13 +326,12 @@ export default {
     },
     methods: {
         getData() {
-            QueryXYL_BadProductInformationFromContainer(this.getForm).then((res) => {
+            QueryXYL_BadProductInformation(this.getForm).then((res) => {
                 if (res.Success) {
                     this.tableData = res.Data.list;
                     this.total = res.Data.Total;
                 } else {
                     this.tableData = [];
-                    this.total = 0;
                     // this.$notify.error({
                     //     title: "提示信息",
                     //     message: res.Msg,
@@ -281,14 +339,10 @@ export default {
                 }
             });
         },
-        getSearchData() {
-            this.getForm.PageIndex = 1
-            this.getData()
-        },
-        clearData() {
-            this.getForm.PageIndex = 1
-            this.getData()
-        },
+        clearInput() {
+      this.getForm.PageIndex = 1;
+      this.getData();
+    },
         deducedClick() {
             exportTableToExcel({
                 tableRef: this.$refs.repairRoomRef,

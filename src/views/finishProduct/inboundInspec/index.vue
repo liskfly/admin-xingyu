@@ -306,124 +306,7 @@ export default {
       this.toForm.TestResult = this.form.Result == "PASS" ? "OK" : "NG";
       this.toForm.DataHeaderID = this.generateGuid();
       this.toForm.finishCode = this.form.finishCode;
-      // axios.post('http://172.20.99.27/PcbApi/api/Repair/Repair_ES_Move',this.toForm)
-      //   .then(response => {
-      //     // 请求成功时处理响应数据
-      //     this.data = response.data;
-      //   })
-      //   .catch(error => {
-      //     // 请求失败时处理错误
-      //     console.error('请求失败:', error);
-      //   });
-      // console.log(this.toForm);
-      // XY_PCBAHisControl({
-      //   seiralNumber: this.form.PcbSn,
-      //   workOrder: "",
-      //   operationType: "S",
-      // }).then(({ data }) => {
-      //   // this.dialogVisible = false;
-      //   // console.log(data);
-      //   if (data.Status == "OK") {
-      //     // let arr = data.content;
-      //     this.tableData = data.DataList.map((item) => {
-      //       return {
-      //         ...item,
-      //         DateTime: getDate(item.DateTime),
-      //       };
-      //     });
-      //     this.tableData.sort((a, b) => {
-      //       let aTime = new Date(a.DateTime);
-      //       let bTime = new Date(b.DateTime);
-      //       return bTime - aTime;
-      //     });
-      //     this.form.Result = "PASS";
-      //     this.$nextTick(() => {
-      //       this.$refs.input.focus();
-      //     });
-      //     updateUri(this.toForm).then(({ data }) => {
-      //       if (data.IsSucess == true) {
-      //         getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
-      //           if (data.code == 100200) {
-      //             this.tableData = [...this.tableData, ...data.content];
-      //             this.tableData.sort((a, b) => {
-      //               let aTime = new Date(a.DateTime);
-      //               let bTime = new Date(b.DateTime);
-      //               return bTime - aTime;
-      //             });
-      //             SaveIntactProduct(this.form, this.stringcode).then(
-      //               ({ data }) => {
-      //                 if (data.Code == 200) {
-      //                   this.dialogVisible = true;
-      //                   setTimeout(() => {
-      //                     this.dialogVisible = false;
-      //                   }, 1000);
-      //                   this.stringcode = "";
-      //                   this.$message({
-      //                     type: "success",
-      //                     message: "保存成功!",
-      //                   });
-      //                 } else {
-      //                   this.$message({
-      //                     type: "error",
-      //                     message: data.Msg,
-      //                   });
-      //                 }
-      //                 this.form.PcbSn = "";
-      //               }
-      //             );
-      //           } else {
-      //             this.$message({
-      //               type: "error",
-      //               message: data.msg,
-      //             });
-      //           }
-      //         });
-      //       } else {
-      //         this.$message({
-      //           type: "error",
-      //           message: "流程检查失败，缺少过站数据",
-      //         });
-      //       }
-      //     });
-      //   } else {
-      //     this.$message({
-      //       type: "error",
-      //       message: data.Message,
-      //     });
-      //   }
-      // });
-
-      // XY_PCBAHisControl({
-      //   seiralNumber: this.form.PcbSn,
-      //   workOrder: "",
-      //   operationType: "S",
-      // }).then(({ data }) => {
-      //   // this.dialogVisible = false;
-      //   // console.log(data);
-      //   if (data.Status == "OK") {
-      //     // let arr = data.content;
-      //     this.tableData = data.DataList.map((item) => {
-      //       return {
-      //         ...item,
-      //         DateTime: getDate(item.DateTime),
-      //       };
-      //     });
-      //     this.tableData.sort((a, b) => {
-      //       let aTime = new Date(a.DateTime);
-      //       let bTime = new Date(b.DateTime);
-      //       return bTime - aTime;
-      //     });
-      //     this.form.Result = "PASS";
-      //     this.$nextTick(() => {
-      //       this.$refs.input.focus();
-      //     });
-      //   } else {
-      //     this.$message({
-      //       type: "error",
-      //       message: data.Message,
-      //     });
-      //   }
-      // });
+     
       TransferData(this.toForm)
         .then(({data}) => {
           console.log(data);
@@ -459,15 +342,9 @@ export default {
                 // this.dialogForm.smt.Msg = res.Message;
               }
             });
-
-            getContainerMoves(this.toForm.ContainerName).then(({ gdata }) => {
-              if (gdata.code == 100200) {
-                this.tableData = [...this.tableData, ...gdata.content];
-                // this.tableData.sort((a, b) => {
-                //   let aTime = new Date(a.DateTime);
-                //   let bTime = new Date(b.DateTime);
-                //   return bTime - aTime;
-                // });
+            getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
+              if (data.code == 100200) {
+                this.tableData = [...this.tableData, ...data.content];
               } else {
                 this.dialogForm.dip.dialogVisible = true;
                 this.dialogForm.dip.Msg = gdata.msg;

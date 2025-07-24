@@ -1,7 +1,7 @@
 <template>
   <div class="smtinstpro">
     <div>
-      <el-form ref="form" class="form" :inline="true" :model="getDataText" size="small">
+      <el-form ref="form" class="form" :inline="true" :model="getDataText" size="small" @submit.native.prevent>
         <!-- <el-form-item>
             <el-select v-model="getDataText.operationType" placeholder="检查类型">
               <el-option

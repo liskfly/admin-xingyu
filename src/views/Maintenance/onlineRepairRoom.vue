@@ -1,9 +1,16 @@
 <template>
     <div class="p-2">
         <el-card shadow="always" :body-style="{ padding: '8px' }">
-            <div class="mb-2">
+            <div class="mb-2 flex justify-between">
                 <!-- <el-button type="primary" @click="">维修</el-button> -->
-                <el-button type="success" @click="deducedClick">导出</el-button>
+                <!-- <el-button type="success" @click="deducedClick">导出</el-button> -->
+                <div></div>
+                <div>
+                    <el-input v-model="getForm.SearchModel.pcbid" placeholder="请输入SN" style="width: 350px"
+                        @keyup.enter.native="getSearchData" clearable @clear="clearData">
+                        <el-button slot="append" icon="el-icon-search" @click="getSearchData"></el-button>
+                    </el-input>
+                </div>
             </div>
             <el-table :data="tableData" ref="repairRoomRef" border :height="tableHeight" style="width: 100%" stripe
                 size="small">
@@ -13,6 +20,7 @@
                         {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
                     </template>
                 </el-table-column>
+                <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
                 <af-table-column prop="containername" label="产品SN" fixed="left"></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号" fixed="left"></af-table-column>
                 <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
@@ -22,7 +30,17 @@
                 <af-table-column prop="badphenomena_value" label="不良描述"></af-table-column>
                 <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column> -->
                 <el-table-column prop="baddata_type" label="说明"></el-table-column>
-                <el-table-column prop="baddata_stts" label="状态"></el-table-column>
+                <el-table-column prop="baddata_stts" label="状态" align="center" width="100">
+                    <template v-slot="{ row }">
+                        <el-tag effect="dark" v-if="row.baddata_stts == '完成维修'||row.baddata_stts == '完成报废'"
+                            type="success">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'"
+                            type="warning">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'"
+                            type="info">{{ row.baddata_stts }}</el-tag>
+                        <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
+                    </template>
+                </el-table-column>
                 <af-table-column prop="baddata_user" label="报修人"></af-table-column>
                 <el-table-column prop="baddata_datetime" label="报修时间" width="150"></el-table-column>
 
@@ -30,13 +48,17 @@
                 <el-table-column prop="baddata_udatetime" label="维修时间" width="150"></el-table-column>
                 <af-table-column label="操作" fixed="right" width="200" align="center">
                     <template v-slot="{ row }">
-                        <el-button type="primary" size="mini" @click="handleEdit(row)"
-                            :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '报废' || row.baddata_stts == '完成维修'">维修</el-button>
-                        <el-button type="info" size="mini" @click="handleScrap(row)"
-                            :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '报废' || row.baddata_stts == '完成维修'">报废</el-button>
-                        <el-button type="danger" size="mini"
+                        <el-button type="primary" size="mini" @click="handleEdit(row)" :disabled="row.baddata_stts == '报废审核' ||
+                            row.baddata_stts == '完成报废' ||
+                            row.baddata_stts == '完成维修'
+                            ">维修</el-button>
+                        <el-button type="info" size="mini" @click="handleScrap(row)" :disabled="row.baddata_stts == '报废审核' ||
+                            row.baddata_stts == '完成报废' ||
+                            row.baddata_stts == '完成维修'
+                            ">报废</el-button>
+                        <!-- <el-button type="danger" size="mini"
                             :disabled="row.baddata_stts != '未维修' || row.baddata_stts == '完成维修'"
-                            icon="el-icon-delete" @click="handleDelete(row)"></el-button>
+                            icon="el-icon-delete" @click="handleDelete(row)"></el-button> -->
                     </template>
                 </af-table-column>
             </el-table>
@@ -48,54 +70,38 @@
                 </el-pagination>
             </div>
         </el-card>
-        <el-dialog :title="'维修：' + repairForm.containerName" :visible.sync="repairVisible" width="75%"
+        <el-dialog :title="'维修：' + repairForm.baddatadetail_pcbid" :visible.sync="repairVisible" width="75%"
             @close="repairCancel()">
             <el-form :model="repairForm" ref="repairFormRef" label-width="auto" :inline="true">
-                <!-- <el-form-item label="产品SN" prop="containerName">
-                    <el-input v-model="repairForm.containerName" disabled placeholder="请输入产品SN" readonly></el-input>
-                </el-form-item> -->
+                <el-form-item label="产品SN" prop="containerName">
+                    <el-input v-model="repairForm.containerName" disabled placeholder="请输入产品SN"
+                        style="width: 270px"></el-input>
+                </el-form-item>
                 <el-row :gutter="20">
                     <el-col :span="8" :offset="0">
                         <el-form-item label="工单号" prop="mfgordername">
                             <el-input v-model="repairForm.mfgordername" disabled readonly
-                                style="width: 100%"></el-input>
+                                style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="repairForm.productname" disabled readonly></el-input>
+                            <el-input v-model="repairForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品名称" prop="productvalue">
-                            <el-input v-model="repairForm.productvalue" disabled readonly></el-input>
+                            <el-input v-model="repairForm.productvalue" disabled readonly
+                                style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-
-                <!-- <el-row :gutter="20">
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="不良代码" prop="badphenomena_name">
-                            <el-input v-model="repairForm.badphenomena_name" disabled readonly></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="不良描述" prop="badphenomena_value">
-                            <el-input v-model="repairForm.badphenomena_value" disabled readonly></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="不良点位" prop="baddatadetail_item">
-                            <el-input v-model="repairForm.baddatadetail_item" disabled readonly></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row> -->
                 <el-table :data="repairForm.tableData" border stripe height="300">
-                    <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
-                    <af-table-column prop="badphenomena_value" label="不良描述"></af-table-column>
                     <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
+                    <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
+                    <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
                 </el-table>
-
 
                 <el-form-item label="维修说明" prop="remark" class="mt-2">
                     <el-input v-model="repairForm.remark" type="textarea" style="width: 440px"></el-input>
@@ -110,47 +116,40 @@
                 <el-button type="primary" @click="onSubmit">确定</el-button>
             </span>
         </el-dialog>
-        <el-dialog :title="'报废：' + scrapForm.containerName" :visible.sync="scrapVisible" width="75%"
+        <el-dialog :title="'报废：' + scrapForm.baddatadetail_pcbid" :visible.sync="scrapVisible" width="75%"
             @close="scrapCancel()">
             <el-form :model="scrapForm" ref="scrapFormRef" label-width="auto" :inline="true">
-
+                <el-form-item label="产品SN" prop="containerName">
+                    <el-input v-model="scrapForm.containerName" disabled placeholder="请输入产品SN"
+                        style="width: 270px"></el-input>
+                </el-form-item>
                 <el-row :gutter="20">
                     <el-col :span="8" :offset="0">
                         <el-form-item label="工单号" prop="mfgordername">
-                            <el-input v-model="scrapForm.mfgordername" disabled readonly style="width: 100%"></el-input>
+                            <el-input v-model="scrapForm.mfgordername" disabled readonly
+                                style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="scrapForm.productname" disabled readonly></el-input>
+                            <el-input v-model="scrapForm.productname" disabled readonly style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品名称" prop="productvalue">
-                            <el-input v-model="scrapForm.productvalue" disabled readonly></el-input>
+                            <el-input v-model="scrapForm.productvalue" disabled readonly
+                                style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20">
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="不良代码" prop="badphenomena_name">
-                            <el-input v-model="scrapForm.badphenomena_name" disabled readonly></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="不良描述" prop="badphenomena_value">
-                            <el-input v-model="scrapForm.badphenomena_value" disabled readonly></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="不良点位" prop="baddatadetail_item">
-                            <el-input v-model="scrapForm.baddatadetail_item" disabled readonly></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-table :data="scrapForm.tableData" border stripe height="300">
+                    <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
+                    <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
+                    <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
+                </el-table>
 
-                <el-form-item label="报废说明" prop="remark">
-                    <el-input v-model="scrapForm.remark" type="textarea" style="width: 240px"></el-input>
+                <el-form-item label="报废说明" prop="remark" class="mt-2">
+                    <el-input v-model="scrapForm.remark" type="textarea" style="width: 440px"></el-input>
                 </el-form-item>
             </el-form>
 
@@ -191,19 +190,19 @@
                 <el-button type="primary" @click="addSubmit()">确 定</el-button>
             </span>
         </el-dialog>
-
-
     </div>
 </template>
 
 <script>
 import {
-    QueryXYL_BadProductInformation, UpdateXYL_BadProductInformation,
-    QueryXYL_BadProductInformationFromByNo
+    QueryXYL_BadProductInformation,
+    UpdateXYL_BadProductInformation,
+    QueryXYL_BadProductInformationFromByNo,
+    QueryXYL_BadProductInformationFromContainer,
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 import { exportTableToExcel } from "@/utils/exportExcel";
-
+import dayjs from "dayjs";
 export default {
     data() {
         return {
@@ -212,11 +211,11 @@ export default {
             total: 0,
             getForm: {
                 PageIndex: 1,
-                PageSize: 10,
+                PageSize: 50,
                 SearchText: "",
                 SearchModel: {
                     pcbid: "",
-                    stts: "Y"
+                    stts: "N",
                 },
                 StartTime: "",
                 EndTime: "",
@@ -232,7 +231,7 @@ export default {
                 baddatadetail_item: "",
                 remark: "",
                 productid: [],
-                tableData: []
+                tableData: [],
             },
             productid: [
                 {
@@ -253,7 +252,7 @@ export default {
                 baddatadetail_item: "",
                 remark: "",
             },
-            repairVisible: false
+            repairVisible: false,
         };
     },
     beforeMount() {
@@ -268,19 +267,27 @@ export default {
     },
     methods: {
         getData() {
-            QueryXYL_BadProductInformation(this.getForm).then((res) => {
+            QueryXYL_BadProductInformationFromContainer(this.getForm).then((res) => {
                 if (res.Success) {
                     this.tableData = res.Data.list;
                     this.total = res.Data.Total;
                 } else {
-                    this.tableData = []
+                    this.tableData = [];
+                    this.total = 0;
                     // this.$notify.error({
                     //     title: "提示信息",
                     //     message: res.Msg,
                     // });
                 }
-
             });
+        },
+        getSearchData() {
+            this.getForm.PageIndex = 1
+            this.getData()
+        },
+        clearData() {
+            this.getForm.PageIndex = 1
+            this.getData()
         },
         deducedClick() {
             exportTableToExcel({
@@ -299,14 +306,12 @@ export default {
             });
         },
         async fetchAllUsers() {
-
-            let data = await QueryXYL_BadProductInformation(this.getForm).then((res) => {
-
-                return res.Data.list
-
-            });
+            let data = await QueryXYL_BadProductInformation(this.getForm).then(
+                (res) => {
+                    return res.Data.list;
+                }
+            );
             return data;
-
         },
         repairCancel() {
             this.repairVisible = false;
@@ -334,13 +339,12 @@ export default {
             // this.repairForm.baddatadetail_item = row.baddatadetail_item;
             // this.repairForm.remark = row.remark;
 
-            QueryXYL_BadProductInformationFromByNo({ baddatadetail_no: row.baddata_no }).then((res) => {
-                this.repairForm.tableData = res.Data
-
-            })
-            this.repairVisible = true;
-
-
+            QueryXYL_BadProductInformationFromByNo({
+                baddatadetail_no: row.baddata_no,
+            }).then((res) => {
+                this.repairForm.tableData = res.Data;
+                this.repairVisible = true;
+            });
         },
         handleProductname() {
             this.addVisible = true;
@@ -376,7 +380,9 @@ export default {
                 // productnum: "",
             });
             this.$nextTick(() => {
-                let trayIdRef = document.getElementById(`trayIdRef${this.productid.length - 1}`);
+                let trayIdRef = document.getElementById(
+                    `trayIdRef${this.productid.length - 1}`
+                );
 
                 trayIdRef.focus();
             });
@@ -435,16 +441,18 @@ export default {
             });
         },
         handleScrap(row) {
-            this.scrapForm.baddatadetail_pcbid = row.baddatadetail_id;
-            this.scrapForm.containerName = row.containerName;
+            this.scrapForm.baddatadetail_pcbid = row.baddata_no;
+            this.scrapForm.containerName = row.containername;
             this.scrapForm.mfgordername = row.mfgordername;
             this.scrapForm.productname = row.productname;
             this.scrapForm.productvalue = row.productvalue;
-            this.scrapForm.badphenomena_name = row.badphenomena_name;
-            this.scrapForm.badphenomena_value = row.badphenomena_value;
-            this.scrapForm.baddatadetail_item = row.baddatadetail_item;
-
-            this.scrapVisible = true;
+            QueryXYL_BadProductInformationFromByNo({
+                baddatadetail_no: row.baddata_no,
+            }).then((res) => {
+                this.scrapForm.tableData = res.Data;
+                this.scrapVisible = true;
+            });
+            // this.scrapVisible = true;
         },
 
         scrapCancel() {
@@ -463,14 +471,10 @@ export default {
         },
         scrapSubmit() {
             let data = {
-                repairList: [
-                    {
-                        baddatadetail_id: this.scrapForm.baddatadetail_pcbid,
-                        baddata_way: "报废",
-                        baddata_remark: this.scrapForm.remark,
-                        productid: [],
-                    },
-                ],
+                baddatadetail_no: this.scrapForm.baddatadetail_pcbid,
+                baddata_way: "报废",
+                baddata_remark: this.scrapForm.remark,
+                repairList: [],
                 UserNo: getToken(),
             };
             UpdateXYL_BadProductInformation(data).then((res) => {

@@ -32,7 +32,7 @@ export async function exportTableToExcel({
     const allData = await fetchAllData();
 
     // 2. 获取表头配置
-    const columns = tableRef.columns.filter(col => col.label !== '序号').map(col => ({
+    const columns = tableRef.columns.filter(col => col.label !== '序号'&&col.label !== '操作').map(col => ({
       label: col.label,
       prop: col.property || '',
       align: col.align

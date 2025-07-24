@@ -4,7 +4,7 @@
         <div class="flex">
             <div class="flex ml-2 ">
                 <!-- <img src="../../../assets/logo-white.svg" alt="SIEMENS" width="150" /> -->
-                <span class="ml-2 font-bold" style="font-size: 24px;"> Siemens Opcenter 中心 -- 智能电子</span>
+                <span class="ml-2 font-bold" style="font-size: 24px;"> Siemens Opcenter 中心 -- 电子二工厂</span>
             </div>
             <!-- <bread></bread> -->
         </div>
