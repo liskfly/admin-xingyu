@@ -13,7 +13,8 @@
 
                     <el-form-item label="SN码" class="mb-2">
                         <el-input placeholder="" clearable style="width: 300px"
-                            v-model="getForm.SearchModel.baddata_pcbid"  size="small" @clear="clearInput"  @keyup.enter.native="clearInput">
+                            v-model="getForm.SearchModel.baddata_pcbid" size="small" @clear="clearInput"
+                            @keyup.enter.native="clearInput">
                         </el-input>
                     </el-form-item>
                     <el-form-item class="mb-2">
@@ -23,18 +24,22 @@
                 </el-form>
 
                 <!-- <el-button type="primary" @click="">维修</el-button> -->
-                 <div class="mb-2"><el-button type="success" @click="deducedClick">导出</el-button></div>
-                
+                <div class="mb-2"><el-button type="success" @click="deducedClick">导出</el-button></div>
+
             </div>
             <el-table :data="tableData" ref="repairRoomRef" border :height="tableHeight" style="width: 100%" stripe
-                size="small">
+                size="small" @cell-click="handleCellClick" highlight-current-row>
                 <!-- 序号列 -->
                 <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
                     <template v-slot="{ $index }">
                         {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
                     </template>
                 </el-table-column>
-                <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
+                <af-table-column prop="baddata_no" label="报修单号" fixed="left">
+                    <template v-slot="{ row }">
+                        <span class="underline text-cyan cursor-pointer">{{ row.baddata_no }}</span>
+                    </template>
+                </af-table-column>
                 <af-table-column prop="containername" label="产品SN" fixed="left"></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号" fixed="left"></af-table-column>
                 <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
@@ -50,9 +55,9 @@
                             row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'
                         " type="success">{{ row.baddata_stts }}</el-tag>
                         <el-tag effect="plain" v-else-if="row.baddata_stts == '维修中'" type="warning">{{ row.baddata_stts
-                        }}</el-tag>
+                            }}</el-tag>
                         <el-tag effect="plain" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
-                        }}</el-tag>
+                            }}</el-tag>
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
@@ -61,7 +66,7 @@
 
                 <af-table-column prop="baddata_uuser" label="维修人"></af-table-column>
                 <el-table-column prop="baddata_udatetime" label="维修时间" width="150"></el-table-column>
-                <!-- <af-table-column label="操作" fixed="right" width="200" align="center">
+                <!--<af-table-column label="操作" fixed="right" width="200" align="center">
                     <template v-slot="{ row }">
                         <el-button type="primary" size="mini" @click="handleEdit(row)"
                             :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '完成报废' || row.baddata_stts == '完成维修'">维修</el-button>
@@ -70,8 +75,10 @@
                         <el-button type="danger" size="mini"
                             :disabled="row.baddata_stts != '未维修' || row.baddata_stts == '完成维修'"
                             icon="el-icon-delete" @click="handleDelete(row)"></el-button>
+                           
                     </template>
                 </af-table-column> -->
+
             </el-table>
             <div class="block" style="margin-top: 8px">
                 <el-pagination align="center" background @size-change="handleSizeChange"
@@ -219,6 +226,46 @@
                 <el-button type="primary" @click="addSubmit()">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog :title="'更换物料：' + replaceForm.baddatadetail_pcbid" :visible.sync="replaceVisible" width="75%"
+            @close="replaceCancel()">
+            <el-form :model="replaceForm" ref="repairFormRef" label-width="auto" :inline="true">
+                <el-form-item label="产品SN" prop="containerName">
+                    <el-input v-model="replaceForm.containerName" disabled placeholder="请输入产品SN"
+                        style="width: 270px"></el-input>
+                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="工单号" prop="mfgordername">
+                            <el-input v-model="replaceForm.mfgordername" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname">
+                            <el-input v-model="replaceForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品名称" prop="productvalue">
+                            <el-input v-model="replaceForm.productvalue" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-table :data="replaceForm.tableData" border stripe height="300">
+                    <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
+                    <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
+                    <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
+                </el-table>
+
+            </el-form>
+
+            <span slot="footer">
+                <el-button @click="replaceCancel()">关闭</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -253,7 +300,7 @@ export default {
                 PageSize: 50,
                 SearchText: "",
                 SearchModel: {
-                    baddata_pcbid:"",
+                    baddata_pcbid: "",
                     stts: "Y",
                 },
                 StartTime: "",
@@ -292,6 +339,15 @@ export default {
                 remark: "",
             },
             repairVisible: false,
+            replaceForm: {
+                baddatadetail_pcbid: "",
+                containerName: "",
+                mfgordername: "",
+                productname: "",
+                productvalue: "",
+                tableData: [],
+            },
+            replaceVisible:false   
         };
     },
     watch: {
@@ -340,8 +396,31 @@ export default {
             });
         },
         clearInput() {
-      this.getForm.PageIndex = 1;
-      this.getData();
+            this.getForm.PageIndex = 1;
+            this.getData();
+        },
+        handleCellClick(row, column) {
+      // console.log(row,column);
+      if (column.label == "报修单号") {
+        // console.log(row);
+        this.replaceForm.baddatadetail_pcbid = row.baddata_no;
+            this.replaceForm.containerName = row.baddata_pcbid;
+            this.replaceForm.mfgordername = row.mfgordername;
+            this.replaceForm.productname = row.productname;
+            this.replaceForm.productvalue = row.productvalue;
+            QueryXYL_BadProductInformationFromByNo({
+                baddatadetail_no: row.baddata_no,
+            }).then(res => {
+          this.replaceForm.tableData=res.Data
+          this.replaceVisible=true
+        })
+
+      }
+
+    },
+    replaceCancel(){
+      this.replaceForm.tableData=[]
+      this.replaceVisible=false
     },
         deducedClick() {
             exportTableToExcel({
