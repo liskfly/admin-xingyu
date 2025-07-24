@@ -434,10 +434,10 @@ export default {
               seiralNumber: this.form.PcbSn,
               workOrder: "",
               operationType: "S",
-            }).then(({ data }) => {
+            }).then(({ xdata }) => {
               // this.dialogVisible = false;
               // console.log(data);
-              if (data.Status == "OK") {
+              if (xdata.Status == "OK") {
                 // let arr = data.content;
                 this.tableData = data.DataList.map((item) => {
                   return {
@@ -456,13 +456,13 @@ export default {
                 });
               } else {
                 this.dialogForm.smt.dialogVisible = true;
-                this.dialogForm.smt.Msg = data.Message;
+                // this.dialogForm.smt.Msg = res.Message;
               }
             });
 
-            getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
-              if (data.code == 100200) {
-                this.tableData = [...this.tableData, ...data.content];
+            getContainerMoves(this.toForm.ContainerName).then(({ gdata }) => {
+              if (gdata.code == 100200) {
+                this.tableData = [...this.tableData, ...gdata.content];
                 // this.tableData.sort((a, b) => {
                 //   let aTime = new Date(a.DateTime);
                 //   let bTime = new Date(b.DateTime);
@@ -470,13 +470,13 @@ export default {
                 // });
               } else {
                 this.dialogForm.dip.dialogVisible = true;
-                this.dialogForm.dip.Msg = data.msg;
+                this.dialogForm.dip.Msg = gdata.msg;
               }
             });
 
             SaveIntactProduct(this.form, this.stringcode)
-              .then(({ data }) => {
-                if (data.Code == 200) {
+              .then(({ sdata }) => {
+                if (sdata.Code == 200) {
                   this.dialogVisible = true;
                   setTimeout(() => {
                     this.dialogVisible = false;
@@ -488,7 +488,7 @@ export default {
                   });
                 } else {
                   this.dialogForm.product.dialogVisible = true;
-                  this.dialogForm.product.Msg = data.Msg;
+                  this.dialogForm.product.Msg = sdata.Msg;
                   this.failPlay();
                 }
                 this.form.PcbSn = "";
