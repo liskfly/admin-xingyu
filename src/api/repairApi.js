@@ -189,9 +189,19 @@ export function QueryXYL_BadProductInformationScrap(data) {
         data,
     });
 }
+//查询不良明细
 export function QueryXYL_BadProductInformationFromByNo(data) {
     return request({
         url: "/Repair/QueryXYL_BadProductInformationFromByNo",
+        method: "post",
+        data,
+    });
+}
+
+//查询更换物料
+export function QueryXYL_BadProductInformationRepairMaterial(data) {
+    return request({
+        url: "/Repair/QueryXYL_BadProductInformationRepairMaterial",
         method: "post",
         data,
     });
