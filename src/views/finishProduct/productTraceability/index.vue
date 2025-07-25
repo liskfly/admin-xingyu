@@ -1,5 +1,5 @@
 <template>
-  <div class="smtinstpro">
+  <div class="p-2">
     <div>
       <el-form ref="form" class="form" :inline="true" :model="getDataText" size="small" @submit.native.prevent>
         <!-- <el-form-item>
@@ -52,26 +52,27 @@
     </div>
     <!-- <div class="table"> -->
     <el-table :data="tableData
-      " :height="tableHeight" id="Table1" size="mini" :header-cell-style="heardStyle" border stripe>
-      <el-table-column prop="OrderName" label="工单"></el-table-column>
-      <el-table-column prop="AssemblyName" label="产品料号">
+      " :height="tableHeight" ref="myTable" id="Table1" size="mini" :header-cell-style="heardStyle" border stripe>
+        <el-table-column label="序号" type="index"  align="center"></el-table-column>
+      <el-table-column prop="OrderName" label="工单" width="160"></el-table-column>
+      <el-table-column prop="AssemblyName" label="产品料号" width="120">
       </el-table-column>
-      <el-table-column prop="product" label="成品码">
-        <template slot-scope="scope">
+      <el-table-column prop="finishedProduct" label="成品码">
+        <!-- <template slot-scope="scope">
           <div>{{ oldProduct }}</div>
-        </template>
+        </template> -->
       </el-table-column>
-      <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-      <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
-      <el-table-column prop="OperationName" label="制程名称">
+      <el-table-column prop="SerialNumber" label="PCB ID" width="210"> </el-table-column>
+      <el-table-column prop="OperationID" label="制程ID"  width="80" align="center"> </el-table-column>
+      <el-table-column prop="OperationName" label="制程名称"  width="100">
       </el-table-column>
       <!-- <el-table-column prop="LineName" label="线体"> </el-table-column> -->
-      <el-table-column prop="EquipmentName" label="设备名称">
+      <el-table-column prop="EquipmentName" label="设备名称"  width="100">
       </el-table-column>
       <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
-      <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
+      <el-table-column prop="DateTime" label="过站时间" width="150"> </el-table-column>
       <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-      <el-table-column prop="StatusCODE" label="结果"> </el-table-column>
+      <el-table-column prop="StatusCODE" label="结果" width="100" align="center"> </el-table-column>
       <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
           <el-table-column prop="order" label="流程卡号"> </el-table-column>
           <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
@@ -102,6 +103,8 @@ import { GetCodeBYPcbSN } from "@/api/wmsApi";
 
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import { exportTableToExcel } from "@/utils/exportExcel";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -183,7 +186,13 @@ export default {
         XY_PCBAHisControl(this.getDataText).then(({ data }) => {
           if (data.Status !== "NG") {
             resolve();
-            this.tableData.push(...data.DataList);
+            let dataList=data.DataList.map(item=>{
+              return {
+                ...item,
+                finishedProduct:this.oldProduct 
+              }
+            })
+            this.tableData.push(...dataList);
           } else {
             resolve();
             this.tableData = [];
@@ -201,7 +210,12 @@ export default {
     },
     getDpiData() {
       getContainerMoves(this.getDataText.seiralNumber).then(res => {
-        let arr = res.Data.sort((a, b) => a.OperationID - b.OperationID)
+        let arr = res.Data.map(item=>{
+          return {
+                ...item,
+                finishedProduct:this.oldProduct 
+              }
+        }).sort((a, b) => a.OperationID - b.OperationID)
         this.tableData.push(...arr);
       })
       // return new Promise((resolve, reject) => {
@@ -251,27 +265,43 @@ export default {
         this.$message.error("列表不能为空");
         return;
       }
-      this.pageSize = this.tableData.length;
-      this.$nextTick(function () {
-        var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
+      // this.pageSize = this.tableData.length;
+      // this.$nextTick(function () {
+      //   var ws1 = XLSX.utils.table_to_book(document.querySelector("#Table1")); //对应要导出的表格id
 
-        /* get binary string as output */
-        var wbOut = XLSX.write(ws1, {
-          bookType: "xlsx",
-          bookSST: true,
-          type: "array",
-        });
-        try {
-          FileSaver.saveAs(
-            new Blob([wbOut], { type: "application/octet-stream" }),
-            "result.xlsx"
-          );
-        } catch (e) {
-          if (typeof console !== "undefined") console.log(e, wbOut);
-        }
-        this.pageSize = 10; //表格还原
-        return wbOut;
-      });
+      //   /* get binary string as output */
+      //   var wbOut = XLSX.write(ws1, {
+      //     bookType: "xlsx",
+      //     bookSST: true,
+      //     type: "array",
+      //   });
+      //   try {
+      //     FileSaver.saveAs(
+      //       new Blob([wbOut], { type: "application/octet-stream" }),
+      //       "result.xlsx"
+      //     );
+      //   } catch (e) {
+      //     if (typeof console !== "undefined") console.log(e, wbOut);
+      //   }
+      //   this.pageSize = 10; //表格还原
+      //   return wbOut;
+      // });
+      exportTableToExcel({
+        tableRef: this.$refs.myTable,
+          fetchAllData: this.fetchAllUsers,
+          fileName: `成品追溯-${dayjs().format('YYYYMMDD-HHmmss')}`,
+          styles: {
+            headerBgColor: 'FF6692d9',  // 灰色表头
+            headerFont: {
+              color: { argb: 'FFFFFFFF' }, // 红色文字
+              bold: true, size: 14
+            }, // 白色文字
+            cell: { numFmt: '@' } // 强制文本格式
+          }
+      })
+    },
+    fetchAllUsers(){
+      return this.tableData
     },
     getScreenHeight() {
       this.$nextTick(() => {
