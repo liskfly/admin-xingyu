@@ -103,6 +103,13 @@ transpileDependencies: ['pdfjs-dist'],
         pathRewrite: {
           "^/assembleApi": "",
         },
+      },
+      "/txtFilesLog": {
+        target:"http://172.20.99.21:5432",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/txtFilesLog": "",
+        },
       }
      
  

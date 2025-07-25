@@ -155,7 +155,8 @@
 <script>
 import { getFinshOrder, SaveIntactProduct, TransferData } from "@/api/wmsApi";
 import { XY_PCBAHisControl } from "@/api/all";
-import { updateUri, getContainerMoves } from "@/api/index";
+// import { updateUri, getContainerMoves } from "@/api/index";
+import { getContainerMoves } from "@/api/dip";
 import { getToken } from "@/utils/auth";
 import { getDate } from "@/utils/getDate";
 import AudioPlay from "@/components/mp3/audioPlay.vue";
@@ -344,12 +345,12 @@ export default {
               }
             });
 
-            getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
-              if (data.code == 100200) {
-                this.tableData = [...this.tableData, ...data.content];
+            getContainerMoves(this.toForm.ContainerName).then((res) => {
+              if (res.Success) {
+                this.tableData = [...this.tableData, ...res.Data];
               } else {
                 this.dialogForm.dip.dialogVisible = true;
-                this.dialogForm.dip.Msg = data.msg;
+                this.dialogForm.dip.Msg = res.Msg;
               }
             });
 

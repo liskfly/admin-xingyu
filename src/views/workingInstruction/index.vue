@@ -367,7 +367,8 @@
         <el-button type="primary" size="mini" class="ml-5" @click="downLoadPdf"
           >下载</el-button
         >
-        <el-button type="primary" size="mini" class="ml-5" @click="srcFull"
+        <el-button type="primary" size="mini" class="ml-5" @click="srcF
+        ull"
           >全屏</el-button
         >
         <!-- <el-button

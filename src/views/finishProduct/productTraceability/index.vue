@@ -36,13 +36,8 @@
         <div class="flex-container">
           <div>
             <el-form-item label="成品码">
-              <el-input
-                placeholder="请输入成品码"
-                clearable
-                style="width: 400px"
-                v-model="productNumber"
-                class="input-with-select"
-              >
+              <el-input placeholder="请输入成品码" clearable style="width: 400px" v-model="productNumber"
+                class="input-with-select">
               </el-input>
             </el-form-item>
             <el-form-item>
@@ -56,41 +51,32 @@
       </el-form>
     </div>
     <!-- <div class="table"> -->
-      <el-table
-        :data="
-          tableData
-        "
-        :height="tableHeight"
-        id="Table1"
-        size="mini"
-        :header-cell-style="heardStyle"
-        border
-        stripe
-      >
-        <el-table-column prop="OrderName" label="工单"></el-table-column>
-        <el-table-column prop="AssemblyName" label="产品料号">
-        </el-table-column>
-        <el-table-column prop="product" label="成品码">
-          <template slot-scope="scope">
-            <div>{{ oldProduct }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
-        <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
-        <el-table-column prop="OperationName" label="制程名称">
-        </el-table-column>
-        <!-- <el-table-column prop="LineName" label="线体"> </el-table-column> -->
-        <el-table-column prop="EquipmentName" label="设备名称">
-        </el-table-column>
-        <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
-        <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
-        <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
-        <el-table-column prop="StatusCODE" label="结果"> </el-table-column>
-        <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
+    <el-table :data="tableData
+      " :height="tableHeight" id="Table1" size="mini" :header-cell-style="heardStyle" border stripe>
+      <el-table-column prop="OrderName" label="工单"></el-table-column>
+      <el-table-column prop="AssemblyName" label="产品料号">
+      </el-table-column>
+      <el-table-column prop="product" label="成品码">
+        <template slot-scope="scope">
+          <div>{{ oldProduct }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="SerialNumber" label="PCB ID"> </el-table-column>
+      <el-table-column prop="OperationID" label="制程ID"> </el-table-column>
+      <el-table-column prop="OperationName" label="制程名称">
+      </el-table-column>
+      <!-- <el-table-column prop="LineName" label="线体"> </el-table-column> -->
+      <el-table-column prop="EquipmentName" label="设备名称">
+      </el-table-column>
+      <!-- <el-table-column prop="EquipmentID" label="设备编号"> </el-table-column> -->
+      <el-table-column prop="DateTime" label="过站时间"> </el-table-column>
+      <!-- <el-table-column prop="order" label="状态"> </el-table-column> -->
+      <el-table-column prop="StatusCODE" label="结果"> </el-table-column>
+      <!-- <el-table-column prop="order" label="维修代码"> </el-table-column>
           <el-table-column prop="order" label="流程卡号"> </el-table-column>
           <el-table-column prop="Name" label="成品编号"> </el-table-column> -->
-      </el-table>
-      <!-- <div class="block" style="margin-top: 15px">
+    </el-table>
+    <!-- <div class="block" style="margin-top: 15px">
         <el-pagination
           align="center"
           background
@@ -111,9 +97,9 @@
 <script>
 import Axios from "axios";
 import { XY_PCBAHisControl, XY_Prod_MissSNs } from "@/api/all";
-import { getContainerMoves } from "@/api/material";
+import { getContainerMoves } from "@/api/dip";
 import { GetCodeBYPcbSN } from "@/api/wmsApi";
-import { aW } from "@fullcalendar/core/internal-common";
+
 import FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 export default {
@@ -190,18 +176,7 @@ export default {
         .catch((err) => {
           this.$message.error(err);
         });
-      // Axios.post("/cm/IntactProduct/GetCodeBYPcbSN", `${this.productNumber}`, {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      //   .then(({ data }) => {
-      //     this.getDataText.seiralNumber = data.Data;
-      //     this.getAllData();
-      //   })
-      //   .catch((err) => {
-      //     this.$message.error(err);
-      //   });
+
     },
     getData() {
       return new Promise((resolve, reject) => {
@@ -225,41 +200,30 @@ export default {
       this.endLoading();
     },
     getDpiData() {
-      return new Promise((resolve, reject) => {
-        if (this.getDataText.operationType === "S") {
-          getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
-            ({ data }) => {
-              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
-              this.tableData.push(...arr);
-              resolve();
-            }
-          );
-        } else {
-          getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
-            ({ data }) => {
-              let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
-              this.tableData.push(...arr);
-              resolve();
-            }
-          );
-        }
-      });
-      // this.startLoading();
-      // if (this.getDataText.operationType === "S") {
-      //   getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
-      //     ({ data }) => {
-      //       this.endLoading();
-      //       this.tableData.push(...data.content);
-      //     }
-      //   );
-      // } else {
-      //   getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
-      //     ({ data }) => {
-      //       this.endLoading();
-      //       this.tableData.push(...data.content);
-      //     }
-      //   );
-      // }
+      getContainerMoves(this.getDataText.seiralNumber).then(res => {
+        let arr = res.Data.sort((a, b) => a.OperationID - b.OperationID)
+        this.tableData.push(...arr);
+      })
+      // return new Promise((resolve, reject) => {
+      //   if (this.getDataText.operationType === "S") {
+      //     getContainerMoves(`conName=${this.getDataText.seiralNumber}`).then(
+      //       ({ data }) => {
+      //         let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+      //         this.tableData.push(...arr);
+      //         resolve();
+      //       }
+      //     );
+      //   } else {
+      //     getContainerMoves(`mfgOrder=${this.getDataText.workOrder}`).then(
+      //       ({ data }) => {
+      //         let arr = data.content.sort((a, b) => a.OperationID - b.OperationID)
+      //         this.tableData.push(...arr);
+      //         resolve();
+      //       }
+      //     );
+      //   }
+      // });
+
     },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
@@ -329,9 +293,12 @@ export default {
 
 .flex-container {
   display: flex;
-  justify-content: space-between; /* 两端对齐，使元素分布在容器的两端 */
-  align-items: center; /* 垂直居中 */
+  justify-content: space-between;
+  /* 两端对齐，使元素分布在容器的两端 */
+  align-items: center;
+  /* 垂直居中 */
   /* 可能需要添加额外的宽度或最大宽度，根据实际需要调整 */
-  width: 100%; /* 或者指定其他宽度 */
+  width: 100%;
+  /* 或者指定其他宽度 */
 }
 </style>

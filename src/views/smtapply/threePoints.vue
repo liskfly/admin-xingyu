@@ -2,30 +2,13 @@
   <div class="three">
     <el-card :body-style="{ padding: '8px' }">
       <div style="margin-bottom: 8px">
-        <el-date-picker
-          v-model="dateValue"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          size="small"
-          :picker-options="pickerOptions"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          :default-time="['00:00:00', '23:59:59']"
-          :clearable="false"
-        >
+        <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+          end-placeholder="结束日期" size="small" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"
+          :default-time="['00:00:00', '23:59:59']" :clearable="false">
         </el-date-picker>
       </div>
-      <el-table
-        :data="tableData"
-        border
-        :height="tableHeight"
-        style="width: 100%"
-      
-        highlight-current-row
-        @row-click="rowClick"
-        size="small"
-      >
+      <el-table :data="tableData" border :height="tableHeight" style="width: 100%" highlight-current-row
+        @row-click="rowClick" size="small">
         <el-table-column type="index" label="序号" width="55" align="center">
           <template slot-scope="scope">
             <span>{{
@@ -33,70 +16,78 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="LineName" label="线体"> </el-table-column>
-        <el-table-column prop="DeviceID" label="设备ID" > </el-table-column>
-        <el-table-column prop="DataName" label="照合ID" > </el-table-column>
-        <el-table-column prop="InsertTime" label="时间"> </el-table-column>
-        <el-table-column prop="DeviceID2" label="照合设备ID" > </el-table-column>
-        <!-- <el-table-column label="图片查看" width="100">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              icon="el-icon-picture-outline"
-              size="mini"
-              @click="emptyRecycle(scope.row)"
-              >查看</el-button
-            >
-          </template>
-        </el-table-column> -->
+        <el-table-column prop="tpm_line" label="线体"> </el-table-column>
+        <el-table-column prop="tpm_equip" label="设备"> </el-table-column>
+        <el-table-column prop="tpm_container" label="条码"> </el-table-column>
+        <el-table-column prop="tpm_mfgorder" label="工单"> </el-table-column>
+        <el-table-column prop="tpm_stts" label="状态"> </el-table-column>
+        <el-table-column prop="tpm_createdatetime" label="时间"> </el-table-column>
         <el-table-column label="图片" width="100" align="center">
           <template slot-scope="scope">
-            <el-image :src="scope.row.ImageUrl" lazy   style="width: 30px;"  :preview-src-list="[scope.row.ImageUrl]"></el-image>
+            <el-image :src="scope.row.tpm_imgno" lazy style="width: 30px;"
+              :preview-src-list="[scope.row.tpm_imgno]"></el-image>
+          </template>
+        </el-table-column>
+        <el-table-column label="文件" width="120" align="center">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" icon="el-icon-view"
+              @click="previewFile(scope.row.tpm_logno)">预览</el-button>
+            <!-- <el-button type="success" icon="el-icon-download" size="mini"
+              @click="downloadFile(scope.row.tpm_logno)"></el-button> -->
+
           </template>
         </el-table-column>
       </el-table>
       <div class="block" style="margin: 8px 0">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="getForm.PageIndex"
-          :page-size="getForm.PageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next"
-          :total="total"
-        >
+        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="getForm.PageIndex" :page-size="getForm.PageSize" :page-sizes="[5, 10, 20, 50, 100]"
+          layout="total,sizes, prev, pager, next" :total="total">
         </el-pagination>
       </div>
-      <el-table
-        :data="tableData2"
-        border
-        :height="tableHeight2"
-        style="width: 100%"
 
-      >
-        <el-table-column type="index" label="序号" width="55" />
-
-        <el-table-column prop="Parameter" label="调整参数"> </el-table-column>
-        <el-table-column prop="Value" label="值"> </el-table-column>
-        <el-table-column prop="Unit" label="单位"> </el-table-column>
-        <el-table-column prop="Description" label="描述"> </el-table-column>
-      </el-table>
     </el-card>
+    <el-dialog :visible.sync="previewVisible" title="文件预览" width="60%">
+      <div v-loading="progress < 100" element-loading-text="文件加载中...">
+    <!-- 错误提示 -->
+    <el-alert 
+      v-if="previewError"
+      :title="previewError"
+      type="error"
+      show-icon
+      style="margin-bottom: 15px">
+    </el-alert>
+    
+    <!-- 文本预览区域 -->
+    <div v-if="!previewError && previewContent" class="preview-container">
+      <pre>{{ previewContent }}</pre>
+    </div>
+    
+    <!-- 进度条 -->
+    <el-progress 
+      v-show="progress > 0 && progress < 100"
+      :percentage="progress"
+      :stroke-width="16"
+      :status="progress === 100 ? 'success' : ''">
+    </el-progress>
+  </div>
+      <span slot="footer">
+        <el-button type="primary" size="small" icon="el-icon-download" @click="downloadFile(previewUrl)">下载</el-button>
+        <el-button size="small" icon="el-icon-close" @click="previewVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { shortcuts1 ,disabledDate, setTodayDate, setLastDate } from "@/utils/dataMenu";
+import { shortcuts1, disabledDate, setTodayDate, setLastDate } from "@/utils/dataMenu";
 import dayjs from "dayjs";
-import { QuerySDZHHeadData, QuerySDZHDetailData } from "@/api/sdzApi";
+import { QuerySDZHHeadData, QuerySDZHDetailData, QueryXYL_BadProductInformationRepairRecord } from "@/api/sdzApi";
 export default {
   data() {
     return {
       pickerOptions: {
         shortcuts: shortcuts1,
-        disabledDate:disabledDate
+        disabledDate: disabledDate
       },
       tableData: [
       ],
@@ -115,6 +106,13 @@ export default {
         EndTime: "",
       },
       total: 0,
+      previewVisible: false,
+      previewUrl: '',
+      previewContent: '',
+      previewFileName: '',
+      progress: 0,
+      previewError: '',
+      currentRowIndex: null
     };
   },
   watch: {
@@ -137,7 +135,7 @@ export default {
     // let start= setLastDate();
     this.dateValue = [dayjs(todayStart).format("YYYY-MM-DD HH:mm:ss"), dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")];
     // console.log(this.dateValue);
-    
+
     this.getScreenHeight();
     // this.getData();
   },
@@ -149,20 +147,93 @@ export default {
   },
   methods: {
     getData() {
-     
+
       this.tableData2 = [];
-      QuerySDZHHeadData(this.getForm).then((res) => {
-      
-        this.tableData = res.Data.list.map(item=>{
+      QueryXYL_BadProductInformationRepairRecord(this.getForm).then((res) => {
+
+        this.tableData = res.Data.list.map(item => {
           return {
             ...item,
-            InsertTime:dayjs(item.InsertTime).format("YYYY-MM-DD HH:mm:ss"),
-            ImageUrl:`http://172.20.99.21:5432/${item.ImageUrl}`
+            tpm_imgno: `/txtFilesLog/${item.tpm_imgno}`,
+            tpm_logno: `/txtFilesLog/${item.tpm_logno}`
           }
         })
         this.total = res.Data.Total;
         //  console.log(data);
       });
+    },
+    // 预览文件
+    previewFile(url) {
+      if (!url) {
+        this.$message.warning('文件路径不存在');
+        return;
+      }
+      this.previewVisible = true;
+      this.previewUrl = url;
+      this.previewFileName = url.split('/').pop();
+      this.previewContent = '';
+      this.previewError = '';
+      this.progress = 0;
+
+      // 模拟文件加载进度
+      const progressInterval = setInterval(() => {
+        if (this.progress < 90) {
+          this.progress += 10;
+        }
+      }, 200);
+
+      // 获取文件内容
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error('文件加载失败');
+          return response.text();
+        })
+        .then(text => {
+          clearInterval(progressInterval);
+          this.progress = 100;
+          setTimeout(() => {
+            this.previewContent = text;
+          }, 300);
+        })
+        .catch(error => {
+          clearInterval(progressInterval);
+          this.progress = 100;
+          this.previewError = error.message || '无法加载文件内容';
+          console.error('文件预览失败:', error);
+        });
+    },
+
+    // 下载文件
+    downloadFile(url) {
+      if (!url) {
+        this.$message.warning('文件路径不存在');
+        return;
+      }
+
+      const fileName = url.split('/').pop();
+      this.$message.info(`开始下载: ${fileName}`);
+
+      fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+          // 创建下载链接
+          const downloadUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // 释放URL对象
+          window.URL.revokeObjectURL(downloadUrl);
+
+          this.$message.success(`文件下载成功: ${fileName}`);
+        })
+        .catch(error => {
+          console.error('文件下载失败:', error);
+          this.$message.error(`文件下载失败: ${error.message}`);
+        });
     },
     rowClick(val) {
       let data = {
@@ -180,11 +251,11 @@ export default {
         StartTime: "",
         EndTime: "",
       };
-      QuerySDZHDetailData(data).then(res=>{
-        this.tableData2= res.Data.list;
+      QuerySDZHDetailData(data).then(res => {
+        this.tableData2 = res.Data.list;
       })
     },
-    changeDate(val) {},
+    changeDate(val) { },
     handleSizeChange(value) {
       this.getForm.PageSize = value;
       this.getData()
@@ -192,14 +263,13 @@ export default {
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       console.log(val);
-      
+
       this.getForm.PageIndex = val;
       this.getData()
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = (window.innerHeight - 190 - 30) * 0.6;
-        this.tableHeight2 = (window.innerHeight - 190 - 30) * 0.4;
+        this.tableHeight = (window.innerHeight - 220)
       });
     },
   },
@@ -207,7 +277,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.three {
-  padding: 8px;
+.preview-container {
+  max-height: 60vh;
+  overflow: auto;
+  background: #f8f8f8;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.preview-container pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: monospace;
+  margin: 0;
 }
 </style>
