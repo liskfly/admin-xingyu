@@ -264,7 +264,8 @@
                   :before-upload="beforeUpload"
                   accept=".pdf"
                   ref="upload"
-                  class="upload-area" v-if="!editForm.upfilename1"
+                  class="upload-area"
+                  v-if="!editForm.upfilename1"
                 >
                   <el-button size="small" type="primary"
                     >点击选择文件1</el-button
@@ -287,7 +288,7 @@
                   accept=".pdf"
                   ref="upload"
                   class="upload-area"
-                   v-if="!editForm.upfilename2"
+                  v-if="!editForm.upfilename2"
                 >
                   <el-button size="small" type="primary"
                     >点击选择文件2</el-button
@@ -324,10 +325,12 @@
               <el-form :inline="true" size="medium" @submit.native.prevent>
                 <div class="upload-name">
                   <el-form-item class="file1" label="文件1">
-                    <el-input v-model="editForm.filename1" clearable> </el-input>
+                    <el-input v-model="editForm.filename1" clearable>
+                    </el-input>
                   </el-form-item>
                   <el-form-item class="file2" label="文件2">
-                    <el-input v-model="editForm.filename2" clearable> </el-input>
+                    <el-input v-model="editForm.filename2" clearable>
+                    </el-input>
                   </el-form-item>
                 </div>
               </el-form>
@@ -360,7 +363,7 @@
       @close=""
     >
       <div slot="title" class="dialog-header">
-        <span>浏览</span>
+        <!-- <span>浏览</span> -->
         <el-button type="primary" size="mini" class="ml-5" @click="downLoadPdf"
           >下载</el-button
         >
@@ -385,6 +388,19 @@
 
       <!-- 弹窗内容 -->
       <div style="width: 100%; height: 600px" id="src">
+        <div class="full" ref="myElement">
+          <el-form :inline="true" size="medium" @submit.native.prevent>
+            <el-form-item>
+              <el-button
+                type="primary"
+                size="mini"
+                class="ml-5"
+                @click="srcFull"
+                >全屏</el-button
+              >
+            </el-form-item>
+          </el-form>
+        </div>
         <!-- <pdf
           :src="pdfsrc"
           :page="currentPagePdf"
@@ -496,6 +512,7 @@ export default {
       currentPagePdf: 1,
       pageCountPdf: 0,
       isFullscreen: true,
+      isFull: false,
     };
   },
   beforeMount() {
@@ -504,9 +521,11 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
+    window.addEventListener("fullscreenchange", this.handleKeyDown);
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
+    window.removeEventListener("fullscreenchange", this.handleKeyDown);
   },
   watch: {
     "editForm.upfilename1"(val, old) {
@@ -627,6 +646,19 @@ export default {
       this.getForm.PageIndex = val;
       this.getData();
     },
+    handleKeyDown() {
+      if (document.fullscreenElement) {
+        // console.log("已进入全屏");
+        this.$refs.myElement.style.opacity = "1";
+        this.$refs.myElement.style.height = "auto";
+        // this.isFullscreen = true;
+      } else {
+        // console.log("已退出全屏");
+        this.$refs.myElement.style.opacity = "0";
+        this.$refs.myElement.style.height = "0";
+        // this.isFullscreen = false;
+      }
+    },
     getScreenHeight() {
       this.$nextTick(() => {
         this.tableHeight = window.innerHeight - 220;
@@ -639,12 +671,17 @@ export default {
         // document自带的全屏方法
         // document.documentElement.requestFullscreen();
         this.isFullscreen = true;
+        this.isFull = false;
+        this.$refs.myElement.style.opacity = "1";
+        this.$refs.myElement.style.height = "auto";
       } else {
         // document自带的推出全屏方法
         // document.exitFullscreen();
         this.isFullscreen = false;
+        this.isFull = true;
+        this.$refs.myElement.style.opacity = "0";
+        this.$refs.myElement.style.height = "0";
       }
-      // console.log(full);
 
       let fullDiv = "";
       // console.log(this.$route.path);
@@ -1046,6 +1083,16 @@ export default {
   }
   .file2 {
     width: 50%;
+  }
+}
+
+.full {
+  width: 100%;
+  height: 0;
+  background-color: #4a4a4acf;
+  opacity: 0;
+  .el-form-item {
+    margin-bottom: 0;
   }
 }
 </style>

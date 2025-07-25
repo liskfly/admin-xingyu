@@ -1,3 +1,4 @@
+      
 <template>
   <div class="inboundInspec">
     <el-row>
@@ -317,10 +318,10 @@ export default {
               seiralNumber: this.form.PcbSn,
               workOrder: "",
               operationType: "S",
-            }).then(({ xdata }) => {
+            }).then(({ data }) => {
               // this.dialogVisible = false;
               // console.log(data);
-              if (xdata.Status == "OK") {
+              if (data.Status == "OK") {
                 // let arr = data.content;
                 this.tableData = data.DataList.map((item) => {
                   return {
@@ -339,21 +340,22 @@ export default {
                 });
               } else {
                 this.dialogForm.smt.dialogVisible = true;
-                // this.dialogForm.smt.Msg = res.Message;
+                this.dialogForm.smt.Msg = data.Message;
               }
             });
+
             getContainerMoves(this.toForm.ContainerName).then(({ data }) => {
               if (data.code == 100200) {
                 this.tableData = [...this.tableData, ...data.content];
               } else {
                 this.dialogForm.dip.dialogVisible = true;
-                this.dialogForm.dip.Msg = gdata.msg;
+                this.dialogForm.dip.Msg = data.msg;
               }
             });
 
             SaveIntactProduct(this.form, this.stringcode)
-              .then(({ sdata }) => {
-                if (sdata.Code == 200) {
+              .then(({ data }) => {
+                if (data.Code == 200) {
                   this.dialogVisible = true;
                   setTimeout(() => {
                     this.dialogVisible = false;
@@ -365,7 +367,7 @@ export default {
                   });
                 } else {
                   this.dialogForm.product.dialogVisible = true;
-                  this.dialogForm.product.Msg = sdata.Msg;
+                  this.dialogForm.product.Msg = data.Msg;
                   this.failPlay();
                 }
                 this.form.PcbSn = "";
@@ -528,3 +530,5 @@ export default {
   color: red;
 }
 </style>
+
+    
