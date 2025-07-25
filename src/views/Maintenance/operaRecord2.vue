@@ -2,21 +2,23 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div>
-        <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true" size="small">
-          <!-- <el-form-item label="" style="margin-bottom: 8px">
-         
+        <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true">
+          <!-- <el-form-item label="时间"  class="mb-2">
+    
             <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
               end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"
               :default-time="['00:00:00', '23:59:59']" :clearable="false">
             </el-date-picker>
           </el-form-item> -->
-          <el-form-item label="" style="margin-bottom: 8px"><el-input v-model="getForm.SearchModel.pcbid" clearable
-              placeholder="请输入" style="width: 240px" @clear="clearInput"  @keyup.enter.native="clearInput" /></el-form-item>
-          <el-form-item style="margin-bottom: 0px">
+          <el-form-item label="产品SN" class="mb-2"><el-input v-model="getForm.SearchModel.pcbid" clearable
+              placeholder="请输入" style="width: 300px" @clear="clearInput"
+              @keyup.enter.native="clearInput" /></el-form-item>
+          <el-form-item class="mb-2">
             <el-button type="primary" @click="getData()" icon="el-icon-search">查询</el-button></el-form-item>
         </el-form>
       </div>
-      <el-table :data="tableData" border :height="tableHeight" style="width: 100%" stripe size="small">
+      <el-table :data="tableData" border :height="tableHeight" style="width: 100%" stripe size="small"
+        @cell-click="handleCellClick" highlight-current-row>
         <!-- 序号列 -->
         <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
           <template v-slot="{ $index }">
@@ -25,11 +27,18 @@
         </el-table-column>
 
         <!-- 数据列 -->
-        <af-table-column prop="repair_no" label="维修单号"  fixed="left"/>
-        <af-table-column prop="baddata_pcbid" label="PCB条码"  fixed="left"/>
-        <af-table-column prop="mfgordername" label="工单号"  fixed="left"></af-table-column>
-                <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
-                <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
+        <af-table-column prop="repair_no" label="维修单号" fixed="left">
+          <template v-slot="{ row }">
+            <span class="underline text-cyan cursor-pointer">{{ row.repair_no }}</span>
+          </template>
+        </af-table-column>
+        <af-table-column prop="repair_badno" label="提报单号" fixed="left">
+
+        </af-table-column>
+        <af-table-column prop="baddata_pcbid" label="产品SN" />
+        <af-table-column prop="mfgordername" label="工单号"></af-table-column>
+        <af-table-column prop="productname" label="产品编码"></af-table-column>
+        <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
         <el-table-column prop="baddata_line" label="线体" />
         <af-table-column prop="baddata_equip" label="设备" />
         <!-- <el-table-column prop="baddatadetail_item" label="不良位号" />
@@ -37,10 +46,10 @@
         <el-table-column prop="repair_way" label="维修方法" />
         <el-table-column prop="baddata_stts" label="状态" width="100" align="center">
           <template v-slot="{ row }">
-            <el-tag effect="dark" v-if="row.baddata_stts=='完成维修'" type="success">{{row.baddata_stts}}</el-tag>
-            <el-tag effect="dark" v-else-if="row.baddata_stts=='维修中'" type="primary">{{row.baddata_stts}}</el-tag>
-            <el-tag effect="dark" v-else-if="row.baddata_stts=='未维修'" type="info">{{row.baddata_stts}}</el-tag>
-            <el-tag effect="dark" v-else type="danger">{{row.baddata_stts}}</el-tag>
+            <el-tag effect="dark" v-if="row.baddata_stts == '完成维修'" type="success">{{ row.baddata_stts }}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'" type="primary">{{ row.baddata_stts }}</el-tag>
+            <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts }}</el-tag>
+            <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag>
           </template>
         </el-table-column>
         <af-table-column prop="baddata_user" label="维修人" />
@@ -53,11 +62,53 @@
         </el-pagination>
       </div>
     </el-card>
+    <el-dialog :title="'更换物料：' + replaceForm.baddatadetail_pcbid" :visible.sync="replaceVisible" width="75%"
+            @close="replaceCancel()">
+            <el-form :model="replaceForm" ref="repairFormRef" label-width="auto" :inline="true">
+                <el-form-item label="产品SN" prop="containerName">
+                    <el-input v-model="replaceForm.containerName" disabled placeholder="请输入产品SN"
+                        style="width: 270px"></el-input>
+                </el-form-item>
+                <el-row :gutter="20">
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="工单号" prop="mfgordername">
+                            <el-input v-model="replaceForm.mfgordername" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname">
+                            <el-input v-model="replaceForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品名称" prop="productvalue">
+                            <el-input v-model="replaceForm.productvalue" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-table :data="replaceForm.tableData" border stripe height="300">
+                    <af-table-column prop="repairpro_productname" label="物料编码"></af-table-column>
+                    <af-table-column prop="repairpro_user" label="操作人"></af-table-column>
+                    <af-table-column prop="repairpro_datetime" label="操作时间"></af-table-column>
+                </el-table>
+
+            </el-form>
+
+            <span slot="footer">
+                <el-button @click="replaceCancel()">关闭</el-button>
+            </span>
+        </el-dialog>
   </div>
 </template>
 
 <script>
-import { QueryXYL_BadProductInformationRepairRecord } from "@/api/repairApi";
+import {
+  QueryXYL_BadProductInformationRepairRecord,
+  QueryXYL_BadProductInformationRepairMaterial
+} from "@/api/repairApi";
 import {
   shortcuts,
   disabledDate,
@@ -88,6 +139,15 @@ export default {
         shortcuts: shortcuts,
         disabledDate,
       },
+      replaceForm: {
+                baddatadetail_pcbid: "",
+                containerName: "",
+                mfgordername: "",
+                productname: "",
+                productvalue: "",
+                tableData: [],
+            },
+            replaceVisible:false   
     };
   },
   watch: {
@@ -99,8 +159,8 @@ export default {
         this.getForm.StartTime = value[0];
         this.getForm.EndTime = value[1];
       }
-      this.getForm.PageIndex = 1;
-      this.getData();
+      // this.getForm.PageIndex = 1;
+      // this.getData();
     },
   },
   beforeMount() {
@@ -128,6 +188,27 @@ export default {
       this.getForm.PageIndex = 1;
       this.getData();
     },
+    handleCellClick(row, column) {
+      // console.log(row,column);
+      if (column.label == "维修单号") {
+        // console.log(row);
+        this.replaceForm.baddatadetail_pcbid = row.repair_no;
+            this.replaceForm.containerName = row.baddata_pcbid;
+            this.replaceForm.mfgordername = row.mfgordername;
+            this.replaceForm.productname = row.productname;
+            this.replaceForm.productvalue = row.productvalue;
+        QueryXYL_BadProductInformationRepairMaterial({ repairpro_repairno: row.repair_no }).then(res => {
+          this.replaceForm.tableData=res.Data
+          this.replaceVisible=true
+        })
+
+      }
+
+    },
+    replaceCancel(){
+      this.replaceForm.tableData=[]
+      this.replaceVisible=false
+    },
     handleSizeChange(value) {
       //   this.pageSize = value;
       this.getForm.PageSize = value;
@@ -146,4 +227,21 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-dialog {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: calc(100% - 30px);
+    max-width: calc(100% - 30px);
+}
+
+::v-deep .el-dialog .el-dialog__body {
+    flex: 1;
+    overflow: auto;
+}
+</style>

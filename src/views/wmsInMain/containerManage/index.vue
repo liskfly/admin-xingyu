@@ -224,6 +224,7 @@
         "
         border
         style="width: 100%"
+        size="small"
       >
       <el-table-column prop="RecordDt" label="操作时间" width="160"> </el-table-column>
         <el-table-column prop="MaterialId" label="容器ID" width="80">

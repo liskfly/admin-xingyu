@@ -113,3 +113,12 @@ export function QuerySDZHHeadData(data) {
       data
     });
   }
+
+  //
+  export function QueryXYL_BadProductInformationRepairRecord(data) {
+    return request({
+      url: "/ReportQuery/QueryXYL_BadProductInformationRepairRecord",
+      method: "post",
+      data
+    });
+  }
