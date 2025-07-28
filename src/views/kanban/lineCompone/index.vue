@@ -42,11 +42,11 @@
             <div class="info-value">4051012946200</div>
           </div>
           <div class="info-item">
-            <div class="info-label">实际开始时间</div>
+            <div class="info-label">计划开始时间</div>
             <div class="info-value">2025-07-12 12:00:11</div>
           </div>
           <div class="info-item">
-            <div class="info-label">理论结束时间</div>
+            <div class="info-label">计划结束时间</div>
             <div class="info-value">2025-07-15 12:00:11</div>
           </div>
         </div>

@@ -84,7 +84,7 @@
           <el-input v-model="form.productName"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="toolsMold">
-          <el-select v-model="form.toolsMold" placeholder="检查类型">
+          <el-select v-model="form.toolsMold" placeholder="治具类型">
             <el-option
               v-for="item in typeList"
               :key="item.ToolsMold"
