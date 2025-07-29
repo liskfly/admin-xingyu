@@ -102,9 +102,10 @@ service.interceptors.response.use(
   },
   (error) => {
     loading.close();
-    MessageBox.alert(error, "提示信息", {
+    MessageBox.alert("服务器内部错误", "提示信息", {
       confirmButtonText: "确定",
     });
+    this.$router.push('/login');
   }
 );
 

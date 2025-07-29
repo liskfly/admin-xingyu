@@ -13,18 +13,7 @@
       </div>
       <div style="display: flex">
         <div class="left-box"><app-main /></div>
-        <!-- <div class="noti" v-if="showNotice">
-          <el-card shadow="always" :body-style="{ padding: '20px' }">
-            <div slot="header">
-              <span style="text-align: center">消息中心</span>
-            </div>
-            <div class="list" ref="scrollContainer">
-              <div class="" ref="div1" v-for="(item, index) in notice" :key="index">
-                <p>{{ index + 1 }}.{{ item.text }}</p>
-              </div>
-            </div>
-          </el-card>
-        </div> -->
+      
       </div>
     </div>
   </div>
@@ -49,35 +38,6 @@ export default {
   data() {
     return {
       timer: "",
-      // notice: [
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      //   {
-      //     text: "点检未完成--责任人是孙**--等级严重--原因:未按时完成",
-      //   },
-      // ],
     };
   },
   computed: {
