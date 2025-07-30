@@ -34,3 +34,11 @@ export function GetAssGenerateSN(data) {
         method: "post",
         data,
     }); }
+
+    export function AssemblyReworkHistory(data) {
+
+    return request({
+        url: "/AssSpec/AssemblyReworkHistory",
+        method: "post",
+        data,
+    }); }
