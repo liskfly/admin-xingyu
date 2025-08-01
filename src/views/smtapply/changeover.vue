@@ -94,11 +94,7 @@
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box1-content" v-show="form.lineName == 'Line1' ||
-                form.lineName == 'Line2' ||
-                form.lineName == 'Line3' ||
-                form.lineName == ''
-                ">
+              <div class="box1-content" v-show="form.lineName=='Line1'||form.lineName=='Line2'||form.lineName=='Line3'||form.lineName==''">
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>
@@ -140,11 +136,7 @@
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box1-content" v-show="form.lineName == 'Line1' ||
-                form.lineName == 'Line2' ||
-                form.lineName == 'Line3' ||
-                form.lineName == ''
-                ">
+              <div class="box1-content" v-show="form.lineName=='Line1'||form.lineName=='Line2'||form.lineName=='Line3'||form.lineName==''">
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>

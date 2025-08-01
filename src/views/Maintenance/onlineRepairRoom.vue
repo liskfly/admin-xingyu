@@ -32,12 +32,13 @@
                 <el-table-column prop="baddata_type" label="说明"></el-table-column>
                 <el-table-column prop="baddata_stts" label="状态" align="center" width="100">
                     <template v-slot="{ row }">
-                        <el-tag effect="dark" v-if="row.baddata_stts == '完成维修'||row.baddata_stts == '完成报废'"
-                            type="success">{{ row.baddata_stts }}</el-tag>
-                        <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'"
-                            type="warning">{{ row.baddata_stts }}</el-tag>
-                        <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'"
-                            type="info">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="dark" v-if="
+                            row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'
+                        " type="success">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'" type="warning">{{ row.baddata_stts
+                            }}</el-tag>
+                        <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
+                            }}</el-tag>
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
@@ -56,6 +57,10 @@
                             row.baddata_stts == '完成报废' ||
                             row.baddata_stts == '完成维修'
                             ">报废</el-button>
+                        <el-button type="warning" size="mini" @click="handleMistrial(row)" :disabled="row.baddata_stts == '报废审核' ||
+                            row.baddata_stts == '完成报废' ||
+                            row.baddata_stts == '完成维修'
+                            ">误判</el-button>
                         <!-- <el-button type="danger" size="mini"
                             :disabled="row.baddata_stts != '未维修' || row.baddata_stts == '完成维修'"
                             icon="el-icon-delete" @click="handleDelete(row)"></el-button> -->
@@ -282,12 +287,12 @@ export default {
             });
         },
         getSearchData() {
-            this.getForm.PageIndex = 1
-            this.getData()
+            this.getForm.PageIndex = 1;
+            this.getData();
         },
         clearData() {
-            this.getForm.PageIndex = 1
-            this.getData()
+            this.getForm.PageIndex = 1;
+            this.getData();
         },
         deducedClick() {
             exportTableToExcel({
@@ -524,6 +529,44 @@ export default {
                     this.$message({
                         type: "info",
                         message: "已取消删除",
+                    });
+                });
+        },
+        handleMistrial(row) {
+            this.$confirm("是否误判?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(() => {
+                    let data = {
+                        baddatadetail_no:row.baddata_no,
+                        baddata_way: "误判",
+                        baddata_remark:"",
+                        repairList: [],
+                        UserNo: getToken(),
+                    };
+                    UpdateXYL_BadProductInformation(data).then((res) => {
+                        if (res.Success) {
+                            this.$notify({
+                                title: "提示信息",
+                                message: res.Msg,
+                                type: "success",
+                            });
+                            this.scrapCancel();
+                            this.getData();
+                        } else {
+                            this.$notify.error({
+                                title: "提示信息",
+                                message: res.Msg,
+                            });
+                        }
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消操作",
                     });
                 });
         },
