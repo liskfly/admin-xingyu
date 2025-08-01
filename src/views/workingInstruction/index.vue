@@ -960,6 +960,7 @@ export default {
   width: 100%;
   height: 0;
   background-color: #4a4a4acf;
+  overflow: hidden;
   opacity: 0;
 
   .el-form-item {
