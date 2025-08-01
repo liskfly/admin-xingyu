@@ -69,7 +69,8 @@
                             opacity:
                               (form.lineName === 'Line1' && index === 2) ||
                                 (form.lineName === 'Line2' && index === 2) ||
-                                (form.lineName === 'Line3' && (index === 2 || index === 1))
+                                (form.lineName === 'Line3' &&
+                                  (index === 2 || index === 1))
                                 ? 0
                                 : 1,
                           }">
@@ -93,7 +94,11 @@
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box1-content">
+              <div class="box1-content" v-show="form.lineName == 'Line1' ||
+                form.lineName == 'Line2' ||
+                form.lineName == 'Line3' ||
+                form.lineName == ''
+                ">
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>
@@ -135,7 +140,11 @@
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box1-content">
+              <div class="box1-content" v-show="form.lineName == 'Line1' ||
+                form.lineName == 'Line2' ||
+                form.lineName == 'Line3' ||
+                form.lineName == ''
+                ">
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
                   <div></div>
@@ -178,34 +187,6 @@
                 </el-card>
               </div>
             </div>
-            <!-- </el-col> -->
-            <!-- <div class="box-top-right">
-              <div class="">
-                <span style="font-size: 12px; color: #333">历史记录</span>
-                <el-card shadow="always" :body-style="{ padding: '10 px' }">
-                  <div class="tongzi">
-                    <div>
-                      <span style="color: #666; font-size: 14px"
-                        >2023-11-13</span
-                      >
-                      <div>一条记录内容</div>
-                    </div>
-                    <div>
-                      <span style="color: #666; font-size: 14px"
-                        >2023-11-12</span
-                      >
-                      <div>一条记录内容</div>
-                    </div>
-                    <div>
-                      <span style="color: #666; font-size: 14px"
-                        >2023-11-11</span
-                      >
-                      <div>一条记录内容</div>
-                    </div>
-                  </div>
-                </el-card>
-              </div>
-            </div> -->
           </div>
           <div class="box1-bottom">
             <!-- <el-button type="primary" @click="changeOver()" round>换线请求</el-button> -->
@@ -498,9 +479,25 @@ export default {
       return this.lineData.filter((item, index) => index < 3);
     },
     lineData2() {
+      if (
+        this.form.lineName == "Line4" ||
+        this.form.lineName == "Line5" ||
+        this.form.lineName == "Line6" ||
+        this.form.lineName == "Line7"
+      ) {
+        return [];
+      }
       return this.lineData.filter((item, index) => index > 2 && index < 5);
     },
     lineData3() {
+      if (
+        this.form.lineName == "Line4" ||
+        this.form.lineName == "Line5" ||
+        this.form.lineName == "Line6" ||
+        this.form.lineName == "Line7"
+      ) {
+        return [];
+      }
       return this.lineData.filter((item, index) => index > 4);
     },
   },

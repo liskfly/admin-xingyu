@@ -147,7 +147,7 @@ export default {
       productNumber: "",
       oldProduct: "",
       currentPage: 1, // 当前页码
-      pageSize: 20, // 每页的数据条数
+      pageSize: 50, // 每页的数据条数
       tableHeight: 0,
       dialogVisible: false,
       inquireList: [
@@ -166,7 +166,7 @@ export default {
       },
       form: {
         PageIndex: 1,
-        PageSize: 20,
+        PageSize: 50,
         SearchText: "",
         SearchModel: {
           PcbID: "",
@@ -247,7 +247,7 @@ export default {
     },
     dataSubmit() {
       this.form.PageIndex = 1;
-      this.form.pageSize = 20;
+      this.form.PageSize = 50;
       this.startLoading();
       QueryPCBBoardData(this.form).then(({ data }) => {
         if (data.Success) {

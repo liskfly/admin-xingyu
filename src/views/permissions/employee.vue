@@ -47,8 +47,10 @@
           stripe
         >
           <el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
-          <el-table-column label="工号" prop="employeeName" min-width="100"></el-table-column>
-          <el-table-column label="员工姓名" prop="fullName" min-width="100"></el-table-column>
+          <af-table-column label="工号" prop="employeeName" ></af-table-column>
+          <af-table-column label="员工姓名" prop="fullName" ></af-table-column>
+          <el-table-column label="部门" prop="title"></el-table-column>
+          <af-table-column label="手机" prop="mobile" ></af-table-column>
           <el-table-column label="角色" prop="OrganizationName" :min-width="170">
             <template slot-scope="scope">
             <el-tag

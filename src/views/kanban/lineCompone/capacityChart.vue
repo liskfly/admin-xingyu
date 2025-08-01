@@ -18,21 +18,21 @@ export default {
         },
         grid: {
           left: "3%",
-          right: "3%",
-          bottom: "3%",
+          right: "6%",
+          bottom: "9%",
           top: "6%",
           containLabel: true,
         },
-        // legend: {
-        //   orient: "horizontal",
-        //   x: "center", //可设定图例在左、右、居中
-        //   y: "bottom",
-        //   data: ["产能", "目标产能"],
-        //   textStyle: {
-        //     color: "#ffffff",
-        //     fontSize: 15,
-        //   },
-        // },
+        legend: {
+          orient: "horizontal",
+          x: "center", //可设定图例在左、右、居中
+          y: "bottom",
+          data: ["产能", "目标产能"],
+          textStyle: {
+            color: "#ffffff",
+            fontSize: 15,
+          },
+        },
 
         xAxis: {
           type: "category",
@@ -99,37 +99,37 @@ export default {
               fontSize: "18",
             },
           },
-          // {
-          //   name: "目标产能",
-          //   type: "line",
-          //   data: [1400, 1400, 1400, 1400, 1400, 1400, 1400, 1400],
-          //   symbol: "none",
-          //   lineStyle: {
-          //     color: "#52c41a",
-          //     width: 5,
-          //     type: "dashed",
-          //   },
-          //   itemStyle: {
-          //     color: "#52c41a",
-          //   },
-          //   markLine: {
-          //     silent: true,
-          //     lineStyle: {
-          //       color: "#52c41a",
-          //       type: "dashed",
-          //     },
-          //     data: [
-          //       {
-          //         yAxis: 1400,
-          //         label: {
-          //           // formatter: '目标产能',
-          //           color: "#52c41a",
-          //           fontSize: 18,
-          //         },
-          //       },
-          //     ],
-          //   },
-          // },
+          {
+            name: "目标产能",
+            type: "line",
+            data: [1400, 1400, 1400, 1400, 1400, 1400, 1400, 1400],
+            symbol: "none",
+            lineStyle: {
+              color: "#52c41a",
+              width: 5,
+              type: "dashed",
+            },
+            itemStyle: {
+              color: "#52c41a",
+            },
+            markLine: {
+              silent: true,
+              lineStyle: {
+                color: "#52c41a",
+                type: "dashed",
+              },
+              data: [
+                {
+                  yAxis: 1400,
+                  label: {
+                    // formatter: '目标产能',
+                    color: "#52c41a",
+                    fontSize: 18,
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
       timer: null,
