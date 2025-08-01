@@ -5,7 +5,7 @@
         <div class="form_Bottom">
             <el-button type="primary" @click="onSubmit">查询全部工单</el-button>
             <div>
-              <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()">
+              <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入" @keyup.enter.native="searchData()">
                 <template slot="append">
                   <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
                 </template>
@@ -256,10 +256,6 @@ export default {
   padding: 8px;
   .table_header {
     // padding-bottom: 20px;
-    .form {
-      // display: flex;
-      // justify-content: space-between;
-    }
     // display: flex;
     // gap: 30px;
     // justify-content: flex-end;

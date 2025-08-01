@@ -4,7 +4,7 @@
       <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
         <div>
-          <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()"
+          <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入" @keyup.enter.native="searchData()"
             @clear="clearData">
             <template slot="append">
               <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>

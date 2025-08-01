@@ -4,13 +4,19 @@
             <div class="mb-2 flex justify-between">
                 <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
                 <div class="input_box">
-                    <el-input placeholder="请输入内容" clearable v-model="searchText" class="input-with-select"
+                    <!-- <el-input placeholder="请输入内容" clearable v-model="searchText" class="input-with-select"
                         @change="getSearchData" size="medium">
                         <el-button slot="append" icon="el-icon-search"></el-button>
+                    </el-input> -->
+                    <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入" @keyup.enter.native="searchData()"
+                        @clear="clearData">
+                        <template slot="append">
+                            <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
+                        </template>
                     </el-input>
                 </div>
             </div>
-            <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+            <el-table :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
                 " border :height="tableHeight" style="width: 100%" size="mini">
                 <el-table-column type="index" label="序号" width="55" align="center" fixed>
                     <template slot-scope="scope">
@@ -61,7 +67,7 @@
                 <el-pagination align="center" background @size-change="handleSizeChange"
                     @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
                     :page-sizes="[5, 10, 20, 50, 100]" layout="total,sizes, prev, pager, next, jumper"
-                    :total="tableData.length">
+                    :total="tableData1.length">
                 </el-pagination>
             </div>
         </el-card>
@@ -74,20 +80,21 @@
                     </el-select>
                 </el-form-item>
 
-               
-                
-                        <el-form-item label="编码" prop="toolsMold">
-                    <el-input v-model.trim="addForm.toolsMold"  style="width: 240px"/>
+
+
+                <el-form-item label="编码" prop="toolsMold">
+                    <el-input v-model.trim="addForm.toolsMold" style="width: 240px" />
                 </el-form-item>
-                       
-                    
-                        <el-form-item label="描述" prop="materialName">
-                            <el-input  v-model="addForm.materialName" style="width: 100%"></el-input>
-                        </el-form-item>
-                 
+
+
+                <el-form-item label="描述" prop="materialName">
+                    <el-input v-model="addForm.materialName" style="width: 100%"></el-input>
+                </el-form-item>
+
                 <el-form-item label="使用寿命(次数)" prop="totalUses">
-                            <el-input v-model.number="addForm.totalUses"  style="width: 240px" placeholder="请输入" type="number"></el-input>
-                        </el-form-item>
+                    <el-input v-model.number="addForm.totalUses" style="width: 240px" placeholder="请输入"
+                        type="number"></el-input>
+                </el-form-item>
                 <el-form-item label="停机扫描(生产片数)">
                     <el-input :disabled="!formControl.cleanAfterUses" v-model.number="addForm.usesUntilRevalidation"
                         style="width: 240px" placeholder="请输入" type="number"></el-input>
@@ -150,19 +157,19 @@
                     </el-select>
                 </el-form-item>
 
-              
+
                 <el-form-item label="编码" prop="toolsMold">
                     <el-input disabled v-model="editForm.toolsMold" style="width: 240px" />
-                </el-form-item> 
-                        <el-form-item label="描述" prop="materialName" >
-                    <el-input  v-model="editForm.materialName" style="width: 100%"></el-input>
                 </el-form-item>
-                      
-            
+                <el-form-item label="描述" prop="materialName">
+                    <el-input v-model="editForm.materialName" style="width: 100%"></el-input>
+                </el-form-item>
+
+
                 <el-form-item label="使用寿命(次数)" prop="totalUses">
                     <el-input disabled v-model.number="editForm.totalUses" style="width: 240px"
                         placeholder="请输入"></el-input>
-                </el-form-item> 
+                </el-form-item>
                 <el-form-item label="停机扫描(生产片数)">
                     <el-input :disabled="!editFormControl.cleanAfterUses"
                         v-model.number="editForm.usesUntilRevalidation" style="width: 240px"
@@ -171,7 +178,7 @@
                         editForm.usesUntilRevalidation = !editFormControl.cleanAfterUses
                             ? 0
                             : editForm.usesUntilRevalidation
-                        " label="启用"  />
+                        " label="启用" />
                 </el-form-item>
                 <el-form-item label="停机扫描(暂停时间)">
                     <el-input :disabled="!editFormControl.cleanAfterPause"
@@ -181,7 +188,7 @@
                         editForm.pauseUntilRevalidate = !editFormControl.cleanAfterPause
                             ? 0
                             : editForm.pauseUntilRevalidate
-                        " label="启用"  />
+                        " label="启用" />
                 </el-form-item>
                 <el-form-item label="停机扫描(生产时间)">
                     <el-input :disabled="!editFormControl.cleanAfterTime"
@@ -194,30 +201,29 @@
                         " label="启用" />
                 </el-form-item>
                 <el-row :gutter="20">
-                    <el-col :span="12" :offset="0">  <el-form-item label="清洗时间">
-                    <el-input v-model.number="editForm.cleaningTime" style="width: 240px" placeholder="请输入"
-                        type="number"></el-input>
-                </el-form-item></el-col>
+                    <el-col :span="12" :offset="0"> <el-form-item label="清洗时间">
+                            <el-input v-model.number="editForm.cleaningTime" style="width: 240px" placeholder="请输入"
+                                type="number"></el-input>
+                        </el-form-item></el-col>
                     <el-col :span="12" :offset="0"> <el-form-item label="张力测试上限值">
-                    <el-input v-model.number="editForm.tensionLimit"  placeholder="请输入"
-                        type="number"></el-input>
-                </el-form-item></el-col>
+                            <el-input v-model.number="editForm.tensionLimit" placeholder="请输入" type="number"></el-input>
+                        </el-form-item></el-col>
                 </el-row>
-                
-              
+
+
                 <el-row :gutter="20">
                     <el-col :span="12" :offset="0"><el-form-item label="测试点位数量">
-                    <el-input v-model.number="editForm.tensionPoints" style="width: 240px" placeholder="请输入"
-                        type="number"></el-input>
-                </el-form-item> </el-col>
-                    <el-col :span="12" :offset="0">  <el-form-item label="张力测试下限值">
-                    <el-input v-model.number="editForm.lowerTensionLimit"  placeholder="请输入"
-                        type="number"></el-input>
-                </el-form-item></el-col>
+                            <el-input v-model.number="editForm.tensionPoints" style="width: 240px" placeholder="请输入"
+                                type="number"></el-input>
+                        </el-form-item> </el-col>
+                    <el-col :span="12" :offset="0"> <el-form-item label="张力测试下限值">
+                            <el-input v-model.number="editForm.lowerTensionLimit" placeholder="请输入"
+                                type="number"></el-input>
+                        </el-form-item></el-col>
                 </el-row>
-                
-              
-                
+
+
+
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editCancel()">取 消</el-button>
@@ -234,6 +240,7 @@ export default {
         return {
             searchText: "",
             tableData: [],
+            tableData1: [],
             currentPage: 1, // 当前页码
             pageSize: 10, // 每页的数据条数
             addVisible: false,
@@ -304,6 +311,7 @@ export default {
                 { value: "2", label: "ICT工治具" },
                 { value: "3", label: "样件" },
             ],
+            searchName: ""
         };
     },
     beforeMount() {
@@ -317,13 +325,47 @@ export default {
         window.removeEventListener("resize", this.getScreenHeight);
     },
     methods: {
+        searchData() {
+            if (this.searchName == "") {
+        
+                this.tableData1 = this.tableData;
+            } else {
+                this.tableData1 = this.table1(this.searchName);
+            }
+        },
+        // 打开添加对话框
+        table1(newdata) {
+            console.log(newdata);
+            
+            let searchName = newdata.toLowerCase();
+            this.currentPage = 1;
+            return this.tableData.filter((v) => {
+                if (
+                    String(v.ToolsMold).toLowerCase().indexOf(searchName) > -1 ||
+                    String(v.MaterialName).toLowerCase().indexOf(searchName) > -1
+                ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        },
+        clearData() {
+            this.searchName = "";
+             this.currentPage = 1;
+            // this.tableData1 = this.tableData;
+            this.getData()
+            // 清除搜索时重置页码
+        },
         addOpen() {
             this.addVisible = true;
         },
         getData() {
             moldControl(this.getText)
                 .then((res) => {
+                    // this.tableData = res.data.DataList;
                     this.tableData = res.data.DataList;
+                    this.tableData1 = this.tableData
                 })
                 .catch(() => {
                     this.$message.error("请求数据失败，请刷新");
@@ -477,16 +519,16 @@ export default {
                     //   this.$refs.editFormRef.resetFields();
                     this.editForm = {
                         category: "",
-                toolsMold: "",
-                materialName: "",
-                totalUses: 0,
-                usesUntilRevalidation: 0,
-                pauseUntilRevalidate: 0,
-                timeUntilRevalidation: 0,
-                cleaningTime: 0,
-                tensionLimit: 0,
-                lowerTensionLimit: 0,
-                tensionPoints: 0,
+                        toolsMold: "",
+                        materialName: "",
+                        totalUses: 0,
+                        usesUntilRevalidation: 0,
+                        pauseUntilRevalidate: 0,
+                        timeUntilRevalidation: 0,
+                        cleaningTime: 0,
+                        tensionLimit: 0,
+                        lowerTensionLimit: 0,
+                        tensionPoints: 0,
                     };
                     this.editVisible = false;
                 } else {
@@ -504,7 +546,7 @@ export default {
             if (this.searchText == "") {
                 this.getText.toolsMold = "*";
             } else {
-                this.currentPage=1
+                this.currentPage = 1
                 this.getText.toolsMold = this.searchText;
 
             }
@@ -543,18 +585,19 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .el-dialog {
-  display: flex;
-  flex-direction: column;
-  margin: 0 !important;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-height: calc(100% - 30px);
-  max-width: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: calc(100% - 30px);
+    max-width: calc(100% - 30px);
 }
 
 ::v-deep .el-dialog .el-dialog__body {
-  flex: 1;
-  overflow: auto;
-}</style>
+    flex: 1;
+    overflow: auto;
+}
+</style>
