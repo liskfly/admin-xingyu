@@ -101,6 +101,7 @@
                         v-for="(item, index) in lineData1"
                         :label="item"
                         :key="item.id"
+                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
                       >
                         <div class="list-content">
                           <div class="light">
@@ -133,6 +134,14 @@
                             ></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
+                          <span
+                            :class="
+                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                                ? 'green'
+                                : 'red'
+                            "
+                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                          >
                         </div>
                       </el-checkbox>
                     </div>
@@ -175,6 +184,7 @@
                         v-for="item in lineData2"
                         :label="item"
                         :key="item.id"
+                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
                       >
                         <div class="list-content">
                           <div class="light">
@@ -196,6 +206,14 @@
                             ></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
+                          <span
+                            :class="
+                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                                ? 'green'
+                                : 'red'
+                            "
+                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                          >
                         </div>
                       </el-checkbox>
                     </div>
@@ -239,6 +257,7 @@
                         size=""
                         :label="item"
                         :key="item.id"
+                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
                       >
                         <div class="list-content">
                           <div class="light">
@@ -260,6 +279,14 @@
                             ></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
+                          <span
+                            :class="
+                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                                ? 'green'
+                                : 'red'
+                            "
+                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                          >
                         </div>
                       </el-checkbox>
                     </div>
@@ -412,6 +439,14 @@
         </el-carousel-item>
       </el-carousel>
     </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="picshow"
+      width="80%"
+      custom-class="vertical-centered"
+    >
+      <img :src="pic" alt="" />
+    </el-dialog>
   </div>
 </template>
 
@@ -546,6 +581,8 @@ export default {
       cancellation2: false,
       dialogVisible3: false,
       cancellation3: false,
+      picshow: false,
+      pic: "",
       pic1: [
         {
           img: require("@/assets/remind/模块一(1).jpg"),
@@ -589,6 +626,42 @@ export default {
         },
       ],
       schedule: [],
+      picList: [
+        {
+          pic: require("@/assets/remind/模块一(2).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块一(3).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块一(4).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块二(3).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块二(4).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块三(2).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块三(3).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块三(4).jpg"),
+        },
+      ],
+      StatusList: [
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+      ],
     };
   },
   created() {
@@ -746,20 +819,23 @@ export default {
     // },
     changeOver(num) {
       // let data = this.dataProcessing();
-      // console.log({
-      //   ...data,
-      //   mcIDList: [data.mcIDList[num - 1]],
-      //   operatorUser: getToken(),
-      // });
+      // console.log(data);
+      
+      // getChangeOverOrderInfor({
+      //   workOrder: 'WO2508060143410_A'
+      // }).then((res) => {
+      //   if (num === data.mcIDList.length) {
+      //       this.getStatus(this.form.lineName);
+      //   }
+      //   if (res.data.Status == "OK") {
+      //     console.log(this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status);
+      //     this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status = "成功";
+      //     console.log(this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status);
+      //   }
       // if (num !== data.mcIDList.length) {
-      //     this.changeOver(num + 1);
+      //   this.changeOver(num + 1);
       // }
-
-      //     let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
-      //       String(data.mcIDList[num - 1].mcId).length - 1
-      //     );
-      //     let lastDigit = parseInt(lastDigitAsString, 10);
-      //     console.log(lastDigit);
+      // });
       // return;
       if (num === 1) {
         this.questStatus1 = "";
@@ -771,10 +847,10 @@ export default {
         if (data.mcIDList.length !== 0) {
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
           this.startLoading();
-          let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
-            String(data.mcIDList[num - 1].mcId).length - 1
-          );
-          let lastDigit = parseInt(lastDigitAsString, 10);
+          // let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
+          //   String(data.mcIDList[num - 1].mcId).length - 1
+          // );
+          // let lastDigit = parseInt(lastDigitAsString, 10);
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]],OperatorUser:getToken() });
           changeoverRequests({
             ...data,
@@ -783,28 +859,37 @@ export default {
           })
             .then((res) => {
               this.endLoading();
+              if (num !== data.mcIDList.length) {
+                this.changeOver(num + 1);
+              } else if (num === data.mcIDList.length) {
+                // this.questStatus1 =
+                //   this.checkedLine1.length === 0 ? "" : "OK";
+                // this.questStatus2 =
+                //   this.checkedLine2.length === 0 ? "" : "OK";
+                // this.questStatus3 =
+                //   this.checkedLine3.length === 0 ? "" : "OK";
+                this.checkedLine1 = [];
+                this.checkedLine2 = [];
+                this.checkedLine3 = [];
+                // this.lineCheck1 = false;
+                // this.lineCheck2 = false;
+                // this.lineCheck3 = false;
+                // this.$message({
+                //   message: "换线完毕",
+                //   type: "success",
+                // });
+                this.getStatus(this.form.lineName);
+              }
               if (res.data.Status == "OK") {
-                if (num !== data.mcIDList.length) {
-                  this.changeOver(num + 1);
-                } else if (num === data.mcIDList.length) {
-                  // this.questStatus1 =
-                  //   this.checkedLine1.length === 0 ? "" : "OK";
-                  // this.questStatus2 =
-                  //   this.checkedLine2.length === 0 ? "" : "OK";
-                  // this.questStatus3 =
-                  //   this.checkedLine3.length === 0 ? "" : "OK";
-                  this.checkedLine1 = [];
-                  this.checkedLine2 = [];
-                  this.checkedLine3 = [];
-                  // this.lineCheck1 = false;
-                  // this.lineCheck2 = false;
-                  // this.lineCheck3 = false;
-                  this.$message({
-                    message: "换线完毕",
-                    type: "success",
-                  });
-                  this.getStatus(this.form.lineName);
-                }
+                console.log(
+                  "status=>",
+                  data.mcIDList[num - 1].mcId - 1,
+                  data.mcIDList[num - 1],
+                  this.StatusList[data.mcIDList[num - 1].mcId - 1],
+                  "num" + num
+                );
+                this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status =
+                  "成功";
               } else {
                 // if (lastDigit < 4) {
                 //   this.questStatus1 = "NG";
@@ -819,20 +904,29 @@ export default {
                 //     this.checkedLine2.length === 0 ? "" : "OK";
                 //   this.questStatus3 = "NG";
                 // }
+                // console.log(
+                //   "status=>",
+                //   data.mcIDList[num - 1].mcId - 1,
+                //   data.mcIDList[num - 1],
+                //   this.StatusList[data.mcIDList[num - 1].mcId - 1],
+                //   "num" + num
+                // );
+                this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status =
+                  "失败";
                 this.checkedLine1 = [];
                 this.checkedLine2 = [];
                 this.checkedLine3 = [];
                 this.initialize();
-                console.log(res.data);
-                this.$alert(res.data.Message, "错误信息", {
-                  confirmButtonText: "确定",
-                  callback: () => {
-                    this.$message({
-                      type: "error",
-                      message: "换线请求失败",
-                    });
-                  },
-                });
+                console.log(data.mcIDList[num - 1].mcName + res.data.Message);
+                // this.$alert(res.data.Message, "错误信息", {
+                //   confirmButtonText: "确定",
+                //   callback: () => {
+                //     this.$message({
+                //       type: "error",
+                //       message: "换线请求失败",
+                //     });
+                //   },
+                // });
               }
             })
             .catch((error) => {
@@ -1091,6 +1185,17 @@ export default {
         this.lineCheck3 = value.length === this.lineData3.length;
       }
     },
+    picDioShow(checked, value) {
+      if (!checked) {
+        return;
+      }
+      this.picList.map((item, index) => {
+        if (value == index + 1) {
+          this.pic = item.pic;
+        }
+      });
+      this.picshow = true;
+    },
     clearAll() {
       this.checkedLine1 = [];
       this.checkedLine2 = [];
@@ -1101,6 +1206,16 @@ export default {
       this.lineCheck1 = false;
       this.lineCheck2 = false;
       this.lineCheck3 = false;
+      this.StatusList = [
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+      ];
     },
     startLoading() {
       this.loading = this.$loading({
@@ -1153,7 +1268,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-width: 380px;
+    min-width: 630px;
     gap: 4vh;
     height: calc(100vh - 101px - 20vh);
     // flex: 1;
@@ -1328,5 +1443,13 @@ export default {
     top: 0;
     right: 0;
   }
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: #00e200;
 }
 </style>
