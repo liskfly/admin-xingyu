@@ -4,23 +4,54 @@
       <el-col :span="8">
         <el-card shadow="always" :body-style="{ padding: '20px' }">
           <div class="left-box">
-            <el-form label-position="left" :model="form" ref="form" label-width="80px" size="normal">
+            <el-form
+              label-position="left"
+              :model="form"
+              ref="form"
+              label-width="80px"
+              size="normal"
+            >
               <el-form-item label="工单">
-                <el-select v-model="form.order" @change="change" filterable placeholder="">
-                  <el-option v-for="item in workOrderList" :key="item.WorkOrder" :label="item.WorkOrder"
-                    :value="item.WorkOrder"></el-option>
+                <el-select
+                  v-model="form.order"
+                  @change="change"
+                  filterable
+                  placeholder=""
+                >
+                  <el-option
+                    v-for="item in workOrderList"
+                    :key="item.WorkOrder"
+                    :label="item.WorkOrder"
+                    :value="item.WorkOrder"
+                  ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="线别">
-                <el-select v-model="form.lineName" placeholder="选择线别" @change="getStatus(), clearAll()">
-                  <el-option v-for="item in lineList" :key="item.lineType" :label="item.lineType"
-                    :value="item.lineType"></el-option>
+                <el-select
+                  v-model="form.lineName"
+                  placeholder="选择线别"
+                  @change="getStatus(), clearAll()"
+                >
+                  <el-option
+                    v-for="item in lineList"
+                    :key="item.lineType"
+                    :label="item.lineType"
+                    :value="item.lineType"
+                  ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="SIDE">
-                <el-select v-model="form.side" placeholder="选择SIDE" @change="getStatus(), clearAll()">
-                  <el-option v-for="item in sideList" :key="item.sideType" :label="item.sideType"
-                    :value="item.sideType"></el-option>
+                <el-select
+                  v-model="form.side"
+                  placeholder="选择SIDE"
+                  @change="getStatus(), clearAll()"
+                >
+                  <el-option
+                    v-for="item in sideList"
+                    :key="item.sideType"
+                    :label="item.sideType"
+                    :value="item.sideType"
+                  ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="产品名">{{ form.product }}</el-form-item>
@@ -33,8 +64,14 @@
               <el-form-item label="BOM版本">{{ form.bomVer }}</el-form-item>
             </el-form>
             <div v-show="form.order !== ''" class="qrcode">
-              <vue-qr :text="form.order" :margin="0" colorDark="#000000" colorLight="#fff" :logoScale="0.3"
-                :size="150"></vue-qr>
+              <vue-qr
+                :text="form.order"
+                :margin="0"
+                colorDark="#000000"
+                colorLight="#fff"
+                :logoScale="0.3"
+                :size="150"
+              ></vue-qr>
             </div>
           </div>
         </el-card>
@@ -47,134 +84,220 @@
               <div class="box1-content">
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
-                  <div></div>
+                  <!-- <div></div> -->
                   <div class="box1-title">印刷区</div>
-                  <div class="choice" @click="handleCheckAllChange(1)">
+                  <!-- <div class="choice" @click="handleCheckAllChange(1)">
                     {{ lineCheck1 ? "取消全选" : "全选" }}
-                  </div>
+                  </div> -->
                 </div>
                 <el-card shadow="always" :body-style="{ padding: '15px' }">
-                  <el-checkbox-group v-model="checkedLine1" @change="handleCheckedChange(checkedLine1, 1)"
-                    style="display: flex; align-items: center">
+                  <el-checkbox-group
+                    v-model="checkedLine1"
+                    @change="handleCheckedChange(checkedLine1, 1)"
+                    style="display: flex; align-items: center"
+                  >
                     <div class="box1-content-bottom">
-                      <el-checkbox disabled v-for="(item, index) in lineData1" :label="item" :key="item.id">
+                      <el-checkbox
+                        v-for="(item, index) in lineData1"
+                        :label="item"
+                        :key="item.id"
+                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
+                      >
                         <div class="list-content">
                           <div class="light">
-                            设备<i class="icon" :style="{
-                              background:
-                                item.equipment == '1' ? '#5ab059' : 'red',
-                            }"></i>
+                            设备<i
+                              class="icon"
+                              :style="{
+                                background:
+                                  item.equipment == '1' ? '#5ab059' : 'red',
+                              }"
+                            ></i>
                           </div>
-                          <div class="light" :style="{
-                            opacity:
-                              (form.lineName === 'Line1' && index === 2) ||
+                          <div
+                            class="light"
+                            :style="{
+                              opacity:
+                                (form.lineName === 'Line1' && index === 2) ||
                                 (form.lineName === 'Line2' && index === 2) ||
                                 (form.lineName === 'Line3' &&
                                   (index === 2 || index === 1))
-                                ? 0
-                                : 1,
-                          }">
-                            轨道<i class="icon" :style="{
-                              background:
-                                item.orbit == '1' ? '#5ab059' : 'red',
-                            }"></i>
+                                  ? 0
+                                  : 1,
+                            }"
+                          >
+                            轨道<i
+                              class="icon"
+                              :style="{
+                                background:
+                                  item.orbit == '1' ? '#5ab059' : 'red',
+                              }"
+                            ></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
+                          <span
+                            :class="
+                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                                ? 'green'
+                                : 'red'
+                            "
+                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                          >
                         </div>
                       </el-checkbox>
                     </div>
-                    <div class="QuestBox">
+                    <!-- <div class="QuestBox">
                       <div v-if="questStatus1 === 'OK'" class="okQuest">
                         换线成功
                       </div>
                       <div v-if="questStatus1 === 'NG'" class="NGQuest">
                         换线失败
                       </div>
-                    </div>
+                    </div> -->
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box1-content" v-show="form.lineName=='Line1'||form.lineName=='Line2'||form.lineName=='Line3'||form.lineName==''">
+              <div
+                class="box1-content"
+                v-show="
+                  form.lineName == 'Line1' ||
+                  form.lineName == 'Line2' ||
+                  form.lineName == 'Line3' ||
+                  form.lineName == ''
+                "
+              >
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
-                  <div></div>
+                  <!-- <div></div> -->
                   <div class="box1-title">贴片区</div>
-                  <div class="choice" @click="handleCheckAllChange(2)">
+                  <!-- <div class="choice" @click="handleCheckAllChange(2)">
                     {{ lineCheck2 ? "取消全选" : "全选" }}
-                  </div>
+                  </div> -->
                 </div>
                 <el-card shadow="always" :body-style="{ padding: '15px' }">
-                  <el-checkbox-group v-model="checkedLine2" @change="handleCheckedChange(checkedLine2, 2)"
-                    style="display: flex; align-items: center">
+                  <el-checkbox-group
+                    v-model="checkedLine2"
+                    @change="handleCheckedChange(checkedLine2, 2)"
+                    style="display: flex; align-items: center"
+                  >
                     <div class="box1-content-bottom">
-                      <el-checkbox disabled v-for="item in lineData2" :label="item" :key="item.id">
+                      <el-checkbox
+                        v-for="item in lineData2"
+                        :label="item"
+                        :key="item.id"
+                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
+                      >
                         <div class="list-content">
                           <div class="light">
-                            设备<i class="icon" :style="{
-                              background:
-                                item.equipment == '1' ? '#5ab059' : 'red',
-                            }"></i>
+                            设备<i
+                              class="icon"
+                              :style="{
+                                background:
+                                  item.equipment == '1' ? '#5ab059' : 'red',
+                              }"
+                            ></i>
                           </div>
                           <div class="light">
-                            轨道<i class="icon" :style="{
-                              background:
-                                item.orbit == '1' ? '#5ab059' : 'red',
-                            }"></i>
+                            轨道<i
+                              class="icon"
+                              :style="{
+                                background:
+                                  item.orbit == '1' ? '#5ab059' : 'red',
+                              }"
+                            ></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
+                          <span
+                            :class="
+                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                                ? 'green'
+                                : 'red'
+                            "
+                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                          >
                         </div>
                       </el-checkbox>
                     </div>
-                    <div class="QuestBox">
+                    <!-- <div class="QuestBox">
                       <div v-if="questStatus2 === 'OK'" class="okQuest">
                         换线成功
                       </div>
                       <div v-if="questStatus2 === 'NG'" class="NGQuest">
                         换线失败
                       </div>
-                    </div>
+                    </div> -->
                   </el-checkbox-group>
                 </el-card>
               </div>
-              <div class="box1-content" v-show="form.lineName=='Line1'||form.lineName=='Line2'||form.lineName=='Line3'||form.lineName==''">
+              <div
+                class="box1-content"
+                v-show="
+                  form.lineName == 'Line1' ||
+                  form.lineName == 'Line2' ||
+                  form.lineName == 'Line3' ||
+                  form.lineName == ''
+                "
+              >
                 <div class="box1-header">
                   <!-- <span>清除</span> -->
-                  <div></div>
+                  <!-- <div></div> -->
                   <div class="box1-title">炉后区</div>
-                  <div class="choice" @click="handleCheckAllChange(3)">
+                  <!-- <div class="choice" @click="handleCheckAllChange(3)">
                     {{ lineCheck3 ? "取消全选" : "全选" }}
-                  </div>
+                  </div> -->
                 </div>
                 <el-card shadow="always" :body-style="{ padding: '15px' }">
-                  <el-checkbox-group v-model="checkedLine3" @change="handleCheckedChange(checkedLine3, 3)"
-                    style="display: flex; align-items: center">
+                  <el-checkbox-group
+                    v-model="checkedLine3"
+                    @change="handleCheckedChange(checkedLine3, 3)"
+                    style="display: flex; align-items: center"
+                  >
                     <div class="box1-content-bottom">
-                      <el-checkbox disabled v-for="item in lineData3" size="" :label="item" :key="item.id">
+                      <el-checkbox
+                        v-for="item in lineData3"
+                        size=""
+                        :label="item"
+                        :key="item.id"
+                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
+                      >
                         <div class="list-content">
                           <div class="light">
-                            设备<i class="icon" :style="{
-                              background:
-                                item.equipment == '1' ? '#5ab059' : 'red',
-                            }"></i>
+                            设备<i
+                              class="icon"
+                              :style="{
+                                background:
+                                  item.equipment == '1' ? '#5ab059' : 'red',
+                              }"
+                            ></i>
                           </div>
                           <div class="light">
-                            轨道<i class="icon" :style="{
-                              background:
-                                item.orbit == '1' ? '#5ab059' : 'red',
-                            }"></i>
+                            轨道<i
+                              class="icon"
+                              :style="{
+                                background:
+                                  item.orbit == '1' ? '#5ab059' : 'red',
+                              }"
+                            ></i>
                           </div>
                           <span class="mc">{{ item.name }}</span>
+                          <span
+                            :class="
+                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                                ? 'green'
+                                : 'red'
+                            "
+                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                          >
                         </div>
                       </el-checkbox>
                     </div>
-                    <div class="QuestBox">
+                    <!-- <div class="QuestBox">
                       <div v-if="questStatus3 === 'OK'" class="okQuest">
                         换线成功
                       </div>
                       <div v-if="questStatus3 === 'NG'" class="NGQuest">
                         换线失败
                       </div>
-                    </div>
+                    </div> -->
                   </el-checkbox-group>
                 </el-card>
               </div>
@@ -187,11 +310,27 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="80%" :show-close="cancellation"
-      custom-class="vertical-centered">
-      <el-carousel ref="carousel" arrow="never" indicator-position="none" height="80vh" :interval="4000"
-        v-if="dialogVisible" @mouseenter.native="delHandleMouseEnter()">
-        <el-carousel-item v-for="(item, index) in pic1" :key="item.img" class="carousel">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :show-close="cancellation"
+      custom-class="vertical-centered"
+    >
+      <el-carousel
+        ref="carousel"
+        arrow="never"
+        indicator-position="none"
+        height="80vh"
+        :interval="4000"
+        v-if="dialogVisible"
+        @mouseenter.native="delHandleMouseEnter()"
+      >
+        <el-carousel-item
+          v-for="(item, index) in pic1"
+          :key="item.img"
+          class="carousel"
+        >
           <div class="remind">
             <div class="num">{{ index + 1 }}</div>
             <img :src="item.img" alt="" />
@@ -244,11 +383,27 @@
         </el-form-item>
       </el-form> -->
     </el-dialog>
-    <el-dialog title="提示" :visible.sync="dialogVisible2" width="80%" :show-close="cancellation2"
-      custom-class="vertical-centered">
-      <el-carousel ref="carousel" arrow="never" indicator-position="none" height="80vh" :interval="4000"
-        v-if="dialogVisible2" @mouseenter.native="delHandleMouseEnter()">
-        <el-carousel-item v-for="(item, index) in pic2" :key="item.img" class="carousel">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible2"
+      width="80%"
+      :show-close="cancellation2"
+      custom-class="vertical-centered"
+    >
+      <el-carousel
+        ref="carousel"
+        arrow="never"
+        indicator-position="none"
+        height="80vh"
+        :interval="4000"
+        v-if="dialogVisible2"
+        @mouseenter.native="delHandleMouseEnter()"
+      >
+        <el-carousel-item
+          v-for="(item, index) in pic2"
+          :key="item.img"
+          class="carousel"
+        >
           <div class="remind">
             <div class="num">{{ index + 1 }}</div>
             <img :src="item.img" alt="" />
@@ -256,17 +411,41 @@
         </el-carousel-item>
       </el-carousel>
     </el-dialog>
-    <el-dialog title="提示" :visible.sync="dialogVisible3" width="80%" :show-close="cancellation3"
-      custom-class="vertical-centered">
-      <el-carousel ref="carousel" arrow="never" indicator-position="none" height="80vh" :interval="4000"
-        v-if="dialogVisible3" @mouseenter.native="delHandleMouseEnter()">
-        <el-carousel-item v-for="(item, index) in pic3" :key="item.img" class="carousel">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible3"
+      width="80%"
+      :show-close="cancellation3"
+      custom-class="vertical-centered"
+    >
+      <el-carousel
+        ref="carousel"
+        arrow="never"
+        indicator-position="none"
+        height="80vh"
+        :interval="4000"
+        v-if="dialogVisible3"
+        @mouseenter.native="delHandleMouseEnter()"
+      >
+        <el-carousel-item
+          v-for="(item, index) in pic3"
+          :key="item.img"
+          class="carousel"
+        >
           <div class="remind">
             <div class="num">{{ index + 1 }}</div>
             <img :src="item.img" alt="" />
           </div>
         </el-carousel-item>
       </el-carousel>
+    </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="picshow"
+      width="80%"
+      custom-class="vertical-centered"
+    >
+      <img :src="pic" alt="" />
     </el-dialog>
   </div>
 </template>
@@ -402,6 +581,8 @@ export default {
       cancellation2: false,
       dialogVisible3: false,
       cancellation3: false,
+      picshow: false,
+      pic: "",
       pic1: [
         {
           img: require("@/assets/remind/模块一(1).jpg"),
@@ -445,6 +626,42 @@ export default {
         },
       ],
       schedule: [],
+      picList: [
+        {
+          pic: require("@/assets/remind/模块一(2).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块一(3).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块一(4).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块二(3).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块二(4).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块三(2).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块三(3).jpg"),
+        },
+        {
+          pic: require("@/assets/remind/模块三(4).jpg"),
+        },
+      ],
+      StatusList: [
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+      ],
     };
   },
   created() {
@@ -468,6 +685,21 @@ export default {
       // } else {
       //   return this.lineData.filter((item, index) => index < 3);
       // }
+      if (
+        this.form.lineName == "Line4" ||
+        this.form.lineName == "Line5" ||
+        this.form.lineName == "Line6" ||
+        this.form.lineName == "Line7"
+      ) {
+        return [
+          {
+            id: 1,
+            name: "Laser",
+            equipment: "0",
+            orbit: "0",
+          },
+        ];
+      }
       return this.lineData.filter((item, index) => index < 3);
     },
     lineData2() {
@@ -586,6 +818,25 @@ export default {
     //   }
     // },
     changeOver(num) {
+      // let data = this.dataProcessing();
+      // console.log(data);
+      
+      // getChangeOverOrderInfor({
+      //   workOrder: 'WO2508060143410_A'
+      // }).then((res) => {
+      //   if (num === data.mcIDList.length) {
+      //       this.getStatus(this.form.lineName);
+      //   }
+      //   if (res.data.Status == "OK") {
+      //     console.log(this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status);
+      //     this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status = "成功";
+      //     console.log(this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status);
+      //   }
+      // if (num !== data.mcIDList.length) {
+      //   this.changeOver(num + 1);
+      // }
+      // });
+      // return;
       if (num === 1) {
         this.questStatus1 = "";
         this.questStatus2 = "";
@@ -596,10 +847,10 @@ export default {
         if (data.mcIDList.length !== 0) {
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
           this.startLoading();
-          let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
-            String(data.mcIDList[num - 1].mcId).length - 1
-          );
-          let lastDigit = parseInt(lastDigitAsString, 10);
+          // let lastDigitAsString = String(data.mcIDList[num - 1].mcId).charAt(
+          //   String(data.mcIDList[num - 1].mcId).length - 1
+          // );
+          // let lastDigit = parseInt(lastDigitAsString, 10);
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]],OperatorUser:getToken() });
           changeoverRequests({
             ...data,
@@ -608,66 +859,88 @@ export default {
           })
             .then((res) => {
               this.endLoading();
+              if (num !== data.mcIDList.length) {
+                this.changeOver(num + 1);
+              } else if (num === data.mcIDList.length) {
+                // this.questStatus1 =
+                //   this.checkedLine1.length === 0 ? "" : "OK";
+                // this.questStatus2 =
+                //   this.checkedLine2.length === 0 ? "" : "OK";
+                // this.questStatus3 =
+                //   this.checkedLine3.length === 0 ? "" : "OK";
+                this.checkedLine1 = [];
+                this.checkedLine2 = [];
+                this.checkedLine3 = [];
+                // this.lineCheck1 = false;
+                // this.lineCheck2 = false;
+                // this.lineCheck3 = false;
+                // this.$message({
+                //   message: "换线完毕",
+                //   type: "success",
+                // });
+                this.getStatus(this.form.lineName);
+              }
               if (res.data.Status == "OK") {
-                if (num !== data.mcIDList.length) {
-                  this.changeOver(num + 1);
-                } else if (num === data.mcIDList.length) {
-                  this.questStatus1 =
-                    this.checkedLine1.length === 0 ? "" : "OK";
-                  this.questStatus2 =
-                    this.checkedLine2.length === 0 ? "" : "OK";
-                  this.questStatus3 =
-                    this.checkedLine3.length === 0 ? "" : "OK";
-                  this.checkedLine1 = [];
-                  this.checkedLine2 = [];
-                  this.checkedLine3 = [];
-                  this.lineCheck1 = false;
-                  this.lineCheck2 = false;
-                  this.lineCheck3 = false;
-                  this.getStatus(this.form.lineName);
-                }
+                console.log(
+                  "status=>",
+                  data.mcIDList[num - 1].mcId - 1,
+                  data.mcIDList[num - 1],
+                  this.StatusList[data.mcIDList[num - 1].mcId - 1],
+                  "num" + num
+                );
+                this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status =
+                  "成功";
               } else {
-                if (lastDigit < 4) {
-                  this.questStatus1 = "NG";
-                } else if (lastDigit > 3 && lastDigit < 6) {
-                  this.questStatus1 =
-                    this.checkedLine1.length === 0 ? "" : "OK";
-                  this.questStatus2 = "NG";
-                } else if (lastDigit > 5 && lastDigit < 9) {
-                  this.questStatus1 =
-                    this.checkedLine1.length === 0 ? "" : "OK";
-                  this.questStatus2 =
-                    this.checkedLine2.length === 0 ? "" : "OK";
-                  this.questStatus3 = "NG";
-                }
+                // if (lastDigit < 4) {
+                //   this.questStatus1 = "NG";
+                // } else if (lastDigit > 3 && lastDigit < 6) {
+                //   this.questStatus1 =
+                //     this.checkedLine1.length === 0 ? "" : "OK";
+                //   this.questStatus2 = "NG";
+                // } else if (lastDigit > 5 && lastDigit < 9) {
+                //   this.questStatus1 =
+                //     this.checkedLine1.length === 0 ? "" : "OK";
+                //   this.questStatus2 =
+                //     this.checkedLine2.length === 0 ? "" : "OK";
+                //   this.questStatus3 = "NG";
+                // }
+                // console.log(
+                //   "status=>",
+                //   data.mcIDList[num - 1].mcId - 1,
+                //   data.mcIDList[num - 1],
+                //   this.StatusList[data.mcIDList[num - 1].mcId - 1],
+                //   "num" + num
+                // );
+                this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status =
+                  "失败";
                 this.checkedLine1 = [];
                 this.checkedLine2 = [];
                 this.checkedLine3 = [];
                 this.initialize();
-                console.log(res.data);
-                this.$alert(res.data.Message, "错误信息", {
-                  confirmButtonText: "确定",
-                  callback: () => {
-                    this.$message({
-                      type: "error",
-                      message: "换线请求失败",
-                    });
-                  },
-                });
+                console.log(data.mcIDList[num - 1].mcName + res.data.Message);
+                // this.$alert(res.data.Message, "错误信息", {
+                //   confirmButtonText: "确定",
+                //   callback: () => {
+                //     this.$message({
+                //       type: "error",
+                //       message: "换线请求失败",
+                //     });
+                //   },
+                // });
               }
             })
             .catch((error) => {
               // console.log(lastDigit);
-              if (lastDigit < 4) {
-                this.questStatus1 = "NG";
-              } else if (lastDigit > 3 && lastDigit < 6) {
-                this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
-                this.questStatus2 = "NG";
-              } else if (lastDigit > 5 && lastDigit < 9) {
-                this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
-                this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
-                this.questStatus3 = "NG";
-              }
+              // if (lastDigit < 4) {
+              //   this.questStatus1 = "NG";
+              // } else if (lastDigit > 3 && lastDigit < 6) {
+              //   this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+              //   this.questStatus2 = "NG";
+              // } else if (lastDigit > 5 && lastDigit < 9) {
+              //   this.questStatus1 = this.checkedLine1.length === 0 ? "" : "OK";
+              //   this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
+              //   this.questStatus3 = "NG";
+              // }
               this.checkedLine1 = [];
               this.checkedLine2 = [];
               this.checkedLine3 = [];
@@ -709,11 +982,11 @@ export default {
       }
     },
     delHandleMouseEnter() {
-      this.$refs.carousel.handleMouseEnter = () => { };
+      this.$refs.carousel.handleMouseEnter = () => {};
     },
     closeCancellation1() {
       this.$nextTick(() => {
-        this.$refs.carousel.handleMouseEnter = () => { };
+        this.$refs.carousel.handleMouseEnter = () => {};
       });
       this.cancellation = false;
       this.dialogVisible = true;
@@ -723,7 +996,7 @@ export default {
     },
     closeCancellation2() {
       this.$nextTick(() => {
-        this.$refs.carousel.handleMouseEnter = () => { };
+        this.$refs.carousel.handleMouseEnter = () => {};
       });
       this.cancellation2 = false;
       this.dialogVisible2 = true;
@@ -733,7 +1006,7 @@ export default {
     },
     closeCancellation3() {
       this.$nextTick(() => {
-        this.$refs.carousel.handleMouseEnter = () => { };
+        this.$refs.carousel.handleMouseEnter = () => {};
       });
       this.cancellation3 = false;
       this.dialogVisible3 = true;
@@ -863,13 +1136,15 @@ export default {
         ...this.checkedLine2,
         ...this.checkedLine3,
       ];
-      lineArr = lineArr.map((item) => {
-        return {
-          mcId: item.id,
-          mcName: item.name,
-          action: "Q",
-        };
-      });
+      lineArr = lineArr
+        .sort((a, b) => a.id - b.id)
+        .map((item) => {
+          return {
+            mcId: item.id,
+            mcName: item.name,
+            action: "Q",
+          };
+        });
       let result = { ...this.form, mcIDList: lineArr };
       return result;
     },
@@ -898,6 +1173,8 @@ export default {
       // console.log(this.dataProcessing());
     },
     handleCheckedChange(value, a) {
+      console.log(value, a);
+
       if (a == 1) {
         this.lineCheck1 = value.length === this.lineData1.length;
       }
@@ -907,6 +1184,17 @@ export default {
       if (a == 3) {
         this.lineCheck3 = value.length === this.lineData3.length;
       }
+    },
+    picDioShow(checked, value) {
+      if (!checked) {
+        return;
+      }
+      this.picList.map((item, index) => {
+        if (value == index + 1) {
+          this.pic = item.pic;
+        }
+      });
+      this.picshow = true;
     },
     clearAll() {
       this.checkedLine1 = [];
@@ -918,6 +1206,16 @@ export default {
       this.lineCheck1 = false;
       this.lineCheck2 = false;
       this.lineCheck3 = false;
+      this.StatusList = [
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+        { status: null },
+      ];
     },
     startLoading() {
       this.loading = this.$loading({
@@ -970,7 +1268,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-width: 380px;
+    min-width: 630px;
     gap: 4vh;
     height: calc(100vh - 101px - 20vh);
     // flex: 1;
@@ -1145,5 +1443,13 @@ export default {
     top: 0;
     right: 0;
   }
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: #00e200;
 }
 </style>

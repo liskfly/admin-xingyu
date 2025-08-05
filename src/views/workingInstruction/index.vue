@@ -511,15 +511,15 @@ export default {
     },
     handleKeyDown() {
       if (document.fullscreenElement) {
-        // console.log("已进入全屏");
+        // console.log('已进入全屏');
+        this.isFullscreen = true;
         this.$refs.myElement.style.opacity = "1";
         this.$refs.myElement.style.height = "auto";
-        // this.isFullscreen = true;
       } else {
-        // console.log("已退出全屏");
+        // console.log('已退出全屏');
+        this.isFullscreen = false;
         this.$refs.myElement.style.opacity = "0";
         this.$refs.myElement.style.height = "0";
-        // this.isFullscreen = false;
       }
     },
     getScreenHeight() {
@@ -960,6 +960,7 @@ export default {
   width: 100%;
   height: 0;
   background-color: #4a4a4acf;
+  overflow: hidden;
   opacity: 0;
 
   .el-form-item {
