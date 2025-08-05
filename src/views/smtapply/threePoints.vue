@@ -37,12 +37,19 @@
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column label="文件" width="120" align="center">
+        <!-- <el-table-column label="文件" width="120" align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" icon="el-icon-view"
               @click="previewFile(scope.row.tpm_logno)">预览</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
+
+        <el-table-column label="日志文件" width="120" align="center">
+            <template slot-scope="scope">
+              <el-button type="success" size="mini" icon="el-icon-download"
+                @click="downloadFile(scope.row.tpm_logno)">下载</el-button>
+            </template>
+          </el-table-column>
       </el-table>
       <div class="mt-2">
         <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -171,8 +178,8 @@ export default {
         this.tableData = res.Data.list.map(item => {
           return {
             ...item,
-            tpm_imgno: `/txtFilesLog/${item.tpm_imgno}`,
-            tpm_logno: `/txtFilesLog/${item.tpm_logno}`
+            tpm_imgno: `${item.tpm_imgno}`,
+            tpm_logno: `${item.tpm_logno}`
           }
         })
         this.total = res.Data.Total;
