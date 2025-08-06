@@ -101,7 +101,10 @@
                         v-for="(item, index) in lineData1"
                         :label="item"
                         :key="item.id"
-                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
+                        @change="
+                          (checked) =>
+                            picDioShow(checked, Math.abs(item.id) % 10)
+                        "
                       >
                         <div class="list-content">
                           <div class="light">
@@ -136,11 +139,14 @@
                           <span class="mc">{{ item.name }}</span>
                           <span
                             :class="
-                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                              StatusList[(Math.abs(item.id) % 10) - 1]
+                                ?.status == '成功'
                                 ? 'green'
                                 : 'red'
                             "
-                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                            >{{
+                              StatusList[(Math.abs(item.id) % 10) - 1]?.status
+                            }}</span
                           >
                         </div>
                       </el-checkbox>
@@ -184,7 +190,10 @@
                         v-for="item in lineData2"
                         :label="item"
                         :key="item.id"
-                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
+                        @change="
+                          (checked) =>
+                            picDioShow(checked, Math.abs(item.id) % 10)
+                        "
                       >
                         <div class="list-content">
                           <div class="light">
@@ -208,11 +217,14 @@
                           <span class="mc">{{ item.name }}</span>
                           <span
                             :class="
-                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                              StatusList[(Math.abs(item.id) % 10) - 1]
+                                ?.status == '成功'
                                 ? 'green'
                                 : 'red'
                             "
-                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                            >{{
+                              StatusList[(Math.abs(item.id) % 10) - 1]?.status
+                            }}</span
                           >
                         </div>
                       </el-checkbox>
@@ -257,7 +269,10 @@
                         size=""
                         :label="item"
                         :key="item.id"
-                        @change="(checked) => picDioShow(checked, Math.abs(item.id) % 10)"
+                        @change="
+                          (checked) =>
+                            picDioShow(checked, Math.abs(item.id) % 10)
+                        "
                       >
                         <div class="list-content">
                           <div class="light">
@@ -281,11 +296,14 @@
                           <span class="mc">{{ item.name }}</span>
                           <span
                             :class="
-                              StatusList[Math.abs(item.id) % 10 - 1]?.status == '成功'
+                              StatusList[(Math.abs(item.id) % 10) - 1]
+                                ?.status == '成功'
                                 ? 'green'
                                 : 'red'
                             "
-                            >{{ StatusList[Math.abs(item.id) % 10 - 1]?.status }}</span
+                            >{{
+                              StatusList[(Math.abs(item.id) % 10) - 1]?.status
+                            }}</span
                           >
                         </div>
                       </el-checkbox>
@@ -446,6 +464,14 @@
       custom-class="vertical-centered"
     >
       <img :src="pic" alt="" />
+    </el-dialog>
+    <el-dialog
+      title="警告"
+      :visible.sync="warningVisible"
+      width="60%"
+      custom-class="vertical-centered"
+    >
+      <div style="height: 400px; white-space: pre-line">{{ warningText }}</div>
     </el-dialog>
   </div>
 </template>
@@ -662,6 +688,8 @@ export default {
         { status: null },
         { status: null },
       ],
+      warningVisible: false,
+      warningText: "",
     };
   },
   created() {
@@ -820,7 +848,7 @@ export default {
     changeOver(num) {
       // let data = this.dataProcessing();
       // console.log(data);
-      
+
       // getChangeOverOrderInfor({
       //   workOrder: 'WO2508060143410_A'
       // }).then((res) => {
@@ -881,15 +909,16 @@ export default {
                 this.getStatus(this.form.lineName);
               }
               if (res.data.Status == "OK") {
-                console.log(
-                  "status=>",
-                  data.mcIDList[num - 1].mcId - 1,
-                  data.mcIDList[num - 1],
-                  this.StatusList[data.mcIDList[num - 1].mcId - 1],
-                  "num" + num
-                );
-                this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status =
-                  "成功";
+                // console.log(
+                //   "status=>",
+                //   data.mcIDList[num - 1].mcId - 1,
+                //   data.mcIDList[num - 1],
+                //   this.StatusList[data.mcIDList[num - 1].mcId - 1],
+                //   "num" + num
+                // );
+                this.StatusList[
+                  (Math.abs(data.mcIDList[num - 1].mcId) % 10) - 1
+                ].status = "成功";
               } else {
                 // if (lastDigit < 4) {
                 //   this.questStatus1 = "NG";
@@ -911,12 +940,19 @@ export default {
                 //   this.StatusList[data.mcIDList[num - 1].mcId - 1],
                 //   "num" + num
                 // );
-                this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status =
-                  "失败";
+                this.StatusList[
+                  (Math.abs(data.mcIDList[num - 1].mcId) % 10) - 1
+                ].status = "失败";
                 this.checkedLine1 = [];
                 this.checkedLine2 = [];
                 this.checkedLine3 = [];
                 this.initialize();
+                this.warningText =
+                  this.warningText +
+                  "/r/n" +
+                  data.mcIDList[num - 1].mcName +
+                  res.data.Message;
+                this.warningVisible = true;
                 console.log(data.mcIDList[num - 1].mcName + res.data.Message);
                 // this.$alert(res.data.Message, "错误信息", {
                 //   confirmButtonText: "确定",
@@ -945,9 +981,15 @@ export default {
               this.checkedLine2 = [];
               this.checkedLine3 = [];
               this.endLoading();
-              this.$alert(error, "错误信息", {
-                confirmButtonText: "确定",
-              });
+              // this.$alert(error, "错误信息", {
+              //   confirmButtonText: "确定",
+              // });
+              this.warningText =
+                this.warningText +
+                "/r/n" +
+                data.mcIDList[num - 1].mcName +
+                error;
+              this.warningVisible = true;
             });
           if (
             data.mcIDList[0].mcId === 101 ||
@@ -1216,6 +1258,7 @@ export default {
         { status: null },
         { status: null },
       ];
+      this.warningText = "";
     },
     startLoading() {
       this.loading = this.$loading({
@@ -1268,7 +1311,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-width: 630px;
+    min-width: 730px;
     gap: 4vh;
     height: calc(100vh - 101px - 20vh);
     // flex: 1;
