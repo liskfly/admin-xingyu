@@ -3,13 +3,13 @@
     <el-card class="box-card" :body-style="{ padding: '8px' }">
       <div class="table_header">
         <el-button type="primary" @click="dialogVisible = true" size="medium">添加</el-button>
-          <div>
-            <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()">
-              <template slot="append">
-                <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
-              </template>
-            </el-input>
-          </div>
+        <div>
+          <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()">
+            <template slot="append">
+              <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
+            </template>
+          </el-input>
+        </div>
         <!-- <div class="input_box">
           <el-input
             placeholder="请输入内容"
@@ -24,20 +24,12 @@
         </div> -->
       </div>
       <div class="table_container">
-        <el-table
-          :data="
-            tableData1.slice(
-              (currentPage - 1) * pageSize,
-              currentPage * pageSize
-            )
-          "
-          border
-          :height="tableHeight"
-          row-key="step1"
-          style="width: 100%"
-          :tree-props="{ children: 'stepItemList' }"
-          size="small"
-        >
+        <el-table :data="tableData1.slice(
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
+        )
+          " border :height="tableHeight" row-key="step1" style="width: 100%" :tree-props="{ children: 'stepItemList' }"
+          size="small" :expand-row-keys="expands">
           <el-table-column prop="Product" label="产品编号" width="180">
           </el-table-column>
           <el-table-column prop="Step" label="检验工序" width="80">
@@ -52,59 +44,26 @@
           </el-table-column>
           <el-table-column prop="SubItemAim" label="上限值"> </el-table-column>
 
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="120"
-            align="center"
-          >
+          <el-table-column fixed="right" label="操作" width="120" align="center">
             <template slot-scope="scope">
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                size="mini"
-                v-if="scope.row.SubItem"
-                @click="handleEdit(scope.$index, scope.row)"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" v-if="scope.row.SubItem"
+                @click="handleEdit(scope.$index, scope.row)"></el-button>
 
-              <el-button
-                type="primary"
-                icon="el-icon-document-copy"
-                size="mini"
-                v-if="!scope.row.Name"
-                @click="copyData(scope.$index, scope.row)"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-document-copy" size="mini" v-if="!scope.row.Name"
+                @click="copyData(scope.$index, scope.row)"></el-button>
 
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                v-if="!scope.row.Name"
-                @click="delectData(scope.$index, scope.row)"
-              ></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" v-if="!scope.row.Name"
+                @click="delectData(scope.$index, scope.row)"></el-button>
 
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                v-if="scope.row.SubItem"
-                @click="handleDelete(scope.$index, scope.row)"
-              ></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" v-if="scope.row.SubItem"
+                @click="handleDelete(scope.$index, scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="block" style="margin-top: 8px">
-          <el-pagination
-            align="center"
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            :page-sizes="[5, 10, 20, 50, 100]"
-            layout="total,sizes, prev, pager, next, jumper"
-            :total="tableData1.length"
-          >
+          <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+            :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 50, 100]"
+            layout="total,sizes, prev, pager, next, jumper" :total="tableData1.length">
           </el-pagination>
         </div>
       </div>
@@ -115,22 +74,14 @@
           <el-input v-model="form.product" placeholder="产品编号"></el-input>
         </el-form-item>
       </el-form>
-      <el-form
-        ref="addform"
-        :rules="rules"
-        :model="addForm"
-        label-width="100px"
-      >
+      <el-form ref="addform" :rules="rules" :model="addForm" label-width="100px">
         <!-- <el-form-item label="产品编号" prop="product">
           <el-input v-model="form.product" placeholder="产品编号"></el-input>
         </el-form-item> -->
         <el-row>
           <el-col :span="12">
             <el-form-item label="检验工序" prop="step">
-              <el-input
-                v-model.number="addForm.step"
-                placeholder="检验工序"
-              ></el-input>
+              <el-input v-model.number="addForm.step" placeholder="检验工序"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -141,35 +92,20 @@
         </el-row>
 
         <el-form-item label="内容" prop="inspectContent">
-          <el-input
-            type="textarea"
-            v-model="addForm.inspectContent"
-            placeholder="内容"
-          ></el-input>
+          <el-input type="textarea" v-model="addForm.inspectContent" placeholder="内容"></el-input>
         </el-form-item>
       </el-form>
       <el-divider></el-divider>
-      <el-form
-        ref="addStepItem"
-        :rules="rules"
-        :model="addStepItem"
-        label-width="100px"
-      >
+      <el-form ref="addStepItem" :rules="rules" :model="addStepItem" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="编号" prop="subItem">
-              <el-input
-                v-model.number="addStepItem.subItem"
-                placeholder="子项编号"
-              ></el-input>
+              <el-input v-model.number="addStepItem.subItem" placeholder="子项编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="检查名称" prop="subItemName">
-              <el-input
-                v-model="addStepItem.subItemName"
-                placeholder="子项名称"
-              ></el-input>
+              <el-input v-model="addStepItem.subItemName" placeholder="子项名称"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -177,30 +113,18 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="单位" prop="subItemBasic">
-              <el-input
-                type="textarea"
-                v-model="addStepItem.subItemBasic"
-                placeholder="单位"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input type="textarea" v-model="addStepItem.subItemBasic" placeholder="单位"></el-input>
+            </el-form-item></el-col>
           <el-col :span="12">
             <el-form-item label="下限值" prop="subItemMethod">
-              <el-input
-                type="textarea"
-                v-model="addStepItem.subItemMethod"
-                placeholder="下限值"
-              ></el-input>
+              <el-input type="textarea" v-model="addStepItem.subItemMethod" placeholder="下限值"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="上限值" prop="subItemAim">
-              <el-input
-                type="textarea"
-                v-model="addStepItem.subItemAim"
-                placeholder="上限值"
-              ></el-input>
+              <el-input type="textarea" v-model="addStepItem.subItemAim" placeholder="上限值"></el-input>
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12">
@@ -221,26 +145,14 @@
     <el-dialog title="修改" :visible.sync="dialogEditVisible">
       <el-form :rules="rules" :model="changeForm" label-width="100px">
         <el-form-item label="产品编号" prop="product">
-          <el-input
-            disabled
-            v-model="changeForm.product"
-            placeholder="产品编号"
-          ></el-input>
+          <el-input disabled v-model="changeForm.product" placeholder="产品编号"></el-input>
         </el-form-item>
       </el-form>
-      <el-form
-        ref="eidtForm"
-        :rules="rules"
-        :model="editForm"
-        label-width="100px"
-      >
+      <el-form ref="eidtForm" :rules="rules" :model="editForm" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="检验工序" prop="step">
-              <el-input
-                v-model.number="editForm.step"
-                placeholder="检验工序"
-              ></el-input>
+              <el-input v-model.number="editForm.step" placeholder="检验工序"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -251,35 +163,20 @@
         </el-row>
 
         <el-form-item label="内容" prop="inspectContent">
-          <el-input
-            type="textarea"
-            v-model="editForm.inspectContent"
-            placeholder="内容"
-          ></el-input>
+          <el-input type="textarea" v-model="editForm.inspectContent" placeholder="内容"></el-input>
         </el-form-item>
       </el-form>
       <el-divider></el-divider>
-      <el-form
-        ref="eidtForm2"
-        :rules="rules"
-        :model="stepItemList"
-        label-width="100px"
-      >
+      <el-form ref="eidtForm2" :rules="rules" :model="stepItemList" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="编号" prop="subItem">
-              <el-input
-                v-model.number="stepItemList.subItem"
-                placeholder="子项编号"
-              ></el-input>
+              <el-input v-model.number="stepItemList.subItem" placeholder="子项编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="检验名称" prop="subItemName">
-              <el-input
-                v-model="stepItemList.subItemName"
-                placeholder="子项名称"
-              ></el-input>
+              <el-input v-model="stepItemList.subItemName" placeholder="子项名称"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -287,30 +184,18 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="单位">
-              <el-input
-                type="textarea"
-                v-model="stepItemList.subItemBasic"
-                placeholder="单位"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input type="textarea" v-model="stepItemList.subItemBasic" placeholder="单位"></el-input>
+            </el-form-item></el-col>
           <el-col :span="12">
             <el-form-item label="下限值">
-              <el-input
-                type="textarea"
-                v-model="stepItemList.subItemMethod"
-                placeholder="下限值"
-              ></el-input>
+              <el-input type="textarea" v-model="stepItemList.subItemMethod" placeholder="下限值"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="上限值">
-              <el-input
-                type="textarea"
-                v-model="stepItemList.subItemAim"
-                placeholder="上限值"
-              ></el-input>
+              <el-input type="textarea" v-model="stepItemList.subItemAim" placeholder="上限值"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -332,10 +217,7 @@
     <el-dialog title="复制" :visible.sync="copyDialogVisible">
       <el-form :model="copyForm" label-width="100px">
         <el-form-item label="产品编号" prop="product">
-          <el-input
-            v-model="copyForm.product"
-            placeholder="产品编号"
-          ></el-input>
+          <el-input v-model="copyForm.product" placeholder="产品编号"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -360,7 +242,7 @@ export default {
       dialogEditVisible: false,
       copyDialogVisible: false,
       tableData: [],
-      tableData1:[],
+      tableData1: [],
       rowKey: 1,
       currentPage: 1, // 当前页码
       //   total: 0, // 总条数
@@ -465,6 +347,7 @@ export default {
       itemPass1: "",
       itemPass2: "",
       isExit: [],
+      expands: []
     };
   },
   created() {
@@ -477,13 +360,13 @@ export default {
     "addForm.step"(value) {
       this.inputStep(value);
     },
-      searchName(newdata) {
-        if (newdata == "") {
-          this.tableData1 = this.tableData;
-        } else {
-          this.tableData1 = this.table1(newdata);
-        }
-      },
+    searchName(newdata) {
+      if (newdata == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(newdata);
+      }
+    },
   },
   beforeMount() {
     this.getScreenHeight();
@@ -784,13 +667,13 @@ export default {
           });
         });
     },
-      table1(newdata) {
-        let searchName = newdata.toLowerCase();
-        this.currentPage = 1;
-        return this.tableData.filter((v) => {
-          return String(v.Product).toLowerCase().indexOf(searchName) > -1;
-        });
-      },
+    table1(newdata) {
+      let searchName = newdata.toLowerCase();
+      this.currentPage = 1;
+      return this.tableData.filter((v) => {
+        return String(v.Product).toLowerCase().indexOf(searchName) > -1;
+      });
+    },
     searchData() {
       if (this.searchName == "") {
         this.tableData1 = this.tableData;
@@ -802,6 +685,10 @@ export default {
       this.eidtData(row);
       this.changeForm.product = row.Product;
       this.dialogEditVisible = true;
+      this.expands = []
+    
+
+      this.expands.push(row.step1)
     },
     handleDelete(index, row) {
       this.eidtData(row);
@@ -910,12 +797,14 @@ export default {
 <style lang="scss" scoped>
 .firstdata {
   padding: 8px;
+
   .table_header {
     padding-bottom: 8px;
     display: flex;
     gap: 30px;
     justify-content: space-between;
     align-items: center;
+
     .input_box {
       width: 400px;
     }
