@@ -1,6 +1,7 @@
 import axios from "axios";
-import { MessageBox, Message, Loading, alert } from "element-ui";
+import { MessageBox, Message, Loading } from "element-ui";
 import { getToken1, removeToken1 } from "@/utils/auth";
+// import router from "@/router";
 const loading = {
   //loading加载对象
   loadingInstance: null,
@@ -35,7 +36,7 @@ let source = axios.CancelToken.source();
 // console.log(source);
 service.interceptors.request.use(
   (config) => {
-    const token = getToken1() || '' //getToken是在另一个JS文件中封装好的方法
+    const token = getToken1() || ''
     token && (config.headers['authorization'] = token)
     config.cancelToken = source.token; // 取消请求
     if (config.cancelToken && config.cancelObj && config.cancelObj.cancel) {
@@ -63,8 +64,6 @@ service.interceptors.response.use(
     setTimeout(() => {
       loading.close();
     }, 400);
-     //关闭加载窗口
-    //建议打印一下 有些后台返回回来的数据格式不同  可根据自己的数据格式进行调整
 
     //错误提示
     if (response.status === 500) {
@@ -87,16 +86,12 @@ service.interceptors.response.use(
 
     //成功的返回
     if (response.status === 200) {
-      // console.log(response.data);
-      
-      // console.log(response.data.ResultCode);
-      // if (response.data.Success==true) {
+     
         if (response.data.code === 401&&response.data.Code === 401) {
             removeToken1()
-            this.$router.push('/login');
+            // router.push('/login');
           }
         return response.data;
-      // } 
 
     }
   },
@@ -105,7 +100,7 @@ service.interceptors.response.use(
     MessageBox.alert("服务器内部错误", "提示信息", {
       confirmButtonText: "确定",
     });
-    this.$router.push('/login');
+    // router.push('/login');
   }
 );
 

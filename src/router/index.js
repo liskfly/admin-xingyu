@@ -1,7 +1,4 @@
 import Vue from "vue";
-// import VueRouter from "vue-router"; // 正确导入 VueRouter
-
-// Vue.use(VueRouter);
 import Router from "vue-router";
 
 Vue.use(Router);
@@ -12,7 +9,6 @@ import Layout from "@/layout";
 export const asyncRouterMap = [];
 
 export const constantRoutes = [
-  // 保持你原有的静态路由配置不变
   {
     path: '/',
     redirect: '/home',
@@ -54,34 +50,15 @@ export const constantRoutes = [
 
 export const error404 = { path: "*", redirect: "/404", hidden: true };
 
-// // 关键修改1：导出createRouter函数（供动态路由合并时调用）
-// export const createRouter = (routes) => 
-//   new VueRouter({
-//     mode: 'history', // 必须与初始配置一致
-//     scrollBehavior: () => ({ y: 0 }),
-//     routes: routes || constantRoutes // 允许传入自定义路由
-//   });
-
-// // 关键修改2：初始化时使用createRouter
-// const router = createRouter(); 
-
-// // 重置路由的方法（保持原有逻辑）
-// export function resetRouter() {
-//   const newRouter = createRouter();
-//   router.matcher = newRouter.matcher;
-// }
-
-// export default router;
 const createRouter = (routes) =>
   new Router({
-    mode: "history", // require service support
+    mode: "history", 
     scrollBehavior: () => ({ y: 0 }),
     routes:routes|| constantRoutes,
   });
 
 const router = createRouter();
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter();
   router.matcher = newRouter.matcher; // reset router

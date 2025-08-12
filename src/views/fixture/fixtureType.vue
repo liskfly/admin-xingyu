@@ -8,8 +8,8 @@
                         @change="getSearchData" size="medium">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input> -->
-                    <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入" @keyup.enter.native="searchData()"
-                        @clear="clearData">
+                    <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入"
+                        @keyup.enter.native="searchData()" @clear="clearData">
                         <template slot="append">
                             <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
                         </template>
@@ -314,6 +314,15 @@ export default {
             searchName: ""
         };
     },
+    // watch: {
+    //     searchName(newVal) {
+    //         if (newVal === "") {
+    //             this.tableData1 = this.tableData;
+    //         } else {
+    //             this.tableData1 = this.table1(newVal);
+    //         }
+    //     },
+    // },
     beforeMount() {
         this.getScreenHeight();
     },
@@ -327,7 +336,7 @@ export default {
     methods: {
         searchData() {
             if (this.searchName == "") {
-        
+
                 this.tableData1 = this.tableData;
             } else {
                 this.tableData1 = this.table1(this.searchName);
@@ -336,7 +345,7 @@ export default {
         // 打开添加对话框
         table1(newdata) {
             console.log(newdata);
-            
+
             let searchName = newdata.toLowerCase();
             this.currentPage = 1;
             return this.tableData.filter((v) => {
@@ -352,7 +361,7 @@ export default {
         },
         clearData() {
             this.searchName = "";
-             this.currentPage = 1;
+            this.currentPage = 1;
             // this.tableData1 = this.tableData;
             this.getData()
             // 清除搜索时重置页码
@@ -373,15 +382,19 @@ export default {
         },
         addCancel() {
             this.addVisible = false;
+            this.formControl = {
+                cleanAfterUses: false,
+                cleanAfterPause: false,
+                cleanAfterTime: false,
+            };
             this.$refs.formRef.resetFields();
         },
         addSubmit() {
-            // console.log(this.addForm);
             let formData = {
                 ...this.addForm,
-                cleanAfterUses: `${this.addForm.cleanAfterUses ? "Y" : "N"}`,
-                cleanAfterPause: `${this.addForm.cleanAfterPause ? "Y" : "N"}`,
-                cleanAfterTime: `${this.addForm.cleanAfterTime ? "Y" : "N"}`,
+                cleanAfterUses: this.formControl.cleanAfterUses ? "Y" : "N",
+                cleanAfterPause: this.formControl.cleanAfterPause ? "Y" : "N",
+                cleanAfterTime: this.formControl.cleanAfterTime ? "Y" : "N",
             };
             this.$refs.formRef.validate((valid) => {
                 if (!valid) {
@@ -410,6 +423,11 @@ export default {
                                 tensionPoints: 0,
                                 operationType: "I",
                             };
+                            this.formControl = {
+                                cleanAfterUses: false,
+                                cleanAfterPause: false,
+                                cleanAfterTime: false,
+                            };
                             // this.$refs.formRef.resetFields();
                             this.addVisible = false;
                         } else {
@@ -437,13 +455,12 @@ export default {
                 lowerTensionLimit: row.LowerTensionLimit,
                 tensionPoints: row.TensionPoints,
             };
-
-            this.editVisible = true;
             this.editFormControl = {
-                cleanAfterUses: row.UsesUntilRevalidation > 0,
-                cleanAfterPause: row.PauseUntilRevalidate > 0,
-                cleanAfterTime: row.TimeUntilRevalidation > 0,
+                cleanAfterUses: row.CleanAfterUses == "Y",
+                cleanAfterPause: row.CleanAfterPause == "Y",
+                cleanAfterTime: row.CleanAfterTime == "Y",
             };
+            this.editVisible = true;
         },
         handleDelete(row) {
             this.$confirm("确定删除", "确认操作", {
