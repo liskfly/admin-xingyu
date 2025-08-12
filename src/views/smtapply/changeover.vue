@@ -719,14 +719,7 @@ export default {
         this.form.lineName == "Line6" ||
         this.form.lineName == "Line7"
       ) {
-        return [
-          {
-            id: 1,
-            name: "Laser",
-            equipment: "0",
-            orbit: "0",
-          },
-        ];
+        return this.lineData.filter((item, index) => index < 1);
       }
       return this.lineData.filter((item, index) => index < 3);
     },
@@ -848,7 +841,6 @@ export default {
     changeOver(num) {
       // let data = this.dataProcessing();
       // console.log(data);
-
       // getChangeOverOrderInfor({
       //   workOrder: 'WO2508060143410_A'
       // }).then((res) => {
@@ -859,6 +851,21 @@ export default {
       //     console.log(this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status);
       //     this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status = "成功";
       //     console.log(this.StatusList[Math.abs(data.mcIDList[num - 1].mcId) % 10 - 1].status);
+      //           // this.warningText =
+      //           //   this.warningText +
+      //           //   "\r\n" +
+      //           //   data.mcIDList[num - 1].mcName +
+      //           //   '错误';
+      //           // this.warningVisible = true;
+
+      //         // this.$alert(data.mcIDList[num - 1].mcName + '错误', "错误信息", {
+      //         //   confirmButtonText: "确定",
+      //         // });
+      //                   this.$notify.error({
+      //     title: '错误',
+      //     dangerouslyUseHTMLString: true,
+      //     message: `<i>${data.mcIDList[num - 1].mcName + '微博给巴尔欧冠波尔外包给我共轭我给'}</i>`
+      //   });
       //   }
       // if (num !== data.mcIDList.length) {
       //   this.changeOver(num + 1);
@@ -947,13 +954,21 @@ export default {
                 this.checkedLine2 = [];
                 this.checkedLine3 = [];
                 this.initialize();
-                this.warningText =
-                  this.warningText +
-                  "/r/n" +
-                  data.mcIDList[num - 1].mcName +
-                  res.data.Message;
-                this.warningVisible = true;
-                console.log(data.mcIDList[num - 1].mcName + res.data.Message);
+                this.$notify.error({
+                  title: "错误",
+                  dangerouslyUseHTMLString: true,
+                  message: `<i>${
+                    data.mcIDList[num - 1].mcName + res.data.Message
+                  }</i>`,
+                  duration:0
+                });
+                // this.warningText =
+                //   this.warningText +
+                //   "\r\n" +
+                //   data.mcIDList[num - 1].mcName +
+                //   res.data.Message;
+                // this.warningVisible = true;
+                // console.log(data.mcIDList[num - 1].mcName + res.data.Message);
                 // this.$alert(res.data.Message, "错误信息", {
                 //   confirmButtonText: "确定",
                 //   callback: () => {
@@ -977,19 +992,33 @@ export default {
               //   this.questStatus2 = this.checkedLine2.length === 0 ? "" : "OK";
               //   this.questStatus3 = "NG";
               // }
+
+              if (num !== data.mcIDList.length) {
+                this.changeOver(num + 1);
+              } else if (num === data.mcIDList.length) {
+                this.checkedLine1 = [];
+                this.checkedLine2 = [];
+                this.checkedLine3 = [];
+                this.getStatus(this.form.lineName);
+              }
               this.checkedLine1 = [];
               this.checkedLine2 = [];
               this.checkedLine3 = [];
               this.endLoading();
-              // this.$alert(error, "错误信息", {
-              //   confirmButtonText: "确定",
-              // });
-              this.warningText =
-                this.warningText +
-                "/r/n" +
-                data.mcIDList[num - 1].mcName +
-                error;
-              this.warningVisible = true;
+              this.$notify.error({
+                title: "错误",
+                dangerouslyUseHTMLString: true,
+                message: `<i>${
+                  data.mcIDList[num - 1].mcName + error
+                }</i>`,
+                duration:0
+              });
+              // this.warningText =
+              //   this.warningText +
+              //   "\r\n" +
+              //   data.mcIDList[num - 1].mcName +
+              //   error;
+              // this.warningVisible = true;
             });
           if (
             data.mcIDList[0].mcId === 101 ||
@@ -1142,18 +1171,18 @@ export default {
           this.statusData.forEach((element) => {
             this.lineData.forEach((item, index) => {
               if (element.McId === item.id) {
-                console.log(
-                  index,
-                  element.McIdStatus,
-                  element.ConverConveyorStatus
-                );
+                // console.log(
+                //   index,
+                //   element.McIdStatus,
+                //   element.ConverConveyorStatus
+                // );
 
                 this.lineData[index].equipment = element.McIdStatus;
                 this.lineData[index].orbit = element.ConverConveyorStatus;
               }
             });
           });
-          console.log(this.lineData);
+          // console.log(this.lineData);
         }
       });
       // .catch(() => {
@@ -1178,6 +1207,7 @@ export default {
         ...this.checkedLine2,
         ...this.checkedLine3,
       ];
+
       lineArr = lineArr
         .sort((a, b) => a.id - b.id)
         .map((item) => {
@@ -1215,7 +1245,7 @@ export default {
       // console.log(this.dataProcessing());
     },
     handleCheckedChange(value, a) {
-      console.log(value, a);
+      // console.log(value, a);
 
       if (a == 1) {
         this.lineCheck1 = value.length === this.lineData1.length;
