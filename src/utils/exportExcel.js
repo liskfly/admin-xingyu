@@ -138,3 +138,67 @@ export async function exportTableToExcel({
 //   _id: index // 如果依赖 _id，确保它是数字
 // }));
 // },
+
+export async function generateToolingJsonFromExcel(file) {
+  try {
+    const workbook = new ExcelJS.Workbook();
+    // 添加时间修复选项避免富文本错误
+    workbook.xlsx.read(await file.arrayBuffer(), {
+      ignoreNodes: ['xdr:wsDr'], // 忽略绘图元素
+      ignoreStyles: true,         // 忽略样式信息
+      dateFormats: ['YYYY-MM-DD'] // 明确日期格式
+    });
+
+    const defectSheet = workbook.getWorksheet('SMT缺陷样件');
+    if (!defectSheet) {
+      throw new Error('未找到"SMT缺陷样件"工作表');
+    }
+
+    const result = [];
+    let rowNumber = 0;
+
+    // 改用手动行遍历避免eachRow内部错误
+    for (let i = 4; i <= defectSheet.rowCount; i++) {
+      try {
+        rowNumber = i;
+        const row = defectSheet.getRow(i);
+        if (!row || row.hidden) continue;
+
+        // 安全获取单元格值
+        const getCellValue = (col) => {
+          const cell = row.getCell(col);
+          return cell.value ? cell.value.toString().trim() : '';
+        };
+
+        const sampleCode = getCellValue(1);
+        const productName = getCellValue(3);
+
+        if (!sampleCode || !productName) continue;
+
+        result.push({
+          category: "3",
+          toolsMold: sampleCode,
+          materialName: productName,
+          totalUses: 0,
+          usesUntilRevalidation: 0,
+          pauseUntilRevalidate: 0,
+          timeUntilRevalidation: 0,
+          cleaningTime: 0,
+          tensionLimit: 0,
+          lowerTensionLimit: 0,
+          tensionPoints: 0,
+          operationType: "I",
+          cleanAfterUses: "N",
+          cleanAfterPause: "N",
+          cleanAfterTime: "N"
+        });
+      } catch (rowError) {
+        console.warn(`跳过第 ${rowNumber} 行，解析错误:`, rowError.message);
+      }
+    }
+    return result;
+  } catch (error) {
+    console.error('Excel处理失败:', error);
+    throw new Error(`处理Excel文件失败: ${error.message}`);
+  }
+}

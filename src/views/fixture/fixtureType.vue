@@ -8,7 +8,7 @@
                         @change="getSearchData" size="medium">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input> -->
-                    <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入"
+                    <el-input v-model.trim="searchName" style="width: 350px;" clearable placeholder="请输入"
                         @keyup.enter.native="searchData()" @clear="clearData">
                         <template slot="append">
                             <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
@@ -344,8 +344,6 @@ export default {
         },
         // 打开添加对话框
         table1(newdata) {
-            console.log(newdata);
-
             let searchName = newdata.toLowerCase();
             this.currentPage = 1;
             return this.tableData.filter((v) => {
@@ -375,6 +373,11 @@ export default {
                     // this.tableData = res.data.DataList;
                     this.tableData = res.data.DataList;
                     this.tableData1 = this.tableData
+                    if (this.searchName == "") {
+                        this.tableData1 = this.tableData;
+                    } else {
+                        this.tableData1 = this.table1(this.searchName);
+                    }
                 })
                 .catch(() => {
                     this.$message.error("请求数据失败，请刷新");

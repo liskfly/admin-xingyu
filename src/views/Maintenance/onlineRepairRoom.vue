@@ -47,7 +47,7 @@
 
                 <af-table-column prop="baddata_uuser" label="维修人"></af-table-column>
                 <el-table-column prop="baddata_udatetime" label="维修时间" width="150"></el-table-column>
-                <af-table-column label="操作" fixed="right" width="200" align="center">
+                <af-table-column label="操作" fixed="right" width="210" align="center">
                     <template v-slot="{ row }">
                         <el-button type="primary" size="mini" @click="handleEdit(row)" :disabled="row.baddata_stts == '报废审核' ||
                             row.baddata_stts == '完成报废' ||

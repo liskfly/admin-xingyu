@@ -31,7 +31,7 @@
                 </el-form>
             </div>
             <el-table :data="paginatedData" :height="tableHeight"   border stripe
-                @sort-change="handleSortChange">
+                @sort-change="handleSortChange" size="small">
                 <!-- 表格列定义保持不变 -->
                 <el-table-column prop="OrderName" label="工单"></el-table-column>
                 <el-table-column prop="OperationID" label="制程ID" width="80"></el-table-column>
