@@ -3,13 +3,13 @@
         <el-card shadow="always" :body-style="{ padding: '8px' }">
             <div class="flex justify-between items-center">
                 <el-form ref="form" :inline="true" :model="getForm" label-width="auto">
-                    <!-- <el-form-item label="时间" class="mb-2">
+                    <el-form-item label="时间" class="mb-2">
                         <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至"
                             start-placeholder="开始日期" end-placeholder="结束日期" size="small" :picker-options="pickerOptions"
                             value-format="yyyy-MM-dd HH:mm:ss" :default-time="['00:00:00', '23:59:59']"
                             :clearable="false">
                         </el-date-picker>
-                    </el-form-item> -->
+                    </el-form-item>
 
                     <el-form-item label="SN码" class="mb-2">
                         <el-input placeholder="" clearable style="width: 300px"
@@ -41,8 +41,8 @@
                     </template>
                 </af-table-column>
                 <af-table-column prop="containername" label="产品SN" fixed="left"></af-table-column>
-                <af-table-column prop="mfgordername" label="工单号" fixed="left"></af-table-column>
-                <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
+                <af-table-column prop="mfgordername" label="工单号"></af-table-column>
+                <af-table-column prop="productname" label="产品编码"></af-table-column>
                 <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
 
                 <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
@@ -61,6 +61,12 @@
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
+                <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
+                <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
+                <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
+                <el-table-column prop="badphenomena_desc" label="不良描述"></el-table-column>
+                <el-table-column prop="baddatadetail_remark" label="不良备注"></el-table-column>
+
                 <af-table-column prop="baddata_user" label="报修人"></af-table-column>
                 <el-table-column prop="baddata_datetime" label="报修时间" width="150"></el-table-column>
 
@@ -347,7 +353,7 @@ export default {
                 productvalue: "",
                 tableData: [],
             },
-            replaceVisible:false   
+            replaceVisible: false
         };
     },
     watch: {
@@ -400,28 +406,28 @@ export default {
             this.getData();
         },
         handleCellClick(row, column) {
-      // console.log(row,column);
-      if (column.label == "报修单号") {
-        // console.log(row);
-        this.replaceForm.baddatadetail_pcbid = row.baddata_no;
-            this.replaceForm.containerName = row.baddata_pcbid;
-            this.replaceForm.mfgordername = row.mfgordername;
-            this.replaceForm.productname = row.productname;
-            this.replaceForm.productvalue = row.productvalue;
-            QueryXYL_BadProductInformationFromByNo({
-                baddatadetail_no: row.baddata_no,
-            }).then(res => {
-          this.replaceForm.tableData=res.Data
-          this.replaceVisible=true
-        })
+            // console.log(row,column);
+            if (column.label == "报修单号") {
+                // console.log(row);
+                this.replaceForm.baddatadetail_pcbid = row.baddata_no;
+                this.replaceForm.containerName = row.baddata_pcbid;
+                this.replaceForm.mfgordername = row.mfgordername;
+                this.replaceForm.productname = row.productname;
+                this.replaceForm.productvalue = row.productvalue;
+                QueryXYL_BadProductInformationFromByNo({
+                    baddatadetail_no: row.baddata_no,
+                }).then(res => {
+                    this.replaceForm.tableData = res.Data
+                    this.replaceVisible = true
+                })
 
-      }
+            }
 
-    },
-    replaceCancel(){
-      this.replaceForm.tableData=[]
-      this.replaceVisible=false
-    },
+        },
+        replaceCancel() {
+            this.replaceForm.tableData = []
+            this.replaceVisible = false
+        },
         deducedClick() {
             exportTableToExcel({
                 tableRef: this.$refs.repairRoomRef,

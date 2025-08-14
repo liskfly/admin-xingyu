@@ -1,6 +1,7 @@
 // utils/exportExcel.js
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+import { Notification } from "element-ui";
 
 /**
  * 导出 el-table 全部数据到 Excel（支持分页）
@@ -13,46 +14,47 @@ import { saveAs } from 'file-saver';
 // 对齐方式映射函数
 function mapAlignment(align) {
   const map = {
-    left: 'left',
-    center: 'center',
-    right: 'right',
-    undefined: 'left'
+    left: "left",
+    center: "center",
+    right: "right",
+    undefined: "left",
   };
-  return map[align] || 'left';
+  return map[align] || "left";
 }
 export async function exportTableToExcel({
   tableRef,
   fetchAllData,
-  fileName = 'export',
-  styles = {
-  }
+  fileName = "export",
+  styles = {},
 }) {
   try {
     // 1. 获取全部数据
     const allData = await fetchAllData();
 
     // 2. 获取表头配置
-    const columns = tableRef.columns.filter(col => col.label !== '序号'&&col.label !== '操作').map(col => ({
-      label: col.label,
-      prop: col.property || '',
-      align: col.align
-    }));
+    const columns = tableRef.columns
+      .filter((col) => col.label !== "序号" && col.label !== "操作")
+      .map((col) => ({
+        label: col.label,
+        prop: col.property || "",
+        align: col.align,
+      }));
 
     // 3. 创建 Workbook
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Sheet1');
+    const worksheet = workbook.addWorksheet("Sheet1");
 
     // 4. 添加表头
-    const headerRow = columns.map(col => col.label);
+    const headerRow = columns.map((col) => col.label);
     worksheet.addRow(headerRow);
 
     // 5. 添加数据行
-    allData.forEach(row => {
-      const rowData = columns.map(col => {
+    allData.forEach((row) => {
+      const rowData = columns.map((col) => {
         // 处理嵌套属性（例如：user.name）
-        return col.prop.split('.').reduce((obj, key) => {
-          if (obj && typeof obj === 'object') return obj[key];
-          return '';
+        return col.prop.split(".").reduce((obj, key) => {
+          if (obj && typeof obj === "object") return obj[key];
+          return "";
         }, row);
       });
       worksheet.addRow(rowData);
@@ -66,47 +68,49 @@ export async function exportTableToExcel({
       allData.forEach((row, rowIndex) => {
         const excelRowNumber = rowIndex + 2;
         const cell = worksheet.getRow(excelRowNumber).getCell(colIndex + 1);
-        const cellValue = cell.value?.toString() || '';
+        const cellValue = cell.value?.toString() || "";
         maxDataLength = Math.max(maxDataLength, cellValue.length);
       });
 
       return {
         width: Math.max(headerLength, maxDataLength) + 4,
-        style: { 
-          alignment: { 
+        style: {
+          alignment: {
             wrapText: true,
-            horizontal: col.align ? mapAlignment(col.align) : 'left'
+            horizontal: col.align ? mapAlignment(col.align) : "left",
           },
-          ...(styles.cell || {})
-        }
+          ...(styles.cell || {}),
+        },
       };
     });
 
     // 7. 应用表头样式
-    worksheet.getRow(1).eachCell(cell => {
+    worksheet.getRow(1).eachCell((cell) => {
       Object.assign(cell, {
         font: { bold: true, ...(styles.headerFont || {}) },
         fill: {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: styles.headerBgColor || 'FFD3D3D3' }
-        }
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: styles.headerBgColor || "FFD3D3D3" },
+        },
       });
     });
 
     // 8. 导出文件
     const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     saveAs(blob, `${fileName}.xlsx`);
-
   } catch (error) {
-    console.error('[Excel Export Error]', error);
-    throw new Error('导出失败，请重试');
+    console.error("[Excel Export Error]", error);
+    Notification.error({
+      title: "错误",
+      message: "导出失败，请重试",
+    });
+    throw new Error("导出失败，请重试");
   }
 }
-
 
 // async handleExport() {
 //   try {
@@ -118,9 +122,9 @@ export async function exportTableToExcel({
 //         headerBgColor: 'FFA0A0A0',  // 灰色表头
 //         headerFont: { color: 'FFFFFFFF' }, // 白色文字
 //headerFont: {
-  //color: { argb: 'FFFFFFFF' }, // 红色文字
-  //bold: true,
-  //italic: true
+//color: { argb: 'FFFFFFFF' }, // 红色文字
+//bold: true,
+//italic: true
 //},
 //         cell: { numFmt: '@' } // 强制文本格式
 //       }
@@ -132,8 +136,8 @@ export async function exportTableToExcel({
 
 // // 获取全部数据的方法（根据实际场景实现）
 // async fetchAllUsers() {
-  
-//   return this.tableData.map((item, index) => ({ 
+
+//   return this.tableData.map((item, index) => ({
 //   ...item,
 //   _id: index // 如果依赖 _id，确保它是数字
 // }));
@@ -144,12 +148,12 @@ export async function generateToolingJsonFromExcel(file) {
     const workbook = new ExcelJS.Workbook();
     // 添加时间修复选项避免富文本错误
     workbook.xlsx.read(await file.arrayBuffer(), {
-      ignoreNodes: ['xdr:wsDr'], // 忽略绘图元素
-      ignoreStyles: true,         // 忽略样式信息
-      dateFormats: ['YYYY-MM-DD'] // 明确日期格式
+      ignoreNodes: ["xdr:wsDr"], // 忽略绘图元素
+      ignoreStyles: true, // 忽略样式信息
+      dateFormats: ["YYYY-MM-DD"], // 明确日期格式
     });
 
-    const defectSheet = workbook.getWorksheet('SMT缺陷样件');
+    const defectSheet = workbook.getWorksheet("SMT缺陷样件");
     if (!defectSheet) {
       throw new Error('未找到"SMT缺陷样件"工作表');
     }
@@ -167,7 +171,7 @@ export async function generateToolingJsonFromExcel(file) {
         // 安全获取单元格值
         const getCellValue = (col) => {
           const cell = row.getCell(col);
-          return cell.value ? cell.value.toString().trim() : '';
+          return cell.value ? cell.value.toString().trim() : "";
         };
 
         const sampleCode = getCellValue(1);
@@ -190,7 +194,7 @@ export async function generateToolingJsonFromExcel(file) {
           operationType: "I",
           cleanAfterUses: "N",
           cleanAfterPause: "N",
-          cleanAfterTime: "N"
+          cleanAfterTime: "N",
         });
       } catch (rowError) {
         console.warn(`跳过第 ${rowNumber} 行，解析错误:`, rowError.message);
@@ -198,7 +202,7 @@ export async function generateToolingJsonFromExcel(file) {
     }
     return result;
   } catch (error) {
-    console.error('Excel处理失败:', error);
+    console.error("Excel处理失败:", error);
     throw new Error(`处理Excel文件失败: ${error.message}`);
   }
 }

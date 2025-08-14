@@ -25,7 +25,7 @@
                             <el-input v-model="row.baddata_item" size="small" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="baddata_component" label="不良代码">
+                    <el-table-column prop="baddata_component" label="不良名称">
                         <template v-slot="{ row }">
                             <el-select v-model="row.baddata_code" placeholder="请选择不良代码" style="width: 100%;">
                                 <el-option v-for="item in badList" :key="item.badphenomena_name"
@@ -165,8 +165,10 @@ export default {
         },
         getEquipmentData() {
             QueryEquipment({
-                EquipmenName: "",
+                EquipmenName:"",
             }).then((res) => {
+                console.log(res);
+                
                 this.equipmentData = res.Data;
             });
         },

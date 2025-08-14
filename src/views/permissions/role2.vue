@@ -1,212 +1,257 @@
 <template>
-  <div class="role">
-    <el-card :body-style="{ padding: '8px' }">
-      <div class="table_header">
-        <el-button type="primary" @click="openAdd()">新增</el-button>
+  <div class="p-2">
+    <el-card shadow="always" :body-style="{ padding: '8px' }">
+      <div class="mb-2 flex justify-between">
+        <el-button type="primary" @click="openAdd" size="small">添加</el-button>
+        <div>
+          <el-input v-model="searchName" clearable placeholder="请输入">
+            <template slot="append">
+              <el-button type="primary" icon="el-icon-search"></el-button>
+            </template>
+          </el-input>
+        </div>
       </div>
-      <el-table
-        :data="
-          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
-        border
-        :height="tableHeight"
-        stripe
-      >
-        <el-table-column label="序号" type="index" width="50"></el-table-column>
-        <el-table-column label="角色名称" prop="xyRoleName"> </el-table-column>
-        <el-table-column label="描述" prop="description"> </el-table-column>
-        <el-table-column fixed="right" label="操作" min-width="120">
+      <el-table size="small" :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        " border :height="tableHeight" stripe>
+        <el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
+        <el-table-column label="角色名称" prop="RoleName"></el-table-column>
+        <el-table-column label="描述" prop="RoleDesc"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="180">
           <template slot-scope="scope">
-            <!-- <el-button
-              type="primary"
-                icon="el-icon-edit"
-                size="mini"
-              @click="handleEdit(scope.$index, scope.row)"
-              >修改</el-button
-            > -->
-            <el-button
-              type="primary"
-              icon="el-icon-edit"
-              size="mini"
-              @click="handleAssigned(scope.$index, scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
-            >
+            <el-tooltip content="编辑" placement="top">
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click.prevent="handleAssigned(scope.row)" />
+            </el-tooltip>
+
+            <el-tooltip content="角色用户编辑" placement="top">
+              <el-button type="warning" icon="el-icon-user" size="mini"
+                @click.prevent="roleEdit(scope.row)"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top">
+              <el-button type="danger" icon="el-icon-delete" size="mini"
+                @click.prevent="handleDelete(scope.row)"></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
-      <div class="block" style="margin-top: 8px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
-        >
+      <div class="mt-2 flex justify-center">
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="currentPage" :page-size="pageSize" :page-sizes="[30, 50, 100, 200, 300]"
+          layout="total,sizes, prev, pager, next" :total="tableData.length">
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      title="新增"
-      :visible.sync="dialogVisible"
-      width="50%"
-      @close="addCancel()"
-    >
-      <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-        <el-form-item label="角色名称" prop="xyRoleName">
-          <el-input v-model="form.xyRoleName"></el-input>
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="新增" :visible.sync="addVisible" width="400px"
+      @close="addCancel()">
+      <el-form :model="form" ref="formRef" :rules="rules" label-width="auto">
+        <el-form-item label="角色名称" prop="RoleName">
+          <el-input v-model="form.RoleName"></el-input>
         </el-form-item>
-        <el-form-item label="菜单分配" prop="menus" size="normal">
-          <el-tree
-            :data="treeData"
-            show-checkbox
-            node-key="xyClientMenuId"
-            :props="defaultProps"
-            ref="tree"
-          >
-          </el-tree>
+        <el-form-item label="描述" prop="RoleDesc">
+          <el-input v-model="form.RoleDesc"></el-input>
+        </el-form-item>
+        <el-form-item label="菜单分配" prop="MenuId">
+          <el-tree :data="treeData" show-checkbox node-key="ID" :props="defaultProps" ref="tree"></el-tree>
         </el-form-item>
       </el-form>
-      <span slot="footer">
-        <el-button @click="addCancel()">取消</el-button>
-        <el-button type="primary" @click="onSubmit()">确定</el-button>
-      </span>
+      <template slot="footer">
+        <span class="dialog-footer">
+          <el-button @click="addCancel()">取消</el-button>
+          <el-button type="primary" @click="onSubmit()">确定</el-button>
+        </span>
+      </template>
     </el-dialog>
-    <el-dialog
-      title="详情"
-      :visible.sync="xqVisible"
-      width="50%"
-      @close="xqCancel()"
-    >
-      <div class="sync-dialog__div">
-        <el-form :model="form" ref="form" label-width="80px">
-          <el-form-item label="角色名称">
-            <el-input v-model="changMeun.xyRole.xyRoleName"></el-input>
-          </el-form-item>
-          <el-form-item label="菜单" size="normal">
-            <el-tree
-              :data="treeData"
-              show-checkbox
-              node-key="xyClientMenuId"
-              :props="{ label: 'title', children: 'childs' }"
-              ref="tree1"
-            >
-            </el-tree>
-          </el-form-item>
-        </el-form>
+
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="编辑" :visible.sync="editVisible" width="400px"
+      @close="editCancel()">
+      <el-form :model="editForm" :rules="rules" ref="editRef" label-width="auto">
+        <el-form-item label="角色名称" prop="RoleName">
+          <el-input v-model="editForm.RoleName"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="RoleDesc">
+          <el-input v-model="editForm.RoleDesc"></el-input>
+        </el-form-item>
+        <el-form-item label="菜单">
+          <el-tree :data="treeData" show-checkbox node-key="ID" :props="{ label: 'title', children: 'childMenu' }"
+            ref="tree1"></el-tree>
+        </el-form-item>
+      </el-form>
+
+      <template slot="footer">
+        <span class="dialog-footer">
+          <el-button @click="editCancel()">取消</el-button>
+          <el-button type="primary" @click="editSubmit()">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="角色所属用户" :visible.sync="roleVisible"
+      width="750px" @close="clear()">
+      <div class="edit_dev">
+        <el-transfer :titles="['未绑定用户', '已绑定用户']" filterable :filter-method="filterMethod" filter-placeholder=""
+          v-model="undistributed" :data="data.slice((page.pageNo - 1) * page.pageSize, page.pageNo * page.pageSize)"
+          @change="test">
+          <el-pagination small slot="left-footer" align="right" @current-change="handleCurrentChangeTran"
+            :current-page="page.pageNo" :page-size="page.pageSize" :total="data.length" :pager-count="5"
+            layout="prev, pager, next"></el-pagination>
+
+        </el-transfer>
       </div>
-      <span slot="footer">
-        <el-button @click="xqCancel()">关闭</el-button>
-        <el-button type="primary" @click="addSubmit()">确定</el-button>
-      </span>
+      <template slot="footer">
+        <span class="dialog-footer">
+          <el-button @click="clear()">取消</el-button>
+          <el-button type="primary" @click="upData">确认更新</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import {
-  getFirstMeun,
+  getAllRole,
   addRole,
-  getRole,
-  deleteRole,
+  getFirstMeun,
   getMeunRole,
   updateRoleMeun,
-} from "@/api/index";
+  deleteRole,
+  getEmployeesByRole,
+  getUnassignEmployeesByRole,
+  updateEmployeesByRole,
+} from "@/api/control/index";
+import { Message, MessageBox, Notification } from "element-ui";
+
 export default {
   data() {
     return {
-      dialogVisible: false,
-      xqVisible: false,
       tableData: [],
-      treeData: [],
-      roleData: [],
-      form: {
-        menus: [],
-        xyRoleName: "",
-      },
-      defaultProps: {
-        label: "title",
-        children: "childs",
-      },
-      currentPage: 1, // 当前页码
-      pageSize: 10, // 每页的数据条数,
+      tableData1: [],
+      pageSize: 50,
+      currentPage: 1,
       tableHeight: 0,
-      changMeun: {
-        adds: [],
-        deletes: [],
-        xyRole: {
-          xyRoleId: "",
-          xyRoleName: "",
-        },
-      },
+      addVisible: false,
+      editVisible: false,
+      searchName: "",
+      treeData: [],
       roleAllMeun: [],
+      roleData: [],
+      defaultProps: { label: "title", children: "childMenu" },
+      form: {
+        MenuId: [],
+        RoleName: "",
+        RoleDesc: "",
+        CreateBy: this.$store.getters.userInfo || "",
+        CreateDate: "",
+        UpdateBy: "",
+        UpdateDate: "",
+      },
+      editForm: {
+        Add: [],
+        Deletes: [],
+        id: "",
+        RoleName: "",
+        RoleDesc: "",
+        CreateBy: "",
+        CreateDate: "",
+        UpdateBy: this.$store.getters.userInfo || "",
+        UpdateDate: "",
+      },
       rules: {
-        xyRoleName: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
+        RoleName: [
+          { required: true, message: "请输入角色名称", trigger: "blur" },
         ],
+      },
+      data: [],
+      undistributed: [],
+      undistributedList: [],
+      Assigned: [],
+      AssignedList: [],
+      roleVisible: false,
+      roleId: "",
+
+      filterMethod(query, item) {
+        return item.key.toLowerCase().includes(query.toLowerCase());
+      },
+      page: {
+        pageNo: 1,
+        pageSize: 50,
       },
     };
   },
-  beforeMount() {
-    this.getScreenHeight();
+  watch: {
+    searchName(newVal) {
+      if (newVal == "") {
+        this.tableData1 = this.tableData;
+      } else {
+        this.tableData1 = this.table1(newVal);
+      }
+    },
   },
-  mounted() {
+  created() {
+    this.getScreenHeight();
     this.getData();
     this.getMeun();
+  },
+  mounted() {
     window.addEventListener("resize", this.getScreenHeight);
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
+    test(value1, value2, value3) {
+      console.log(value1, value2, value3);
+    },
+    table1(newdata) {
+      let searchName = newdata.toLowerCase();
+      this.currentPage = 1;
+      return this.tableData.filter((v) => {
+        return Object.keys(v).some((key) => {
+          return String(v[key]).f().indexOf(searchName) > -1;
+        });
+      });
+    },
     getData() {
-      this.startLoading();
-      getRole().then(({ data }) => {
-        // console.log(data);
-        this.tableData = data;
-        this.endLoading();
+      getAllRole().then((data) => {
+        this.tableData = data.Data;
+        this.tableData1 = this.tableData;
+      });
+    },
+    getMeun() {
+      getFirstMeun().then((data) => {
+        this.treeData = data.Data;
       });
     },
     openAdd() {
-      this.dialogVisible = true;
-      this.getMeun();
-    },
-    getMeun() {
-      // this.dialogVisible = true;
-      this.startLoading();
-      getFirstMeun().then(({ data }) => {
-        this.treeData = data.content;
-        // console.log(data);
-        this.endLoading();
-      });
+      this.addVisible = true;
     },
     addCancel() {
-      this.dialogVisible = false;
-      this.$refs.form.resetFields();
+      this.addVisible = false;
+      this.$refs.formRef.resetFields();
     },
     onSubmit() {
-      this.form.menus = this.$refs.tree.getCheckedKeys();
-      this.form.menus.push(...this.$refs.tree.getHalfCheckedKeys());
-      this.form.menus = Array.from(new Set(this.form.menus));
-      this.$refs.form.validate((valid) => {
+      this.$refs.formRef.validate((valid) => {
         if (valid) {
-          // alert('submit!');
-          this.startLoading();
-          addRole(this.form).then(({ data }) => {
-            // console.log(data);
-            this.getData();
-            this.endLoading();
-            this.dialogVisible = false;
+          const tree = this.$refs.tree;
+          this.form.MenuId = tree.getCheckedKeys();
+          const prarentTree = tree.getHalfCheckedKeys();
+          this.form.MenuId.push(...prarentTree);
+          this.form.MenuId = Array.from(new Set(this.form.MenuId));
+
+          addRole(this.form).then((data) => {
+            if (data.Code == 100200) {
+              this.getData();
+              this.roleData = [];
+              Notification({
+                title: "添加成功",
+                type: "success",
+              });
+            } else {
+              Notification({
+                title: "添加失败",
+                message: data.msg,
+                type: "error",
+              });
+            }
+            this.addVisible = false;
           });
         } else {
           console.log("error submit!!");
@@ -214,172 +259,248 @@ export default {
         }
       });
     },
-    handleEdit() {},
-    handleAssigned(index, row) {
-      this.startLoading();
-      this.changMeun.xyRole.xyRoleId = row.xyRoleId;
-      this.changMeun.xyRole.xyRoleName = row.xyRoleName;
-      this.roleAllMeun=[]
-     
-      this.xqVisible = true;
-     
-      getMeunRole(row.xyRoleId).then(({ data }) => {
-        this.startLoading();
-        data.forEach((item) => {
-          if(item.childs==null){
-            console.log(item.title);
-            
-            // this.roleData.push(item.xyClientMenuId)
-          }else{
-            item.childs.forEach((i) => {
-            this.roleData.push(i.xyClientMenuId);
-          });
-          }
-          
-        });
-        
-        this.$refs.tree1.setCheckedKeys(this.roleData);
-        this.roleAllMeun = [
-          ...this.$refs.tree1.getCheckedKeys(),
-          ...this.$refs.tree1.getHalfCheckedKeys(),
-        ];
-       
-         this.endLoading()
-
-        //  console.log(this.roleData);
-      }).catch(()=>{
-        this.endLoading()
-      })
-      // this.getMeun()
-    },
-    addSubmit() {
-      let meun = [
-        ...this.$refs.tree1.getCheckedKeys(),
-        ...this.$refs.tree1.getHalfCheckedKeys(),
-      ];
-
-      this.comparefunction(this.roleAllMeun, meun);
-      //  console.log(this.changMeun);
-      this.startLoading();
-      updateRoleMeun(this.changMeun).then(({ data }) => {
-        // console.log(res);
-        if ((data.code = 100200)) {
-          this.getData();
-          this.$message({
-            type: "success",
-            message: "修改成功!",
-          });
-        } else {
-          this.$message({
-            type: "error",
-            message: data.msg,
-          });
-        }
-        this.xqVisible = false;
-        this.endLoading();
-      });
-    },
-    xqCancel() {
-      this.$refs.tree1.setCheckedKeys([])
-      this.xqVisible = false;
+    editCancel() {
+      this.editVisible = false;
       this.roleData = [];
     },
-    handleDelete(index, row) {
-      // console.log(row);
-      this.$confirm("确定删除", "确认操作", {
+    handleAssigned(row) {
+      // 1. 基础数据赋值
+      this.editForm = {
+        id: row.ID,
+        RoleName: row.RoleName,
+        RoleDesc: row.RoleDesc
+      };
+      this.editVisible = true;
+
+      // 2. 清空历史数据
+      this.roleData = [];
+
+      getMeunRole(row.ID).then((data) => {
+        if (!data.Data) {
+          this.$refs.tree1.setCheckedKeys([]);
+          return;
+        }
+
+        // 3. 使用递归扁平化菜单数据
+        const flattenMenu = (menu, result = []) => {
+          if (!menu) return result;
+
+          menu.forEach(item => {
+            // 4. 仅收集叶子节点（无子菜单的节点）
+            if (!item.childMenu || item.childMenu.length === 0) {
+              result.push(item.ID);
+            } else {
+              flattenMenu(item.childMenu, result);
+            }
+          });
+          return result;
+        };
+
+        // 5. 获取所有叶子节点ID
+        this.roleData = flattenMenu(data.Data);
+
+        // 6. 一次性设置选中节点
+        this.$nextTick(() => {
+          const treeRef = this.$refs.tree1;
+          if (treeRef) {
+            treeRef.setCheckedKeys(this.roleData);
+            this.roleAllMeun = [
+              ...treeRef.getCheckedKeys(),
+              ...treeRef.getHalfCheckedKeys()
+            ];
+          }
+        });
+      });
+    },
+    editSubmit() {
+      const tree1 = this.$refs.tree1;
+      let meun = [...tree1.getCheckedKeys(), ...tree1.getHalfCheckedKeys()];
+      this.comparefunction(this.roleAllMeun, meun);
+
+      this.$refs.editRef.validate((valid) => {
+        if (valid) {
+          updateRoleMeun(this.editForm).then((data) => {
+            if (data.Code == 100200) {
+              this.getData();
+              this.roleData = [];
+              Notification({
+                title: "修改成功",
+                type: "success",
+              });
+            } else {
+              Notification({
+                title: "修改失败",
+                message: data.msg,
+                type: "error",
+              });
+            }
+            this.editVisible = false;
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    comparefunction(arr1, arr2) {
+      this.editForm.Add = [];
+      this.editForm.Deletes = [];
+      for (let i = 0; i < arr2.length; i++) {
+        let item = arr2[i];
+        if (arr1.indexOf(item) === -1) {
+          this.editForm.Add.push(item);
+        }
+      }
+      for (let i = 0; i < arr1.length; i++) {
+        let item = arr1[i];
+        if (arr2.indexOf(item) === -1) {
+          this.editForm.Deletes.push(item);
+        }
+      }
+    },
+    handleDelete(row) {
+      MessageBox.confirm("确定删除", "确认操作", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          this.startLoading();
-          deleteRole(row.xyRoleId).then(({ data }) => {
-            // console.log(res);
-            if ((data.code = 100200)) {
+          deleteRole(row.ID).then((data) => {
+            if (data.Code == 100200) {
               this.getData();
-              this.$message({
+              Notification({
+                title: "提示信息",
+                message: "删除成功",
                 type: "success",
-                message: "删除成功!",
               });
             } else {
-              this.$message({
+              Notification({
+                title: "提示信息",
+                message: "删除失败",
                 type: "error",
-                message: data.msg,
               });
             }
-            this.endLoading();
           });
         })
         .catch(() => {
-          this.$message({
+          Notification({
+            title: "提示信息",
+            message: "取消操作",
             type: "info",
-            message: "已取消删除",
           });
         });
     },
-    comparefunction(arr1, arr2) {
-      // let remove = [];
-      // let add = [];
-      // 旧数据循环
-      this.changMeun.adds = [];
-      this.changMeun.deletes = [];
-      for (let i = 0; i < arr2.length; i++) {
-        let item = arr2[i];
-        if (arr1.indexOf(item) === -1) {
-          // 在新数据中找不到原来的数据表示这个被移除了
-          this.changMeun.adds.push(item);
-        }
-      }
-      // 新数据循环
-      for (let i = 0; i < arr1.length; i++) {
-        let item = arr1[i];
-        if (arr2.indexOf(item) === -1) {
-          // 在旧数据中找不到新元素，表示这个元素被添加了
-          this.changMeun.deletes.push(item);
-        }
-      }
-    },
+    getList() {
+      let arr = [];
+      this.undistributedList.forEach((item) => {
+        arr.push({ key: item.EmployeeName, label: item.EmployeeName + ' ' + item.FullName });
+      });
+      this.AssignedList.forEach((item) => {
+        arr.push({ key: item.EmployeeName, label: item.EmployeeName + ' ' + item.FullName });
+      });
+      // console.log();
 
+      this.data = arr
+    },
+    async roleEdit(row) {
+      this.roleId = row.ID;
+      await getEmployeesByRole(row.ID).then((data) => {
+        if (data.Code == 100200 && data.Data != null) {
+          let arr = [];
+          data.Data.forEach((item) => {
+            arr.push(item.EmployeeName);
+          });
+          this.undistributedList = data.Data;
+          this.undistributed = arr;
+        } else {
+          this.undistributed = [];
+          // Notification({
+          //   title: "提示信息",
+          //   message: data.Message,
+          //   type: "error",
+          // });
+        }
+      });
+      await getUnassignEmployeesByRole(row.ID, '').then((data) => {
+        if (data.Code == 100200 && data.Data != null) {
+          let arr = [];
+          data.Data.forEach((item) => {
+            arr.push(item.EmployeeName);
+          });
+          this.AssignedList = data.Data;
+          this.Assigned = arr;
+        } else {
+          this.Assigned = [];
+          // Notification({
+          //   title: "提示信息",
+          //   message: data.Message,
+          //   type: "error",
+          // });
+        }
+      });
+      this.getList();
+      this.roleVisible = true;
+    },
+    handleCurrentChangeTran(val) {
+      this.page.pageNo = val;
+      // this.getList();
+      console.log(this.undistributed);
+      
+    },
+    clear() {
+      this.data = [];
+      this.undistributed = [];
+      this.undistributedList = [];
+      this.Assigned = [];
+      this.AssignedList = [];
+      this.roleVisible = false;
+    },
+    upData() {
+      updateEmployeesByRole({
+        EmployeeName: this.undistributed,
+        ID: this.roleId,
+      }).then((data) => {
+        if (data.Code == 100200) {
+          this.getData();
+          Notification({
+            title: "提示信息",
+            message: "更新成功",
+            type: "success",
+          });
+          this.roleVisible = false
+        } else {
+          Notification({
+            title: "提示信息",
+            message: "更新失败",
+            type: "error",
+          });
+        }
+      });
+    },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.currentPage = 1;
       this.pageSize = val;
     },
-    //当前页改变时触发 跳转其他页
     handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`);
       this.currentPage = val;
-    },
-    startLoading() {
-      this.loading = this.$loading({
-        lock: true,
-        text: "加载中~",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.2)", //调节透明度
-      });
-    },
-    endLoading() {
-      this.loading.close();
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
-        // this.tableHeight1 =
+        this.tableHeight = window.innerHeight - 220;
       });
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.role {
-  padding: 8px;
-  .table_header {
-    padding-bottom: 8px;
-  }
+<style lang="scss" scoped></style>
+<style scoped>
+.el-pagination {
+  justify-content: center;
 }
-.sync-dialog__div {
-  height: 400px;
-  overflow: auto;
+
+.edit_dev>>>.el-transfer-panel {
+  width: 250px;
+
 }
 </style>
