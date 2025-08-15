@@ -86,15 +86,12 @@
     <el-dialog :append-to-body="true" :close-on-click-modal="false" title="角色所属用户" :visible.sync="roleVisible"
       width="750px" @close="clear()">
       <div class="edit_dev">
-        <el-transfer :titles="['未绑定用户', '已绑定用户']" filterable :filter-method="filterMethod" filter-placeholder=""
-          v-model="undistributed" :data="data.slice((page.pageNo - 1) * page.pageSize, page.pageNo * page.pageSize)"
-          @change="test">
-          <el-pagination small slot="left-footer" align="right" @current-change="handleCurrentChangeTran"
-            :current-page="page.pageNo" :page-size="page.pageSize" :total="data.length" :pager-count="5"
-            layout="prev, pager, next"></el-pagination>
+      <el-transfer :titles="['未绑定用户', '已绑定用户']" filterable :filter-method="filterMethod" filter-placeholder=""
+        v-model="undistributed" :data="data" @change="test">
+        
 
-        </el-transfer>
-      </div>
+      </el-transfer>
+</div>
       <template slot="footer">
         <span class="dialog-footer">
           <el-button @click="clear()">取消</el-button>
@@ -169,10 +166,6 @@ export default {
 
       filterMethod(query, item) {
         return item.key.toLowerCase().includes(query.toLowerCase());
-      },
-      page: {
-        pageNo: 1,
-        pageSize: 50,
       },
     };
   },
@@ -441,12 +434,6 @@ export default {
       this.getList();
       this.roleVisible = true;
     },
-    handleCurrentChangeTran(val) {
-      this.page.pageNo = val;
-      // this.getList();
-      console.log(this.undistributed);
-      
-    },
     clear() {
       this.data = [];
       this.undistributed = [];
@@ -498,9 +485,8 @@ export default {
 .el-pagination {
   justify-content: center;
 }
-
-.edit_dev>>>.el-transfer-panel {
-  width: 250px;
-
-}
+ .edit_dev >>> .el-transfer-panel {
+     width:250px;
+     
+   }
 </style>

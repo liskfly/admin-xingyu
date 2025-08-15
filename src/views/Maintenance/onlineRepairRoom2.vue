@@ -21,9 +21,9 @@
                     </template>
                 </el-table-column>
                 <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
-                <af-table-column prop="containername" label="产品SN" fixed="left"></af-table-column>
-                <af-table-column prop="mfgordername" label="工单号" fixed="left"></af-table-column>
-                <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
+                <af-table-column prop="containername" label="产品SN"></af-table-column>
+                <af-table-column prop="mfgordername" label="工单号"></af-table-column>
+                <af-table-column prop="productname" label="产品编码"></af-table-column>
                 <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
 
                 <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
@@ -32,12 +32,13 @@
                 <el-table-column prop="baddata_type" label="说明"></el-table-column>
                 <el-table-column prop="baddata_stts" label="状态" align="center" width="100">
                     <template v-slot="{ row }">
-                        <el-tag effect="dark" v-if="row.baddata_stts == '完成维修'||row.baddata_stts == '完成报废'"
-                            type="success">{{ row.baddata_stts }}</el-tag>
-                        <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'"
-                            type="warning">{{ row.baddata_stts }}</el-tag>
-                        <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'"
-                            type="info">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="dark" v-if="
+                            row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'
+                        " type="success">{{ row.baddata_stts }}</el-tag>
+                        <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'" type="warning">{{ row.baddata_stts
+                        }}</el-tag>
+                        <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
+                        }}</el-tag>
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
@@ -56,7 +57,7 @@
                             row.baddata_stts == '完成报废' ||
                             row.baddata_stts == '完成维修'
                             ">报废</el-button>
-                            <el-button type="warning" size="mini" @click="handleMistrial(row)" :disabled="row.baddata_stts == '报废审核' ||
+                        <el-button type="warning" size="mini" @click="handleMistrial(row)" :disabled="row.baddata_stts == '报废审核' ||
                             row.baddata_stts == '完成报废' ||
                             row.baddata_stts == '完成维修'
                             ">误判</el-button>
@@ -77,7 +78,7 @@
         <el-dialog :title="'维修：' + repairForm.baddatadetail_pcbid" :visible.sync="repairVisible" width="75%"
             @close="repairCancel()">
             <el-form :model="repairForm" ref="repairFormRef" label-width="auto" :inline="true">
-                <el-form-item label="产品SN" prop="containerName">
+                <!-- <el-form-item label="产品SN" prop="containerName">
                     <el-input v-model="repairForm.containerName" disabled placeholder="请输入产品SN"
                         style="width: 270px"></el-input>
                 </el-form-item>
@@ -98,6 +99,38 @@
                         <el-form-item label="产品名称" prop="productvalue">
                             <el-input v-model="repairForm.productvalue" disabled readonly
                                 style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row> -->
+                <el-row :gutter="20">
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品SN" prop="containerName">
+                            <el-input v-model="repairForm.containerName" disabled style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="工单号" prop="mfgordername">
+                            <el-input v-model="repairForm.mfgordername" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname">
+                            <el-input v-model="repairForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品名称" prop="baddata_productname">
+                            <el-input v-model="repairForm.baddata_productname" disabled style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="16" :offset="0">
+                        <el-form-item label="产品描述" prop="baddata_productdsc">
+                            <el-input v-model="repairForm.baddata_productdsc" disabled style="width:645px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -123,7 +156,7 @@
         <el-dialog :title="'报废：' + scrapForm.baddatadetail_pcbid" :visible.sync="scrapVisible" width="75%"
             @close="scrapCancel()">
             <el-form :model="scrapForm" ref="scrapFormRef" label-width="auto" :inline="true">
-                <el-form-item label="产品SN" prop="containerName">
+                <!-- <el-form-item label="产品SN" prop="containerName">
                     <el-input v-model="scrapForm.containerName" disabled placeholder="请输入产品SN"
                         style="width: 270px"></el-input>
                 </el-form-item>
@@ -143,6 +176,38 @@
                         <el-form-item label="产品名称" prop="productvalue">
                             <el-input v-model="scrapForm.productvalue" disabled readonly
                                 style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row> -->
+                   <el-row :gutter="20">
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品SN" prop="containerName">
+                            <el-input v-model="scrapForm.containerName" disabled style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="工单号" prop="mfgordername">
+                            <el-input v-model="scrapForm.mfgordername" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname">
+                            <el-input v-model="scrapForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+
+                    <el-col :span="8" :offset="0">
+                        <el-form-item label="产品名称" prop="baddata_productname">
+                            <el-input v-model="scrapForm.baddata_productname" disabled style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="16" :offset="0">
+                        <el-form-item label="产品描述" prop="baddata_productdsc">
+                            <el-input v-model="scrapForm.baddata_productdsc" disabled style="width:645px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -286,12 +351,12 @@ export default {
             });
         },
         getSearchData() {
-            this.getForm.PageIndex = 1
-            this.getData()
+            this.getForm.PageIndex = 1;
+            this.getData();
         },
         clearData() {
-            this.getForm.PageIndex = 1
-            this.getData()
+            this.getForm.PageIndex = 1;
+            this.getData();
         },
         deducedClick() {
             exportTableToExcel({
@@ -338,6 +403,8 @@ export default {
             this.repairForm.mfgordername = row.mfgordername;
             this.repairForm.productname = row.productname;
             this.repairForm.productvalue = row.productvalue;
+            this.repairForm.baddata_productname = row.baddata_productname;
+            this.repairForm.baddata_productdsc = row.baddata_productdsc;
             // this.repairForm.badphenomena_name = row.badphenomena_name;
             // this.repairForm.badphenomena_value = row.badphenomena_value;
             // this.repairForm.baddatadetail_item = row.baddatadetail_item;
@@ -450,6 +517,8 @@ export default {
             this.scrapForm.mfgordername = row.mfgordername;
             this.scrapForm.productname = row.productname;
             this.scrapForm.productvalue = row.productvalue;
+            this.scrapForm.baddata_productname = row.baddata_productname;
+            this.scrapForm.baddata_productdsc = row.baddata_productdsc
             QueryXYL_BadProductInformationFromByNo({
                 baddatadetail_no: row.baddata_no,
             }).then((res) => {
@@ -531,7 +600,7 @@ export default {
                     });
                 });
         },
-               handleMistrial(row) {
+        handleMistrial(row) {
             this.$confirm("是否误判?", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
@@ -539,9 +608,9 @@ export default {
             })
                 .then(() => {
                     let data = {
-                        baddatadetail_no:row.baddata_no,
+                        baddatadetail_no: row.baddata_no,
                         baddata_way: "误判",
-                        baddata_remark:"",
+                        baddata_remark: "",
                         repairList: [],
                         UserNo: getToken(),
                     };

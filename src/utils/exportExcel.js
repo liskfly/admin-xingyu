@@ -73,7 +73,7 @@ export async function exportTableToExcel({
       });
 
       return {
-        width: Math.max(headerLength, maxDataLength) + 4,
+        width: Math.max(headerLength, maxDataLength) + 6,
         style: {
           alignment: {
             wrapText: true,

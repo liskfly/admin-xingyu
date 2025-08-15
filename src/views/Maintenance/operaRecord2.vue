@@ -3,8 +3,8 @@
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="flex justify-between">
         <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true" @submit.native.prevent>
-          <el-form-item label="时间"  class="mb-2">
-    
+          <el-form-item label="时间" class="mb-2">
+
             <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
               end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"
               :default-time="['00:00:00', '23:59:59']" :clearable="false">
@@ -74,10 +74,12 @@
     <el-dialog :title="'更换物料：' + replaceForm.baddatadetail_pcbid" :visible.sync="replaceVisible" width="75%"
       @close="replaceCancel()">
       <el-form :model="replaceForm" ref="repairFormRef" label-width="auto" :inline="true">
-        <el-form-item label="产品SN" prop="containerName">
-          <el-input v-model="replaceForm.containerName" disabled placeholder="请输入产品SN" style="width: 270px"></el-input>
-        </el-form-item>
         <el-row :gutter="20">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="产品SN" prop="containerName">
+              <el-input v-model="replaceForm.containerName" disabled style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
           <el-col :span="8" :offset="0">
             <el-form-item label="工单号" prop="mfgordername">
               <el-input v-model="replaceForm.mfgordername" disabled readonly style="width: 270px"></el-input>
@@ -88,12 +90,21 @@
               <el-input v-model="replaceForm.productname" disabled readonly style="width: 270px"></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
+
           <el-col :span="8" :offset="0">
-            <el-form-item label="产品名称" prop="productvalue">
-              <el-input v-model="replaceForm.productvalue" disabled readonly style="width: 270px"></el-input>
+            <el-form-item label="产品名称" prop="baddata_productname">
+              <el-input v-model="replaceForm.baddata_productname" disabled style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16" :offset="0">
+            <el-form-item label="产品描述" prop="baddata_productdsc">
+              <el-input v-model="replaceForm.baddata_productdsc" disabled style="width:645px"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-table :data="replaceForm.tableData" border stripe height="300">
           <af-table-column prop="repairpro_productname" label="物料编码"></af-table-column>
           <af-table-column prop="repairpro_user" label="操作人"></af-table-column>
@@ -224,6 +235,8 @@ export default {
         this.replaceForm.mfgordername = row.mfgordername;
         this.replaceForm.productname = row.productname;
         this.replaceForm.productvalue = row.productvalue;
+        this.replaceForm.baddata_productname = row.baddata_productname;
+        this.replaceForm.baddata_productdsc = row.baddata_productdsc;
         QueryXYL_BadProductInformationRepairMaterial({ repairpro_repairno: row.repair_no }).then(res => {
           this.replaceForm.tableData = res.Data
           this.replaceVisible = true
@@ -240,7 +253,7 @@ export default {
       exportTableToExcel({
         tableRef: this.$refs.operaRecordRef,
         fetchAllData: this.fetchAllUsers,
-        fileName: `不良品维修操作记录_${dayjs().format("YYYYMMDDHHmmss")}`,
+        fileName: `不良维修操作记录_${dayjs().format("YYYYMMDDHHmmss")}`,
         styles: {
           headerBgColor: "", // 灰色表头
           headerFont: {

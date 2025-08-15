@@ -4,7 +4,7 @@
             <div
                 class="mb-2 pl-2 pr-2 flex justify-between items-center text-xl font-bold border-solid border-2 border-[#bdbdbd]">
                 <div>线体：{{ form.baddata_line }}</div>
-                <div>设备：{{ currentEquipment }}</div>
+                <div>设备：{{ form.baddata_equipment }}</div>
                 <div class="text-2xl">
                     <i class="el-icon-setting" @click="openSet"></i>
                 </div>
@@ -12,7 +12,8 @@
             <div>
                 <el-form ref="formRef" :model="form" label-width="auto" class="inbound" @submit.native.prevent>
                     <el-form-item label="PCB条码" prop="baddata_pcbid" class="mb-2">
-                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"  @keyup.enter.native="changeInput"></el-input>
+                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"
+                            @keyup.enter.native="changeInput"></el-input>
                     </el-form-item>
 
                 </el-form>
@@ -56,7 +57,8 @@
         <el-dialog title="设置" :visible.sync="dialogSetVisible" width="30%" @close="dialogSetVisible = false">
             <el-form ref="formRef" :model="changeForm" label-width="auto">
                 <el-form-item label="线体" prop="line">
-                    <el-select v-model="changeForm.line" placeholder="请选择线体" style="width: 100%">
+                    <el-select v-model="changeForm.line" placeholder="请选择线体" style="width: 100%"
+                        @change="getEquipmentData">
                         <el-option v-for="item in lineData" :key="item.MfgLineName" :label="item.MfgLineName"
                             :value="item.MfgLineName" />
                     </el-select>
@@ -108,7 +110,7 @@ export default {
                 line: "",
                 equipment: "",
             },
-            badList:[]
+            badList: []
         };
     },
     computed: {
@@ -138,21 +140,22 @@ export default {
             localStorage.getItem("EQUIPMENT") || "请选择设备";
         // console.log(localStorage.getItem("LINE"));
         // console.log(localStorage.getItem("EQUIPMENT"));
+        // if( this.form.baddata_line!=""){
+        //     this.getEquipmentData();
+        // }
     },
     mounted() {
         window.addEventListener("resize", this.getScreenHeight);
         this.getBadCode();
         this.getLineData();
-        this.getEquipmentData();
         this.$refs.pcbRef.focus();
     },
     beforeDestroy() {
         window.removeEventListener("resize", this.getScreenHeight);
     },
     methods: {
-
-        getBadCode(){
-            QueryBadCodebasicInformation({  badphenomena_name: ""}).then((res) => {
+        getBadCode() {
+            QueryBadCodebasicInformation({ badphenomena_name: "" }).then((res) => {
                 this.badList = res.Data;
             });
         },
@@ -164,11 +167,14 @@ export default {
             });
         },
         getEquipmentData() {
+            this.changeForm.equipment = "";
+            this.equipmentData = []
             QueryEquipment({
-                EquipmenName:"",
+                EquipmenName: "",
+                LineName: this.changeForm.line,
             }).then((res) => {
-                console.log(res);
-                
+                // console.log(res);
+
                 this.equipmentData = res.Data;
             });
         },
@@ -183,6 +189,7 @@ export default {
             this.form.baddata_line = this.changeForm.line;
             this.form.baddata_equipment = this.changeForm.equipment;
             this.dialogSetVisible = false;
+             this.$refs.pcbRef.focus();
         },
         openSet() {
             this.dialogSetVisible = true;
@@ -206,8 +213,8 @@ export default {
                 });
             }
         },
-    
-        handleSubmit() {  
+
+        handleSubmit() {
             InsertXYL_BadProductInformation(this.form).then((res) => {
                 if (res.Success) {
                     this.$notify({
@@ -215,7 +222,7 @@ export default {
                         message: "不良登记成功",
                         type: "success",
                     });
-                  
+
                     this.restSubmit();
                 } else {
                     this.$notify({

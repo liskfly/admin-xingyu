@@ -21,7 +21,7 @@
                     </template>
                 </el-table-column>
                 <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
-                <af-table-column prop="containername" label="产品SN" fixed="left"></af-table-column>
+                <af-table-column prop="containername" label="产品SN" ></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号" ></af-table-column>
                 <af-table-column prop="productname" label="产品编码"></af-table-column>
                 <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->

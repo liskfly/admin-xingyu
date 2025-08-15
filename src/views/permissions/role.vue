@@ -84,14 +84,41 @@
       </template>
     </el-dialog>
     <el-dialog :append-to-body="true" :close-on-click-modal="false" title="角色所属用户" :visible.sync="roleVisible"
-      width="750px" @close="clear()">
+      width="850px" @close="clear()">
       <div class="edit_dev">
-      <el-transfer :titles="['未绑定用户', '已绑定用户']" filterable :filter-method="filterMethod" filter-placeholder=""
-        v-model="undistributed" :data="data" @change="test">
-        
-
-      </el-transfer>
-</div>
+         <div class="search-box">
+      <el-input
+        v-model="globalSearch"
+        placeholder="搜索所有未绑定用户"
+        clearable
+        @input="handleGlobalSearch"
+       style="width: 782px;"
+      >
+        <el-button slot="append" icon="el-icon-search"></el-button>
+      </el-input>
+    </div>
+    
+    <el-transfer 
+      :titles="['未绑定用户', '已绑定用户']" 
+      v-model="boundKeys" 
+      :data="combinedData"
+      @change="handleTransferChange">
+      
+      <!-- 左侧分页器 -->
+      <el-pagination 
+        small 
+        slot="left-footer" 
+        align="right" 
+        class="mt-2"
+        @current-change="handleCurrentChangeTran"
+        :current-page="page.pageNo" 
+        :page-size="page.pageSize" 
+        :total="totalUnbound" 
+        :pager-count="5"
+        layout="total,prev, pager, next">
+      </el-pagination>
+    </el-transfer>
+      </div>
       <template slot="footer">
         <span class="dialog-footer">
           <el-button @click="clear()">取消</el-button>
@@ -167,6 +194,17 @@ export default {
       filterMethod(query, item) {
         return item.key.toLowerCase().includes(query.toLowerCase());
       },
+       allUnboundData: [],   // 所有未绑定用户数据
+      boundData: [],        // 所有已绑定用户数据
+      boundKeys: [],        // 已绑定用户的key数组（替代原来的undistributed）
+      
+      // 分页配置
+      page: {
+        pageNo: 1,
+        pageSize: 50,
+      },
+      globalSearch: '',           // 全局搜索关键词
+    filteredUnboundData: [],    // 过滤后的未绑定用户数据
     };
   },
   watch: {
@@ -177,6 +215,27 @@ export default {
         this.tableData1 = this.table1(newVal);
       }
     },
+  },
+   computed: {
+    // 当前页的未绑定数据（分页展示）
+   paginatedUnbound() {
+    let data = this.filteredUnboundData;
+    
+    // 应用分页
+    const start = (this.page.pageNo - 1) * this.page.pageSize;
+    const end = start + this.page.pageSize;
+    return data.slice(start, end);
+  },
+  
+  // 合并的数据源：当前页未绑定 + 所有已绑定
+  combinedData() {
+    return [...this.paginatedUnbound, ...this.boundData];
+  },
+  
+  // 未绑定用户的总数（用于分页器）
+  totalUnbound() {
+    return this.filteredUnboundData.length;
+  }
   },
   created() {
     this.getScreenHeight();
@@ -395,56 +454,93 @@ export default {
 
       this.data = arr
     },
-    async roleEdit(row) {
-      this.roleId = row.ID;
-      await getEmployeesByRole(row.ID).then((data) => {
-        if (data.Code == 100200 && data.Data != null) {
-          let arr = [];
-          data.Data.forEach((item) => {
-            arr.push(item.EmployeeName);
-          });
-          this.undistributedList = data.Data;
-          this.undistributed = arr;
-        } else {
-          this.undistributed = [];
-          // Notification({
-          //   title: "提示信息",
-          //   message: data.Message,
-          //   type: "error",
-          // });
-        }
-      });
-      await getUnassignEmployeesByRole(row.ID, '').then((data) => {
-        if (data.Code == 100200 && data.Data != null) {
-          let arr = [];
-          data.Data.forEach((item) => {
-            arr.push(item.EmployeeName);
-          });
-          this.AssignedList = data.Data;
-          this.Assigned = arr;
-        } else {
-          this.Assigned = [];
-          // Notification({
-          //   title: "提示信息",
-          //   message: data.Message,
-          //   type: "error",
-          // });
-        }
-      });
-      this.getList();
-      this.roleVisible = true;
+    handleGlobalSearch() {
+    const keyword = this.globalSearch.toLowerCase();
+    
+    if (!keyword) {
+      this.filteredUnboundData = [...this.allUnboundData];
+      return;
+    }
+    
+    // 在所有未绑定用户数据中搜索
+    this.filteredUnboundData = this.allUnboundData.filter(item => {
+      return (
+        item.key.toLowerCase().includes(keyword) ||
+        item.label.toLowerCase().includes(keyword)
+      );
+    });
+    
+    // 重置到第一页
+    this.page.pageNo = 1;
+  },
+  
+  // 修改roleEdit方法，初始化过滤数据
+  async roleEdit(row) {
+    this.roleId = row.ID;
+    this.globalSearch = ''; // 清空搜索框
+    
+    // 获取已绑定用户
+    await getEmployeesByRole(row.ID).then((data) => {
+      if (data.Code == 100200 && data.Data != null) {
+        this.boundData = data.Data.map(item => {
+          return {
+            key: item.EmployeeName,
+            label: item.EmployeeName + ' ' + item.FullName
+          };
+        });
+        this.boundKeys = data.Data.map(item => item.EmployeeName);
+      } else {
+        this.boundData = [];
+        this.boundKeys = [];
+      }
+    });
+    
+    // 获取所有未绑定用户
+    await getUnassignEmployeesByRole(row.ID, '').then((data) => {
+      if (data.Code == 100200 && data.Data != null) {
+        this.allUnboundData = data.Data.map(item => {
+          return {
+            key: item.EmployeeName,
+            label: item.EmployeeName + ' ' + item.FullName
+          };
+        });
+        // 初始化过滤数据为全部数据
+        this.filteredUnboundData = [...this.allUnboundData];
+      } else {
+        this.allUnboundData = [];
+        this.filteredUnboundData = [];
+      }
+    });
+    
+    // 重置分页为第一页
+    this.page.pageNo = 1;
+    this.roleVisible = true;
+  },
+    
+    // 修改分页切换方法
+    handleCurrentChangeTran(val) {
+      this.page.pageNo = val;
     },
+    
+    // 修改Transfer变化处理方法
+    handleTransferChange(newBoundKeys, direction, movedKeys) {
+      this.boundKeys = newBoundKeys;
+    },
+    
+    // 修改清空方法
     clear() {
-      this.data = [];
-      this.undistributed = [];
-      this.undistributedList = [];
-      this.Assigned = [];
-      this.AssignedList = [];
+      this.allUnboundData = [];
+      this.boundData = [];
+      this.boundKeys = [];
       this.roleVisible = false;
     },
+    
+    // 修改更新方法
     upData() {
+      // console.log(this.boundKeys);
+      
       updateEmployeesByRole({
-        EmployeeName: this.undistributed,
+        EmployeeName: this.boundKeys, // 使用boundKeys
         ID: this.roleId,
       }).then((data) => {
         if (data.Code == 100200) {
@@ -454,7 +550,7 @@ export default {
             message: "更新成功",
             type: "success",
           });
-          this.roleVisible = false
+          this.roleVisible = false;
         } else {
           Notification({
             title: "提示信息",
@@ -485,8 +581,17 @@ export default {
 .el-pagination {
   justify-content: center;
 }
- .edit_dev >>> .el-transfer-panel {
-     width:250px;
-     
-   }
+
+.edit_dev>>>.el-transfer-panel {
+  width: 300px;
+
+}
+.search-box {
+  margin-bottom: 15px;
+}
+
+/* 隐藏el-transfer自带的搜索框 */
+.edit_dev >>> .el-transfer-panel__filter {
+  display: none;
+}
 </style>
