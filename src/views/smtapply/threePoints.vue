@@ -25,6 +25,7 @@
          <el-table-column prop="tpm_mfgorder" label="工单"> </el-table-column>
         <el-table-column prop="tpm_mfgorder" label="产品"> </el-table-column>
         <el-table-column prop="tpm_stts" label="设备判断" align="center" width="100">
+
         </el-table-column>
   
         <el-table-column prop="tpm_stts2" label="人工判断" align="center" width="100">
@@ -344,7 +345,13 @@ export default {
     rowClick(val) {
       this.container = val.tpm_container;
       QueryXYL_ThreePointMatchingDetailInfo({ Container: val.tpm_container }).then((res) => {
-        this.tableData2 = res.Data
+        this.tableData2 = res.Data.map((item) => {
+          return {
+            ...item,
+            tpm_stts: item.tpm_stts=="GOOD"||item.tpm_stts=="OK"?"OK":"NG",
+            tpm_stts2:  item.tpm_stts2=="GOOD"||item.tpm_stts2=="OK"?"OK":"NG",
+          };
+        });
         this.detailVisible = true;
           this.$nextTick(() => {
       this.detailScrollContainer = document.querySelector(
