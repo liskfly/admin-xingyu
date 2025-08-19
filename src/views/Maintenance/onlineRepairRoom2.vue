@@ -12,8 +12,8 @@
                     </el-input>
                 </div>
             </div>
-            <el-table :data="tableData" ref="repairRoomRef" border :height="tableHeight" style="width: 100%" stripe
-                size="small">
+            <el-table :data="tableData" ref="repairRoomRef" highlight-current-row border :height="tableHeight" style="width: 100%" stripe
+                size="small" tooltip-effect="light">
                 <!-- 序号列 -->
                 <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
                     <template v-slot="{ $index }">
@@ -21,24 +21,25 @@
                     </template>
                 </el-table-column>
                 <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
-                <af-table-column prop="containername" label="产品SN"></af-table-column>
+                <af-table-column prop="baddata_pcbid" label="产品SN"></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号"></af-table-column>
                 <af-table-column prop="productname" label="产品编码"></af-table-column>
-                <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
+                <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
+                <el-table-column prop="baddata_productdsc" label="产品描述" width="120" show-overflow-tooltip></el-table-column>
 
-                <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
-                <af-table-column prop="badphenomena_value" label="不良描述"></af-table-column>
-                <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column> -->
-                <el-table-column prop="baddata_type" label="说明"></el-table-column>
+                <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column> -->
+                <af-table-column prop="baddata_line" label="线体"></af-table-column>
+                <af-table-column prop="baddata_equip" label="设备"></af-table-column>
+                <!-- <el-table-column prop="baddata_type" label="说明"></el-table-column> -->
                 <el-table-column prop="baddata_stts" label="状态" align="center" width="100">
                     <template v-slot="{ row }">
                         <el-tag effect="dark" v-if="
                             row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'
                         " type="success">{{ row.baddata_stts }}</el-tag>
                         <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'" type="warning">{{ row.baddata_stts
-                        }}</el-tag>
+                            }}</el-tag>
                         <el-tag effect="dark" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
-                        }}</el-tag>
+                            }}</el-tag>
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
@@ -134,7 +135,9 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-table :data="repairForm.tableData" border stripe height="300">
+                <el-table :data="repairForm.tableData" border stripe height="300" size="small">
+                    <el-table-column type="index" width="50" label="序号" align="center">
+                    </el-table-column>
                     <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
                     <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
                     <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
@@ -156,30 +159,8 @@
         <el-dialog :title="'报废：' + scrapForm.baddatadetail_pcbid" :visible.sync="scrapVisible" width="75%"
             @close="scrapCancel()">
             <el-form :model="scrapForm" ref="scrapFormRef" label-width="auto" :inline="true">
-                <!-- <el-form-item label="产品SN" prop="containerName">
-                    <el-input v-model="scrapForm.containerName" disabled placeholder="请输入产品SN"
-                        style="width: 270px"></el-input>
-                </el-form-item>
+                
                 <el-row :gutter="20">
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="工单号" prop="mfgordername">
-                            <el-input v-model="scrapForm.mfgordername" disabled readonly
-                                style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="scrapForm.productname" disabled readonly style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品名称" prop="productvalue">
-                            <el-input v-model="scrapForm.productvalue" disabled readonly
-                                style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row> -->
-                   <el-row :gutter="20">
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品SN" prop="containerName">
                             <el-input v-model="scrapForm.containerName" disabled style="width: 270px"></el-input>
@@ -193,8 +174,7 @@
                     </el-col>
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="scrapForm.productname" disabled readonly
-                                style="width: 270px"></el-input>
+                            <el-input v-model="scrapForm.productname" disabled readonly style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -211,7 +191,9 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-table :data="scrapForm.tableData" border stripe height="300">
+                <el-table :data="scrapForm.tableData" border stripe height="300" size="small">
+                    <el-table-column type="index" width="50" label="序号" align="center">
+                    </el-table-column>
                     <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
                     <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
                     <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
@@ -399,7 +381,7 @@ export default {
         },
         handleEdit(row) {
             this.repairForm.baddatadetail_pcbid = row.baddata_no;
-            this.repairForm.containerName = row.containername;
+            this.repairForm.containerName = row.baddata_pcbid;
             this.repairForm.mfgordername = row.mfgordername;
             this.repairForm.productname = row.productname;
             this.repairForm.productvalue = row.productvalue;
@@ -475,6 +457,7 @@ export default {
             ];
         },
         onSubmit() {
+
             let data = {
                 baddatadetail_no: this.repairForm.baddatadetail_pcbid,
                 baddata_way: "常规维修",
@@ -482,9 +465,24 @@ export default {
                 repairList: [],
                 UserNo: getToken(),
             };
-
+            this.repairForm.productid = this.repairForm.productid.filter(
+                (item) => item.productname !== ""
+            );
             if (this.repairForm.productid.length === 0) {
                 data.baddata_way = "常规维修";
+                this.$confirm("当前是常规维修！ 是否不需要更换物料？", "提示", {
+                    type: "warning",
+                })
+                    .then(() => {
+                        this.UpdateBadProductInformation(data);
+                    })
+                    .catch(() => {
+                        this.$notify({
+                            title: "提示信息",
+                            message: "已取消操作",
+                            type: "info",
+                        });
+                    });
             } else {
                 data.baddata_way = "更换物料";
                 data.repairList = this.repairForm.productid.map((item) => {
@@ -493,7 +491,39 @@ export default {
                         // productnum: item.productnum,
                     };
                 });
+                this.$confirm("当前是已扫描更换物料！ 是否进行提交？", "提示", {
+                    type: "warning",
+                })
+                    .then(() => {
+                        this.UpdateBadProductInformation(data);
+                    })
+                    .catch(() => {
+                        this.$notify({
+                            title: "提示信息",
+                            message: "已取消操作",
+                            type: "info",
+                        });
+                    });
+
             }
+            // UpdateXYL_BadProductInformation(data).then((res) => {
+            //     if (res.Success) {
+            //         this.$notify({
+            //             title: "提示信息",
+            //             message: res.Msg,
+            //             type: "success",
+            //         });
+            //         this.repairCancel();
+            //         this.getData();
+            //     } else {
+            //         this.$notify.error({
+            //             title: "提示信息",
+            //             message: res.Msg,
+            //         });
+            //     }
+            // });
+        },
+         UpdateBadProductInformation(data) {
             UpdateXYL_BadProductInformation(data).then((res) => {
                 if (res.Success) {
                     this.$notify({
@@ -510,10 +540,11 @@ export default {
                     });
                 }
             });
-        },
+
+         },
         handleScrap(row) {
             this.scrapForm.baddatadetail_pcbid = row.baddata_no;
-            this.scrapForm.containerName = row.containername;
+            this.scrapForm.containerName = row.baddata_pcbid;
             this.scrapForm.mfgordername = row.mfgordername;
             this.scrapForm.productname = row.productname;
             this.scrapForm.productvalue = row.productvalue;

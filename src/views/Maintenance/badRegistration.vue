@@ -26,9 +26,9 @@
                             <el-input v-model="row.baddata_item" size="small" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="baddata_component" label="不良名称">
+                    <el-table-column prop="baddata_component" label="不良">
                         <template v-slot="{ row }">
-                            <el-select v-model="row.baddata_code" placeholder="请选择不良代码" style="width: 100%;">
+                            <el-select v-model="row.baddata_code" placeholder="请选择不良" filterable style="width: 100%;">
                                 <el-option v-for="item in badList" :key="item.badphenomena_name"
                                     :label="item.badphenomena_value" :value="item.badphenomena_name" />
                             </el-select>
@@ -58,7 +58,7 @@
             <el-form ref="formRef" :model="changeForm" label-width="auto">
                 <el-form-item label="线体" prop="line">
                     <el-select v-model="changeForm.line" placeholder="请选择线体" style="width: 100%"
-                        @change="getEquipmentData">
+                        @change="changeEquipment">
                         <el-option v-for="item in lineData" :key="item.MfgLineName" :label="item.MfgLineName"
                             :value="item.MfgLineName" />
                     </el-select>
@@ -83,7 +83,8 @@ import {
     QueryMfgLine,
     QueryEquipment,
     InsertXYL_BadProductInformation,
-    QueryBadCodebasicInformation
+    QueryBadCodebasicInformation,
+    QueryBadCodeFromType
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 export default {
@@ -110,7 +111,11 @@ export default {
                 line: "",
                 equipment: "",
             },
-            badList: []
+            badList: [],
+            getBadCodeForm: {
+                badphenomena_name: "",
+                badphenomena_fathertype: "",
+            }
         };
     },
     computed: {
@@ -132,30 +137,42 @@ export default {
     },
     beforeMount() {
         this.getScreenHeight();
-        this.form.baddata_line = localStorage.getItem("LINE") || "请选择线体";
-        this.form.baddata_equipment =
-            localStorage.getItem("EQUIPMENT") || "请选择设备";
-        this.changeForm.line = localStorage.getItem("LINE") || "请选择线体";
-        this.changeForm.equipment =
-            localStorage.getItem("EQUIPMENT") || "请选择设备";
-        // console.log(localStorage.getItem("LINE"));
-        // console.log(localStorage.getItem("EQUIPMENT"));
-        // if( this.form.baddata_line!=""){
-        //     this.getEquipmentData();
-        // }
+      this.initFormData()
     },
     mounted() {
         window.addEventListener("resize", this.getScreenHeight);
         this.getBadCode();
         this.getLineData();
+        this.getEquipmentData();
         this.$refs.pcbRef.focus();
     },
     beforeDestroy() {
         window.removeEventListener("resize", this.getScreenHeight);
     },
     methods: {
+        initFormData() {
+        const line = localStorage.getItem("LINE") || "请选择线体";
+        const equipment = localStorage.getItem("EQUIPMENT") || "请选择设备";
+        
+        // 使用对象展开运算符统一设置表单值
+        this.form = {
+            ...this.form,
+            baddata_line: line,
+            baddata_equipment: equipment
+        };
+        
+        this.changeForm = {
+            line,
+            equipment
+        };
+        
+        this.getBadCodeForm.badphenomena_fathertype = this.getEquipmentPrefix(equipment);
+    },
+    getEquipmentPrefix(equipment) {
+        return equipment.split('-')[0] || "";
+    },
         getBadCode() {
-            QueryBadCodebasicInformation({ badphenomena_name: "" }).then((res) => {
+            QueryBadCodeFromType(this.getBadCodeForm).then((res) => {
                 this.badList = res.Data;
             });
         },
@@ -166,8 +183,12 @@ export default {
                 this.lineData = res.Data;
             });
         },
-        getEquipmentData() {
+        changeEquipment() {
             this.changeForm.equipment = "";
+            this.getEquipmentData()
+        },
+        getEquipmentData() {
+
             this.equipmentData = []
             QueryEquipment({
                 EquipmenName: "",
@@ -188,8 +209,10 @@ export default {
             });
             this.form.baddata_line = this.changeForm.line;
             this.form.baddata_equipment = this.changeForm.equipment;
+            this.getBadCodeForm.badphenomena_fathertype = this.changeForm.equipment.split('-')[0]
+            this.getBadCode();
             this.dialogSetVisible = false;
-             this.$refs.pcbRef.focus();
+            this.$refs.pcbRef.focus();
         },
         openSet() {
             this.dialogSetVisible = true;

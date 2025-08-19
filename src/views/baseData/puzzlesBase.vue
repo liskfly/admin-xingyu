@@ -679,6 +679,7 @@ export default {
         softwareVersion: row.softwareVersion,
         PCBMaterial:row.PCBMaterial
       };
+      
       findPnDetail(row.PN).then((res) => {
         if (res.Data == null || res.Data.length === 0) {
           this.smallBoardTable.push({
@@ -691,6 +692,8 @@ export default {
             module_start: 0,
             module_end: 0,
           });
+         
+          
         } else {
           this.smallBoardTable = JSON.parse(res.Data);
         }

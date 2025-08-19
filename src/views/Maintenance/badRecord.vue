@@ -28,23 +28,26 @@
 
             </div>
             <el-table :data="tableData" ref="repairRoomRef" border :height="tableHeight" style="width: 100%" stripe
-                size="small" @cell-click="handleCellClick" highlight-current-row>
+                size="small" @cell-click="handleCellClick" highlight-current-row tooltip-effect="light">
                 <!-- 序号列 -->
                 <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
                     <template v-slot="{ $index }">
                         {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
                     </template>
                 </el-table-column>
-                <af-table-column prop="baddata_no" label="报修单号">
+                <af-table-column prop="baddata_no" label="报修单号" fixed="left">
                     <template v-slot="{ row }">
                         <span class="underline text-cyan cursor-pointer">{{ row.baddata_no }}</span>
                     </template>
                 </af-table-column>
-                <af-table-column prop="containername" label="产品SN"></af-table-column>
+                <af-table-column prop="baddata_pcbid" label="产品SN"></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号"></af-table-column>
                 <af-table-column prop="productname" label="产品编码"></af-table-column>
-                <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
-
+                <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
+                <el-table-column prop="baddata_productdsc" label="产品描述" width="120"
+                    show-overflow-tooltip></el-table-column>
+                <af-table-column prop="baddata_line" label="线体"></af-table-column>
+                <af-table-column prop="baddata_equip" label="设备"></af-table-column>
                 <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
                 <af-table-column prop="badphenomena_value" label="不良描述"></af-table-column>
                 <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column> -->
@@ -55,9 +58,9 @@
                             row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'
                         " type="success">{{ row.baddata_stts }}</el-tag>
                         <el-tag effect="plain" v-else-if="row.baddata_stts == '维修中'" type="warning">{{ row.baddata_stts
-                        }}</el-tag>
+                            }}</el-tag>
                         <el-tag effect="plain" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
-                        }}</el-tag>
+                            }}</el-tag>
                         <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
                     </template>
                 </el-table-column>
@@ -119,21 +122,22 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                  
+
                     <el-col :span="8" :offset="0">
                         <el-form-item label="产品名称" prop="baddata_productname">
-                            <el-input v-model="replaceForm.baddata_productname" disabled 
+                            <el-input v-model="replaceForm.baddata_productname" disabled
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="16" :offset="0">
                         <el-form-item label="产品描述" prop="baddata_productdsc">
-                            <el-input v-model="replaceForm.baddata_productdsc" disabled 
-                                style="width:645px"></el-input>
+                            <el-input v-model="replaceForm.baddata_productdsc" disabled style="width:645px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-table :data="replaceForm.tableData" border stripe height="300">
+                <el-table :data="replaceForm.tableData" border stripe height="300" size="small">
+                    <el-table-column type="index" width="50" label="序号" align="center">
+                    </el-table-column>
                     <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
                     <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
                     <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>

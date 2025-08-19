@@ -21,7 +21,7 @@
         </div>
       </div>
       <el-table :data="tableData" border :height="tableHeight" style="width: 100%" stripe size="small"
-        @cell-click="handleCellClick" highlight-current-row ref="operaRecordRef">
+        @cell-click="handleCellClick" highlight-current-row ref="operaRecordRef" tooltip-effect="light">
         <!-- 序号列 -->
         <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
           <template v-slot="{ $index }">
@@ -41,7 +41,8 @@
         <af-table-column prop="baddata_pcbid" label="产品SN" />
         <af-table-column prop="mfgordername" label="工单号"></af-table-column>
         <af-table-column prop="productname" label="产品编码"></af-table-column>
-        <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
+       <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
+        <el-table-column prop="baddata_productdsc" label="产品描述" width="120" show-overflow-tooltip></el-table-column>
         <el-table-column prop="baddata_line" label="线体" />
         <af-table-column prop="baddata_equip" label="设备" />
         <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
@@ -105,7 +106,9 @@
           </el-col>
         </el-row>
 
-        <el-table :data="replaceForm.tableData" border stripe height="300">
+        <el-table :data="replaceForm.tableData" border stripe height="300" size="small">
+          <el-table-column type="index" width="50" label="序号" align="center">
+                    </el-table-column>
           <af-table-column prop="repairpro_productname" label="物料编码"></af-table-column>
           <af-table-column prop="repairpro_user" label="操作人"></af-table-column>
           <af-table-column prop="repairpro_datetime" label="操作时间"></af-table-column>
