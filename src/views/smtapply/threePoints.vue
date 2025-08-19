@@ -17,14 +17,14 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="tpm_line" label="线体"> </el-table-column>
-        <el-table-column prop="tpm_equip" label="设备"> </el-table-column>
+
+       
         <el-table-column prop="tpm_container" label="条码"> </el-table-column>
+         <el-table-column prop="tpm_mfgorder" label="工单"> </el-table-column>
         <el-table-column prop="tpm_mfgorder" label="产品"> </el-table-column>
         <el-table-column prop="tpm_stts" label="设备判断" align="center" width="100">
         </el-table-column>
-        <el-table-column prop="tpm_createdatetime" label="时间" width="150">
-        </el-table-column>
+  
         <el-table-column prop="tpm_stts2" label="人工判断" align="center" width="100">
         </el-table-column>
         <!-- <el-table-column label="图片" width="100" align="center">
@@ -55,7 +55,7 @@
         </el-table-column> -->
         <el-table-column label="详情" width="120" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" icon="el-icon-document" @click="rowClick(scope.row)">查看详情</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-document" @click="rowClick(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -87,14 +87,20 @@
         <el-button size="small" icon="el-icon-close" @click="previewVisible = false">关闭</el-button>
       </span>
     </el-dialog>
-    <el-dialog :visible.sync="detailVisible" :title="'详情：' + container" width="60%">
-      <el-table :data="tableData2" border style="width: 100%" size="small" height="450">
+    <el-dialog :visible.sync="detailVisible" :title="'详情：' + container" width="75%">
+      <el-table :data="tableData2" border style="width: 100%" size="small" height="450"  tooltip-effect="light">
         <el-table-column type="index" label="序号" width="55" align="center">
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 }}</span>
           </template></el-table-column>
-        <el-table-column prop="tpm_equip" label="设备名称"> </el-table-column>
+          <el-table-column prop="tpm_equip" label="设备名称" width="80" align="center"> </el-table-column>
+           <el-table-column prop="tpm_line" label="线体" width="80" align="center"> </el-table-column>
+            <el-table-column prop="tpm_productname" label="产品" > </el-table-column>
+             <el-table-column prop="tpm_productdsc" label="产品描述" show-overflow-tooltip> </el-table-column>
+        
+         <el-table-column prop="tpm_position" label="设备"> </el-table-column>
          <el-table-column prop="tpm_createuser" label="生成设备"> </el-table-column>
+        <el-table-column prop="tpm_logtime" label="生成时间"> </el-table-column>
         
         <el-table-column label="图片" width="100" align="center">
           <template slot-scope="scope">
@@ -142,7 +148,8 @@ import {
   QuerySDZHHeadData,
   QuerySDZHDetailData,
   QueryXYL_BadProductInformationRepairRecord,
-  QueryXYL_ThreePointMatchingDetailInfo
+  QueryXYL_ThreePointMatchingDetailInfo,
+  QueryXYL_ThreePointMatchingDetailFinalStateInfo
 } from "@/api/sdzApi";
 export default {
   data() {
@@ -239,7 +246,7 @@ export default {
     },
     getData() {
       this.tableData2 = [];
-      QueryXYL_BadProductInformationRepairRecord(this.getForm).then((res) => {
+      QueryXYL_ThreePointMatchingDetailFinalStateInfo(this.getForm).then((res) => {
         this.tableData = res.Data.list.map((item) => {
           return {
             ...item,

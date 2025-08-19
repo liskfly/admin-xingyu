@@ -131,3 +131,11 @@ export function QuerySDZHHeadData(data) {
       data
     });
   }
+  //获取三点照合
+   export function QueryXYL_ThreePointMatchingDetailFinalStateInfo(data) {
+    return request({
+      url: "ReportQuery/QueryXYL_ThreePointMatchingDetailFinalStateInfo",
+      method: "post",
+      data
+    });
+  }
