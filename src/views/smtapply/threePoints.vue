@@ -6,9 +6,11 @@
           end-placeholder="结束日期" size="small" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"
           :default-time="['00:00:00', '23:59:59']" :clearable="false">
         </el-date-picker>
-        <el-button type="primary" icon="el-icon-refresh-left" size="small" @click="refreshDate">刷新</el-button>
+        <el-input v-model="getForm.SearchText" placeholder="请输入条码" style="width: 300px;" size="small" clearable
+          @keyup.enter.native="getData" @clear="clear"></el-input>
+        <el-button type="primary" size="small" @click="getData">查询</el-button>
       </div>
-      <el-table :data="tableData" ref="imageTable"  border :max-height="tableHeight" style="width: 100%"
+      <el-table :data="tableData" ref="imageTable"  border :height="tableHeight" style="width: 100%"
         highlight-current-row size="small">
         <el-table-column type="index" label="序号" width="55" align="center">
           <template slot-scope="scope">
@@ -100,8 +102,12 @@
         
          <el-table-column prop="tpm_position" label="设备"> </el-table-column>
          <el-table-column prop="tpm_createuser" label="生成设备"> </el-table-column>
-        <el-table-column prop="tpm_logtime" label="生成时间"> </el-table-column>
-        
+        <el-table-column prop="tpm_logtime" label="生成时间" width="150"> </el-table-column>
+          <el-table-column prop="tpm_stts" label="设备判断" align="center" width="80">
+        </el-table-column>
+  
+        <el-table-column prop="tpm_stts2" label="人工判断" align="center" width="80">
+        </el-table-column>
         <el-table-column label="图片" width="100" align="center">
           <template slot-scope="scope">
             <el-image :src="scope.row.tpm_imgno" lazy :scroll-container="detailScrollContainer"
@@ -215,12 +221,12 @@ export default {
     // this.getData();
   },
   mounted() {
-    this.$nextTick(() => {
-      // 获取表格的滚动容器
-      this.scrollContainer = this.$refs.imageTable?.$el?.querySelector(
-        ".el-table__body-wrapper"
-      );
-    });
+    // this.$nextTick(() => {
+    //   // 获取表格的滚动容器
+    //   this.scrollContainer = this.$refs.imageTable?.$el?.querySelector(
+    //     ".el-table__body-wrapper"
+    //   );
+    // });
     window.addEventListener("resize", this.getScreenHeight);
   },
   beforeDestroy() {
@@ -243,6 +249,10 @@ export default {
         dayjs(todayStart).format("YYYY-MM-DD HH:mm:ss"),
         dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
       ];
+    },
+    clear() {
+      this.getForm.SearchText = "";
+      this.getData();
     },
     getData() {
       this.tableData2 = [];
