@@ -44,12 +44,13 @@
                         </el-select>
 
                     </el-form-item>
-                    <el-form-item label="不良名称" prop="badphenomena_name">
+                    <el-form-item label="不良代码" prop="badphenomena_name">
                         <el-input v-model="form.badphenomena_name"></el-input>
                     </el-form-item>
-                    <el-form-item label="不良代码" prop="badphenomena_value">
+                    <el-form-item label="不良名称" prop="badphenomena_value">
                         <el-input v-model="form.badphenomena_value"></el-input>
                     </el-form-item>
+                    
                     <el-form-item label="不良描述" prop="badphenomena_desc">
                         <el-input v-model="form.badphenomena_desc" type="textarea" ></el-input>
                     </el-form-item>
@@ -60,7 +61,7 @@
                     <el-button type="primary" @click="handleSubmit">确 定</el-button>
                 </span>
             </el-dialog>
-            <el-dialog title="编辑不良类别" :visible.sync="dialogEditVisible" width="30%" @close="editCancel()">
+            <el-dialog title="编辑不良" :visible.sync="dialogEditVisible" width="30%" @close="editCancel()">
                 <el-form :model="editFrom" ref="editFromRef" label-width="auto">
                     <el-form-item label="不良代码类别" prop="badphenomena_fathertype">
                         <!-- <el-input v-model="editFrom.badphenomena_fathertype"></el-input> -->
@@ -70,12 +71,13 @@
                                 :label="item.badphenomena_name" :value="item.badphenomena_name"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="不良名称" prop="badphenomena_name">
+                    <el-form-item label="不良代码" prop="badphenomena_name">
                         <el-input v-model="editFrom.badphenomena_name"></el-input>
                     </el-form-item>
-                    <el-form-item label="不良代码" prop="badphenomena_value">
+                    <el-form-item label="不良名称" prop="badphenomena_value">
                         <el-input v-model="editFrom.badphenomena_value"></el-input>
                     </el-form-item>
+                    
                     <el-form-item label="不良描述" prop="badphenomena_desc">
                         <el-input v-model="editFrom.badphenomena_desc" type="textarea"></el-input>
                     </el-form-item>

@@ -1,6 +1,7 @@
 import axios from "axios";
-import { MessageBox, Message, Loading, alert } from "element-ui";
+import { MessageBox, Message, Loading } from "element-ui";
 import { getToken1, removeToken1 } from "@/utils/auth";
+import router from "@/router";
 const loading = {
   //loading加载对象
   loadingInstance: null,
@@ -26,17 +27,16 @@ const loading = {
   },
 };
 
-
 // 基地址
 const service = axios.create({
-  baseURL: "/control"
+  baseURL: "/control",
 });
 let source = axios.CancelToken.source();
 // console.log(source);
 service.interceptors.request.use(
   (config) => {
-    const token = getToken1() || '' //getToken是在另一个JS文件中封装好的方法
-    token && (config.headers['authorization'] = token)
+    const token = getToken1() || "";
+    token && (config.headers["authorization"] = token);
     config.cancelToken = source.token; // 取消请求
     if (config.cancelToken && config.cancelObj && config.cancelObj.cancel) {
       config.cancelObj.cancel("中断请求");
@@ -63,51 +63,93 @@ service.interceptors.response.use(
     setTimeout(() => {
       loading.close();
     }, 400);
-     //关闭加载窗口
-    //建议打印一下 有些后台返回回来的数据格式不同  可根据自己的数据格式进行调整
 
-    //错误提示
+    // 处理HTTP状态码错误
     if (response.status === 500) {
-      Message({
-        //elemen组件库中的提示组件
-        message: "后台错误",
-        type: "error",
-        duration: 5000,
-      });
-      return Promise.reject(); //要返回一个promise对象出去
+      Message({ message: "后台错误", type: "error", duration: 5000 });
+      return Promise.reject(new Error("后台错误"));
     }
+    
     if (response.status === 404) {
-      Message({
-        message: "接口地址错误",
-        type: "error",
-        duration: 5000,
-      });
-      return Promise.reject();
+      Message({ message: "接口地址错误", type: "error", duration: 5000 });
+      return Promise.reject(new Error("接口地址错误"));
     }
 
-    //成功的返回
+    // 处理业务逻辑
     if (response.status === 200) {
-      // console.log(response.data);
+      // 统一使用小写code（根据实际API调整）
+      const code = response.data.code || response.data.Code;
       
-      // console.log(response.data.ResultCode);
-      // if (response.data.Success==true) {
-        if (response.data.code === 401&&response.data.Code === 401) {
-            removeToken1()
-            this.$router.push('/login');
-          }
-        return response.data;
-      // } 
-
+      // 仅在401时跳转登录
+      if (code === 401) {
+        removeToken1();
+        router.push('/login');
+        return Promise.reject(new Error("会话过期"));
+      }
+      
+      // 其他情况正常返回数据
+      return response.data;
     }
+    
+    return Promise.reject(response);
   },
   (error) => {
     loading.close();
-    MessageBox.alert("服务器内部错误", "提示信息", {
-      confirmButtonText: "确定",
-    });
-    this.$router.push('/login');
+    
+    // 仅针对未认证错误跳转
+    if (error.response && error.response.status === 401) {
+      removeToken1();
+      router.push('/login');
+    } else {
+      // 其他错误显示提示
+      const msg = error.message || "请求失败";
+      MessageBox.alert(msg, "错误", { confirmButtonText: "确定" });
+    }
+    
+    return Promise.reject(error);
   }
 );
+// service.interceptors.response.use(
+//   (response) => {
+//     setTimeout(() => {
+//       loading.close();
+//     }, 400);
 
+//     //错误提示
+//     if (response.status === 500) {
+//       Message({
+//         //elemen组件库中的提示组件
+//         message: "后台错误",
+//         type: "error",
+//         duration: 5000,
+//       });
+//       return Promise.reject(); //要返回一个promise对象出去
+//     }
+//     if (response.status === 404) {
+//       Message({
+//         message: "接口地址错误",
+//         type: "error",
+//         duration: 5000,
+//       });
+//       return Promise.reject();
+//     }
+
+//     //成功的返回
+//     if (response.status === 200) {
+//       if (response.data.code === 401 && response.data.Code === 401) {
+//         removeToken1();
+//         router.push("/login");
+//       }
+//       return response.data;
+//     }
+//   },
+//   (error) => {
+//     loading.close();
+//     MessageBox.alert("服务器内部错误", "提示信息", {
+//       confirmButtonText: "确定",
+//     });
+//     router.push("/login");
+//   }
+// );
 
 export default service;

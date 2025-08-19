@@ -28,14 +28,26 @@
         size="mini"
         >
           <af-table-column prop="WO" label="治具发料单"> </af-table-column>
-          <af-table-column prop="PD_model" label="料号"> </af-table-column>
+          <af-table-column prop="PD_model" label="产品料号"> </af-table-column>
 
-          <af-table-column prop="Plan_qty" label="数量" align="center">
+          <af-table-column prop="Plan_qty" label="生产数量" align="center">
           </af-table-column>
           <el-table-column prop="erp_wo_type" label="类型" align="center">
             <template slot-scope="scope">
-              <el-tag :type="scope.row.erp_wo_type == 'D' ? '' : 'warning'">
+              <!-- <el-tag :type="scope.row.erp_wo_type == 'D' ? '' : 'warning'">
                 {{ scope.row.erp_wo_type == "D" ? "印刷工治具" : "组装治具" }}
+              </el-tag> -->
+              <el-tag type="primary" v-if="scope.row.erp_wo_type == 'D'||scope.row.erp_wo_type == 'D1'">
+               印刷工治具
+              </el-tag>
+               <el-tag type="success" v-if="scope.row.erp_wo_type == 'D2'">
+               ICT治具
+              </el-tag>
+               <el-tag type="info" v-if="scope.row.erp_wo_type == 'D3'">
+               样件
+              </el-tag>
+              <el-tag type="warning" v-if="scope.row.erp_wo_type == 'E'">
+               组装治具
               </el-tag>
               <!-- <span>{{ scope.row.Stts == 4 ? "已发料" : "已上架" }}</span> -->
             </template>

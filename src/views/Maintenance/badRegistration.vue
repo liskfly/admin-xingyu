@@ -4,7 +4,7 @@
             <div
                 class="mb-2 pl-2 pr-2 flex justify-between items-center text-xl font-bold border-solid border-2 border-[#bdbdbd]">
                 <div>线体：{{ form.baddata_line }}</div>
-                <div>设备：{{ currentEquipment }}</div>
+                <div>设备：{{ form.baddata_equipment }}</div>
                 <div class="text-2xl">
                     <i class="el-icon-setting" @click="openSet"></i>
                 </div>
@@ -12,7 +12,8 @@
             <div>
                 <el-form ref="formRef" :model="form" label-width="auto" class="inbound" @submit.native.prevent>
                     <el-form-item label="PCB条码" prop="baddata_pcbid" class="mb-2">
-                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"  @keyup.enter.native="changeInput"></el-input>
+                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"
+                            @keyup.enter.native="changeInput"></el-input>
                     </el-form-item>
 
                 </el-form>
@@ -25,9 +26,9 @@
                             <el-input v-model="row.baddata_item" size="small" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="baddata_component" label="不良代码">
+                    <el-table-column prop="baddata_component" label="不良">
                         <template v-slot="{ row }">
-                            <el-select v-model="row.baddata_code" placeholder="请选择不良代码" style="width: 100%;">
+                            <el-select v-model="row.baddata_code" placeholder="请选择不良" filterable style="width: 100%;">
                                 <el-option v-for="item in badList" :key="item.badphenomena_name"
                                     :label="item.badphenomena_value" :value="item.badphenomena_name" />
                             </el-select>
@@ -56,7 +57,8 @@
         <el-dialog title="设置" :visible.sync="dialogSetVisible" width="30%" @close="dialogSetVisible = false">
             <el-form ref="formRef" :model="changeForm" label-width="auto">
                 <el-form-item label="线体" prop="line">
-                    <el-select v-model="changeForm.line" placeholder="请选择线体" style="width: 100%">
+                    <el-select v-model="changeForm.line" placeholder="请选择线体" style="width: 100%"
+                        @change="changeEquipment">
                         <el-option v-for="item in lineData" :key="item.MfgLineName" :label="item.MfgLineName"
                             :value="item.MfgLineName" />
                     </el-select>
@@ -81,7 +83,8 @@ import {
     QueryMfgLine,
     QueryEquipment,
     InsertXYL_BadProductInformation,
-    QueryBadCodebasicInformation
+    QueryBadCodebasicInformation,
+    QueryBadCodeFromType
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 export default {
@@ -108,7 +111,11 @@ export default {
                 line: "",
                 equipment: "",
             },
-            badList:[]
+            badList: [],
+            getBadCodeForm: {
+                badphenomena_name: "",
+                badphenomena_fathertype: "",
+            }
         };
     },
     computed: {
@@ -130,14 +137,7 @@ export default {
     },
     beforeMount() {
         this.getScreenHeight();
-        this.form.baddata_line = localStorage.getItem("LINE") || "请选择线体";
-        this.form.baddata_equipment =
-            localStorage.getItem("EQUIPMENT") || "请选择设备";
-        this.changeForm.line = localStorage.getItem("LINE") || "请选择线体";
-        this.changeForm.equipment =
-            localStorage.getItem("EQUIPMENT") || "请选择设备";
-        // console.log(localStorage.getItem("LINE"));
-        // console.log(localStorage.getItem("EQUIPMENT"));
+      this.initFormData()
     },
     mounted() {
         window.addEventListener("resize", this.getScreenHeight);
@@ -150,9 +150,29 @@ export default {
         window.removeEventListener("resize", this.getScreenHeight);
     },
     methods: {
-
-        getBadCode(){
-            QueryBadCodebasicInformation({  badphenomena_name: ""}).then((res) => {
+        initFormData() {
+        const line = localStorage.getItem("LINE") || "请选择线体";
+        const equipment = localStorage.getItem("EQUIPMENT") || "请选择设备";
+        
+        // 使用对象展开运算符统一设置表单值
+        this.form = {
+            ...this.form,
+            baddata_line: line,
+            baddata_equipment: equipment
+        };
+        
+        this.changeForm = {
+            line,
+            equipment
+        };
+        
+        this.getBadCodeForm.badphenomena_fathertype = this.getEquipmentPrefix(equipment);
+    },
+    getEquipmentPrefix(equipment) {
+        return equipment.split('-')[0] || "";
+    },
+        getBadCode() {
+            QueryBadCodeFromType(this.getBadCodeForm).then((res) => {
                 this.badList = res.Data;
             });
         },
@@ -163,10 +183,19 @@ export default {
                 this.lineData = res.Data;
             });
         },
+        changeEquipment() {
+            this.changeForm.equipment = "";
+            this.getEquipmentData()
+        },
         getEquipmentData() {
+
+            this.equipmentData = []
             QueryEquipment({
                 EquipmenName: "",
+                LineName: this.changeForm.line,
             }).then((res) => {
+                // console.log(res);
+
                 this.equipmentData = res.Data;
             });
         },
@@ -180,7 +209,10 @@ export default {
             });
             this.form.baddata_line = this.changeForm.line;
             this.form.baddata_equipment = this.changeForm.equipment;
+            this.getBadCodeForm.badphenomena_fathertype = this.changeForm.equipment.split('-')[0]
+            this.getBadCode();
             this.dialogSetVisible = false;
+            this.$refs.pcbRef.focus();
         },
         openSet() {
             this.dialogSetVisible = true;
@@ -204,8 +236,8 @@ export default {
                 });
             }
         },
-    
-        handleSubmit() {  
+
+        handleSubmit() {
             InsertXYL_BadProductInformation(this.form).then((res) => {
                 if (res.Success) {
                     this.$notify({
@@ -213,7 +245,7 @@ export default {
                         message: "不良登记成功",
                         type: "success",
                     });
-                  
+
                     this.restSubmit();
                 } else {
                     this.$notify({

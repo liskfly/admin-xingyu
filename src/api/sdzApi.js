@@ -122,3 +122,20 @@ export function QuerySDZHHeadData(data) {
       data
     });
   }
+
+  //获取三点照合详细信息
+  export function QueryXYL_ThreePointMatchingDetailInfo(data) {
+    return request({
+      url: "/ReportQuery/QueryXYL_ThreePointMatchingDetailInfo",
+      method: "post",
+      data
+    });
+  }
+  //获取三点照合
+   export function QueryXYL_ThreePointMatchingDetailFinalStateInfo(data) {
+    return request({
+      url: "ReportQuery/QueryXYL_ThreePointMatchingDetailFinalStateInfo",
+      method: "post",
+      data
+    });
+  }

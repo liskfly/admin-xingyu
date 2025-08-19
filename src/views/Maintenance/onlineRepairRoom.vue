@@ -21,9 +21,9 @@
                     </template>
                 </el-table-column>
                 <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
-                <af-table-column prop="containername" label="产品SN" fixed="left"></af-table-column>
-                <af-table-column prop="mfgordername" label="工单号" fixed="left"></af-table-column>
-                <af-table-column prop="productname" label="产品编码" fixed="left"></af-table-column>
+                <af-table-column prop="containername" label="产品SN" ></af-table-column>
+                <af-table-column prop="mfgordername" label="工单号" ></af-table-column>
+                <af-table-column prop="productname" label="产品编码"></af-table-column>
                 <!-- <af-table-column prop="productvalue" label="产品名称"></af-table-column> -->
 
                 <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
@@ -47,7 +47,7 @@
 
                 <af-table-column prop="baddata_uuser" label="维修人"></af-table-column>
                 <el-table-column prop="baddata_udatetime" label="维修时间" width="150"></el-table-column>
-                <af-table-column label="操作" fixed="right" width="200" align="center">
+                <af-table-column label="操作" fixed="right" width="210" align="center">
                     <template v-slot="{ row }">
                         <el-button type="primary" size="mini" @click="handleEdit(row)" :disabled="row.baddata_stts == '报废审核' ||
                             row.baddata_stts == '完成报废' ||

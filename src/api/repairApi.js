@@ -68,6 +68,15 @@ export function DeleteBadCodeInformation(data) {
         data,
     });
 }
+
+//获取不良类别下的代码
+export function QueryBadCodeFromType(data) {
+    return request({
+        url: "/Repair/QueryBadCodeFromType",
+        method: "post",
+        data,
+    });
+}
 //获取线体
 export function QueryMfgLine(data) {
     return request({

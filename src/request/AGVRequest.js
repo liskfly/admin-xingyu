@@ -42,16 +42,12 @@ service.interceptors.request.use(
       delete config.cancelObj;
     }
     if (!navigator.onLine) {
-      // 断网提示
+    
       source.cancel("网络故障，请检查!");
     }
 
-    // 请求拦截进来调用显示loading效果
     loading.open();
 
-    // 配置了store持久化的就不需要取localstorage的了
-    // const token = store.state.token || localStorage.getItem("token");
-    // token && (config.headers.token = token);
     return config;
   },
 
@@ -59,10 +55,7 @@ service.interceptors.request.use(
 );
 service.interceptors.response.use(
   (response) => {
-    loading.close(); //关闭加载窗口
-    //建议打印一下 有些后台返回回来的数据格式不同  可根据自己的数据格式进行调整
-
-    //错误提示
+    loading.close();
     if (response.status === 500) {
       Message({
         //elemen组件库中的提示组件
@@ -81,14 +74,9 @@ service.interceptors.response.use(
       return Promise.reject();
     }
 
-    //成功的返回
     if (response.status === 200) {
-      // console.log(response.data);
-      
-      // console.log(response.data.ResultCode);
-      // if (response.data.Success==true) {
+
         return response.data;
-      // } 
 
     }
   },
