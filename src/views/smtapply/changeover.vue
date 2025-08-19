@@ -42,6 +42,7 @@
               </el-form-item>
               <el-form-item label="SIDE">
                 <el-select
+                  :disabled="sideDisable"
                   v-model="form.side"
                   placeholder="选择SIDE"
                   @change="getStatus(), clearAll()"
@@ -591,6 +592,7 @@ export default {
           orbit: "0",
         },
       ],
+      sideDisable:true,
       checkedLine1: [],
       checkedLine2: [],
       checkedLine3: [],
@@ -773,6 +775,7 @@ export default {
           bomVer: data.BomVer,
           productVer: data.SoftVer,
         };
+        this.sideDisable = data.Side == '1' ? true:false;
       });
       this.initialize();
     },
@@ -877,7 +880,7 @@ export default {
         this.questStatus2 = "";
         this.questStatus3 = "";
       }
-      if (this.form.side != "" && this.form.lineName !== "") {
+      if ((this.sideDisable || this.form.side != "") && this.form.lineName !== "") {
         let data = this.dataProcessing();
         if (data.mcIDList.length !== 0) {
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
