@@ -45,7 +45,7 @@
                   :disabled="sideDisable"
                   v-model="form.side"
                   placeholder="选择SIDE"
-                  @change="getStatus(), clearAll()"
+                  @change="sideChoice"
                 >
                   <el-option
                     v-for="item in sideList"
@@ -64,9 +64,9 @@
               <!-- <el-form-item label="软件版本">-----</el-form-item> -->
               <el-form-item label="BOM版本">{{ form.bomVer }}</el-form-item>
             </el-form>
-            <div v-show="form.order !== ''" class="qrcode">
+            <div v-show="form.code !== ''" class="qrcode">
               <vue-qr
-                :text="form.order"
+                :text="form.code"
                 :margin="0"
                 colorDark="#000000"
                 colorLight="#fff"
@@ -502,6 +502,7 @@ export default {
         program: "",
         bomVer: "",
         productVer: "",
+        code:""
       },
       sideList: [
         {
@@ -774,6 +775,7 @@ export default {
           program: data.Name,
           bomVer: data.BomVer,
           productVer: data.SoftVer,
+          code: data.Side == '1' ? this.form.order:''
         };
         this.sideDisable = data.Side == '1' ? true:false;
       });
@@ -1087,6 +1089,12 @@ export default {
       setTimeout(() => {
         this.cancellation3 = true;
       }, 16000);
+    },
+    sideChoice(type) {
+      this.getStatus();
+      this.clearAll();
+      let arr = this.form.order.split('_')
+      this.form.code = arr[0]+'_' + type + '_' + arr[1]
     },
     getStatus(value) {
       if (
