@@ -2,16 +2,20 @@
   <div class="type">
     <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
-        <!-- <el-upload :before-upload="handleFileChange"  action="dummy-string" :show-file-list="false" accept=".xlsx,.xls">
-          <el-button>选择Excel文件</el-button>
-        </el-upload>
-        <div class="mb-2"><el-button type="success" @click="deducedClick"
+        <div class="flex">
+          <el-button type="primary" @click="addOpen" >添加</el-button>
+            <el-button type="success" @click="downloadFile" >下载模板</el-button>
+          <el-upload class="ml-2" :before-upload="handleFileChange" action="dummy-string" :show-file-list="false" accept=".xlsx">
+            <el-button type="warning">导入</el-button>
+          </el-upload>
+        </div>
+
+        <!-- <div class="mb-2"><el-button type="success" @click="deducedClick"
             :disabled="tableData.length == 0">导出</el-button>
         </div> -->
         <div>
           <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()"
-            style="width: 350px;">
+            style="width: 350px">
             <template slot="append">
               <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
             </template>
@@ -74,7 +78,8 @@
 
 <script>
 import { moldControl, specControl } from "@/api/all";
-import { importExcelToJSON, exportTableToExcel } from "@/utils/exportExcel"
+import { XY_WMS_Tools_SpecImportControl } from "@/api/fixtureProduct";
+import { importExcelToJSON, exportTableToExcel } from "@/utils/exportExcel";
 import dayjs from "dayjs";
 export default {
   data() {
@@ -134,51 +139,66 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
-    // async handleFileChange(file) {
+    async handleFileChange(file) {
+      try {
+        const data = await importExcelToJSON(file, {
+          hasHeader: true,
+          headerMapping: {
+            产品编码: "productName",
+            类型: "toolsMold",
+            消耗量: "useage",
+            描述: "remark",
+          }
+        });
+        console.log("解析后的数据:", data);
+        XY_WMS_Tools_SpecImportControl(data).then(res=>{
+          if(res.Status=="OK"){
+            this.$notify({
+              title: "成功",
+              message: "数据导入成功",
+              type: "success",
+            });
+            this.getIDdata();
+          }else{
+            this.$notify({
+              title: "错误",
+              message: res.Message,
+              type: "error",
+            });
+          }
+        })
+        // 处理数据...
+      } catch (error) {
+        console.error("文件解析失败:", error);
+      }
+    },
+      downloadFile() {
+      window.open('http://172.20.99.21:5998/temp/产品消耗-导入模板.xlsx', '_blank')
+    },
+    deducedClick() {
+      exportTableToExcel({
+        tableRef: this.$refs.operaRecordRef,
+        fetchAllData: this.fetchAllUsers,
+        fileName: `产品消耗_${dayjs().format("YYYYMMDDHHmmss")}`,
+        styles: {
+          headerBgColor: "", // 灰色表头
+          headerFont: {
+            color: { argb: "" }, // 红色文字
+            bold: true,
+            size: 14,
+          }, // 白色文字
+          cell: { numFmt: "@" }, // 强制文本格式
+        },
+      });
+    },
+    async fetchAllUsers() {
+      let data1 = await specControl(this.getAllText).then(({ data }) => {
+        // console.log(res);
 
-    //   try {
-    //     const data = await importExcelToJSON(file, {
-    //       hasHeader: true,
-    //       headerMapping: {
-    //         '产品编号': 'PD_model',
-    //         '类型': 'PN_Model',
-    //         '消耗量': 'Qty',
-    //         '描述': 'Dsc',
-    //       }
-    //     });
-    //     console.log('解析后的数据:', data);
-    //     // 处理数据...
-    //   } catch (error) {
-    //     console.error('文件解析失败:', error);
-    //   }
-    // },
-    // deducedClick() {
-    //   exportTableToExcel({
-    //     tableRef: this.$refs.operaRecordRef,
-    //     fetchAllData: this.fetchAllUsers,
-    //     fileName: `产品消耗_${dayjs().format("YYYYMMDDHHmmss")}`,
-    //     styles: {
-    //       headerBgColor: "", // 灰色表头
-    //       headerFont: {
-    //         color: { argb: "" }, // 红色文字
-    //         bold: true,
-    //         size: 14,
-    //       }, // 白色文字
-    //       cell: { numFmt: "@" }, // 强制文本格式
-    //     },
-    //   });
-    // },
-    // async fetchAllUsers() {
-
-
-    //   let data1 = await specControl(this.getAllText).then(({ data }) => {
-    //     // console.log(res);
-
-    //     return data.DataList;
-    //   }
-    //   );
-    //   return data1;
-    // },
+        return data.DataList;
+      });
+      return data1;
+    },
     getData() {
       moldControl(this.getText).then((res) => {
         this.typeList = res.data.DataList;

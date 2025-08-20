@@ -23,7 +23,6 @@
        
         <el-table-column prop="tpm_container" label="条码"> </el-table-column>
          <el-table-column prop="tpm_mfgorder" label="工单"> </el-table-column>
-        <el-table-column prop="tpm_mfgorder" label="产品"> </el-table-column>
         <el-table-column prop="tpm_stts" label="设备判断" align="center" width="100">
 
         </el-table-column>

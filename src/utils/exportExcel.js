@@ -161,6 +161,8 @@ export async function importExcelToJSON(file, options = {}) {
     
     // 获取工作表
     const worksheet = workbook.worksheets[sheetIndex];
+    console.log(worksheet);
+    
     if (!worksheet) {
       throw new Error(`工作表索引 ${sheetIndex} 不存在`);
     }
@@ -191,7 +193,7 @@ export async function importExcelToJSON(file, options = {}) {
         }
       });
     }
-    
+
     // 转换为数组数据
     const data = [];
     worksheet.eachRow((row, rowNumber) => {

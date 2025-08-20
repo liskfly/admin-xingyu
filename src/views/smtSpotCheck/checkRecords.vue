@@ -83,7 +83,8 @@
               </span>
             </template>
           </el-table-column>
-
+             <el-table-column prop="SubItemSolution" label="检查实际值" v-if="getDataText.inspectType=='WI'"> </el-table-column>
+               <el-table-column prop="SubItemBasic" label="单位" v-if="getDataText.inspectType=='WI'"> </el-table-column>
           <el-table-column prop="Remark" label="备注"> </el-table-column>
         </el-table>
         <div class="block" style="margin-top: 8px">
@@ -186,8 +187,13 @@ export default {
         }
       }
     },
-    "getDataText.inspectType"(value) {
+    "getDataText.inspectType"(value,oval) {
       this.value1 = [];
+      if(value!=oval){
+// console.log(11);
+ this.tableData =[]
+
+      }
       if (value == "WI" && this.inquire != "times") {
         this.getDataText.inspect = "XYWI";
       }
@@ -206,7 +212,9 @@ export default {
     this.getScreenHeight();
     this.value1 = [setLastDate(), setTodayDate()];
   },
-  mounted() { },
+  mounted() {
+    window.addEventListener("resize", this.getScreenHeight);
+   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
@@ -302,7 +310,7 @@ export default {
       const resultMap = new Map();
 
       data.forEach(item => {
-        const { InspectOrder, Name, Step, Status, Remark, InspectContent,InspectStatus } = item;
+        const { InspectOrder, Name, Step, Status, Remark, InspectContent,InspectStatus,SubItemSolution ,SubItemBasic} = item;
 
         // 处理附件数组（优化点1：动态处理任意数量的附件）
         const attachments = [];
@@ -324,6 +332,8 @@ export default {
               Remark,
               Attachment: attachments,
               InspectContent,
+              SubItemSolution,
+              SubItemBasic,
               step1: `${InspectOrder}-${Step}`
             });
           }
@@ -339,6 +349,8 @@ export default {
               Remark,
               Attachment: attachments,
               InspectContent,
+              SubItemSolution,
+              SubItemBasic,
               step1: `${InspectOrder}-${Step}`
             }]
           });
