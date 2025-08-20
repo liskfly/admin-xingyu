@@ -143,66 +143,234 @@ export async function exportTableToExcel({
 // }));
 // },
 
-export async function generateToolingJsonFromExcel(file) {
+export async function importExcelToJSON(file, options = {}) {
+  const { 
+    hasHeader = true, 
+    sheetIndex = 0, 
+    headerMapping = {},
+    transformHeader
+  } = options;
+  
   try {
+    // 创建 Workbook
     const workbook = new ExcelJS.Workbook();
-    // 添加时间修复选项避免富文本错误
-    workbook.xlsx.read(await file.arrayBuffer(), {
-      ignoreNodes: ["xdr:wsDr"], // 忽略绘图元素
-      ignoreStyles: true, // 忽略样式信息
-      dateFormats: ["YYYY-MM-DD"], // 明确日期格式
-    });
-
-    const defectSheet = workbook.getWorksheet("SMT缺陷样件");
-    if (!defectSheet) {
-      throw new Error('未找到"SMT缺陷样件"工作表');
+    
+    // 读取文件
+    const buffer = await readFileAsBuffer(file);
+    await workbook.xlsx.load(buffer);
+    
+    // 获取工作表
+    const worksheet = workbook.worksheets[sheetIndex];
+    if (!worksheet) {
+      throw new Error(`工作表索引 ${sheetIndex} 不存在`);
     }
-
-    const result = [];
-    let rowNumber = 0;
-
-    // 改用手动行遍历避免eachRow内部错误
-    for (let i = 4; i <= defectSheet.rowCount; i++) {
-      try {
-        rowNumber = i;
-        const row = defectSheet.getRow(i);
-        if (!row || row.hidden) continue;
-
-        // 安全获取单元格值
-        const getCellValue = (col) => {
-          const cell = row.getCell(col);
-          return cell.value ? cell.value.toString().trim() : "";
-        };
-
-        const sampleCode = getCellValue(1);
-        const productName = getCellValue(3);
-
-        if (!sampleCode || !productName) continue;
-
-        result.push({
-          category: "3",
-          toolsMold: sampleCode,
-          materialName: productName,
-          totalUses: 0,
-          usesUntilRevalidation: 0,
-          pauseUntilRevalidate: 0,
-          timeUntilRevalidation: 0,
-          cleaningTime: 0,
-          tensionLimit: 0,
-          lowerTensionLimit: 0,
-          tensionPoints: 0,
-          operationType: "I",
-          cleanAfterUses: "N",
-          cleanAfterPause: "N",
-          cleanAfterTime: "N",
-        });
-      } catch (rowError) {
-        console.warn(`跳过第 ${rowNumber} 行，解析错误:`, rowError.message);
+    
+    // 获取表头映射
+    let headers = [];
+    if (hasHeader) {
+      const headerRow = worksheet.getRow(1);
+      headerRow.eachCell((cell, colNumber) => {
+        const headerText = cell.value?.toString().trim() || `column_${colNumber}`;
+        
+        // 优先使用自定义转换函数
+        if (transformHeader && typeof transformHeader === 'function') {
+          headers.push(transformHeader(headerText, colNumber));
+        } 
+        // 其次使用映射配置
+        else if (headerMapping[headerText]) {
+          headers.push(headerMapping[headerText]);
+        }
+        // 默认处理：移除特殊字符并用下划线连接
+        else {
+          // 将中文标点符号替换为英文，移除特殊字符
+          const cleanHeader = headerText
+            .replace(/[。，；：！？、（）【】《》]/g, '')
+            .replace(/\s+/g, '_')
+            .replace(/[^a-zA-Z0-9_\u4e00-\u9fa5]/g, '');
+          headers.push(cleanHeader);
+        }
+      });
+    }
+    
+    // 转换为数组数据
+    const data = [];
+    worksheet.eachRow((row, rowNumber) => {
+      // 如果有表头且是第一行，跳过
+      if (hasHeader && rowNumber === 1) return;
+      
+      const rowData = {};
+      row.eachCell((cell, colNumber) => {
+        // 如果有表头，使用处理后的表头作为键名
+        if (hasHeader && headers[colNumber - 1]) {
+          rowData[headers[colNumber - 1]] = cell.value;
+        } else {
+          // 如果没有表头，使用列索引作为键名
+          rowData[`column_${colNumber}`] = cell.value;
+        }
+      });
+      
+      // 跳过空行
+      if (Object.keys(rowData).length > 0) {
+        data.push(rowData);
       }
-    }
-    return result;
+    });
+    
+    return data;
   } catch (error) {
-    console.error("Excel处理失败:", error);
-    throw new Error(`处理Excel文件失败: ${error.message}`);
+    console.error("[Excel Import Error]", error);
+    Notification.error({
+      title: "错误",
+      message: "解析Excel文件失败，请检查文件格式",
+    });
+    throw new Error("解析Excel文件失败");
   }
 }
+
+/**
+ * 将 File 对象读取为 ArrayBuffer
+ * @param {File} file 文件对象
+ * @returns {Promise<ArrayBuffer>} ArrayBuffer
+ */
+function readFileAsBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = (error) => reject(error);
+    reader.readAsArrayBuffer(file);
+  });
+}
+/**
+ * 解析 Excel 文件为 JSON 数据（支持中文表头映射、多工作表选择和行数限制）
+ * @param {File} file Excel 文件对象
+ * @param {Object} options 配置选项
+ * @param {boolean} [options.hasHeader=true] 是否包含表头
+ * @param {number} [options.sheetIndex=0] 工作表索引
+ * @param {string} [options.sheetName] 工作表名称（优先于sheetIndex）
+ * @param {Object} [options.headerMapping={}] 表头映射配置 {中文表头: 英文键名}
+ * @param {Function} [options.transformHeader] 自定义表头转换函数
+ * @param {number} [options.maxRows=0] 最大解析行数（0表示无限制）
+ * @param {number} [options.startRow=1] 起始行（基于Excel行号，包含表头）
+ * @returns {Promise<Object>} 解析后的数据对象，包含数据、工作表信息和分页信息
+ */
+// export async function importExcelToJSON(file, options = {}) {
+//   const { 
+//     hasHeader = true, 
+//     sheetIndex = 0, 
+//     sheetName,
+//     headerMapping = {},
+//     transformHeader,
+//     maxRows = 0, // 0表示无限制
+//     startRow = 1 // Excel行号从1开始
+//   } = options;
+  
+//   try {
+//     // 创建 Workbook
+//     const workbook = new ExcelJS.Workbook();
+    
+//     // 读取文件
+//     const buffer = await readFileAsBuffer(file);
+//     await workbook.xlsx.load(buffer);
+    
+//     // 获取工作表
+//     let worksheet;
+//     if (sheetName) {
+//       // 优先使用工作表名称
+//       worksheet = workbook.getWorksheet(sheetName);
+//       if (!worksheet) {
+//         throw new Error(`工作表 "${sheetName}" 不存在`);
+//       }
+//     } else {
+//       // 使用工作表索引
+//       worksheet = workbook.worksheets[sheetIndex];
+//       if (!worksheet) {
+//         throw new Error(`工作表索引 ${sheetIndex} 不存在`);
+//       }
+//     }
+    
+//     // 获取表头映射
+//     let headers = [];
+//     if (hasHeader) {
+//       const headerRow = worksheet.getRow(startRow);
+//       headerRow.eachCell((cell, colNumber) => {
+//         const headerText = cell.value?.toString().trim() || `column_${colNumber}`;
+        
+//         // 优先使用自定义转换函数
+//         if (transformHeader && typeof transformHeader === 'function') {
+//           headers.push(transformHeader(headerText, colNumber));
+//         } 
+//         // 其次使用映射配置
+//         else if (headerMapping[headerText]) {
+//           headers.push(headerMapping[headerText]);
+//         }
+//         // 默认处理：移除特殊字符并用下划线连接
+//         else {
+//           // 将中文标点符号替换为英文，移除特殊字符
+//           const cleanHeader = headerText
+//             .replace(/[。，；：！？、（）【】《》]/g, '')
+//             .replace(/\s+/g, '_')
+//             .replace(/[^a-zA-Z0-9_\u4e00-\u9fa5]/g, '');
+//           headers.push(cleanHeader);
+//         }
+//       });
+//     }
+    
+//     // 计算实际数据起始行
+//     const dataStartRow = hasHeader ? startRow + 1 : startRow;
+    
+//     // 计算实际要解析的行数
+//     const totalRows = worksheet.rowCount;
+//     const actualMaxRows = maxRows > 0 ? 
+//       Math.min(maxRows, totalRows - dataStartRow + 1) : 
+//       totalRows - dataStartRow + 1;
+    
+//     // 转换为数组数据
+//     const data = [];
+//     let currentRow = dataStartRow;
+//     let parsedRows = 0;
+    
+//     while (currentRow <= totalRows && parsedRows < actualMaxRows) {
+//       const row = worksheet.getRow(currentRow);
+//       const rowData = {};
+//       let isEmptyRow = true;
+      
+//       row.eachCell((cell, colNumber) => {
+//         // 如果有表头，使用处理后的表头作为键名
+//         if (hasHeader && headers[colNumber - 1]) {
+//           rowData[headers[colNumber - 1]] = cell.value;
+//         } else {
+//           // 如果没有表头，使用列索引作为键名
+//           rowData[`column_${colNumber}`] = cell.value;
+//         }
+        
+//         // 检查行是否为空
+//         if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
+//           isEmptyRow = false;
+//         }
+//       });
+      
+//       // 跳过空行
+//       if (!isEmptyRow) {
+//         data.push(rowData);
+//         parsedRows++;
+//       }
+      
+//       currentRow++;
+//     }
+    
+//     return {
+//       data,
+//       sheetName: worksheet.name,
+//       totalRows: worksheet.rowCount,
+//       parsedRows: data.length,
+//       hasMore: maxRows > 0 && currentRow <= totalRows,
+//       nextStartRow: currentRow
+//     };
+//   } catch (error) {
+//     console.error("[Excel Import Error]", error);
+//     Notification.error({
+//       title: "错误",
+//       message: "解析Excel文件失败，请检查文件格式",
+//     });
+//     throw new Error("解析Excel文件失败");
+//   }
+// }

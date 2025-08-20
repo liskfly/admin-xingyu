@@ -23,14 +23,14 @@
         <af-table-column prop="prosop_product" label="料号"> </af-table-column>
         <!-- <af-table-column prop="PN" label="规格"> </af-table-column>
         <af-table-column prop="PN" label="描述"> </af-table-column> -->
-        <af-table-column prop="prosop_name" label="文件1">
+        <af-table-column prop="prosop_name" label="作业指导书">
           <template #default="scope">
             <div style="text-decoration: underline" @click="getPdfSrc(scope.row.prosop_guid, scope.row.prosop_name)">
               {{ scope.row.prosop_name }}
             </div>
           </template>
         </af-table-column>
-        <af-table-column prop="prosop_name2" label="文件2">
+        <af-table-column prop="prosop_name2" label="生产条件表">
           <template #default="scope">
             <div style="text-decoration: underline" @click="getPdfSrc(scope.row.prosop_guid2, scope.row.prosop_name2)">
               {{ scope.row.prosop_name2 }}
@@ -70,7 +70,7 @@
                 <el-upload action="#" multiple :limit="1" :file-list="fileListUp1" :auto-upload="false"
                   :on-change="file1UpChange" :on-remove="file1UpRemove" :before-upload="beforeUpload" accept=".pdf"
                   ref="upload" class="upload-area">
-                  <el-button size="small" type="primary">点击选择文件1</el-button>
+                  <el-button size="small" type="primary">点击选择作业指导书</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">
                     只能上传PDF文件，且不超过5MB
                   </div> -->
@@ -80,7 +80,7 @@
                 <el-upload action="#" multiple :limit="1" :file-list="fileListUp2" :auto-upload="false"
                   :on-change="file2UpChange" :on-remove="file2UpRemove" :before-upload="beforeUpload" accept=".pdf"
                   ref="upload" class="upload-area">
-                  <el-button size="small" type="primary">点击选择文件2</el-button>
+                  <el-button size="small" type="primary">点击选择生产条件表</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">
                     只能上传PDF文件，且不超过5MB
                   </div> -->
@@ -93,22 +93,22 @@
               <h4>文件名设置</h4>
               <!-- <div class="file-item">
                 <el-input v-model="customNames[0]" clearable>
-                  <template slot="prepend">文件1名称</template>
+                  <template slot="prepend">作业指导书名称</template>
                   <template slot="append">.pdf</template>
                 </el-input>
               </div>
               <div class="file-item">
                 <el-input v-model="customNames[1]" clearable>
-                  <template slot="prepend">文件2名称</template>
+                  <template slot="prepend">生产条件表名称</template>
                   <template slot="append">.pdf</template>
                 </el-input>
               </div> -->
               <el-form :inline="true" size="medium" @submit.native.prevent>
                 <div class="upload-name">
-                  <el-form-item class="file1" label="文件1">
+                  <el-form-item class="file1" label="作业指导书">
                     <el-input v-model="customNames[0]" clearable> </el-input>
                   </el-form-item>
-                  <el-form-item class="file2" label="文件2">
+                  <el-form-item class="file2" label="生产条件表">
                     <el-input v-model="customNames[1]" clearable> </el-input>
                   </el-form-item>
                 </div>
@@ -147,10 +147,10 @@
               <el-form-item label="料号">
                 <el-input placeholder="" disabled v-model="editForm.ProductName"></el-input>
               </el-form-item>
-              <el-form-item label="是否只修改文件1名称">
+              <el-form-item label="是否只修改作业指导书名称">
                 <el-checkbox v-model="editForm.upfilename1"></el-checkbox>
               </el-form-item>
-              <el-form-item label="是否只修改文件2名称">
+              <el-form-item label="是否只修改生产条件表名称">
                 <el-checkbox v-model="editForm.upfilename2"></el-checkbox>
               </el-form-item>
             </el-form>
@@ -160,7 +160,7 @@
                 <el-upload action="#" multiple :limit="1" :file-list="fileListEdit1" :auto-upload="false"
                   :on-change="file1EditChange" :on-remove="file1EditRemove" :before-upload="beforeUpload" accept=".pdf"
                   ref="upload" class="upload-area" v-if="!editForm.upfilename1">
-                  <el-button size="small" type="primary">点击选择文件1</el-button>
+                  <el-button size="small" type="primary">点击选择作业指导书</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">
                     只能上传PDF文件，且不超过5MB
                   </div> -->
@@ -170,7 +170,7 @@
                 <el-upload action="#" multiple :limit="1" :file-list="fileListEdit2" :auto-upload="false"
                   :on-change="file2EditChange" :on-remove="file2EditRemove" :before-upload="beforeUpload" accept=".pdf"
                   ref="upload" class="upload-area" v-if="!editForm.upfilename2">
-                  <el-button size="small" type="primary">点击选择文件2</el-button>
+                  <el-button size="small" type="primary">点击选择生产条件表</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">
                     只能上传PDF文件，且不超过5MB
                   </div> -->
@@ -186,7 +186,7 @@
                   clearable
                   :disabled="!checked1"
                 >
-                  <template slot="prepend">文件1名称</template>
+                  <template slot="prepend">作业指导书名称</template>
                   <template slot="append">.pdf</template>
                 </el-input>
               </div>
@@ -196,17 +196,17 @@
                   clearable
                   :disabled="!checked2"
                 >
-                  <template slot="prepend">文件2名称</template>
+                  <template slot="prepend">生产条件表名称</template>
                   <template slot="append">.pdf</template>
                 </el-input>
               </div> -->
               <el-form :inline="true" size="medium" @submit.native.prevent>
                 <div class="upload-name">
-                  <el-form-item class="file1" label="文件1">
+                  <el-form-item class="file1" label="作业指导书">
                     <el-input v-model="editForm.filename1" clearable>
                     </el-input>
                   </el-form-item>
-                  <el-form-item class="file2" label="文件2">
+                  <el-form-item class="file2" label="生产条件表">
                     <el-input v-model="editForm.filename2" clearable>
                     </el-input>
                   </el-form-item>

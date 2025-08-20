@@ -2,80 +2,47 @@
   <div class="type">
     <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
-        <el-button type="primary" @click="addOpen" size="medium"
-          >添加</el-button
-        >
+        <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
+        <!-- <el-upload :before-upload="handleFileChange"  action="dummy-string" :show-file-list="false" accept=".xlsx,.xls">
+          <el-button>选择Excel文件</el-button>
+        </el-upload>
+        <div class="mb-2"><el-button type="success" @click="deducedClick"
+            :disabled="tableData.length == 0">导出</el-button>
+        </div> -->
         <div>
-          <el-input
-            v-model="searchName"
-            clearable
-            placeholder="请输入"
-            @keyup.enter.native="searchData()"
-            style="width: 350px;"
-          >
+          <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()"
+            style="width: 350px;">
             <template slot="append">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                @click="searchData()"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
             </template>
           </el-input>
         </div>
       </div>
       <div class="table_container">
-        <el-table
-          :data="
-            tableData1.slice(
-              (currentPage - 1) * pageSize,
-              currentPage * pageSize
-            )
-          "
-          border
-          :height="tableHeight"
-          style="width: 100%"
-           size="mini"
-        >
+        <el-table :data="tableData1.slice(
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
+        )
+          " border :height="tableHeight" style="width: 100%" size="mini" ref="operaRecordRef">
           <el-table-column prop="PD_model" label="产品编号"> </el-table-column>
           <el-table-column prop="PN_Model" label="类型"> </el-table-column>
           <el-table-column prop="Qty" label="消耗量"> </el-table-column>
           <el-table-column prop="Dsc" label="描述"> </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="120"
-            align="center"
-          >
+          <el-table-column fixed="right" label="操作" width="120" align="center">
             <template slot-scope="scope">
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini"
+                @click="handleEdit(scope.$index, scope.row)"></el-button>
 
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                @click="handleDelete(scope.$index, scope.row)"
-              ></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini"
+                @click="handleDelete(scope.$index, scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <div class="block" style="margin-top: 8px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData1.length"
-        >
+        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 50, 100]"
+          layout="total,sizes, prev, pager, next, jumper" :total="tableData1.length">
         </el-pagination>
       </div>
     </el-card>
@@ -86,12 +53,8 @@
         </el-form-item>
         <el-form-item label="类型" prop="toolsMold">
           <el-select v-model="form.toolsMold" filterable placeholder="治具类型">
-            <el-option
-              v-for="item in typeList"
-              :key="item.ToolsMold"
-              :label="item.ToolsMold"
-              :value="item.ToolsMold"
-            ></el-option>
+            <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
+              :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="消耗量" prop="useage">
@@ -111,6 +74,8 @@
 
 <script>
 import { moldControl, specControl } from "@/api/all";
+import { importExcelToJSON, exportTableToExcel } from "@/utils/exportExcel"
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -169,6 +134,51 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
+    // async handleFileChange(file) {
+
+    //   try {
+    //     const data = await importExcelToJSON(file, {
+    //       hasHeader: true,
+    //       headerMapping: {
+    //         '产品编号': 'PD_model',
+    //         '类型': 'PN_Model',
+    //         '消耗量': 'Qty',
+    //         '描述': 'Dsc',
+    //       }
+    //     });
+    //     console.log('解析后的数据:', data);
+    //     // 处理数据...
+    //   } catch (error) {
+    //     console.error('文件解析失败:', error);
+    //   }
+    // },
+    // deducedClick() {
+    //   exportTableToExcel({
+    //     tableRef: this.$refs.operaRecordRef,
+    //     fetchAllData: this.fetchAllUsers,
+    //     fileName: `产品消耗_${dayjs().format("YYYYMMDDHHmmss")}`,
+    //     styles: {
+    //       headerBgColor: "", // 灰色表头
+    //       headerFont: {
+    //         color: { argb: "" }, // 红色文字
+    //         bold: true,
+    //         size: 14,
+    //       }, // 白色文字
+    //       cell: { numFmt: "@" }, // 强制文本格式
+    //     },
+    //   });
+    // },
+    // async fetchAllUsers() {
+
+
+    //   let data1 = await specControl(this.getAllText).then(({ data }) => {
+    //     // console.log(res);
+
+    //     return data.DataList;
+    //   }
+    //   );
+    //   return data1;
+    // },
     getData() {
       moldControl(this.getText).then((res) => {
         this.typeList = res.data.DataList;
@@ -343,19 +353,23 @@ export default {
 <style lang="scss" scoped>
 .type {
   padding: 8px;
+
   .initBox {
     width: 500px;
   }
+
   .table_header {
     padding-bottom: 8px;
     display: flex;
     // gap: 30px;
     justify-content: space-between;
     align-items: center;
+
     .input_box {
       width: 400px;
     }
   }
+
   .btn {
     display: flex;
     justify-content: flex-end;
