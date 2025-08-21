@@ -1,5 +1,5 @@
 import router from "./router";
-import { error404 } from "./router";
+// import { error404 } from "./router";
 import store from "./store";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css"; 
