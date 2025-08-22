@@ -60,8 +60,10 @@
             </div>
             <el-form>
               <el-form-item label="料号">
-                <el-autocomplete v-model="productSelect" :fetch-suggestions="getProductName" placeholder="请输入内容"
-                  @select="handleSelect" :value-key="'ProductName'"></el-autocomplete>
+                <!-- <el-autocomplete v-model="productSelect" :fetch-suggestions="getProductName" placeholder="请输入内容"
+                  @select="handleSelect" :value-key="'ProductName'"></el-autocomplete> -->
+                  <el-input placeholder="请输入料号" clearable v-model="productName">
+          </el-input>
               </el-form-item>
             </el-form>
             <!-- 文件上传区域 -->
@@ -69,7 +71,7 @@
               <div class="file1">
                 <el-upload action="#" multiple :limit="1" :file-list="fileListUp1" :auto-upload="false"
                   :on-change="file1UpChange" :on-remove="file1UpRemove" :before-upload="beforeUpload" accept=".pdf"
-                  ref="upload" class="upload-area">
+                  ref="upload1" class="upload-area">
                   <el-button size="small" type="primary">点击选择文件1</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">
                     只能上传PDF文件，且不超过5MB
@@ -79,7 +81,7 @@
               <div class="file2">
                 <el-upload action="#" multiple :limit="1" :file-list="fileListUp2" :auto-upload="false"
                   :on-change="file2UpChange" :on-remove="file2UpRemove" :before-upload="beforeUpload" accept=".pdf"
-                  ref="upload" class="upload-area">
+                  ref="upload2" class="upload-area">
                   <el-button size="small" type="primary">点击选择文件2</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">
                     只能上传PDF文件，且不超过5MB
@@ -575,7 +577,9 @@ export default {
     resetUpload() {
       this.productSelect = "";
       this.productName = "";
-      this.$refs.upload.clearFiles();
+      console.log(this.$refs.upload);
+      this.$refs.upload1.clearFiles();
+      this.$refs.upload2.clearFiles();
       this.fileList = [];
       this.customNames = [];
     },
