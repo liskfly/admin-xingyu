@@ -16,7 +16,7 @@
           <template slot-scope="scope">
             <span>{{
               scope.$index + 1 + (getForm.PageIndex - 1) * getForm.PageSize
-            }}</span>
+              }}</span>
           </template>
         </el-table-column>
         <af-table-column prop="PN" label="拼板物料编号" width="220">
@@ -66,12 +66,13 @@
           </el-col>
           <el-col :span="8" :offset="0">
             <el-form-item label="物料规格" prop="list.model" class="mb-2">
-              <el-input v-model="form.list.model" placeholder="" type="textarea" size="small" /> </el-form-item></el-col>
+              <el-input v-model="form.list.model" placeholder="" type="textarea" size="small" />
+            </el-form-item></el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
             <el-form-item label="单双面" prop="list.side" class="mb-2">
-              <el-select v-model="form.list.side" placeholder="请选择" style="width: 100%" size="small" >
+              <el-select v-model="form.list.side" placeholder="请选择" style="width: 100%" size="small">
                 <el-option label="单" value="1" />
                 <el-option label="双" value="2" />
               </el-select>
@@ -87,7 +88,7 @@
               <el-input v-model="form.list.softwareVersion" placeholder="" size="small" />
             </el-form-item>
           </el-col>
-           <el-col :span="8" :offset="0">
+          <el-col :span="8" :offset="0">
             <el-form-item label="PCB板子物料" prop="PCBMaterial" class="mb-2">
               <el-input v-model="form.list.PCBMaterial" placeholder="" size="small" />
             </el-form-item>
@@ -95,67 +96,74 @@
         </el-row>
         <div class="form-section">
           <!-- <h3 class="section-title">小板明细</h3> -->
-            <el-tabs type="border-card">
-            <el-tab-pane label="小板明细"> 
-          <el-table :data="form.Detail" style="width: 100%" border :height="300" size="small">
-            <el-table-column label="序号" width="55">
-              <template slot-scope="scope">
-                <span>{{ scope.$index + 1 }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="PCB物料编码">
-              <template slot-scope="scope">
-                <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod"
-                  placeholder="105057开头的物料编码" @select="change($event, scope.$index)" size="small">
-                </el-autocomplete>
-                <!-- <el-select v-model="scope.row.pcb_code" @change="change($event, scope.$index)" filterable remote
+          <el-tabs type="border-card">
+            <el-tab-pane label="小板明细">
+              <el-table :data="form.Detail" style="width: 100%" border :height="300" size="small">
+                <el-table-column label="序号" width="55">
+                  <template slot-scope="scope">
+                    <span>{{ scope.$index + 1 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="PCB物料编码">
+                  <template slot-scope="scope">
+                    <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod"
+                      placeholder="105057开头的物料编码" @select="change($event, scope.$index)" size="small">
+                    </el-autocomplete>
+                    <!-- <el-select v-model="scope.row.pcb_code" @change="change($event, scope.$index)" filterable remote
                   reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod" size="mini" >
                   <el-option v-for="item in options" :key="item.PN" :label="item.PN" :value="item.PN">
                   </el-option>
                 </el-select> -->
-                <!-- <el-input v-model="scope.row.pcb_code" placeholder="请输入内容" size="mini" /> -->
-              </template>
-            </el-table-column>
-            <el-table-column label="拼板数量">
-              <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.small_board_qty" placeholder="请输入内容" size="small" />
-              </template>
-            </el-table-column>
-            <el-table-column label="模组开始序号">
-              <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.module_start" placeholder="请输入内容" size="small" />
-              </template>
-            </el-table-column>
-            <el-table-column label="模组结束序号">
-              <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.module_end" placeholder="请输入内容" size="small" />
-              </template>
-            </el-table-column>
-            <el-table-column label="小板成品编码">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.finished_code" placeholder="请输入内容" size="small" />
-              </template>
-            </el-table-column>
-            <el-table-column label="物料名称">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.name" placeholder="请输入内容" size="small" />
-              </template>
-            </el-table-column>
-            <el-table-column label="物料规格">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.model" placeholder="请输入内容" size="small" />
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="60" align="center">
-              <template v-slot="{ $index }">
+                    <!-- <el-input v-model="scope.row.pcb_code" placeholder="请输入内容" size="mini" /> -->
+                  </template>
+                </el-table-column>
+                <el-table-column label="拼板数量">
+                  <template slot-scope="scope">
+                    <el-input type="number" v-model.number="scope.row.small_board_qty" placeholder="请输入内容"
+                      size="small" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="模组开始序号">
+                  <template slot-scope="scope">
+                    <el-input type="number" v-model.number="scope.row.module_start" placeholder="请输入内容" size="small" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="模组结束序号">
+                  <template slot-scope="scope">
+                    <el-input type="number" v-model.number="scope.row.module_end" placeholder="请输入内容" size="small" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="小板成品编码">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.finished_code" placeholder="请输入内容" size="small" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="物料名称">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.name" placeholder="请输入内容" size="small" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="物料规格">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.model" placeholder="请输入内容" size="small" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="80" align="center">
+                  <!-- <template v-slot="{ $index }">
                 <el-button v-if="$index === form.Detail.length - 1" type="text" icon="el-icon-plus"
                   @click="addSmallBoard" />
                 <el-button v-else type="text" icon="el-icon-delete" class="text-red-500"
                   @click="removeBoardItem($index)" />
-              </template>
-            </el-table-column>
-          </el-table>
-          </el-tab-pane></el-tabs>
+              </template> -->
+                  <template v-slot="{ $index }">
+                    <el-button type="primary" v-if="$index === form.Detail.length - 1" size="mini" icon="el-icon-plus"
+                      @click="addSmallBoard"></el-button>
+                    <el-button v-else type="danger" size="mini" icon="el-icon-delete"
+                      @click="removeBoardItem($index)"></el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane></el-tabs>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -168,17 +176,17 @@
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
             <el-form-item label="拼板物料编号" prop="pn" class="mb-2">
-              <el-input v-model="editForm.pn" placeholder="" disabled size="small"/>
+              <el-input v-model="editForm.pn" placeholder="" disabled size="small" />
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
             <el-form-item label="物料名称" prop="name" class="mb-2">
-              <el-input v-model="editForm.name" placeholder="" size="small"/>
+              <el-input v-model="editForm.name" placeholder="" size="small" />
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
             <el-form-item label="物料规格" prop="model" class="mb-2">
-              <el-input v-model="editForm.model" placeholder=""size="small" /> </el-form-item></el-col>
+              <el-input v-model="editForm.model" placeholder="" size="small" /> </el-form-item></el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
@@ -207,7 +215,8 @@
         </el-row>
         <div class="form-section">
           <el-tabs type="border-card">
-            <el-tab-pane label="小板明细"> <el-table :data="smallBoardTable" style="width: 100%" border :height="350" size="small">
+            <el-tab-pane label="小板明细"> <el-table :data="smallBoardTable" style="width: 100%" border :height="350"
+                size="small">
                 <el-table-column label="序号" width="55">
                   <template slot-scope="scope">
                     <span>{{ scope.$index + 1 }}</span>
@@ -258,11 +267,12 @@
                 </el-table-column>
                 <el-table-column label="操作" width="120">
                   <template slot-scope="scope">
+                      <el-button type="danger" size="mini" icon="el-icon-delete"
+                      @click="handleDetailDelete(scope.row)"></el-button>
                     <el-button type="primary" size="mini" icon="el-icon-plus"
                       v-if="scope.$index === smallBoardTable.length - 1"
                       @click="handleDetailEdit(scope.row)"></el-button>
-                    <el-button type="danger" size="mini" icon="el-icon-delete"
-                      @click="handleDetailDelete(scope.row)"></el-button>
+                  
                   </template>
                 </el-table-column>
               </el-table></el-tab-pane>
@@ -325,7 +335,7 @@ export default {
           name: "",
           version: "",
           softwareVersion: "",
-          PCBMaterial:""
+          PCBMaterial: ""
         },
         Detail: [
           {
@@ -349,7 +359,7 @@ export default {
         name: "",
         version: "",
         softwareVersion: "",
-        PCBMaterial:""
+        PCBMaterial: ""
       },
       upDateForm: {
         pnl_code: "",
@@ -677,9 +687,9 @@ export default {
         name: row.name,
         version: row.version,
         softwareVersion: row.softwareVersion,
-        PCBMaterial:row.PCBMaterial
+        PCBMaterial: row.PCBMaterial
       };
-      
+
       findPnDetail(row.PN).then((res) => {
         if (res.Data == null || res.Data.length === 0) {
           this.smallBoardTable.push({
@@ -692,8 +702,8 @@ export default {
             module_start: 0,
             module_end: 0,
           });
-         
-          
+
+
         } else {
           this.smallBoardTable = JSON.parse(res.Data);
         }

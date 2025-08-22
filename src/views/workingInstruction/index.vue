@@ -11,9 +11,9 @@
           </el-input>
         </el-form-item>
       </el-form>
-      <el-table :data="tableData" border :height="tableHeight" style="width: 100%">
+      <el-table :data="tableData" border :height="tableHeight" size="small" style="width: 100%">
         <!-- <el-table-column type="index" label="序号" width="55" /> -->
-        <el-table-column label="序号" width="55">
+        <el-table-column label="序号" width="55" fixed align="center">
           <template slot-scope="scope">
             <span>{{
               scope.$index + 1 + (getForm.PageIndex - 1) * getForm.PageSize
@@ -51,81 +51,50 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="'新增'" :visible.sync="dialogVisible" width="700px" @close="resetUpload()">
+    <el-dialog :title="'新增'" :visible.sync="dialogVisible" width="800px" @close="resetUpload()">
       <el-form ref="formRef" :inline="true" :model="form" label-position="left" label-width="auto">
         <div class="pdf-upload-container">
           <el-card class="upload-card">
             <div slot="header">
               <span>PDF文件上传</span>
             </div>
-            <el-form>
-              <el-form-item label="料号">
-                <el-autocomplete v-model="productSelect" style="width: 600px;" :fetch-suggestions="getProductName" placeholder="请输入内容"
-                  @select="handleSelect" :value-key="'ProductName'"></el-autocomplete>
-              </el-form-item>
-            </el-form>
-            <!-- 文件上传区域 -->
-            <div class="upload">
-              <div class="file1">
-                <el-upload action="#" multiple :limit="1" :file-list="fileListUp1" :auto-upload="false"
-                  :on-change="file1UpChange" :on-remove="file1UpRemove" :before-upload="beforeUpload" accept=".pdf"
-                  ref="upload" class="upload-area">
-                  <el-button size="small" type="primary">点击选择作业指导书</el-button>
-                  <!-- <div slot="tip" class="el-upload__tip">
-                    只能上传PDF文件，且不超过5MB
-                  </div> -->
-                </el-upload>
-              </div>
-              <div class="file2">
-                <el-upload action="#" multiple :limit="1" :file-list="fileListUp2" :auto-upload="false"
-                  :on-change="file2UpChange" :on-remove="file2UpRemove" :before-upload="beforeUpload" accept=".pdf"
-                  ref="upload" class="upload-area">
-                  <el-button size="small" type="primary">点击选择生产条件表</el-button>
-                  <!-- <div slot="tip" class="el-upload__tip">
-                    只能上传PDF文件，且不超过5MB
-                  </div> -->
-                </el-upload>
-              </div>
-            </div>
-
-            <!-- 文件名编辑区域 -->
-            <div class="filename-edit-area">
-              <h4>文件名设置</h4>
-              <!-- <div class="file-item">
-                <el-input v-model="customNames[0]" clearable>
-                  <template slot="prepend">作业指导书名称</template>
-                  <template slot="append">.pdf</template>
-                </el-input>
-              </div>
-              <div class="file-item">
-                <el-input v-model="customNames[1]" clearable>
-                  <template slot="prepend">生产条件表名称</template>
-                  <template slot="append">.pdf</template>
-                </el-input>
-              </div> -->
-              <el-form :inline="true" size="medium" @submit.native.prevent>
-                <div class="upload-name">
-                  <el-form-item class="file1" label="作业指导书">
-                    <el-input v-model="customNames[0]" clearable> </el-input>
-                  </el-form-item>
-                  <el-form-item class="file2" label="生产条件表">
-                    <el-input v-model="customNames[1]" clearable> </el-input>
-                  </el-form-item>
-                </div>
+           
+              <el-form :inline="true"  @submit.native.prevent label-width="auto">
+                <!-- <div class="upload-name"> -->
+                <el-form-item label="料号"  class="mb-3">
+                  <el-autocomplete v-model="productSelect" style="width: 600px;" :fetch-suggestions="getProductName"
+                    placeholder="请输入内容" @select="handleSelect" :value-key="'ProductName'"></el-autocomplete>
+                </el-form-item>
+                <el-row :gutter="20" class="mb-3">
+                  <el-col :span="18" :offset="0">
+                    <el-form-item class="file1" label="作业指导书" >
+                      <el-input v-model="customNames[0]" clearable style="width: 400px;"> </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6" :offset="0"><el-upload action="#" multiple :limit="1" :file-list="fileListUp1"
+                      :auto-upload="false" :on-change="file1UpChange" :on-remove="file1UpRemove"
+                      :before-upload="beforeUpload" accept=".pdf" ref="upload" class="upload-area">
+                      <el-button size="small" type="primary">上传作业指导书</el-button>
+                    </el-upload>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="20"  >
+                  <el-col :span="18" :offset="0">
+                    <el-form-item class="file2" label="生产条件表">
+                      <el-input v-model="customNames[1]" clearable style="width: 400px;"> </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6" :offset="0">
+                    <el-upload action="#" multiple :limit="1" :file-list="fileListUp2" :auto-upload="false"
+                      :on-change="file2UpChange" :on-remove="file2UpRemove" :before-upload="beforeUpload" accept=".pdf"
+                      ref="upload" class="upload-area">
+                      <el-button size="small" type="primary">上传生产条件表</el-button>
+                    </el-upload>
+                  </el-col>
+                </el-row>
+                <!-- </div> -->
               </el-form>
-            </div>
-
-            <!-- 操作按钮 -->
-            <!-- <div class="action-buttons">
-              <el-button
-                type="primary"
-                :loading="uploading"
-                @click="submitUpload"
-              >
-                确认上传
-              </el-button>
-              <el-button @click="resetUpload">重置</el-button>
-            </div> -->
+            <!-- </div> -->
           </el-card>
         </div>
       </el-form>
@@ -136,8 +105,8 @@
           ">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="'编辑'" :visible.sync="editVisible" width="700px" @close="resetEdit()">
-      <el-form ref="formRef" :inline="true" :model="form" label-position="left" label-width="auto">
+    <el-dialog :title="'编辑'" :visible.sync="editVisible" width="800px" @close="resetEdit()">
+      <el-form ref="formRef" :model="form" label-position="left" label-width="auto">
         <div class="pdf-upload-container">
           <el-card class="upload-card">
             <div slot="header">
@@ -155,77 +124,41 @@
               </el-form-item>
             </el-form>
             <!-- 文件上传区域 -->
-            <div class="upload">
-              <div class="file1">
-                <el-upload action="#" multiple :limit="1" :file-list="fileListEdit1" :auto-upload="false"
+         
+             <el-form :inline="true"  @submit.native.prevent label-width="auto">
+                <el-row :gutter="20" class="mb-3">
+                  <el-col :span="18" :offset="0">
+                     <el-form-item class="file1" label="作业指导书">
+                    <el-input v-model="editForm.filename1" clearable style="width: 400px;">
+                    </el-input>
+                  </el-form-item>
+                  </el-col>
+                  <el-col :span="6" :offset="0">
+                    <el-upload action="#" multiple :limit="1" :file-list="fileListEdit1" :auto-upload="false"
                   :on-change="file1EditChange" :on-remove="file1EditRemove" :before-upload="beforeUpload" accept=".pdf"
                   ref="upload" class="upload-area" v-if="!editForm.upfilename1">
                   <el-button size="small" type="primary">点击选择作业指导书</el-button>
-                  <!-- <div slot="tip" class="el-upload__tip">
-                    只能上传PDF文件，且不超过5MB
-                  </div> -->
                 </el-upload>
-              </div>
-              <div class="file2">
-                <el-upload action="#" multiple :limit="1" :file-list="fileListEdit2" :auto-upload="false"
+                  </el-col>
+                </el-row>
+                <el-row :gutter="20"  >
+                  <el-col :span="18" :offset="0">
+                  <el-form-item class="file2" label="生产条件表">
+                    <el-input v-model="editForm.filename2" clearable style="width: 400px;">
+                    </el-input>
+                  </el-form-item>
+                  </el-col>
+                  <el-col :span="6" :offset="0">
+                    <el-upload action="#" multiple :limit="1" :file-list="fileListEdit2" :auto-upload="false"
                   :on-change="file2EditChange" :on-remove="file2EditRemove" :before-upload="beforeUpload" accept=".pdf"
                   ref="upload" class="upload-area" v-if="!editForm.upfilename2">
                   <el-button size="small" type="primary">点击选择生产条件表</el-button>
-                  <!-- <div slot="tip" class="el-upload__tip">
-                    只能上传PDF文件，且不超过5MB
-                  </div> -->
                 </el-upload>
-              </div>
-            </div>
-            <!-- 文件名编辑区域 -->
-            <div class="filename-edit-area">
-              <h4>文件名设置</h4>
-              <!-- <div class="file-item">
-                <el-input
-                  v-model="editForm.filename1"
-                  clearable
-                  :disabled="!checked1"
-                >
-                  <template slot="prepend">作业指导书名称</template>
-                  <template slot="append">.pdf</template>
-                </el-input>
-              </div>
-              <div class="file-item">
-                <el-input
-                  v-model="editForm.filename2"
-                  clearable
-                  :disabled="!checked2"
-                >
-                  <template slot="prepend">生产条件表名称</template>
-                  <template slot="append">.pdf</template>
-                </el-input>
-              </div> -->
-              <el-form :inline="true" size="medium" @submit.native.prevent>
-                <div class="upload-name">
-                  <el-form-item class="file1" label="作业指导书">
-                    <el-input v-model="editForm.filename1" clearable>
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item class="file2" label="生产条件表">
-                    <el-input v-model="editForm.filename2" clearable>
-                    </el-input>
-                  </el-form-item>
-                </div>
+                  </el-col>
+                </el-row>
+                <!-- </div> -->
               </el-form>
-            </div>
 
-            <!-- 操作按钮 -->
-            <!-- <div class="action-buttons">
-              <el-button
-                type="primary"
-                :loading="uploading"
-                :disabled="fileList.length === 0"
-                @click="submitUpload"
-              >
-                确认上传
-              </el-button>
-              <el-button @click="resetUpload">重置</el-button>
-            </div> -->
           </el-card>
         </div>
       </el-form>
@@ -302,12 +235,12 @@ export default {
       tableData: [],
       tableDetail: [],
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       tableHeight: 0,
       getForm: {
         PageIndex: 1,
-        PageSize: 10,
+        PageSize: 20,
         SearchModel: {
           ProductName: "",
         },
