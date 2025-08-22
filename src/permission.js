@@ -16,21 +16,16 @@ const whiteList = ["/login"];
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
   document.title = getPageTitle(to.meta.title);
-  // resetRouter();
   const hasToken = getToken1();
   if (hasToken) {
     if (to.path === "/login") {
       next({ path: "/" });
       NProgress.done();
     } else {
-      // let route = await store.getters["user/getRoleRouters"];
-      // const hasRouters = route && route.length > 0;
-
-      //   let employeeId = localStorage.getItem("employeeId");
       if (store.getters["permission/getIsAddRouters"]) {
         next();
       } else {
-        // next()
+        //获取权限菜单
         await getMenu().then(async (res) => {
           const routerArr = res.Data || [];
           const systemRouter = routerArr.filter((v) => v.MenuName == "Portal");
@@ -46,8 +41,6 @@ router.beforeEach(async (to, from, next) => {
           let dynamicRoutes = await store.getters["permission/getAddRouters"];
           router.addRoutes(dynamicRoutes);
           router.options.routes = constantRoutes.concat([...dynamicRoutes]);
-
-          
         });
         store.commit("permission/SET_IS_ADD_ROUTERS", true);
         next({ ...to, replace: true });

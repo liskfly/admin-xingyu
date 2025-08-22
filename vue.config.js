@@ -17,7 +17,7 @@ module.exports = {
   assetsDir: "static",
   // lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
-transpileDependencies: ['pdfjs-dist'],
+  transpileDependencies: ["pdfjs-dist"],
   devServer: {
     port: port,
     open: true,
@@ -31,7 +31,7 @@ transpileDependencies: ['pdfjs-dist'],
         changeOrigin: true,
         pathRewrite: {
           "^/control": "",
-        }
+        },
       },
       "/all": {
         // 需要访问的地址
@@ -98,21 +98,19 @@ transpileDependencies: ['pdfjs-dist'],
         },
       },
       "/assembleApi": {
-        target:"http://172.20.99.47:12016/api",
+        target: "http://172.20.99.47:12016/api",
         changeOrigin: true,
         pathRewrite: {
           "^/assembleApi": "",
         },
       },
       "/txtFilesLog": {
-        target:"http://172.20.99.21:5432",
+        target: "http://172.20.99.21:5432",
         changeOrigin: true,
         pathRewrite: {
           "^/txtFilesLog": "",
         },
-      }
-     
- 
+      },
     },
   },
   configureWebpack: {

@@ -1,26 +1,22 @@
 <template>
-  <div >
+  <div>
     <HeaderTop></HeaderTop>
     <!-- <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
     <!-- <sidebar class="sidebar-container" /> -->
- 
-      <TabMenu />
-     
-  
+    <TabMenu />
     <div class="main-container">
-      <div :class="{ 'fixed-header': fixedHeader }" >
+      <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
       </div>
       <div style="display: flex">
         <div class="left-box"><app-main /></div>
-      
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain,TabMenu ,HeaderTop} from "./components";
+import { Navbar, Sidebar, AppMain, TabMenu, HeaderTop } from "./components";
 import ResizeMixin from "./mixin/ResizeHandler";
 import { mapState } from "vuex";
 
