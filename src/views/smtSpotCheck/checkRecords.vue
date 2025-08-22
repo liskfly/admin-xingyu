@@ -52,24 +52,29 @@
           <el-table-column prop="InspectOrder" label="任务编号" width="180">
           </el-table-column>
           <el-table-column prop="Name" label="检验设备"> </el-table-column>
+          <el-table-column prop="SubItemName" label="工艺检查项" v-if="getDataText.inspectType == 'WI'">
+          </el-table-column>
+           <el-table-column prop="SubItemSolution" label="检查实际值" v-if="getDataText.inspectType == 'WI'">
+          </el-table-column>
+          <el-table-column prop="SubItemBasic" label="单位" v-if="getDataText.inspectType == 'WI'"> </el-table-column>
           <el-table-column prop="InspectStatus" label="状态">
             <template slot-scope="scope" v-if="scope.row.InspectStatus">
               <el-tag :type="resultTag1(scope.row.InspectStatus)" effect="plain">{{
                 resultText1(scope.row.InspectStatus)
-              }}</el-tag></template>
+                }}</el-tag></template>
           </el-table-column>
+             
           <el-table-column prop="Status" label="检查结果">
             <template slot-scope="scope" v-if="scope.row.Status">
               <el-tag :type="resultTag(scope.row.Status)" effect="dark">{{
                 resultText(scope.row.Status)
-              }}</el-tag>
+                }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="Attachment" label="记录图片">
             <template slot-scope="scope">
               <span v-for="(item, i) in scope.row.Attachment" :key="i">
-                <el-image style="max-height: 70px; max-width: 70px; padding: 5px" :src="item"
-                  :preview-src-list="[item]">
+                <el-image style="width: 70px;height: 35px;" :src="item" :preview-src-list="[item]">
                 </el-image>
                 <!-- <el-popover placement="left" trigger="click" width="300">
                   <img :src="item" width="100%" />
@@ -83,8 +88,10 @@
               </span>
             </template>
           </el-table-column>
-
+             
+         
           <el-table-column prop="Remark" label="备注"> </el-table-column>
+          <el-table-column prop="UpdateTime" label="操作时间"> </el-table-column>
         </el-table>
         <div class="block" style="margin-top: 8px">
           <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -105,6 +112,8 @@ import {
   setTodayDate,
   setLastDate,
 } from "@/utils/dataMenu";
+import { el } from "@fullcalendar/core/internal-common";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -186,8 +195,13 @@ export default {
         }
       }
     },
-    "getDataText.inspectType"(value) {
+    "getDataText.inspectType"(value, oval) {
       this.value1 = [];
+      if (value != oval) {
+        // console.log(11);
+        this.tableData = []
+
+      }
       if (value == "WI" && this.inquire != "times") {
         this.getDataText.inspect = "XYWI";
       }
@@ -206,7 +220,9 @@ export default {
     this.getScreenHeight();
     this.value1 = [setLastDate(), setTodayDate()];
   },
-  mounted() { },
+  mounted() {
+    window.addEventListener("resize", this.getScreenHeight);
+  },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
@@ -300,52 +316,129 @@ export default {
     // },
     dataProcessing(data) {
       const resultMap = new Map();
+      if (this.getDataText.inspectType == 'WI') {
+        data.forEach(item => {
+          const { InspectOrder, Step, Name, Status, Remark, InspectContent,
+            SubItem, SubItemName, SubItemSolution, SubItemBasic,
+            UpdateTime, InspectStatus } = item;
 
-      data.forEach(item => {
-        const { InspectOrder, Name, Step, Status, Remark, InspectContent,InspectStatus } = item;
+          // 处理附件
+          const attachments = [];
+          for (let i = 1; i <= 4; i++) {
+            const attachment = item[`Attachment${i}`];
+            if (attachment) attachments.push(attachment);
+          }
 
-        // 处理附件数组（优化点1：动态处理任意数量的附件）
-        const attachments = [];
-        for (let i = 1; i <= 4; i++) {
-          const attachment = item[`Attachment${i}`];
-          if (attachment) attachments.push(attachment);
-        }
+          // 生成复合键
+          const orderKey = InspectOrder;
+          const stepKey = `${InspectOrder}-${Step}`;
+          const subItemKey = `${InspectOrder}-${Step}-${SubItem}`;
 
-        // 主处理逻辑
-        if (resultMap.has(InspectOrder)) {
-          const group = resultMap.get(InspectOrder);
-          const itemExists = group.stepItemList.some(el => el.Name === Name);
-
-          if (!itemExists) {
-            group.stepItemList.push({
-              Name,
-              Step,
-              Status,
-              Remark,
-              Attachment: attachments,
-              InspectContent,
-              step1: `${InspectOrder}-${Step}`
+          // 检查是否已有该检验单
+          if (!resultMap.has(orderKey)) {
+            resultMap.set(orderKey, {
+              InspectOrder,
+              step1: InspectOrder,
+              InspectStatus,
+              UpdateTime: dayjs(UpdateTime).format('YYYY-MM-DD HH:mm:ss'),
+              stepItemList: []
             });
           }
-        } else {
-          resultMap.set(InspectOrder, {
-            InspectOrder,
-            step1: InspectOrder,
-            InspectStatus:InspectStatus,
-            stepItemList: [{
+
+          const orderGroup = resultMap.get(orderKey);
+
+          // 查找是否已有该步骤
+          let stepItem = orderGroup.stepItemList.find(el => el.Step === Step);
+
+          if (!stepItem) {
+            // 创建新步骤项
+            stepItem = {
               Name,
               Step,
               Status,
               Remark,
               Attachment: attachments,
               InspectContent,
-              step1: `${InspectOrder}-${Step}`
-            }]
-          });
-        }
-      });
+              step1: stepKey,
+              stepItemList: []
+            };
+            orderGroup.stepItemList.push(stepItem);
+          } else {
+            // 合并附件（避免重复）
+            attachments.forEach(att => {
+              if (!stepItem.Attachment.includes(att)) {
+                stepItem.Attachment.push(att);
+              }
+            });
+          }
 
-      this.tableData = Array.from(resultMap.values());
+          // 添加子项
+          stepItem.stepItemList.push({
+            SubItemName,
+            Step,
+            InspectContent: item.SubItemMethod || "", // 使用SubItemMethod作为检查内容
+            SubItemSolution,
+            SubItemBasic,
+            step1: subItemKey
+          });
+        });
+      } else {
+
+
+        data.forEach(item => {
+
+          const { InspectOrder, Name, Step, Status, Remark, InspectContent, InspectStatus, SubItemSolution, SubItemBasic, UpdateTime } = item;
+
+          // 处理附件数组（优化点1：动态处理任意数量的附件）
+          const attachments = [];
+          for (let i = 1; i <= 4; i++) {
+            const attachment = item[`Attachment${i}`];
+            if (attachment) attachments.push(attachment);
+          }
+
+          // 主处理逻辑
+          if (resultMap.has(InspectOrder)) {
+            const group = resultMap.get(InspectOrder);
+            const itemExists = group.stepItemList.some(el => el.Name === Name);
+
+            if (!itemExists) {
+              group.stepItemList.push({
+                Name,
+                Step,
+                Status,
+                Remark,
+                Attachment: attachments,
+                InspectContent,
+                SubItemSolution,
+                SubItemBasic,
+                step1: `${InspectOrder}-${Step}`
+              });
+            }
+          } else {
+            resultMap.set(InspectOrder, {
+              InspectOrder,
+              step1: InspectOrder,
+              InspectStatus: InspectStatus,
+              UpdateTime: dayjs(UpdateTime).format('YYYY-MM-DD HH:mm:ss'),
+              stepItemList: [{
+                Name,
+                Step,
+                Status,
+                Remark,
+                Attachment: attachments,
+                InspectContent,
+                SubItemSolution,
+                SubItemBasic,
+                step1: `${InspectOrder}-${Step}`
+              }]
+            });
+          }
+        });
+
+      
+        // console.log(this.tableData);
+      }
+        this.tableData = Array.from(resultMap.values());
     },
     resultText(value) {
       let text = "";

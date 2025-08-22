@@ -1,5 +1,4 @@
 import request from "@/request/puzzleRequest";
-import noRequest from "@/request/puzzleNoRequest";
 
 //查询不良类别
 export function QueryBadTypebasicInformation(data) {

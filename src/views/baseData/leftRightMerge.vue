@@ -194,12 +194,18 @@
             </el-table-column>
 
             <el-table-column label="操作" width="100" align="center">
-              <template v-slot="{ $index }">
+              <!-- <template v-slot="{ $index }">
                 <el-button v-if="$index === form.bomlist.length - 1" type="text" icon="el-icon-plus"
                   @click="addSmallBoard" />
                 <el-button v-else type="text" icon="el-icon-delete" class="text-red-500"
                   @click="removeBoardItem($index)" />
-              </template>
+              </template> -->
+               <template v-slot="{ $index }">
+                    <el-button type="primary" v-if="$index === form.bomlist.length - 1" size="mini" icon="el-icon-plus"
+                      @click="addSmallBoard"></el-button>
+                    <el-button v-else type="danger" size="mini" icon="el-icon-delete"
+                      @click="removeBoardItem($index)"></el-button>
+                  </template>
             </el-table-column>
           </el-table>
         </div>
@@ -333,13 +339,14 @@
                 <el-input v-model="row.panelmergebom_desc" size="small" />
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="120" align="center">
+            <el-table-column label="操作" width="120" >
               <template v-slot="{ $index }">
                 <!-- <el-button  type="text" icon="el-icon-plus"
                   @click="addDetailSmallBoard" /> -->
+                   <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDetailDelete($index)" />
                 <el-button type="primary" size="mini" icon="el-icon-plus" v-if="$index === editForm.bomlist.length - 1"
                   @click="addDetailSmallBoard"></el-button>
-                <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDetailDelete($index)" />
+               
               </template>
             </el-table-column>
           </el-table>

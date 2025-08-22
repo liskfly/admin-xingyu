@@ -51,9 +51,6 @@ export default {
                 fontWeight: "bold",
               },
             },
-            // labelLine: {
-            //   show: false,
-            // },
             data: [
               { value: 97.8, name: "直通", itemStyle: { color: "#13c2c2" } },
               { value: 2.2, name: "不良", itemStyle: { color: "#ff7a45" } },

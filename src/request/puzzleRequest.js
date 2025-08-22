@@ -2,17 +2,16 @@ import axios from "axios";
 import { MessageBox, Message, Loading, alert } from "element-ui";
 import { getToken1, removeToken1 } from "@/utils/auth";
 const loading = {
-  //loading加载对象
   loadingInstance: null,
   //打开加载
   open() {
-    // console.log(1);
+    
     if (this.loadingInstance === null) {
-      // 如果实例 为空，则创建
+      
       this.loadingInstance = Loading.service({
-        text: "加载中...", //加载图标下的文字
-        spinner: "el-icon-loading", //加载图标
-        customClass: "loading", //自定义样式的类名
+        text: "加载中...", 
+        spinner: "el-icon-loading", 
+        customClass: "loading", 
         background: "rgba(0, 0, 0, 0.2)",
       });
     }
@@ -32,12 +31,12 @@ const service = axios.create({
   baseURL: "/cm"
 });
 let source = axios.CancelToken.source();
-// console.log(source);
+//请求拦截器
 service.interceptors.request.use(
   (config) => {
-    const token = getToken1() || '' //getToken是在另一个JS文件中封装好的方法
+    const token = getToken1() || '' 
     token && (config.headers['authorization'] = token)
-    config.cancelToken = source.token; // 取消请求
+    config.cancelToken = source.token;
     if (config.cancelToken && config.cancelObj && config.cancelObj.cancel) {
       config.cancelObj.cancel("中断请求");
       delete config.cancelObj;
@@ -47,24 +46,19 @@ service.interceptors.request.use(
       source.cancel("网络故障，请检查!");
     }
 
-    // 请求拦截进来调用显示loading效果
     loading.open();
 
-    // 配置了store持久化的就不需要取localstorage的了
-    // const token = store.state.token || localStorage.getItem("token");
-    // token && (config.headers.token = token);
     return config;
   },
 
   (error) => Promise.error(error)
 );
+//响应拦截器
 service.interceptors.response.use(
   (response) => {
     setTimeout(() => {
       loading.close();
     }, 400);
-     //关闭加载窗口
-    //建议打印一下 有些后台返回回来的数据格式不同  可根据自己的数据格式进行调整
 
     //错误提示
     if (response.status === 500) {
@@ -74,7 +68,7 @@ service.interceptors.response.use(
         type: "error",
         duration: 5000,
       });
-      return Promise.reject(); //要返回一个promise对象出去
+      return Promise.reject(); 
     }
     if (response.status === 404) {
       Message({
@@ -87,16 +81,13 @@ service.interceptors.response.use(
 
     //成功的返回
     if (response.status === 200) {
-      // console.log(response.data);
-      
-      // console.log(response.data.ResultCode);
-      // if (response.data.Success==true) {
+     
         if (response.data.code === 401) {
             removeToken1()
             this.$router.push('/login');
           }
         return response.data;
-      // } 
+    
 
     }
   },

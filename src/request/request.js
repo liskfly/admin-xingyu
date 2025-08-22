@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MessageBox, Message, Loading, alert } from "element-ui";
+import { MessageBox, Message, Loading } from "element-ui";
 // import store from '@/store'
 // import { getToken } from '@/utils/auth'
 const loading = {
@@ -30,7 +30,7 @@ const loading = {
 
 // 基地址
 const service = axios.create({
-  baseURL: "/meun"
+  baseURL: "/all"
 });
 let source = axios.CancelToken.source();
 // console.log(source);
