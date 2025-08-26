@@ -16,9 +16,9 @@
                 <!-- 数据列 -->
                 <el-table-column prop="badphenomena_value" label="不良名称" />
                 <el-table-column prop="badphenomena_name" label="不良代码" />
-
+                   <el-table-column prop="badphenomena_fathertype" label="不良代码类别" />
                 <el-table-column prop="badphenomena_desc" label="不良描述" />
-                <el-table-column prop="badphenomena_fathertype" label="不良代码类别" />
+             
                 <!-- 操作列 -->
                 <el-table-column fixed="right" label="操作" width="140" align="center">
                     <template v-slot="{ row }">
@@ -222,7 +222,7 @@ export default {
             });
         },
         handleDelete(row) {
-            this.$confirm("是否删除该不良类别?", "提示", {
+            this.$confirm("是否删除该不良代码?", "提示", {
                 type: "warning",
             })
                 .then(() => {

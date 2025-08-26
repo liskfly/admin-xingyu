@@ -669,7 +669,7 @@ export default {
           this.options2 = [];
           this.getData();
         } else {
-          this.$notify.success({
+          this.$notify.error({
             title: "提示信息",
             message: res.Msg,
           });
