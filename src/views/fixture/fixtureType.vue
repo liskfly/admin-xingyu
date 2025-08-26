@@ -5,9 +5,9 @@
         <el-button type="primary" @click="addOpen" size="medium"
           >添加</el-button
         >
-        <!-- <el-button type="primary" @click="readExcelFile(1)" size="medium"
+        <el-button type="primary" @click="readExcelFile(1)" size="medium"
           >添加2</el-button
-        > -->
+        >
         <div class="input_box">
           <!-- <el-input placeholder="请输入内容" clearable v-model="searchText" class="input-with-select"
                         @change="getSearchData" size="medium">
@@ -513,40 +513,44 @@ export default {
       const jsonData = XLSX.utils.sheet_to_json(firstSheet);
       let check = true;
       let arr = jsonData;
+      console.log(arr);
+      return;
       if (num < 554) {
         arr.map((item, index) => {
           if (num == index && item["成品编码"] && item["产品名称"]) {
             // console.log(item['样件编号'], item['成品编码'], item['产品名称'], num);
             // this.readExcelFile(num + 1);
             // return;
-            moldControl(
+            // moldControl(
+            //   //   {
+            //   //   category: "3",
+            //   //   toolsMold: item['样件编号'],
+            //   //   materialName: item['产品名称'],
+            //   //   totalUses: 0,
+            //   //   usesUntilRevalidation: 0,
+            //   //   pauseUntilRevalidate: 0,
+            //   //   timeUntilRevalidation: 0,
+            //   //   cleaningTime: 0,
+            //   //   tensionLimit: 0,
+            //   //   lowerTensionLimit: 0,
+            //   //   tensionPoints: 0,
+            //   //   operationType: "I",
+            //   //   cleanAfterUses: "N",
+            //   //   cleanAfterPause: "N",
+            //   //   cleanAfterTime: "N",
+            //   // }
             //   {
-            //   category: "3",
-            //   toolsMold: item['样件编号'],
-            //   materialName: item['产品名称'],
-            //   totalUses: 0,
-            //   usesUntilRevalidation: 0,
-            //   pauseUntilRevalidate: 0,
-            //   timeUntilRevalidation: 0,
-            //   cleaningTime: 0,
-            //   tensionLimit: 0,
-            //   lowerTensionLimit: 0,
-            //   tensionPoints: 0,
-            //   operationType: "I",
-            //   cleanAfterUses: "N",
-            //   cleanAfterPause: "N",
-            //   cleanAfterTime: "N",
-            // }
-            {
-    "toolsMold": item['样件编号'],
-    "operationType": "D"
-}
-          ).then(() => {
-              this.readExcelFile(num + 1)
-            }).catch(() => {
-              this.readExcelFile(num + 1)
-              console.log('error' + item['样件编号'],index);
-            })
+            //     toolsMold: item["样件编号"],
+            //     operationType: "D",
+            //   }
+            // )
+            //   .then(() => {
+            //     this.readExcelFile(num + 1);
+            //   })
+            //   .catch(() => {
+            //     this.readExcelFile(num + 1);
+            //     console.log("error" + item["样件编号"], index);
+            //   });
 
             // iDControll({
             //   operationType: "D",
@@ -604,7 +608,6 @@ export default {
           }
         });
       }
-      // console.log(arr);
       return;
     },
     searchData() {

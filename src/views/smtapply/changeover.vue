@@ -28,11 +28,11 @@
               </el-form-item>
               <el-form-item label="SIDE">
                 <el-select
-                  :disabled="sideDisable"
                   v-model="form.side"
                   placeholder="选择SIDE"
                   @change="sideChoice"
                 >
+                  <!-- :disabled="sideDisable" -->
                   <el-option
                     v-for="item in sideList"
                     :key="item.sideType"
@@ -502,7 +502,7 @@ export default {
         program: "",
         bomVer: "",
         productVer: "",
-        code:""
+        code: "",
       },
       sideList: [
         {
@@ -593,7 +593,7 @@ export default {
           orbit: "0",
         },
       ],
-      sideDisable:true,
+      sideDisable: true,
       checkedLine1: [],
       checkedLine2: [],
       checkedLine3: [],
@@ -693,6 +693,7 @@ export default {
       ],
       warningVisible: false,
       warningText: "",
+      sideCode: "",
     };
   },
   created() {
@@ -775,9 +776,10 @@ export default {
           program: data.Name,
           bomVer: data.BomVer,
           productVer: data.SoftVer,
-          code: data.Side == '1' ? this.form.order:''
+          code: data.Side == "1" ? this.form.order : "",
         };
-        this.sideDisable = data.Side == '1' ? true:false;
+        this.sideCode = data.Side;
+        this.sideDisable = data.Side == "1" ? true : false;
       });
       this.initialize();
     },
@@ -882,7 +884,10 @@ export default {
         this.questStatus2 = "";
         this.questStatus3 = "";
       }
-      if ((this.sideDisable || this.form.side != "") && this.form.lineName !== "") {
+      if (
+        (this.sideDisable || this.form.side != "") &&
+        this.form.lineName !== ""
+      ) {
         let data = this.dataProcessing();
         if (data.mcIDList.length !== 0) {
           // console.log({ ...data, mcIDList: [data.mcIDList[num - 1]] });
@@ -965,7 +970,7 @@ export default {
                   message: `<i>${
                     data.mcIDList[num - 1].mcName + res.data.Message
                   }</i>`,
-                  duration:0
+                  duration: 0,
                 });
                 // this.warningText =
                 //   this.warningText +
@@ -1013,10 +1018,8 @@ export default {
               this.$notify.error({
                 title: "错误",
                 dangerouslyUseHTMLString: true,
-                message: `<i>${
-                  data.mcIDList[num - 1].mcName + error
-                }</i>`,
-                duration:0
+                message: `<i>${data.mcIDList[num - 1].mcName + error}</i>`,
+                duration: 0,
               });
               // this.warningText =
               //   this.warningText +
@@ -1093,15 +1096,13 @@ export default {
     sideChoice(type) {
       this.getStatus();
       this.clearAll();
-      let arr = this.form.order.split('_')
-      this.form.code = arr[0]+'_' + type + '_' + arr[1]
+      if (this.sideCode == "2") {
+        let arr = this.form.order.split("_");
+        this.form.code = arr[0] + "_" + type + "_" + arr[1];
+      }
     },
     getStatus(value) {
-      if (
-        this.form.order === "" ||
-        this.form.lineName === "" ||
-        this.form.side === ""
-      ) {
+      if (this.form.order === "" || this.form.lineName === "") {
         this.initialize();
         return;
       }
@@ -1114,7 +1115,6 @@ export default {
           id: numberID + index,
         };
       });
-      // console.log(this.lineData);
 
       //     break;
       //   case "Line2":
