@@ -5,9 +5,9 @@
         <el-button type="primary" @click="addOpen" size="medium"
           >添加</el-button
         >
-        <el-button type="primary" @click="readExcelFile(1)" size="medium"
+        <!-- <el-button type="primary" @click="readExcelFile(0)" size="medium"
           >添加2</el-button
-        >
+        > -->
         <div class="input_box">
           <!-- <el-input placeholder="请输入内容" clearable v-model="searchText" class="input-with-select"
                         @change="getSearchData" size="medium">
@@ -500,6 +500,9 @@ export default {
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
     this.getData();
+    let str = '1/1/4'
+    console.log(str.replace(/\//g, '-'));
+    
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
@@ -509,40 +512,40 @@ export default {
       const response = await fetch("/SMT样件清单.xlsx");
       const arrayBuffer = await response.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer, { type: "array" });
-      const firstSheet = workbook.Sheets[workbook.SheetNames[1]];
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(firstSheet);
       let check = true;
       let arr = jsonData;
-      console.log(arr);
-      return;
-      if (num < 554) {
+      // console.log(arr);
+      // return;
+      if (num < 259) {
         arr.map((item, index) => {
-          if (num == index && item["成品编码"] && item["产品名称"]) {
+          if (num == index && item['刷新日期']) {
             // console.log(item['样件编号'], item['成品编码'], item['产品名称'], num);
             // this.readExcelFile(num + 1);
             // return;
             // moldControl(
-            //   //   {
-            //   //   category: "3",
-            //   //   toolsMold: item['样件编号'],
-            //   //   materialName: item['产品名称'],
-            //   //   totalUses: 0,
-            //   //   usesUntilRevalidation: 0,
-            //   //   pauseUntilRevalidate: 0,
-            //   //   timeUntilRevalidation: 0,
-            //   //   cleaningTime: 0,
-            //   //   tensionLimit: 0,
-            //   //   lowerTensionLimit: 0,
-            //   //   tensionPoints: 0,
-            //   //   operationType: "I",
-            //   //   cleanAfterUses: "N",
-            //   //   cleanAfterPause: "N",
-            //   //   cleanAfterTime: "N",
-            //   // }
-            //   {
-            //     toolsMold: item["样件编号"],
-            //     operationType: "D",
+            //     {
+            //     category: "3",
+            //     toolsMold: item['样件编号'],
+            //     materialName: '缺陷样件',
+            //     totalUses: 0,
+            //     usesUntilRevalidation: 0,
+            //     pauseUntilRevalidate: 0,
+            //     timeUntilRevalidation: 0,
+            //     cleaningTime: 0,
+            //     tensionLimit: 0,
+            //     lowerTensionLimit: 0,
+            //     tensionPoints: 0,
+            //     operationType: "I",
+            //     cleanAfterUses: "N",
+            //     cleanAfterPause: "N",
+            //     cleanAfterTime: "N",
             //   }
+            //   // {
+            //   //   toolsMold: item["样件编号"],
+            //   //   operationType: "D",
+            //   // }
             // )
             //   .then(() => {
             //     this.readExcelFile(num + 1);
@@ -551,22 +554,22 @@ export default {
             //     this.readExcelFile(num + 1);
             //     console.log("error" + item["样件编号"], index);
             //   });
-
-            // iDControll({
-            //   operationType: "D",
-            //   compid: item["样件编号"],
-            //   compname: item["样件编号"],
-            //   remark: item["产品名称"],
-            //   user: "CamstarAdmin",
-            //   expirationDate: "2026-08-13",
-            // })
-            //   .then(() => {
-            //     this.readExcelFile(num + 1);
-            //   })
-            //   .catch(() => {
-            //     this.readExcelFile(num + 1);
-            //     console.log("error" + item.__EMPTY, index);
-            //   });
+            
+            iDControll({
+              operationType: "I",
+              compid: item["样件编号"],
+              compname: item["样件编号"],
+              remark: item["产品名称"],
+              user: "CamstarAdmin",
+              expirationDate: '2026-8-26',
+            })
+              .then(() => {
+                this.readExcelFile(num + 1);
+              })
+              .catch(() => {
+                this.readExcelFile(num + 1);
+                console.log("error" + item.__EMPTY, index);
+              });
 
             // specControl({
             //   toolsMold: item["样件编号"],
