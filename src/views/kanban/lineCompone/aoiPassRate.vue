@@ -1,12 +1,15 @@
 <template>
   <div>
-    <div id="aoiPassRateChart" style="width: 100%; height: 330px"></div>
+    <div id="aoiPassRateChart" style="width: 100%; height: 300px"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
+import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi"
+import dayjs from "dayjs";
 export default {
+  props: ['Line'],
   data() {
     return {
       option: {
@@ -31,7 +34,7 @@ export default {
             name: "直通率",
             type: "pie",
             radius: ["40%", "70%"],
-            center: ["45%", "45%"],
+            center: ["50%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -65,6 +68,18 @@ export default {
       timer: null,
     };
   },
+  watch: {
+    // 监听Line属性变化
+    Line: {
+      immediate: true, // 立即触发一次
+      handler(newLine) {
+        // console.log(`生产线变更为: ${newLine}`);
+        this.stopRefreshing();
+        this.getData();
+        this.startRefreshing();
+      }
+    }
+  },
   mounted() {
     this.initChart();
     this.startRefreshing();
@@ -77,16 +92,17 @@ export default {
   },
   methods: {
     getData() {
-      // 模拟获取数据
-      const passRate = (Math.random() * 8 + 90).toFixed(1);
-      // 计算不良率(100-直通率)
-      const failRate = (100 - passRate).toFixed(1);
 
-      this.option.series[0].data = [
-        { value: parseFloat(passRate), name: "直通", itemStyle: { color: "#13c2c2" } },
-        { value: parseFloat(failRate), name: "不良", itemStyle: { color: "#ff7a45" } }
-      ];
-      this.chart.setOption(this.option);
+      GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then(res => {
+        if (res.Success) {
+          this.option.series[0].data = [
+            { value: res.Data[0].FirstPass_Percent, name: "直通", itemStyle: { color: "#13c2c2" } },
+            { value: res.Data[0].Badness_Percent, name: "不良", itemStyle: { color: "#ff7a45" } }
+          ];
+          this.chart.setOption(this.option);
+        }
+
+      })
     },
     initChart() {
       const chartDom = document.getElementById("aoiPassRateChart");
@@ -96,9 +112,15 @@ export default {
     startRefreshing() {
       this.stopRefreshing(); // 确保只有一个定时器运行
       this.refreshing = true;
+      // 立即获取一次数据
+      // this.getData();
+
+      // 设置定时器，每分钟刷新一次
       this.timer = setInterval(() => {
-        this.simulateDataFetch();
-      }, 5000);
+        this.getData();
+      }, 60000);
+
+
     },
 
     stopRefreshing() {
@@ -116,19 +138,16 @@ export default {
         this.startRefreshing();
       }
     },
-
     refreshData() {
       this.simulateDataFetch();
     },
-
     simulateDataFetch() {
       this.loading = true;
-      // 模拟数据请求延迟
       setTimeout(() => {
         this.getData();
         this.loading = false;
       }, 800);
-    },
+    }
   },
 };
 </script>

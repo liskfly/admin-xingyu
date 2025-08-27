@@ -1,12 +1,15 @@
 <template>
     <div>
-        <div id="badPassRateChart" style="width: 100%; height: 330px"></div>
+        <div id="badPassRateChart" style="width: 100%; height: 300px"></div>
     </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
+import { GetReport_LineBadnessInfo } from "@/api/kanbanApi"
+import dayjs from "dayjs";
 export default {
+    props: ['Line'],
     data() {
         return {
             option: {
@@ -15,9 +18,9 @@ export default {
                     formatter: '{a} <br/>{b}: {c} ({d}%)'
                 },
                 legend: {
-                    bottom: 50,
+                    bottom: 10,
                     left: 'center',
-                    data: ['偏移', '少锡', '短路', '漏件', '极性反', '其他'],
+                    // data: ['偏移', '少锡', '短路', '漏件', '极性反', '其他'],
                     textStyle: {
                         color: '#ffffff',
                         fontSize: 15,
@@ -38,6 +41,7 @@ export default {
                         color: '#e6f7ff',
                         fontSize: "18",
                         fontWeight: "bold",
+                        overflow: 'none'
                     },
 
                     data: [{ value: 32, name: '偏移' },
@@ -56,33 +60,42 @@ export default {
             timer: null,
         };
     },
+    watch: {
+        // 监听Line属性变化
+        Line: {
+            immediate: true, // 立即触发一次
+            handler() {
+                // console.log(`生产线变更为: ${newLine}`);
+                this.stopRefreshing();
+                this.getData();
+                this.startRefreshing();
+            }
+        }
+    },
     mounted() {
         this.initChart();
         this.startRefreshing();
     },
     beforeDestroy() {
-    this.stopRefreshing();
-    if (this.chart) {
-      this.chart.dispose();
-    }
-  },
+        this.stopRefreshing();
+        if (this.chart) {
+            this.chart.dispose();
+        }
+    },
     methods: {
         getData() {
-            // 模拟获取数据
+  
+            GetReport_LineBadnessInfo({ Line: this.Line }).then(res => {
+                if (res.Success) {
+                    
+                    this.option.series[0].data = res.Data.map(item => ({
+                        value: item.CodeCount,
+                        name: item.badphenomena_value
+                    }));
+                    this.chart.setOption(this.option);
+                }
 
-            const randomData = Array(6)
-                .fill()
-                .map(() => Math.floor(Math.random() * 50) + 10); // 10-60随机数
-
-          
-            this.option.series[0].data = [
-                { value: randomData[0], name: '偏移' },
-                { value: randomData[1], name: '少锡' },
-                { value: randomData[2], name: '短路' },
-                { value: randomData[3], name: '漏件' },
-                { value: randomData[4], name: '极性反' },
-                { value: randomData[5], name: '其他' }]
-            this.chart.setOption(this.option);
+            })
         },
         initChart() {
             const chartDom = document.getElementById("badPassRateChart");
@@ -95,10 +108,11 @@ export default {
             this.stopRefreshing(); // 确保只有一个定时器运行
             this.refreshing = true;
             this.timer = setInterval(() => {
-                this.simulateDataFetch();
-            }, 5000);
-        },
+                this.getData();
+            }, 60000);
 
+
+        },
         stopRefreshing() {
             if (this.timer) {
                 clearInterval(this.timer);
@@ -114,20 +128,16 @@ export default {
                 this.startRefreshing();
             }
         },
-
         refreshData() {
             this.simulateDataFetch();
         },
-
         simulateDataFetch() {
             this.loading = true;
-
-            // 模拟数据请求延迟
             setTimeout(() => {
                 this.getData();
                 this.loading = false;
             }, 800);
-        },
+        }
     },
 };
 </script>

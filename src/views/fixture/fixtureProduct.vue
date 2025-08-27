@@ -3,9 +3,10 @@
     <el-card :body-style="{ padding: '8px' }">
       <div class="table_header">
         <div class="flex">
-          <el-button type="primary" @click="addOpen" >添加</el-button>
-            <el-button type="success" @click="downloadFile" >下载模板</el-button>
-          <el-upload class="ml-2" :before-upload="handleFileChange" action="dummy-string" :show-file-list="false" accept=".xlsx">
+          <el-button type="primary" @click="addOpen">添加</el-button>
+          <el-button type="success" @click="downloadFile">下载模板</el-button>
+          <el-upload class="ml-2" :before-upload="handleFileChange" action="dummy-string" :show-file-list="false"
+            accept=".xlsx">
             <el-button type="warning">导入</el-button>
           </el-upload>
         </div>
@@ -148,18 +149,24 @@ export default {
             类型: "toolsMold",
             消耗量: "useage",
             描述: "remark",
+          },
+          typeMapping: {
+            useage: 'int', // 强制转换为 int 类型
+            productName: 'string', // 强制转换为 string 类型
+            toolsMold: 'string',
+            remark: 'string'
           }
         });
         console.log("解析后的数据:", data);
-        XY_WMS_Tools_SpecImportControl(data).then(res=>{
-          if(res.Status=="OK"){
+        XY_WMS_Tools_SpecImportControl(data).then(res => {
+          if (res.Status == "OK") {
             this.$notify({
               title: "成功",
               message: "数据导入成功",
               type: "success",
             });
             this.getIDdata();
-          }else{
+          } else {
             this.$notify({
               title: "错误",
               message: res.Message,
@@ -172,7 +179,7 @@ export default {
         console.error("文件解析失败:", error);
       }
     },
-      downloadFile() {
+    downloadFile() {
       window.open('http://172.20.99.21:5998/temp/产品消耗-导入模板.xlsx', '_blank')
     },
     deducedClick() {

@@ -6,7 +6,10 @@
 
 <script>
 import * as echarts from "echarts";
+import { GetCapacity } from "@/api/kanbanApi"
+import dayjs from "dayjs";
 export default {
+  props: ['Line'],
   data() {
     return {
       option: {
@@ -27,7 +30,7 @@ export default {
           orient: "horizontal",
           x: "center", //可设定图例在左、右、居中
           y: "bottom",
-          data: ["产能", "目标产能"],
+          data: ["产能"],
           textStyle: {
             color: "#ffffff",
             fontSize: 15,
@@ -58,7 +61,7 @@ export default {
           },
           axisLabel: {
             color: "#8ac6ff",
-            fontSize: "18",
+            fontSize: 18,
           },
         },
         yAxis: {
@@ -99,37 +102,37 @@ export default {
               fontSize: "18",
             },
           },
-          {
-            name: "目标产能",
-            type: "line",
-            data: [1400, 1400, 1400, 1400, 1400, 1400, 1400, 1400],
-            symbol: "none",
-            lineStyle: {
-              color: "#52c41a",
-              width: 5,
-              type: "dashed",
-            },
-            itemStyle: {
-              color: "#52c41a",
-            },
-            markLine: {
-              silent: true,
-              lineStyle: {
-                color: "#52c41a",
-                type: "dashed",
-              },
-              data: [
-                {
-                  yAxis: 1400,
-                  label: {
-                    // formatter: '目标产能',
-                    color: "#52c41a",
-                    fontSize: 18,
-                  },
-                },
-              ],
-            },
-          },
+          // {
+          //   name: "目标产能",
+          //   type: "line",
+          //   data: [1400, 1400, 1400, 1400, 1400, 1400, 1400, 1400],
+          //   symbol: "none",
+          //   lineStyle: {
+          //     color: "#52c41a",
+          //     width: 5,
+          //     type: "dashed",
+          //   },
+          //   itemStyle: {
+          //     color: "#52c41a",
+          //   },
+          //   markLine: {
+          //     silent: true,
+          //     lineStyle: {
+          //       color: "#52c41a",
+          //       type: "dashed",
+          //     },
+          //     data: [
+          //       {
+          //         yAxis: 1400,
+          //         label: {
+          //           // formatter: '目标产能',
+          //           color: "#52c41a",
+          //           fontSize: 18,
+          //         },
+          //       },
+          //     ],
+          //   },
+          // },
         ],
       },
       timer: null,
@@ -138,6 +141,18 @@ export default {
       loading: false,
       timer: null,
     };
+  },
+  watch: {
+    // 监听Line属性变化
+    Line: {
+      immediate: true, // 立即触发一次
+      handler() {
+        // console.log(`生产线变更为: ${newLine}`);
+        this.stopRefreshing();
+        this.getData();
+        this.startRefreshing();
+      }
+    }
   },
   mounted() {
     this.initChart();
@@ -153,14 +168,20 @@ export default {
     getData() {
       // 模拟获取数据，随机生成1000到1500的数
 
-      const randomData = Array(8)
-        .fill()
-        .map(
-          () => Math.floor(Math.random() * 801) + 1000 // 1000-1500随机数
-        );
-      this.option.series[0].data = randomData;
-      this.chart.setOption(this.option);
-      //   console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "数据更新");
+      
+      console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
+      GetCapacity({ Line: this.Line }).then(res => {
+        if (res.Success) {
+          this.option.xAxis.data = res.Data.slice(-12).map(item => item.HourOfDay);
+          this.option.series[0].data = res.Data.slice(-12).map(item => ({
+            value: item.NumBlocks,
+            name: item.HourOfDay
+          }));
+          this.chart.setOption(this.option);
+        }
+
+      })
+
     },
     initChart() {
       const chartDom = document.getElementById("capacityChart");
@@ -172,10 +193,11 @@ export default {
       this.stopRefreshing(); // 确保只有一个定时器运行
       this.refreshing = true;
       this.timer = setInterval(() => {
-        this.simulateDataFetch();
-      }, 5000);
-    },
+        this.getData();
+      }, 60000);
 
+
+    },
     stopRefreshing() {
       if (this.timer) {
         clearInterval(this.timer);
@@ -191,20 +213,16 @@ export default {
         this.startRefreshing();
       }
     },
-
     refreshData() {
       this.simulateDataFetch();
     },
-
     simulateDataFetch() {
       this.loading = true;
-
-      // 模拟数据请求延迟
       setTimeout(() => {
         this.getData();
         this.loading = false;
       }, 800);
-    },
+    }
   },
 };
 </script>

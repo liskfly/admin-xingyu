@@ -112,79 +112,122 @@ export async function exportTableToExcel({
   }
 }
 
-// async handleExport() {
+
+
+// export async function importExcelToJSON(file, options = {}) {
+//   const { 
+//     hasHeader = true, 
+//     sheetIndex = 0, 
+//     headerMapping = {},
+//     transformHeader
+//   } = options;
+  
 //   try {
-//     await exportTableToExcel({
-//       tableRef: this.$refs.myTable,
-//       fetchAllData: this.fetchAllUsers,
-//       fileName: '用户数据',
-//       styles: {
-//         headerBgColor: 'FFA0A0A0',  // 灰色表头
-//         headerFont: { color: 'FFFFFFFF' }, // 白色文字
-//headerFont: {
-//color: { argb: 'FFFFFFFF' }, // 红色文字
-//bold: true,
-//italic: true
-//},
-//         cell: { numFmt: '@' } // 强制文本格式
+//     // 创建 Workbook
+//     const workbook = new ExcelJS.Workbook();
+    
+//     // 读取文件
+//     const buffer = await readFileAsBuffer(file);
+//     await workbook.xlsx.load(buffer);
+    
+//     // 获取工作表
+//     const worksheet = workbook.worksheets[sheetIndex];
+//     console.log(worksheet);
+    
+//     if (!worksheet) {
+//       throw new Error(`工作表索引 ${sheetIndex} 不存在`);
+//     }
+    
+//     // 获取表头映射
+//     let headers = [];
+//     if (hasHeader) {
+//       const headerRow = worksheet.getRow(1);
+//       headerRow.eachCell((cell, colNumber) => {
+//         const headerText = cell.value?.toString().trim() || `column_${colNumber}`;
+        
+//         // 优先使用自定义转换函数
+//         if (transformHeader && typeof transformHeader === 'function') {
+//           headers.push(transformHeader(headerText, colNumber));
+//         } 
+//         // 其次使用映射配置
+//         else if (headerMapping[headerText]) {
+//           headers.push(headerMapping[headerText]);
+//         }
+//         // 默认处理：移除特殊字符并用下划线连接
+//         else {
+//           // 将中文标点符号替换为英文，移除特殊字符
+//           const cleanHeader = headerText
+//             .replace(/[。，；：！？、（）【】《》]/g, '')
+//             .replace(/\s+/g, '_')
+//             .replace(/[^a-zA-Z0-9_\u4e00-\u9fa5]/g, '');
+//           headers.push(cleanHeader);
+//         }
+//       });
+//     }
+
+//     // 转换为数组数据
+//     const data = [];
+//     worksheet.eachRow((row, rowNumber) => {
+//       // 如果有表头且是第一行，跳过
+//       if (hasHeader && rowNumber === 1) return;
+      
+//       const rowData = {};
+//       row.eachCell((cell, colNumber) => {
+//         // 如果有表头，使用处理后的表头作为键名
+//         if (hasHeader && headers[colNumber - 1]) {
+//           rowData[headers[colNumber - 1]] = cell.value;
+//         } else {
+//           // 如果没有表头，使用列索引作为键名
+//           rowData[`column_${colNumber}`] = cell.value;
+//         }
+//       });
+      
+//       // 跳过空行
+//       if (Object.keys(rowData).length > 0) {
+//         data.push(rowData);
 //       }
 //     });
-//   } catch (error) {
-//     this.$message.error(error.message);
-//   }
-// },
-
-// // 获取全部数据的方法（根据实际场景实现）
-// async fetchAllUsers() {
-
-//   return this.tableData.map((item, index) => ({
-//   ...item,
-//   _id: index // 如果依赖 _id，确保它是数字
-// }));
-// },
-
-export async function importExcelToJSON(file, options = {}) {
-  const { 
-    hasHeader = true, 
-    sheetIndex = 0, 
-    headerMapping = {},
-    transformHeader
-  } = options;
-  
-  try {
-    // 创建 Workbook
-    const workbook = new ExcelJS.Workbook();
     
-    // 读取文件
+//     return data;
+//   } catch (error) {
+//     console.error("[Excel Import Error]", error);
+//     Notification.error({
+//       title: "错误",
+//       message: "解析Excel文件失败，请检查文件格式",
+//     });
+//     throw new Error("解析Excel文件失败");
+//   }
+// }
+export async function importExcelToJSON(file, options = {}) {
+  const {
+    hasHeader = true,
+    sheetIndex = 0,
+    headerMapping = {},
+    transformHeader,
+    typeMapping = {} // 新增类型映射配置
+  } = options;
+
+  try {
+    const workbook = new ExcelJS.Workbook();
     const buffer = await readFileAsBuffer(file);
     await workbook.xlsx.load(buffer);
-    
-    // 获取工作表
     const worksheet = workbook.worksheets[sheetIndex];
-    console.log(worksheet);
-    
+
     if (!worksheet) {
       throw new Error(`工作表索引 ${sheetIndex} 不存在`);
     }
-    
-    // 获取表头映射
+
     let headers = [];
     if (hasHeader) {
       const headerRow = worksheet.getRow(1);
       headerRow.eachCell((cell, colNumber) => {
         const headerText = cell.value?.toString().trim() || `column_${colNumber}`;
-        
-        // 优先使用自定义转换函数
+
         if (transformHeader && typeof transformHeader === 'function') {
           headers.push(transformHeader(headerText, colNumber));
-        } 
-        // 其次使用映射配置
-        else if (headerMapping[headerText]) {
+        } else if (headerMapping[headerText]) {
           headers.push(headerMapping[headerText]);
-        }
-        // 默认处理：移除特殊字符并用下划线连接
-        else {
-          // 将中文标点符号替换为英文，移除特殊字符
+        } else {
           const cleanHeader = headerText
             .replace(/[。，；：！？、（）【】《》]/g, '')
             .replace(/\s+/g, '_')
@@ -194,29 +237,34 @@ export async function importExcelToJSON(file, options = {}) {
       });
     }
 
-    // 转换为数组数据
     const data = [];
     worksheet.eachRow((row, rowNumber) => {
-      // 如果有表头且是第一行，跳过
       if (hasHeader && rowNumber === 1) return;
-      
+
       const rowData = {};
       row.eachCell((cell, colNumber) => {
-        // 如果有表头，使用处理后的表头作为键名
         if (hasHeader && headers[colNumber - 1]) {
-          rowData[headers[colNumber - 1]] = cell.value;
+          const fieldName = headers[colNumber - 1];
+          let cellValue = cell.value;
+
+          // 类型转换
+          if (typeMapping[fieldName] === 'int') {
+            cellValue = parseInt(cellValue, 10);
+          } else {
+            cellValue = String(cellValue);
+          }
+
+          rowData[fieldName] = cellValue;
         } else {
-          // 如果没有表头，使用列索引作为键名
           rowData[`column_${colNumber}`] = cell.value;
         }
       });
-      
-      // 跳过空行
+
       if (Object.keys(rowData).length > 0) {
         data.push(rowData);
       }
     });
-    
+
     return data;
   } catch (error) {
     console.error("[Excel Import Error]", error);
@@ -227,7 +275,6 @@ export async function importExcelToJSON(file, options = {}) {
     throw new Error("解析Excel文件失败");
   }
 }
-
 /**
  * 将 File 对象读取为 ArrayBuffer
  * @param {File} file 文件对象

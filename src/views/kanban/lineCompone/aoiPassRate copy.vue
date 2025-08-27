@@ -1,15 +1,12 @@
 <template>
   <div>
-    <div id="completionChart" style="width: 100%; height: 300px"></div>
+    <div id="aoiPassRateChart" style="width: 100%; height: 330px"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-import { GetCompletionRate } from "@/api/kanbanApi"
-import dayjs from "dayjs";
 export default {
-  props: ['Line'],
   data() {
     return {
       option: {
@@ -22,7 +19,7 @@ export default {
           x: "right", //可设定图例在左、右、居中
           y: "top",
 
-          data: ["完成", "剩余"],
+          data: ["直通", "不良"],
           textStyle: {
             color: "#ffffff",
             fontSize: 15,
@@ -31,10 +28,10 @@ export default {
 
         series: [
           {
-            name: "完成率",
+            name: "直通率",
             type: "pie",
             radius: ["40%", "70%"],
-            center: ["50%", "50%"],
+            center: ["45%", "45%"],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -42,9 +39,9 @@ export default {
               borderWidth: 2,
             },
             label: {
-              formatter: "{b}:\n{c}\n({d}%)",
+              formatter: "{b}: {c}%",
               color: "#e6f7ff",
-              fontSize: 18,
+              fontSize: "18",
               fontWeight: "bold",
             },
             emphasis: {
@@ -54,12 +51,9 @@ export default {
                 fontWeight: "bold",
               },
             },
-            // labelLine: {
-            //   show: false,
-            // },
             data: [
-              { value: 78, name: "完成", itemStyle: { color: "#1890ff" } },
-              { value: 22, name: "剩余", itemStyle: { color: "#2f4b7c" } },
+              { value: 97.8, name: "直通", itemStyle: { color: "#13c2c2" } },
+              { value: 2.2, name: "不良", itemStyle: { color: "#ff7a45" } },
             ],
           },
         ],
@@ -70,18 +64,6 @@ export default {
       loading: false,
       timer: null,
     };
-  },
-  watch: {
-    // 监听Line属性变化
-    Line: {
-      immediate: true, // 立即触发一次
-      handler(newLine) {
-        // console.log(`生产线变更为: ${newLine}`);
-        this.stopRefreshing();
-        this.getData();
-        this.startRefreshing();
-      }
-    }
   },
   mounted() {
     this.initChart();
@@ -95,38 +77,28 @@ export default {
   },
   methods: {
     getData() {
-      GetCompletionRate({ Line: this.Line }).then(res => {
-        if (res.Success) {
-         
-          // let completionData = ((res.Data[0].qty / res.Data[0].QuantityOrdered) * 100).toFixed(1)
-          // let remainderData = (100 - completionData).toFixed(1)
+      // 模拟获取数据
+      const passRate = (Math.random() * 8 + 90).toFixed(1);
+      // 计算不良率(100-直通率)
+      const failRate = (100 - passRate).toFixed(1);
 
-          this.option.series[0].data = [
-            { value: res.Data[0].qty, name: "完成", itemStyle: { color: "#1890ff" } },
-            { value:(res.Data[0].QuantityOrdered-res.Data[0].qty) , name: "剩余", itemStyle: { color: "#2f4b7c" } },
-          ];
-          this.chart.setOption(this.option);
-        }
-
-      })
+      this.option.series[0].data = [
+        { value: parseFloat(passRate), name: "直通", itemStyle: { color: "#13c2c2" } },
+        { value: parseFloat(failRate), name: "不良", itemStyle: { color: "#ff7a45" } }
+      ];
+      this.chart.setOption(this.option);
     },
     initChart() {
-      const chartDom = document.getElementById("completionChart");
+      const chartDom = document.getElementById("aoiPassRateChart");
       this.chart = echarts.init(chartDom);
       this.chart.setOption(this.option);
     },
     startRefreshing() {
       this.stopRefreshing(); // 确保只有一个定时器运行
       this.refreshing = true;
-      // 立即获取一次数据
-      // this.getData();
-
-      // 设置定时器，每分钟刷新一次
       this.timer = setInterval(() => {
-        this.getData();
-      }, 60000);
-
-
+        this.simulateDataFetch();
+      }, 5000);
     },
 
     stopRefreshing() {
@@ -144,16 +116,19 @@ export default {
         this.startRefreshing();
       }
     },
+
     refreshData() {
       this.simulateDataFetch();
     },
+
     simulateDataFetch() {
       this.loading = true;
+      // 模拟数据请求延迟
       setTimeout(() => {
         this.getData();
         this.loading = false;
       }, 800);
-    }
+    },
   },
 };
 </script>

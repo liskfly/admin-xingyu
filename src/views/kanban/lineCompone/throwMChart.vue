@@ -6,7 +6,10 @@
 
 <script>
 import * as echarts from "echarts";
+import { GetFeeder } from "@/api/kanbanApi"
+import dayjs from "dayjs";
 export default {
+    props: ['Line'],
     data() {
         return {
             option: {
@@ -82,6 +85,18 @@ export default {
             timer: null,
         };
     },
+    watch: {
+        // 监听Line属性变化
+        Line: {
+            immediate: true, // 立即触发一次
+            handler() {
+                // console.log(`生产线变更为: ${newLine}`);
+                this.stopRefreshing();
+                this.getData();
+                this.startRefreshing();
+            }
+        }
+    },
     mounted() {
         this.initChart();
         this.startRefreshing();
@@ -95,13 +110,17 @@ export default {
     methods: {
         getData() {
 
+            GetFeeder({ Line: this.Line }).then(res => {
+                if (res.Success) {
+                    this.option.yAxis.data = res.Data.slice().reverse().map(item => item.compname);
+                    this.option.series[0].data = res.Data.slice().reverse().map(item => ({
+                        value: item.qty,
+                        name: item.compname
+                    }));
+                    this.chart.setOption(this.option);
+                }
 
-            const randomData = Array(10).fill().map(() =>
-                Math.floor(Math.random() * 91) + 10  // 10-100随机数
-            );
-            this.option.series[0].data = randomData;
-            this.chart.setOption(this.option);
-
+            })
         },
         initChart() {
             const chartDom = document.getElementById("throwMChart");
@@ -113,10 +132,11 @@ export default {
             this.stopRefreshing(); // 确保只有一个定时器运行
             this.refreshing = true;
             this.timer = setInterval(() => {
-                this.simulateDataFetch();
-            }, 5000);
-        },
+                this.getData();
+            }, 60000);
 
+
+        },
         stopRefreshing() {
             if (this.timer) {
                 clearInterval(this.timer);
@@ -132,11 +152,9 @@ export default {
                 this.startRefreshing();
             }
         },
-
         refreshData() {
             this.simulateDataFetch();
         },
-
         simulateDataFetch() {
             this.loading = true;
 

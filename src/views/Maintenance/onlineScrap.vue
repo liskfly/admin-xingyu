@@ -1,9 +1,13 @@
 <template>
   <div class="p-2">
     <el-card shadow="" :body-style="{ padding: '8px' }">
-      <div class="mb-2">
-        <el-input v-model="input" placeholder="请输入" style="width: 400px" />
-        <el-button type="primary">查询</el-button>
+      <div class="mb-2 flex justify-end">
+        <!-- <el-input v-model="input" placeholder="请输入" style="width: 400px" />
+        <el-button type="primary">查询</el-button> -->
+        <el-input v-model="getForm.SearchModel.pcbid" placeholder="请输入SN" style="width: 350px"
+                        @keyup.enter.native="getSearchData" clearable @clear="clearData">
+                        <el-button slot="append" icon="el-icon-search" @click="getSearchData"></el-button>
+                    </el-input>
       </div>
       <el-table :data="tableData" :style="{ width: '100%' }" border :height="tableHeight" stripe size="small" tooltip-effect="light">
         <el-table-column type="index" width="50" label="序号" align="center">
@@ -13,7 +17,7 @@
         </el-table-column>
 
         <af-table-column prop="baddata_no" label="报废审核号" />
-        <af-table-column prop="baddata_pcbid" label="PCB条码" />
+        <af-table-column prop="baddata_pcbid" label="产品SN" />
         <af-table-column prop="mfgordername" label="工单号" />
         <af-table-column prop="productname" label="产品码" />
          <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
@@ -33,7 +37,7 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="'PCB：' + titleNum" :visible.sync="dialogVisible" width="75%" @close="addCancel()">
+    <el-dialog :title="'报废审核：' + titleNum" :visible.sync="dialogVisible" width="75%" @close="addCancel()">
       <el-table :data="tableData1" border style="width: 100%" height="350">
         <el-table-column type="index" width="50" label="序号">
         </el-table-column>
@@ -90,7 +94,7 @@ export default {
         SearchText: "",
         SearchModel: {
           pcbid: "",
-          stts: "y",
+          stts: "Y",
         },
         StartTime: "",
         EndTime: "",
@@ -130,6 +134,14 @@ export default {
 
       });
     },
+       getSearchData() {
+            this.getForm.PageIndex = 1;
+            this.getData();
+        },
+        clearData() {
+            this.getForm.PageIndex = 1;
+            this.getData();
+        },
     handleEdit(row) {
 
 
@@ -157,6 +169,8 @@ export default {
         baddata_confirm: val,
         UserNo: getToken(),
       };
+      // console.log(data);
+      
       UpdateXYL_BadProductInformationScrapRevd(data).then((res) => {
         if (res.Success) {
           this.$notify({
@@ -186,7 +200,7 @@ export default {
     },
     getScreenHeight() {
       this.$nextTick(() => {
-        this.tableHeight = window.innerHeight - 230;
+        this.tableHeight = window.innerHeight - 210;
         // this.tableHeight1 =
       });
     },
