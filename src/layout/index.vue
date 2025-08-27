@@ -1,8 +1,6 @@
 <template>
   <div>
     <HeaderTop></HeaderTop>
-    <!-- <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
-    <!-- <sidebar class="sidebar-container" /> -->
     <TabMenu />
     <div class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
@@ -70,7 +68,7 @@ export default {
     }
   },
   mounted() {
-    // this.ListScroll()
+    
   },
   methods: {
     handleClickOutside() {

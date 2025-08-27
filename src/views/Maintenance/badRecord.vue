@@ -51,8 +51,8 @@
                 <!-- <af-table-column prop="badphenomena_name" label="不良代码"></af-table-column>
                 <af-table-column prop="badphenomena_value" label="不良描述"></af-table-column>
                 <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column> -->
-                <el-table-column prop="baddata_type" label="说明"></el-table-column>
-                <el-table-column prop="baddata_stts" label="状态" align="center" width="100">
+                <!-- <el-table-column prop="baddata_type" label="说明"></el-table-column> -->
+                <el-table-column prop="baddata_stts" label="状态" align="center" width="100" fixed="right">
                     <template v-slot="{ row }">
                         <el-tag effect="plain" v-if="
                             row.baddata_stts == '完成维修' || row.baddata_stts == '完成报废'

@@ -5,6 +5,7 @@ Vue.use(Router);
 
 /* Layout */
 import Layout from "@/layout";
+import { title } from "@/settings";
 
 export const asyncRouterMap = [];
 

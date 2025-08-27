@@ -78,7 +78,6 @@ export default {
   methods: {
     getData() {
       // 模拟获取数据
-
       const passRate = (Math.random() * 8 + 90).toFixed(1);
       // 计算不良率(100-直通率)
       const failRate = (100 - passRate).toFixed(1);
@@ -124,7 +123,6 @@ export default {
 
     simulateDataFetch() {
       this.loading = true;
-
       // 模拟数据请求延迟
       setTimeout(() => {
         this.getData();

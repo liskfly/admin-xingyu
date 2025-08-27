@@ -5,17 +5,20 @@
         <el-input v-model="input" placeholder="请输入" style="width: 400px" />
         <el-button type="primary">查询</el-button>
       </div>
-      <el-table :data="tableData" :style="{ width: '100%' }" border :height="tableHeight" stripe size="small">
+      <el-table :data="tableData" :style="{ width: '100%' }" border :height="tableHeight" stripe size="small" tooltip-effect="light">
         <el-table-column type="index" width="50" label="序号" align="center">
           <template v-slot="{ $index }">
             {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="baddata_no" label="报废审核号" />
-        <el-table-column prop="containername" label="PCB条码" />
-        <el-table-column prop="mfgordername" label="工单号" />
-        <el-table-column prop="productname" label="产品码" />
+        <af-table-column prop="baddata_no" label="报废审核号" />
+        <af-table-column prop="baddata_pcbid" label="PCB条码" />
+        <af-table-column prop="mfgordername" label="工单号" />
+        <af-table-column prop="productname" label="产品码" />
+         <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
+                <el-table-column prop="baddata_productdsc" label="产品描述" 
+                    show-overflow-tooltip></el-table-column>
 
         <el-table-column label="操作" width="100" align="center">
           <template v-slot="{ row }">

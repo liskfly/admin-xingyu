@@ -29,6 +29,7 @@ const service = axios.create({
   baseURL: "/control",
 });
 let source = axios.CancelToken.source();
+//请求拦截器
 service.interceptors.request.use(
   (config) => {
     const token = getToken1() || "";
@@ -41,15 +42,19 @@ service.interceptors.request.use(
     if (!navigator.onLine) {
       // 断网提示
       source.cancel("网络故障，请检查!");
+       return Promise.reject(new Error('offline'));
     }
 
     // 请求拦截进来调用显示loading效果
     loading.open();
     return config;
   },
-
-  (error) => Promise.error(error)
+  (error) => {
+    loading.close();
+    return Promise.reject(error);
+  }
 );
+//响应拦截器
 service.interceptors.response.use(
   (response) => {
     setTimeout(() => {

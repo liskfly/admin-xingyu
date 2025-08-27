@@ -27,10 +27,10 @@ module.exports = {
     },
     proxy: {
       "/control": {
-        target: "http://172.20.99.47:8055/api",
-        changeOrigin: true,
+        target: "http://172.20.99.47:8055/api",// 后端接口地址
+        changeOrigin: true,// 开启虚拟域名
         pathRewrite: {
-          "^/control": "",
+          "^/control": "",//重写
         },
       },
       "/all": {

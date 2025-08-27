@@ -53,8 +53,23 @@
 
         <!-- <el-table-column prop="baddatadetail_item" label="不良位号" />
         <el-table-column prop="badphenomena_value" label="不良现象" /> -->
-        <el-table-column prop="repair_way" label="维修方法" />
-        <el-table-column prop="baddata_stts" label="状态" width="100" align="center">
+        <el-table-column prop="repair_way" label="维修方法" width="100" align="center" fixed="right">
+          <template v-slot="{ row }">
+            <span v-if="row.repair_way == '常规维修'">
+              <el-tag  type="primary">{{ row.repair_way }}</el-tag>
+            </span>
+            <span v-else-if="row.repair_way == '误判'">
+              <el-tag  type="info">{{ row.repair_way }}</el-tag>
+            </span>
+            <span v-else-if="row.repair_way == '报废'">
+              <el-tag  type="danger">{{ row.repair_way }}</el-tag>
+            </span>
+            <span v-else>
+              <el-tag  type="warning">{{ row.repair_way }}</el-tag>
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="baddata_stts" label="状态" width="100" align="center" fixed="right">
           <template v-slot="{ row }">
             <el-tag effect="dark" v-if="row.baddata_stts == '完成维修'" type="success">{{ row.baddata_stts }}</el-tag>
             <el-tag effect="dark" v-else-if="row.baddata_stts == '维修中'" type="primary">{{ row.baddata_stts }}</el-tag>
