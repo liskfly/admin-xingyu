@@ -6,13 +6,7 @@
         <dv-decoration-8 class="dv-dec-8 decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']" />
         <div class="text decoration-center">
           <div style="margin: auto" class="text-white flex items-center">
-            <span>星宇车灯电子二工厂 </span>
-            <div class="custom-select-wrapper">
-              <select id="customSelect" class="custom-select" v-model="line" @change="handleCommand(line)">
-                <option v-for="item in options" :value="item.value" :key="item.value"><span class="text-center">{{
-                    item.label }}</span></option>
-              </select>
-            </div>
+            <span>电子二工厂 工厂看板 </span>
           </div>
         </div>
         <dv-decoration-8 class="dv-dec-8 transform decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']" />
@@ -22,133 +16,74 @@
           <span class="pr-5">{{ currentTime }}</span>
         </div>
       </div>
-
-      <div class="bg-white h-32 dashboard-header">
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="info-label">生产工单</div>
-            <div class="info-value "> {{ lineData.OrderName || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">产品编码</div>
-            <div class="info-value">{{ lineData.ProductNO || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">产品</div>
-            <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label text-center">面别</div>
-            <div class="info-value text-center">{{ lineData.Side || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">计划开始时间</div>
-            <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">计划结束时间</div>
-            <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="flex" style="gap: 15px">
-        <dv-border-box-13 class="centerh">
+      <div class="pt-2">
+        <el-row :gutter="10">
+            <el-col :span="14" :offset="0">
+                 <dv-border-box-12 class="centerh">
           <div class="header_title">
-            <i class="fa fa-tasks"></i> 当前工单完成率
+            <i class="fa fa-check-circle"></i> 日生产工单
           </div>
           <div>
-            <completion :Line="line" />
-          </div>
-        </dv-border-box-13>
-        <dv-border-box-13 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-check-circle"></i> SPI直通率
-          </div>
-          <div>
-            <spiPassRate :Line="line" />
-          </div>
-        </dv-border-box-13>
-        <dv-border-box-13 class="centerh">
-          <div class="header_title"><i class="fa fa-search"></i> AOI直通率</div>
-          <div>
-            <aoiPassRate :Line="line" />
-          </div>
-        </dv-border-box-13>
-        <dv-border-box-13 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-exclamation-triangle"></i> 不良数分布
-          </div>
-          <div>
-            <badPassRate :Line="line" />
-          </div>
-        </dv-border-box-13>
-      </div>
-      <div class="flex gap-4">
-        <dv-border-box-12 class="centerh1">
-          <div class="header_title">
-            <i class="fa fa-bar-chart"></i> 贴片机单小时产能(12H)
-          </div>
-          <div>
-            <capacityChart :Line="line" />
+           <dayChart/>
           </div>
         </dv-border-box-12>
-        <dv-border-box-12 class="centerh1">
+            </el-col>
+            <el-col :span="5" :offset="0">
+ 
+          <dv-border-box-12 class="centerh">
           <div class="header_title">
-            <i class="fa fa-bar-chart"></i> 抛料TOP10
+            <i class="fa fa-tasks"></i> 周完成率
           </div>
           <div>
-            <throwMChart :Line="line" />
+          <weekPassRate/>
+          </div>
+        </dv-border-box-12>
+            </el-col>
+            <el-col :span="5" :offset="0">
+                 <dv-border-box-12 class="centerh">
+          <div class="header_title">
+            <i class="fa fa-check-circle"></i> 
+          </div>
+          <div>
+           <aoiPassRate/>
+          </div>
+        </dv-border-box-12>
+            </el-col>
+        </el-row>
+        
+        
+       
+      </div>
+      <div>
+          <dv-border-box-12 class="centerh1">
+          <div class="header_title">
+            <i class="fa fa-check-circle"></i> OEE
+          </div>
+          <div>
+           <oeeChart/>
           </div>
         </dv-border-box-12>
       </div>
+      
     </div>
   </div>
 </template>
 
 <script>
-import { GetReport_LineCurrentWo } from "@/api/kanbanApi";
-import completion from "./completion.vue";
-import spiPassRate from "./spiPassRate.vue";
+import dayChart from "./dayChart.vue";
 import aoiPassRate from "./aoiPassRate.vue";
-import badPassRate from "./badPassRate.vue";
-import capacityChart from "./capacityChart.vue";
-import throwMChart from "./throwMChart.vue";
-import dayjs from "dayjs";
+import weekPassRate from "./weekPassRate.vue";
+import oeeChart from "./oeeChart.vue";
 export default {
   components: {
-    completion,
-    spiPassRate,
-    aoiPassRate,
-    badPassRate,
-    capacityChart,
-    throwMChart,
+  weekPassRate,
+  aoiPassRate,
+  dayChart,
+  oeeChart
   },
   data() {
     return {
-      line: "Line1", // 默认选中第一条线
-      options: [
-        { value: "Line1", label: "Line1" },
-        { value: "Line2", label: "Line2" },
-        { value: "Line3", label: "Line3" },
-        { value: "Line4", label: "Line4" },
-        { value: "Line5", label: "Line5" },
-        { value: "Line6", label: "Line6" },
-        { value: "Line7", label: "Line7" },
-      ],
       currentTime: "", // 用于存储当前时间
-      lineData: {
-        LineName: "",
-        OrderName: "",
-        CustomerPO: "",
-        Side: "",
-        ProgramName: "",
-        ProductName: "",
-        ProductDsc: "",
-        ProductNO: "",
-        MachineID: 101,
-        PlannedStartTime: "",
-        PlannedFinishTime: "",
-      },
       refreshCountdown: 60,
       lastUpdatedTime: "",
       dataRefreshInterval: null,
@@ -163,18 +98,18 @@ export default {
   },
   mounted() {
     this.updateTime();
-    this.getData();
+    // this.getData();
     setInterval(this.updateTime, 1000);
     // 设置数据刷新定时器（每分钟一次）
-    this.setDataRefreshInterval();
+    // this.setDataRefreshInterval();
 
-    // 设置倒计时定时器
-    this.countdownInterval = setInterval(() => {
-      this.refreshCountdown -= 1;
-      if (this.refreshCountdown <= 0) {
-        this.refreshCountdown = 60;
-      }
-    }, 1000);
+    // // 设置倒计时定时器
+    // this.countdownInterval = setInterval(() => {
+    //   this.refreshCountdown -= 1;
+    //   if (this.refreshCountdown <= 0) {
+    //     this.refreshCountdown = 60;
+    //   }
+    // }, 1000);
   },
   beforeDestroy() {
     // 清除定时器
@@ -215,15 +150,7 @@ export default {
     getData() {
       GetReport_LineCurrentWo({ line: this.line }).then((res) => {
         if (res.Success) {
-          this.lineData = {
-            ...res.Data[0],
-            PlannedStartTime: res.Data[0].PlannedStartTime
-              ? dayjs(res.Data[0].PlannedStartTime).format("YYYY-MM-DD HH:mm:ss")
-              : "",
-            PlannedFinishTime: res.Data[0].PlannedFinishTime
-              ? dayjs(res.Data[0].PlannedFinishTime).format("YYYY-MM-DD HH:mm:ss")
-              : "",
-          }
+          this.lineData = res.Data[0]
         }
       });
     },
@@ -248,7 +175,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin: 20px 0 10px 0;
-  padding: 10px 0px;
+  padding: 15px 20px;
   background: rgba(16, 33, 68, 0.7);
   border-radius: 8px;
   border: 2px solid rgba(64, 160, 255, 0.723);
@@ -257,13 +184,13 @@ export default {
 
 .info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 3fr 85px 280px 280px;
+  grid-template-columns: repeat(5, 1fr);
   gap: 15px;
 }
 
 .info-item {
   background: rgba(16, 33, 68, 0.5);
-  padding: 0 15px;
+  padding: 10px 15px;
   border-radius: 6px;
   border-left: 3px solid #40a9ff;
 }
@@ -275,27 +202,20 @@ export default {
 .info-label {
   font-size: 24px;
   color: #8ac6ff;
-  font-weight: bold;
   margin-bottom: 5px;
 }
 
 .info-value {
-  // height: 70px;
-  font-size: 25px;
-  font-weight: bolder;
+  font-size: 30px;
+  font-weight: bold;
   color: #ffffff;
-  display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
-  -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
-  -webkit-line-clamp: 2; // 显示两行
-  overflow: hidden;
-
 }
 
 .centerh {
   display: flex;
   flex-direction: column;
   padding: 15px;
-  height: 380px;
+  height: 460px;
   font-size: 22px;
   font-weight: bolder;
   color: #8ac6ff;
@@ -312,11 +232,11 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 15px;
-  height: 450px;
+  height: 520px;
   font-size: 22px;
   font-weight: bolder;
   color: #8ac6ff;
-  background-color: rgba(16, 33, 68, 0.9);
+  background-color: rgba(16, 33, 68, 0.7);
 
   .header_title {
     margin-bottom: 15px;
@@ -373,7 +293,7 @@ export default {
 
 .custom-select {
   width: 100%;
-
+  
   font-size: 2rem;
   color: #ffffff;
   background-color: transparent;
@@ -417,7 +337,7 @@ export default {
   font-size: 1rem;
   border: none;
   text-align: center;
-
+  
 }
 
 
@@ -426,6 +346,6 @@ export default {
 .custom-select option:checked {
   background-color: #4472cb !important;
   color: #fff !important;
-  border: none;
+    border: none;
 }
 </style>

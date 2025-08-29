@@ -60,7 +60,8 @@ export default {
             },
           },
           axisLabel: {
-            color: "#8ac6ff",
+            // color: "#8ac6ff",
+            color: "#fff",
             fontSize: 18,
           },
         },
@@ -75,7 +76,8 @@ export default {
           },
           axisLabel: {
             color: "#8ac6ff",
-            fontSize: "18",
+              // color: "#fff",
+            fontSize: 18,
           },
         },
         series: [
@@ -99,7 +101,8 @@ export default {
               show: true,
               position: "top",
               color: "#e6f7ff",
-              fontSize: "18",
+              fontWeight: "bold",
+              fontSize: 20,
             },
           },
           // {
@@ -169,7 +172,7 @@ export default {
       // 模拟获取数据，随机生成1000到1500的数
 
       
-      console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
+      // console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
       GetCapacity({ Line: this.Line }).then(res => {
         if (res.Success) {
           this.option.xAxis.data = res.Data.slice(-12).map(item => item.HourOfDay);

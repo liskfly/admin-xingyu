@@ -58,8 +58,8 @@ export default {
             //   show: false,
             // },
             data: [
-              { value: 78, name: "完成", itemStyle: { color: "#1890ff" } },
-              { value: 22, name: "剩余", itemStyle: { color: "#2f4b7c" } },
+              { value: 0, name: "完成", itemStyle: { color: "#1890ff" } },
+              { value: 0, name: "剩余", itemStyle: { color: "#2f4b7c" } },
             ],
           },
         ],
@@ -124,7 +124,7 @@ export default {
       // 设置定时器，每分钟刷新一次
       this.timer = setInterval(() => {
         this.getData();
-      }, 60000);
+      }, 30000);
 
 
     },

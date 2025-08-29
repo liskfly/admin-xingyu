@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div id="aoiPassRateChart" style="width: 100%; height: 300px"></div>
+    <div id="weekRateChart" style="width: 100%; height: 380px"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi"
+// import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi";
 import dayjs from "dayjs";
 export default {
-  props: ['Line'],
+  // props: ['Line'],
   data() {
     return {
       option: {
@@ -18,11 +18,9 @@ export default {
           formatter: "{a} <br/>{b}: {c}%",
         },
         legend: {
-          orient: "vertical",
-          x: "right", //可设定图例在左、右、居中
-          y: "top",
-
-          data: ["直通", "不良"],
+          bottom: 10,
+          left: "center",
+          data: ["总数", "已完成", "未完成"],
           textStyle: {
             color: "#ffffff",
             fontSize: 15,
@@ -31,10 +29,10 @@ export default {
 
         series: [
           {
-            name: "直通率",
+            name: "完成",
             type: "pie",
-            radius: ["40%", "70%"],
-            center: ["50%", "50%"],
+            radius: ["30%", "60%"],
+            center: ["46%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -42,7 +40,7 @@ export default {
               borderWidth: 2,
             },
             label: {
-              formatter: "{b}: {c}%",
+              formatter: "{b}:\n {c}%",
               color: "#e6f7ff",
               fontSize: "18",
               fontWeight: "bold",
@@ -55,8 +53,9 @@ export default {
               },
             },
             data: [
-              { value: 97.8, name: "直通", itemStyle: { color: "#13c2c2" } },
-              { value: 2.2, name: "不良", itemStyle: { color: "#ff7a45" } },
+              { value: 50, name: "总数", itemStyle: { color: "#3f7af8" } },
+              { value: 25, name: "已完成", itemStyle: { color: "#31be60" } },
+              { value: 25, name: "未完成", itemStyle: { color: "#ffc801" } }
             ],
           },
         ],
@@ -66,6 +65,7 @@ export default {
       refreshing: true,
       loading: false,
       timer: null,
+      Line: "Line1",
     };
   },
   watch: {
@@ -77,8 +77,8 @@ export default {
         this.stopRefreshing();
         this.getData();
         this.startRefreshing();
-      }
-    }
+      },
+    },
   },
   mounted() {
     this.initChart();
@@ -92,20 +92,26 @@ export default {
   },
   methods: {
     getData() {
-
-      GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then(res => {
-        if (res.Success) {
-          this.option.series[0].data = [
-            { value: res.Data[0].FirstPass_Percent, name: "直通", itemStyle: { color: "#13c2c2" } },
-            { value: res.Data[0].Badness_Percent, name: "不良", itemStyle: { color: "#ff7a45" } }
-          ];
-          this.chart.setOption(this.option);
-        }
-
-      })
+      // GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then((res) => {
+      //   if (res.Success) {
+      //     this.option.series[0].data = [
+      //       {
+      //         value: res.Data[0].FirstPass_Percent,
+      //         name: "直通",
+      //         itemStyle: { color: "#13c2c2" },
+      //       },
+      //       {
+      //         value: res.Data[0].Badness_Percent,
+      //         name: "不良",
+      //         itemStyle: { color: "#ff7a45" },
+      //       },
+      //     ];
+      //     this.chart.setOption(this.option);
+      //   }
+      // });
     },
     initChart() {
-      const chartDom = document.getElementById("aoiPassRateChart");
+      const chartDom = document.getElementById("weekRateChart");
       this.chart = echarts.init(chartDom);
       this.chart.setOption(this.option);
     },
@@ -119,8 +125,6 @@ export default {
       this.timer = setInterval(() => {
         this.getData();
       }, 60000);
-
-
     },
 
     stopRefreshing() {
@@ -147,7 +151,7 @@ export default {
         this.getData();
         this.loading = false;
       }, 800);
-    }
+    },
   },
 };
 </script>

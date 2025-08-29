@@ -1,26 +1,23 @@
 <template>
     <div class="line-container" ref="container" id="fullDiv5">
       <div class="content-wrapper" ref="content">
-        <lineIndex />
-        <!-- <lineIndex1 v-else/> -->
+        <factoryIndex />
       </div>
     </div>
   </template>
   
   <script>
-  import lineIndex from "./lineCompone/index.vue";
-  //  import lineIndex1 from "./lineCompone/index.vue";
+  import factoryIndex from "./components/index.vue";
+  
   export default {
     components: {
-      lineIndex,
-      // lineIndex1
+      factoryIndex
     },
     data() {
       return {
         timer: null,
         baseWidth: 1920,
-        baseHeight: 1080,
-        // isVertical:false
+        baseHeight: 1080
       };
     },
     computed: {
@@ -28,19 +25,7 @@
         return this.baseWidth / this.baseHeight;
       }
     },
-   
-    mounted() {
-      console.log(window.innerWidth,window.innerHeight);
-      this.calcScaleRatio();
-      window.addEventListener("resize", this.handleResize);
-    },
-    beforeDestroy() {
-      window.removeEventListener("resize", this.handleResize);
-      if (this.timer) {
-        clearTimeout(this.timer);
-      }
-    },
-     methods: {
+    methods: {
       calcScaleRatio() {
         const container = this.$refs.container;
         const content = this.$refs.content;
@@ -74,6 +59,16 @@
         this.timer = setTimeout(this.calcScaleRatio, 200);
       }
     },
+    mounted() {
+      this.calcScaleRatio();
+      window.addEventListener("resize", this.handleResize);
+    },
+    beforeDestroy() {
+      window.removeEventListener("resize", this.handleResize);
+      if (this.timer) {
+        clearTimeout(this.timer);
+      }
+    }
   };
   </script>
   
@@ -83,7 +78,7 @@
     overflow: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    background-image: url("../../assets/bg.png");
+    background-image: url("../../../assets/bg.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

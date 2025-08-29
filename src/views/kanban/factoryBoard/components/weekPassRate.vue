@@ -1,21 +1,21 @@
 <template>
     <div>
-        <div id="badPassRateChart" style="width: 100%; height: 300px"></div>
+        <div id="badPassRateChart" style="width: 100%; height: 380px"></div>
     </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-import { GetReport_LineBadnessInfo } from "@/api/kanbanApi"
+// import { GetReport_LineBadnessInfo } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
-    props: ['Line'],
+    // props: ['Line'],
     data() {
         return {
             option: {
                 tooltip: {
                     trigger: 'item',
-                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                    formatter: '{a} <br/>{b}: {c}%'
                 },
                 legend: {
                     bottom: 10,
@@ -28,29 +28,32 @@ export default {
                 },
 
                 series: [{
-                    name: '不良分布',
+                    name: '周完成',
                     type: 'pie',
-                    radius: ['15%', '60%'],
-                    center: ['50%', '40%'],
+                    radius: ['10%', '60%'],
+                    center: ['50%', '50%'],
                     roseType: 'radius',
-                    itemStyle: {
-                        borderRadius: 8
-                    },
+                    // itemStyle: {
+                    //     borderRadius: 10
+                    // },
                     label: {
-                        formatter: '{b}: {c}',
+                        formatter: '{b}:\n {c}%',
                         color: '#e6f7ff',
-                        fontSize: "18",
+                        fontSize: 18,
                         fontWeight: "bold",
+                        // position: 'inside',
                         overflow: 'none'
                     },
+                    labelLine: {
+                        show: true, // 显示引导线
+                        length: 5, // 引导线长度
+                        length2: 5, // 引导线末端长度
+                    },
 
-                    data: [{ value: 32, name: '偏移' },
-                    { value: 28, name: '少锡' },
-                    { value: 18, name: '短路' },
-                    { value: 12, name: '漏件' },
-                    { value: 8, name: '极性反' },
-                    { value: 15, name: '其他' }],
-                    // color: ['#ff4d4f', '#ff7a45', '#ffa940', '#ffc53d', '#ffec3d', '#bae637']
+                    data: [{ value: 66.67, name: '总数' },
+                    { value: 33.33, name: '已完成' },
+                    ],
+                    color: ['#8f6be9', '#06c0d5']
                 }]
             },
             timer: null,
@@ -58,6 +61,7 @@ export default {
             refreshing: true,
             loading: false,
             timer: null,
+            Line: "Line1"
         };
     },
     watch: {
@@ -84,18 +88,18 @@ export default {
     },
     methods: {
         getData() {
-  
-            GetReport_LineBadnessInfo({ Line: this.Line }).then(res => {
-                if (res.Success) {
-                    
-                    this.option.series[0].data = res.Data.map(item => ({
-                        value: item.CodeCount,
-                        name: item.badphenomena_value
-                    }));
-                    this.chart.setOption(this.option);
-                }
 
-            })
+            // GetReport_LineBadnessInfo({ Line: this.Line }).then(res => {
+            //     if (res.Success) {
+
+            //         this.option.series[0].data = res.Data.map(item => ({
+            //             value: item.CodeCount,
+            //             name: item.badphenomena_value
+            //         }));
+            //         this.chart.setOption(this.option);
+            //     }
+
+            // })
         },
         initChart() {
             const chartDom = document.getElementById("badPassRateChart");
