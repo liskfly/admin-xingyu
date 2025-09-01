@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="completionChart" style="width: 100%; height: 300px"></div>
+    <div id="completionChart" :style="{ height: rateHeight + 'px' }"></div>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ import * as echarts from "echarts";
 import { GetCompletionRate } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
-  props: ['Line'],
+  props: ['Line','rateHeight'],
   data() {
     return {
       option: {
@@ -81,7 +81,14 @@ export default {
         this.getData();
         this.startRefreshing();
       }
-    }
+    },
+     rateHeight: {
+      handler(newHeight) {
+        if (this.chart) {
+          this.chart.resize({ height: newHeight });
+        }
+      },
+    },
   },
   mounted() {
     this.initChart();

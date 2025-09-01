@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="badPassRateChart" style="width: 100%; height: 300px"></div>
+        <div id="badPassRateChart" :style="{ height: rateHeight + 'px' }"></div>
     </div>
 </template>
 
@@ -9,7 +9,7 @@ import * as echarts from "echarts";
 import { GetReport_LineBadnessInfo } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
-    props: ['Line'],
+    props: ['Line',"rateHeight"],
     data() {
         return {
             option: {
@@ -18,7 +18,7 @@ export default {
                     formatter: '{a} <br/>{b}: {c} ({d}%)'
                 },
                 legend: {
-                    bottom: 10,
+                    bottom: 2,
                     left: 'center',
                     // data: ['偏移', '少锡', '短路', '漏件', '极性反', '其他'],
                     textStyle: {
@@ -70,7 +70,14 @@ export default {
                 this.getData();
                 this.startRefreshing();
             }
+        },
+         rateHeight: {
+      handler(newHeight) {
+        if (this.chart) {
+          this.chart.resize({ height: newHeight });
         }
+      },
+    },
     },
     mounted() {
         this.initChart();

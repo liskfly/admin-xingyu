@@ -3,31 +3,53 @@
     <div class="flex flex-col w-full">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" :color="['#40a0ffb8']" />
-        <dv-decoration-8 class="dv-dec-8 decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']" />
+        <dv-decoration-8
+          class="dv-dec-8 decoration decoration-center"
+          :color="['#40a0ffb8', '#40a0ffb8']"
+        />
         <div class="text decoration-center">
           <div style="margin: auto" class="text-white flex items-center">
             <span>星宇车灯电子二工厂 </span>
             <div class="custom-select-wrapper">
-              <select id="customSelect" class="custom-select" v-model="line" @change="handleCommand(line)">
-                <option v-for="item in options" :value="item.value" :key="item.value"><span class="text-center">{{
-                    item.label }}</span></option>
+              <select
+                id="customSelect"
+                class="custom-select"
+                v-model="line"
+                @change="handleCommand(line)"
+              >
+                <option
+                  v-for="item in options"
+                  :value="item.value"
+                  :key="item.value"
+                >
+                  <span class="text-center">{{ item.label }}</span>
+                </option>
               </select>
             </div>
           </div>
         </div>
-        <dv-decoration-8 class="dv-dec-8 transform decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']" />
-        <dv-decoration-10 class="dv-dec-10 transform decoration" :color="['#40a0ffb8']" />
+        <dv-decoration-8
+          class="dv-dec-8 transform decoration decoration-center"
+          :color="['#40a0ffb8', '#40a0ffb8']"
+        />
+        <dv-decoration-10
+          class="dv-dec-10 transform decoration"
+          :color="['#40a0ffb8']"
+        />
 
-        <div class="text-white flex justify-end timetext" style="font-size: 24px">
+        <div
+          class="text-white flex justify-end timetext"
+          style="font-size: 24px"
+        >
           <span class="pr-5">{{ currentTime }}</span>
         </div>
       </div>
 
-      <div class="bg-white h-32 dashboard-header">
+      <div class="h-32 dashboard-header" v-if="!isVertical">
         <div class="info-grid">
           <div class="info-item">
             <div class="info-label">生产工单</div>
-            <div class="info-value "> {{ lineData.OrderName || "" }}</div>
+            <div class="info-value">{{ lineData.OrderName || "" }}</div>
           </div>
           <div class="info-item">
             <div class="info-label">产品编码</div>
@@ -51,55 +73,148 @@
           </div>
         </div>
       </div>
-      <div class="flex" style="gap: 15px">
-        <dv-border-box-13 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-tasks"></i> 当前工单完成率
+      <div class="h-64 dashboard-header-vertical" v-if="isVertical">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">生产工单</div>
+            <div class="info-value">{{ lineData.OrderName || "" }}</div>
           </div>
-          <div>
-            <completion :Line="line" />
+          <div class="info-item">
+            <div class="info-label">产品编码</div>
+            <div class="info-value">{{ lineData.ProductNO || "" }}</div>
           </div>
-        </dv-border-box-13>
-        <dv-border-box-13 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-check-circle"></i> SPI直通率
+          <div class="info-item">
+            <div class="info-label">产品</div>
+            <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
           </div>
-          <div>
-            <spiPassRate :Line="line" />
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">面别</div>
+            <div class="info-value">{{ lineData.Side || "" }}</div>
           </div>
-        </dv-border-box-13>
-        <dv-border-box-13 class="centerh">
-          <div class="header_title"><i class="fa fa-search"></i> AOI直通率</div>
-          <div>
-            <aoiPassRate :Line="line" />
+          <div class="info-item">
+            <div class="info-label">计划开始时间</div>
+            <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
           </div>
-        </dv-border-box-13>
-        <dv-border-box-13 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-exclamation-triangle"></i> 不良数分布
+          <div class="info-item">
+            <div class="info-label">计划结束时间</div>
+            <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
           </div>
-          <div>
-            <badPassRate :Line="line" />
-          </div>
-        </dv-border-box-13>
+        </div>
       </div>
-      <div class="flex gap-4">
-        <dv-border-box-12 class="centerh1">
-          <div class="header_title">
-            <i class="fa fa-bar-chart"></i> 贴片机单小时产能(12H)
-          </div>
-          <div>
-            <capacityChart :Line="line" />
-          </div>
-        </dv-border-box-12>
-        <dv-border-box-12 class="centerh1">
-          <div class="header_title">
-            <i class="fa fa-bar-chart"></i> 抛料TOP10
-          </div>
-          <div>
-            <throwMChart :Line="line" />
-          </div>
-        </dv-border-box-12>
+      <div class="flex flex-col" v-if="isVertical">
+        <div class="flex" style="gap: 15px">
+          <dv-border-box-13 class="centerh centerh-vertical">
+            <div class="header_title">
+              <i class="fa fa-tasks"></i> 当前工单完成率
+            </div>
+            <div>
+              <completion :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+          <dv-border-box-13 class="centerh centerh-vertical">
+            <div class="header_title">
+              <i class="fa fa-check-circle"></i> SPI直通率
+            </div>
+            <div>
+              <spiPassRate :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+        </div>
+        <div class="flex" style="gap: 15px">
+          <dv-border-box-13 class="centerh centerh-vertical">
+            <div class="header_title">
+              <i class="fa fa-search"></i> AOI直通率
+            </div>
+            <div>
+              <aoiPassRate :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+          <dv-border-box-13 class="centerh centerh-vertical">
+            <div class="header_title">
+              <i class="fa fa-exclamation-triangle"></i> 不良数分布
+            </div>
+            <div>
+              <badPassRate :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+        </div>
+        <div>
+          <dv-border-box-12 class="centerh1 centerh1-vertical">
+            <div class="header_title">
+              <i class="fa fa-bar-chart"></i> 贴片机单小时产能(12H)
+            </div>
+            <div>
+              <capacityChart :Line="line" :barHeight="barHeight" />
+            </div>
+          </dv-border-box-12>
+        </div>
+        <div>
+          <dv-border-box-12 class="centerh1 centerh1-vertical">
+            <div class="header_title">
+              <i class="fa fa-bar-chart"></i> 抛料TOP10
+            </div>
+            <div>
+              <throwMChart :Line="line" :barHeight="barHeight" />
+            </div>
+          </dv-border-box-12>
+        </div>
+      </div>
+
+      <div class="flex flex-col" v-if="!isVertical">
+        <div class="flex" style="gap: 15px">
+          <dv-border-box-13 class="centerh">
+            <div class="header_title">
+              <i class="fa fa-tasks"></i> 当前工单完成率
+            </div>
+            <div>
+              <completion :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+          <dv-border-box-13 class="centerh">
+            <div class="header_title">
+              <i class="fa fa-check-circle"></i> SPI直通率
+            </div>
+            <div>
+              <spiPassRate :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+          <dv-border-box-13 class="centerh">
+            <div class="header_title">
+              <i class="fa fa-search"></i> AOI直通率
+            </div>
+            <div>
+              <aoiPassRate :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+          <dv-border-box-13 class="centerh">
+            <div class="header_title">
+              <i class="fa fa-exclamation-triangle"></i> 不良数分布
+            </div>
+            <div>
+              <badPassRate :Line="line" :rateHeight="rateHeight" />
+            </div>
+          </dv-border-box-13>
+        </div>
+        <div class="flex" style="gap: 15px">
+          <dv-border-box-12 class="centerh1">
+            <div class="header_title">
+              <i class="fa fa-bar-chart"></i> 贴片机单小时产能(12H)
+            </div>
+            <div>
+              <capacityChart :Line="line" :barHeight="barHeight" />
+            </div>
+          </dv-border-box-12>
+          <dv-border-box-12 class="centerh1">
+            <div class="header_title">
+              <i class="fa fa-bar-chart"></i> 抛料TOP10
+            </div>
+            <div>
+              <throwMChart :Line="line" :barHeight="barHeight" />
+            </div>
+          </dv-border-box-12>
+        </div>
       </div>
     </div>
   </div>
@@ -115,6 +230,7 @@ import capacityChart from "./capacityChart.vue";
 import throwMChart from "./throwMChart.vue";
 import dayjs from "dayjs";
 export default {
+  props: ["isVertical"],
   components: {
     completion,
     spiPassRate,
@@ -152,8 +268,25 @@ export default {
       refreshCountdown: 60,
       lastUpdatedTime: "",
       dataRefreshInterval: null,
-      countdownInterval: null
+      countdownInterval: null,
+      rateHeight: 300,
+      barHeight: 370,
     };
+  },
+  watch: {
+    // 监听Line属性变化
+    isVertical: {
+      immediate: true, // 立即触发一次
+      handler(nVal) {
+        if (nVal) {
+          this.rateHeight = 270;
+          this.barHeight = 370;
+        } else {
+          this.rateHeight = 300;
+          this.barHeight = 385;
+        }
+      },
+    },
   },
   beforeMount() {
     const savedLine = localStorage.getItem("LINEkANBAN");
@@ -218,12 +351,16 @@ export default {
           this.lineData = {
             ...res.Data[0],
             PlannedStartTime: res.Data[0].PlannedStartTime
-              ? dayjs(res.Data[0].PlannedStartTime).format("YYYY-MM-DD HH:mm:ss")
+              ? dayjs(res.Data[0].PlannedStartTime).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )
               : "",
             PlannedFinishTime: res.Data[0].PlannedFinishTime
-              ? dayjs(res.Data[0].PlannedFinishTime).format("YYYY-MM-DD HH:mm:ss")
+              ? dayjs(res.Data[0].PlannedFinishTime).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )
               : "",
-          }
+          };
         }
       });
     },
@@ -237,7 +374,7 @@ export default {
       this.dataRefreshInterval = setInterval(() => {
         this.getData();
       }, 60000); // 60秒 = 60000毫秒
-    }
+    },
   },
 };
 </script>
@@ -247,54 +384,104 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 20px 0 8px 0;
+  padding: 10px 0px;
+  background: rgba(16, 33, 68, 0.7);
+  border-radius: 8px;
+  border: 2px solid rgba(64, 160, 255, 0.723);
+  box-shadow: 0 0 20px rgba(0, 100, 255, 0.1);
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 85px 280px 280px;
+    gap: 15px;
+  }
+
+  .info-item {
+    background: rgba(16, 33, 68, 0.5);
+    padding: 0 15px;
+    border-radius: 6px;
+    border-left: 3px solid #40a9ff;
+  }
+
+  .info-item:first-child {
+    border-left: none;
+  }
+
+  .info-label {
+    font-size: 24px;
+    color: #8ac6ff;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .info-value {
+    // height: 70px;
+    font-size: 25px;
+    font-weight: bolder;
+    color: #ffffff;
+    display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
+    -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
+    -webkit-line-clamp: 2; // 显示两行
+    overflow: hidden;
+  }
+
+}
+
+.dashboard-header-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  // align-items: center;
   margin: 20px 0 10px 0;
   padding: 10px 0px;
   background: rgba(16, 33, 68, 0.7);
   border-radius: 8px;
   border: 2px solid rgba(64, 160, 255, 0.723);
   box-shadow: 0 0 20px rgba(0, 100, 255, 0.1);
-}
 
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 3fr 85px 280px 280px;
-  gap: 15px;
-}
+  .info-grid {
+    display: grid;
+    grid-template-columns: 290px 290px 1fr;
+    gap: 15px;
+  }
 
-.info-item {
-  background: rgba(16, 33, 68, 0.5);
-  padding: 0 15px;
-  border-radius: 6px;
-  border-left: 3px solid #40a9ff;
-}
+  .info-item {
+    background: rgba(16, 33, 68, 0.5);
+    padding: 0 15px;
+    border-radius: 6px;
+    border-left: 3px solid #40a9ff;
+  }
 
-.info-item:first-child {
-  border-left: none;
-}
+  .info-item:first-child {
+    border-left: none;
+  }
 
-.info-label {
-  font-size: 24px;
-  color: #8ac6ff;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
+  .info-label {
+    font-size: 24px;
+    color: #8ac6ff;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
 
-.info-value {
-  // height: 70px;
-  font-size: 25px;
-  font-weight: bolder;
-  color: #ffffff;
-  display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
-  -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
-  -webkit-line-clamp: 2; // 显示两行
-  overflow: hidden;
-
+  .info-value {
+    // height: 70px;
+    font-size: 25px;
+    font-weight: bolder;
+    color: #ffffff;
+    display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
+    -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
+    -webkit-line-clamp: 3; // 显示两行
+    overflow: hidden;
+  }
+  
 }
 
 .centerh {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 10px;
   height: 380px;
   font-size: 22px;
   font-weight: bolder;
@@ -308,11 +495,14 @@ export default {
   }
 }
 
+
+
 .centerh1 {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 15px;
-  height: 450px;
+  padding: 10px;
+  height: 460px;
   font-size: 22px;
   font-weight: bolder;
   color: #8ac6ff;
@@ -323,6 +513,12 @@ export default {
     padding-bottom: 5px;
     border-bottom: 1px solid rgb(64, 160, 255);
   }
+}
+.centerh-vertical{
+   height: 330px;
+}
+.centerh1-vertical{
+   height: 445px;
 }
 
 .el-dropdown-link {
@@ -417,9 +613,7 @@ export default {
   font-size: 1rem;
   border: none;
   text-align: center;
-
 }
-
 
 .custom-select option:hover,
 .custom-select option:focus,

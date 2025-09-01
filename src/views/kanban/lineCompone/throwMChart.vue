@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="throwMChart" style="width: 100%; height: 360px"></div>
+    <div id="throwMChart" :style="{ height: barHeight + 'px' }"></div>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ import * as echarts from "echarts";
 import { GetFeeder } from "@/api/kanbanApi";
 // import dayjs from "dayjs";
 export default {
-  props: ["Line"],
+  props: ['Line','barHeight'],
   data() {
     return {
       option: {
@@ -142,6 +142,13 @@ export default {
         this.stopRefreshing();
         this.getData();
         this.startRefreshing();
+      },
+    },
+    barHeight: {
+      handler(newHeight) {
+        if (this.chart) {
+          this.chart.resize({ height: newHeight });
+        }
       },
     },
   },

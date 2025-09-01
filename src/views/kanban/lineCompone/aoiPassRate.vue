@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div id="aoiPassRateChart" style="width: 100%; height: 300px"></div>
+    <div id="aoiPassRateChart" :style="{ height: rateHeight + 'px' }"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi"
+import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi";
 import dayjs from "dayjs";
 export default {
-  props: ['Line'],
+  props: ["Line", "rateHeight"],
   data() {
     return {
       option: {
@@ -77,8 +77,15 @@ export default {
         this.stopRefreshing();
         this.getData();
         this.startRefreshing();
-      }
-    }
+      },
+    },
+    rateHeight: {
+      handler(newHeight) {
+        if (this.chart) {
+          this.chart.resize({ height: newHeight });
+        }
+      },
+    },
   },
   mounted() {
     this.initChart();
@@ -92,17 +99,23 @@ export default {
   },
   methods: {
     getData() {
-
-      GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then(res => {
+      GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then((res) => {
         if (res.Success) {
           this.option.series[0].data = [
-            { value: res.Data[0].FirstPass_Percent, name: "直通", itemStyle: { color: "#13c2c2" } },
-            { value: res.Data[0].Badness_Percent, name: "不良", itemStyle: { color: "#ff7a45" } }
+            {
+              value: res.Data[0].FirstPass_Percent,
+              name: "直通",
+              itemStyle: { color: "#13c2c2" },
+            },
+            {
+              value: res.Data[0].Badness_Percent,
+              name: "不良",
+              itemStyle: { color: "#ff7a45" },
+            },
           ];
           this.chart.setOption(this.option);
         }
-
-      })
+      });
     },
     initChart() {
       const chartDom = document.getElementById("aoiPassRateChart");
@@ -119,8 +132,6 @@ export default {
       this.timer = setInterval(() => {
         this.getData();
       }, 60000);
-
-
     },
 
     stopRefreshing() {
@@ -147,7 +158,7 @@ export default {
         this.getData();
         this.loading = false;
       }, 800);
-    }
+    },
   },
 };
 </script>

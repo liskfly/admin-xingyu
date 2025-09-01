@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="capacityChart" style="width: 100%; height: 360px"></div>
+    <div id="capacityChart" :style="{ height: barHeight + 'px' }"></div>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ import * as echarts from "echarts";
 import { GetCapacity } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
-  props: ['Line'],
+   props: ['Line','barHeight'],
   data() {
     return {
       option: {
@@ -22,8 +22,8 @@ export default {
         grid: {
           left: "3%",
           right: "6%",
-          bottom: "9%",
-          top: "6%",
+          bottom: "6%",
+          top: "7%",
           containLabel: true,
         },
         legend: {
@@ -155,7 +155,14 @@ export default {
         this.getData();
         this.startRefreshing();
       }
-    }
+    },
+    barHeight: {
+      handler(newHeight) {
+        if (this.chart) {
+          this.chart.resize({ height: newHeight });
+        }
+      },
+    },
   },
   mounted() {
     this.initChart();

@@ -176,6 +176,7 @@ export default {
         this.tableData3 = []
         PSNMoveParam_dePanel(this.form).then(res => {
           const order = [
+            'ProgramName',
             'StartTime',
             'EndTime',
             'CuttingSpeed',
@@ -234,6 +235,7 @@ export default {
         this.tableData3 = []
         PSNMoveParam_dePanel(this.form).then(res => {
           const order = [
+            "ProgramName",
             'StartTime',
             'EndTime',
             'CuttingSpeed',
@@ -266,6 +268,9 @@ export default {
     },
     changeName(val) {
       switch (val) {
+        
+         case "ProgramName":
+          return "设备程式";
         case "BladeLength":
           return "刀韧长度";
         case "CuttingSpeed":
