@@ -219,3 +219,21 @@ export function QueryChecProductLog(data) {
         data
     });
 }
+
+//新增文件SOP(新)
+export function InsertXYLProductSOPNew(data) {
+    return request({
+        url: "/ProductSOP/InsertXYLProductSOPNew",
+        method: "post",
+        data
+    });
+}
+
+//修改文件SOP(新)
+export function UpdateXYLProductSOPNew(data) {
+    return request({
+        url: "/ProductSOP/UpdateXYLProductSOPNew",
+        method: "post",
+        data
+    });
+}

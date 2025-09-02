@@ -140,7 +140,7 @@
                     :on-remove="file1UpRemove"
                     :before-upload="beforeUpload"
                     accept=".pdf"
-                    ref="upload"
+                    ref="upload1"
                     class="upload-area"
                   >
                     <el-button size="small" type="primary"
@@ -171,7 +171,7 @@
                     :on-remove="file2UpRemove"
                     :before-upload="beforeUpload"
                     accept=".pdf"
-                    ref="upload"
+                    ref="upload2"
                     class="upload-area"
                   >
                     <el-button size="small" type="primary"
@@ -376,6 +376,8 @@ import {
   DQXYLProductSOP,
   UpdateXYLProductSOP,
   DeleteXYLProductSOP,
+  InsertXYLProductSOPNew,
+  UpdateXYLProductSOPNew
 } from "@/api/puzzleApi.js";
 import dayjs from "dayjs";
 // import pdf from "vue-pdf";
@@ -519,25 +521,35 @@ export default {
       }
     },
     getPdfSrc(guid, name) {
-      DQXYLProductSOP({
-        prosop_guid: guid,
-      }).then((res) => {
-        this.pdfsrc = `data:application/pdf;base64,${res.Data}`;
-        this.pdfBlob = res.Data;
+        this.pdfsrc = `http://172.20.99.21:5998/SOPAddress/${guid}.pdf`;
         this.pdfName = name;
         this.browseVisible = true;
-      });
+      // DQXYLProductSOP({
+      //   prosop_guid: guid,
+      // }).then((res) => {
+      //   this.pdfsrc = `data:application/pdf;base64,${res.Data}`;
+      //   this.pdfBlob = res.Data;
+      // });
     },
-    downLoadPdf() {
-      // const url = URL.createObjectURL(
-      //   new Blob([this.pdfBlob], { type: "application/pdf" })
-      // );
-      // const link = document.createElement("a");
-      // link.href = url;
-      // link.download = this.pdfName;
-      // link.click();
-      // URL.revokeObjectURL(url);
-      this.downloadPDF1(this.pdfBlob,this.pdfName);
+    async downLoadPdf() {
+      const response = await fetch(this.pdfUrl);
+    if (!response.ok) {
+        throw new Error(`HTTP错误! 状态: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = this.pdfName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+
+    // 清理
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+      // this.downloadPDF1(this.pdfBlob,this.pdfName);
     },
     handleSelect(obj) {
       this.productName = obj.ProductName;
@@ -665,7 +677,7 @@ export default {
     resetUpload() {
       this.productSelect = "";
       this.productName = "";
-      console.log(this.$refs.upload);
+      console.log(this.$refs.upload1);
       this.$refs.upload1.clearFiles();
       this.$refs.upload2.clearFiles();
       this.fileList = [];
@@ -727,47 +739,40 @@ export default {
         return;
       }
       this.startLoading();
-      let file1Base64 = "";
-      let file2Base64 = "";
-      if (this.fileListUp1.length != 0) {
-        await this.blobToBase64(this.fileListUp1[0].raw).then((base64) => {
-          // 如果只需要纯 Base64 部分，可以去掉前缀：
-          file1Base64 = base64.split(",")[1];
-        });
-      }
-      if (this.fileListUp2.length != 0) {
-        await this.blobToBase64(this.fileListUp2[0].raw).then((base64) => {
-          // 如果只需要纯 Base64 部分，可以去掉前缀：
-          file2Base64 = base64.split(",")[1];
-        });
-      }
-      // const formData = new FormData();
-      // if (this.fileListUp1.length !== 0) {
-      //   formData.append("filename1", this.customNames[0]);
-      //   formData.append(
-      //     "base64String1",
-      //     this.fileListUp1[0].raw,
-      //     this.customNames[0]
-      //   );
+      // let file1Base64 = "";
+      // let file2Base64 = "";
+      // if (this.fileListUp1.length != 0) {
+      //   await this.blobToBase64(this.fileListUp1[0].raw).then((base64) => {
+      //     // 如果只需要纯 Base64 部分，可以去掉前缀：
+      //     file1Base64 = base64.split(",")[1];
+      //   });
       // }
-      // if (this.fileListUp2.length !== 0) {
-      //   formData.append("filename2", this.customNames[0]);
-      //   formData.append(
-      //     "base64String2",
-      //     this.fileListUp2[0].raw,
-      //     this.customNames[1]
-      //   );
+      // if (this.fileListUp2.length != 0) {
+      //   await this.blobToBase64(this.fileListUp2[0].raw).then((base64) => {
+      //     // 如果只需要纯 Base64 部分，可以去掉前缀：
+      //     file2Base64 = base64.split(",")[1];
+      //   });
       // }
-      // formData.append("ProductName", "4050212144400");
-      // formData.append("UserNo", getToken());
-      InsertXYLProductSOP({
-        ProductName: this.productName,
-        filename1: this.customNames[0],
-        base64String1: file1Base64,
-        filename2: this.customNames[1],
-        base64String2: file2Base64,
-        UserNo: getToken(),
-      }).then((res) => {
+      const formData = new FormData();
+      if (this.fileListUp1.length !== 0) {
+        formData.append("filename1", this.customNames[0]);
+        formData.append(
+          "base64String1",
+          this.fileListUp1[0].raw,
+          this.customNames[0]
+        );
+      }
+      if (this.fileListUp2.length !== 0) {
+        formData.append("filename2", this.customNames[1]);
+        formData.append(
+          "base64String2",
+          this.fileListUp2[0].raw,
+          this.customNames[1]
+        );
+      }
+      formData.append("ProductName", this.productName);
+      formData.append("UserNo", getToken());
+      InsertXYLProductSOPNew(formData).then((res) => {
         if (res.Code == 200) {
           this.$message({
             message: res.Msg,
@@ -780,6 +785,26 @@ export default {
         }
         this.endLoading();
       });
+      // InsertXYLProductSOP({
+      //   ProductName: this.productName,
+      //   filename1: this.customNames[0],
+      //   base64String1: file1Base64,
+      //   filename2: this.customNames[1],
+      //   base64String2: file2Base64,
+      //   UserNo: getToken(),
+      // }).then((res) => {
+      //   if (res.Code == 200) {
+      //     this.$message({
+      //       message: res.Msg,
+      //       type: "success",
+      //     });
+      //     this.dialogVisible = false;
+      //     this.getData();
+      //   } else {
+      //     this.$message.error(res.Msg);
+      //   }
+      //   this.endLoading();
+      // });
     },
 
     //修改部分
@@ -831,45 +856,44 @@ export default {
         return;
       }
       this.startLoading();
-      let file1Base64 = "";
-      let file2Base64 = "";
-      if (this.fileListEdit1.length != 0) {
-        await this.blobToBase64(this.fileListEdit1[0].raw).then((base64) => {
-          // 如果只需要纯 Base64 部分，可以去掉前缀：
-          file1Base64 = base64.split(",")[1];
-        });
-      }
-      if (this.fileListEdit2.length != 0) {
-        await this.blobToBase64(this.fileListEdit2[0].raw).then((base64) => {
-          // 如果只需要纯 Base64 部分，可以去掉前缀：
-          file2Base64 = base64.split(",")[1];
-        });
-      }
-      // const formData = new FormData();
-      // if (this.fileListUp1.length !== 0) {
-      //   formData.append("filename1", this.customNames[0]);
-      //   formData.append(
-      //     "base64String1",
-      //     this.fileListUp1[0].raw,
-      //     this.customNames[0]
-      //   );
+      // let file1Base64 = "";
+      // let file2Base64 = "";
+      // if (this.fileListEdit1.length != 0) {
+      //   await this.blobToBase64(this.fileListEdit1[0].raw).then((base64) => {
+      //     // 如果只需要纯 Base64 部分，可以去掉前缀：
+      //     file1Base64 = base64.split(",")[1];
+      //   });
       // }
-      // if (this.fileListUp2.length !== 0) {
-      //   formData.append("filename2", this.customNames[0]);
-      //   formData.append(
-      //     "base64String2",
-      //     this.fileListUp2[0].raw,
-      //     this.customNames[1]
-      //   );
+      // if (this.fileListEdit2.length != 0) {
+      //   await this.blobToBase64(this.fileListEdit2[0].raw).then((base64) => {
+      //     // 如果只需要纯 Base64 部分，可以去掉前缀：
+      //     file2Base64 = base64.split(",")[1];
+      //   });
       // }
-      // formData.append("ProductName", "4050212144400");
-      // formData.append("UserNo", getToken());
-      UpdateXYLProductSOP({
-        ...this.editForm,
-        base64String1: file1Base64,
-        base64String2: file2Base64,
-        UserNo: getToken(),
-      }).then((res) => {
+      const formData = new FormData();
+      formData.append("filename1", this.editForm.filename1);
+      if (this.fileListEdit1.length !== 0) {
+        formData.append(
+          "file1",
+          this.fileListEdit1[0].raw,
+          this.editForm.filename1
+        );
+      }
+      formData.append("filename2", this.editForm.filename2);
+      if (this.fileListEdit2.length !== 0) {
+        formData.append(
+          "file2",
+          this.fileListEdit2[0].raw,
+          this.editForm.filename2
+        );
+      }
+      formData.append("ProductName", this.editForm.ProductName);
+      formData.append("upfilename1", this.editForm.upfilename1);
+      formData.append("upfilename2", this.editForm.upfilename2);
+      formData.append("UserNo", getToken());
+      console.log(this.editForm);
+      
+      UpdateXYLProductSOPNew(formData).then((res) => {
         if (res.Code == 200) {
           this.$message({
             message: res.Msg,
@@ -882,6 +906,24 @@ export default {
         }
         this.endLoading();
       });
+      // UpdateXYLProductSOP({
+      //   ...this.editForm,
+      //   base64String1: file1Base64,
+      //   base64String2: file2Base64,
+      //   UserNo: getToken(),
+      // }).then((res) => {
+      //   if (res.Code == 200) {
+      //     this.$message({
+      //       message: res.Msg,
+      //       type: "success",
+      //     });
+      //     this.editVisible = false;
+      //     this.getData();
+      //   } else {
+      //     this.$message.error(res.Msg);
+      //   }
+      //   this.endLoading();
+      // });
     },
 
     // 全部的上传前的校验
