@@ -31,7 +31,7 @@ export default {
                     name: '不良分布',
                     type: 'pie',
                     radius: ['15%', '60%'],
-                    center: ['50%', '40%'],
+                    center: ['50%', '35%'],
                     roseType: 'radius',
                     itemStyle: {
                         borderRadius: 8
