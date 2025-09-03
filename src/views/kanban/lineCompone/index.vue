@@ -143,7 +143,7 @@
         <div>
           <dv-border-box-12 class="centerh1 centerh1-vertical">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 贴片机单小时产能(12H)
+              <i class="fa fa-bar-chart"></i>贴片机单小时产能<span style="color:  #F39C12;font-size: 24px;">（12小时）</span>
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -153,7 +153,7 @@
         <div>
           <dv-border-box-12 class="centerh1 centerh1-vertical">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 抛料TOP10
+              <i class="fa fa-bar-chart"></i> 抛料<span style="color: #ff0000;font-size: 24px;">TOP10</span>
             </div>
             <div>
               <throwMChart :Line="line" :barHeight="barHeight" />
@@ -200,7 +200,7 @@
         <div class="flex" style="gap: 15px">
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 贴片机单小时产能(12H)
+              <i class="fa fa-bar-chart"></i> 贴片机单小时产能<span style="color: #F39C12;font-size: 24px;">（12小时）</span>
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -208,7 +208,7 @@
           </dv-border-box-12>
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 抛料TOP10
+              <i class="fa fa-bar-chart"></i> 抛料<span style="color: #ff0000;font-size: 24px;">TOP10</span>
             </div>
             <div>
               <throwMChart :Line="line" :barHeight="barHeight" />

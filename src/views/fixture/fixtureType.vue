@@ -2,9 +2,7 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="mb-2 flex justify-between">
-        <el-button type="primary" @click="addOpen" size="medium"
-          >添加</el-button
-        >
+        <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
         <!-- <el-button type="primary" @click="readExcelFile(0)" size="medium"
           >添加2</el-button
         > -->
@@ -13,40 +11,17 @@
                         @change="getSearchData" size="medium">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input> -->
-          <el-input
-            v-model="searchName"
-            style="width: 350px"
-            clearable
-            placeholder="请输入"
-            @keyup.enter.native="searchData()"
-            @clear="clearData"
-          >
+          <el-input v-model="searchName" style="width: 350px" clearable placeholder="请输入"
+            @keyup.enter.native="searchData()" @clear="clearData">
             <template slot="append">
-              <el-button
-                type="primary"
-                icon="el-icon-search"
-                @click="searchData()"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
             </template>
           </el-input>
         </div>
       </div>
-      <el-table
-        :data="
-          tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
-        border
-        :height="tableHeight"
-        style="width: 100%"
-        size="mini"
-      >
-        <el-table-column
-          type="index"
-          label="序号"
-          width="55"
-          align="center"
-          fixed
-        >
+      <el-table :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        " border :height="tableHeight" style="width: 100%" size="mini">
+        <el-table-column type="index" label="序号" width="55" align="center" fixed>
           <template slot-scope="scope">
             <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
           </template>
@@ -64,17 +39,11 @@
         <af-table-column prop="TotalUses" label="使用寿命(次数)">
         </af-table-column>
 
-        <af-table-column
-          prop="UsesUntilRevalidation"
-          label="停机扫描(生产片数)"
-        >
+        <af-table-column prop="UsesUntilRevalidation" label="停机扫描(生产片数)">
         </af-table-column>
         <af-table-column prop="PauseUntilRevalidate" label="停机扫描(暂停时间)">
         </af-table-column>
-        <af-table-column
-          prop="TimeUntilRevalidation"
-          label="停机扫描(生产时间)"
-        >
+        <af-table-column prop="TimeUntilRevalidation" label="停机扫描(生产时间)">
         </af-table-column>
         <af-table-column prop="CleaningTime" label="清洗时间">
         </af-table-column>
@@ -89,57 +58,24 @@
           </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="120" align="center">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              icon="el-icon-edit"
-              size="mini"
-              @click="handleEdit(scope.row)"
-            ></el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleEdit(scope.row)"></el-button>
 
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="handleDelete(scope.row)"
-            ></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="block" style="margin-top: 8px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData1.length"
-        >
+        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 50, 100]"
+          layout="total,sizes, prev, pager, next, jumper" :total="tableData1.length">
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog
-      :title="'添加'"
-      :visible.sync="addVisible"
-      @close="addCancel()"
-      width="800px"
-    >
+    <el-dialog :title="'添加'" :visible.sync="addVisible" @close="addCancel()" width="800px">
       <el-form :model="addForm" :rules="rules" ref="formRef" label-width="auto">
         <el-form-item label="类别" prop="category">
-          <el-select
-            v-model="addForm.category"
-            placeholder="请选择"
-            style="width: 240px"
-            filterable
-          >
-            <el-option
-              v-for="item in MaterialNameList"
-              :key="item.Value"
-              :label="item.Text"
-              :value="item.Value"
-            />
+          <el-select v-model="addForm.category" placeholder="请选择" style="width: 240px" filterable>
+            <el-option v-for="item in MaterialNameList" :key="item.Value" :label="item.Text" :value="item.Value" />
           </el-select>
         </el-form-item>
 
@@ -148,107 +84,54 @@
         </el-form-item>
 
         <el-form-item label="描述" prop="materialName">
-          <el-input
-            v-model="addForm.materialName"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="addForm.materialName" style="width: 100%"></el-input>
         </el-form-item>
 
         <el-form-item label="使用寿命(次数)" prop="totalUses">
-          <el-input
-            v-model.number="addForm.totalUses"
-            style="width: 240px"
-            placeholder="请输入"
-            type="number"
-          ></el-input>
+          <el-input v-model.number="addForm.totalUses" style="width: 240px" placeholder="请输入" type="number"></el-input>
         </el-form-item>
         <el-form-item label="停机扫描(生产片数)">
-          <el-input
-            :disabled="!formControl.cleanAfterUses"
-            v-model.number="addForm.usesUntilRevalidation"
-            style="width: 240px"
-            placeholder="请输入"
-            type="number"
-          ></el-input>
-          <el-checkbox
-            class="ml-3"
-            v-model="formControl.cleanAfterUses"
-            @change="handleCleanAfterUsesChange"
-          >
+          <el-input :disabled="!formControl.cleanAfterUses" v-model.number="addForm.usesUntilRevalidation"
+            style="width: 240px" placeholder="请输入" type="number"></el-input>
+          <el-checkbox class="ml-3" v-model="formControl.cleanAfterUses" @change="handleCleanAfterUsesChange">
             启用
           </el-checkbox>
         </el-form-item>
 
         <el-form-item label="停机扫描(暂停时间)">
-          <el-input
-            :disabled="!formControl.cleanAfterPause"
-            v-model.number="addForm.pauseUntilRevalidate"
-            style="width: 240px"
-            placeholder="请输入"
-            type="number"
-          ></el-input>
-          <el-checkbox
-            class="ml-3"
-            v-model="formControl.cleanAfterPause"
-            @change="handleCleanAfterPauseChange"
-          >
+          <el-input :disabled="!formControl.cleanAfterPause" v-model.number="addForm.pauseUntilRevalidate"
+            style="width: 240px" placeholder="请输入" type="number"></el-input>
+          <el-checkbox class="ml-3" v-model="formControl.cleanAfterPause" @change="handleCleanAfterPauseChange">
             启用
           </el-checkbox>
         </el-form-item>
 
         <el-form-item label="停机扫描(生产时间)">
-          <el-input
-            :disabled="!formControl.cleanAfterTime"
-            v-model.number="addForm.timeUntilRevalidation"
-            style="width: 240px"
-            placeholder="请输入"
-            type="number"
-          ></el-input>
-          <el-checkbox
-            class="ml-3"
-            v-model="formControl.cleanAfterTime"
-            @change="handleCleanAfterTimeChange"
-          >
+          <el-input :disabled="!formControl.cleanAfterTime" v-model.number="addForm.timeUntilRevalidation"
+            style="width: 240px" placeholder="请输入" type="number"></el-input>
+          <el-checkbox class="ml-3" v-model="formControl.cleanAfterTime" @change="handleCleanAfterTimeChange">
             启用
           </el-checkbox>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12" :offset="0">
             <el-form-item label="清洗时间">
-              <el-input
-                v-model.number="addForm.cleaningTime"
-                style="width: 240px"
-                placeholder="请输入"
-                type="number"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input v-model.number="addForm.cleaningTime" style="width: 240px" placeholder="请输入"
+                type="number"></el-input> </el-form-item></el-col>
           <el-col :span="12" :offset="0">
             <el-form-item label="张力测试上限值">
-              <el-input
-                v-model.number="addForm.tensionLimit"
-                placeholder="请输入"
-                type="number"
-              ></el-input>
+              <el-input v-model.number="addForm.tensionLimit" placeholder="请输入" type="number"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12" :offset="0">
             <el-form-item label="测试点位数量">
-              <el-input
-                v-model.number="addForm.tensionPoints"
-                style="width: 240px"
-                placeholder="请输入"
-                type="number"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input v-model.number="addForm.tensionPoints" style="width: 240px" placeholder="请输入"
+                type="number"></el-input> </el-form-item></el-col>
           <el-col :span="12" :offset="0">
             <el-form-item label="张力测试下限值">
-              <el-input
-                v-model.number="addForm.lowerTensionLimit"
-                placeholder="请输入"
-                type="number"
-              ></el-input>
+              <el-input v-model.number="addForm.lowerTensionLimit" placeholder="请输入" type="number"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -258,148 +141,72 @@
         <el-button type="primary" @click="addSubmit()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      :title="'编辑'"
-      :visible.sync="editVisible"
-      @close="editCancel()"
-    >
-      <el-form
-        :model="editForm"
-        ref="editFormRef"
-        :rules="rules"
-        label-width="auto"
-      >
+    <el-dialog :title="'编辑'" :visible.sync="editVisible" @close="editCancel()">
+      <el-form :model="editForm" ref="editFormRef" :rules="rules" label-width="auto">
         <el-form-item label="类别">
-          <el-select
-            v-model="editForm.category"
-            placeholder="请选择"
-            style="width: 240px"
-            filterable
-          >
-            <el-option
-              v-for="item in MaterialNameList"
-              :key="item.Value"
-              :label="item.Text"
-              :value="item.Value"
-            />
+          <el-select v-model="editForm.category" placeholder="请选择" style="width: 240px" filterable>
+            <el-option v-for="item in MaterialNameList" :key="item.Value" :label="item.Text" :value="item.Value" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="编码" prop="toolsMold">
-          <el-input
-            disabled
-            v-model="editForm.toolsMold"
-            style="width: 240px"
-          />
+          <el-input disabled v-model="editForm.toolsMold" style="width: 240px" />
         </el-form-item>
         <el-form-item label="描述" prop="materialName">
-          <el-input
-            v-model="editForm.materialName"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="editForm.materialName" style="width: 100%"></el-input>
         </el-form-item>
 
         <el-form-item label="使用寿命(次数)" prop="totalUses">
-          <el-input
-            disabled
-            v-model.number="editForm.totalUses"
-            style="width: 240px"
-            placeholder="请输入"
-          ></el-input>
+          <el-input disabled v-model.number="editForm.totalUses" style="width: 240px" placeholder="请输入"></el-input>
         </el-form-item>
         <el-form-item label="停机扫描(生产片数)">
-          <el-input
-            :disabled="!editFormControl.cleanAfterUses"
-            v-model.number="editForm.usesUntilRevalidation"
-            style="width: 240px"
-            placeholder="请输入"
-          ></el-input>
-          <el-checkbox
-            class="ml-3"
-            v-model="editFormControl.cleanAfterUses"
-            @change="
-              editForm.usesUntilRevalidation = !editFormControl.cleanAfterUses
-                ? 0
-                : editForm.usesUntilRevalidation
-            "
-            label="启用"
-          />
+          <el-input :disabled="!editFormControl.cleanAfterUses" v-model.number="editForm.usesUntilRevalidation"
+            style="width: 240px" placeholder="请输入"></el-input>
+          <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterUses" @change="
+            editForm.usesUntilRevalidation = !editFormControl.cleanAfterUses
+              ? 0
+              : editForm.usesUntilRevalidation
+            " label="启用" />
         </el-form-item>
         <el-form-item label="停机扫描(暂停时间)">
-          <el-input
-            :disabled="!editFormControl.cleanAfterPause"
-            v-model.number="editForm.pauseUntilRevalidate"
-            style="width: 240px"
-            placeholder="请输入"
-          ></el-input>
-          <el-checkbox
-            class="ml-3"
-            v-model="editFormControl.cleanAfterPause"
-            @change="
-              editForm.pauseUntilRevalidate = !editFormControl.cleanAfterPause
-                ? 0
-                : editForm.pauseUntilRevalidate
-            "
-            label="启用"
-          />
+          <el-input :disabled="!editFormControl.cleanAfterPause" v-model.number="editForm.pauseUntilRevalidate"
+            style="width: 240px" placeholder="请输入"></el-input>
+          <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterPause" @change="
+            editForm.pauseUntilRevalidate = !editFormControl.cleanAfterPause
+              ? 0
+              : editForm.pauseUntilRevalidate
+            " label="启用" />
         </el-form-item>
         <el-form-item label="停机扫描(生产时间)">
-          <el-input
-            :disabled="!editFormControl.cleanAfterTime"
-            v-model.number="editForm.timeUntilRevalidation"
-            style="width: 240px"
-            placeholder="请输入"
-          ></el-input>
-          <el-checkbox
-            class="ml-3"
-            v-model="editFormControl.cleanAfterTime"
-            @change="
-              editForm.timeUntilRevalidation = !editFormControl.cleanAfterTime
-                ? 0
-                : editForm.timeUntilRevalidation
-            "
-            label="启用"
-          />
+          <el-input :disabled="!editFormControl.cleanAfterTime" v-model.number="editForm.timeUntilRevalidation"
+            style="width: 240px" placeholder="请输入"></el-input>
+          <el-checkbox class="ml-3" v-model="editFormControl.cleanAfterTime" @change="
+            editForm.timeUntilRevalidation = !editFormControl.cleanAfterTime
+              ? 0
+              : editForm.timeUntilRevalidation
+            " label="启用" />
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12" :offset="0">
             <el-form-item label="清洗时间">
-              <el-input
-                v-model.number="editForm.cleaningTime"
-                style="width: 240px"
-                placeholder="请输入"
-                type="number"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input v-model.number="editForm.cleaningTime" style="width: 240px" placeholder="请输入"
+                type="number"></el-input> </el-form-item></el-col>
           <el-col :span="12" :offset="0">
             <el-form-item label="张力测试上限值">
-              <el-input
-                v-model.number="editForm.tensionLimit"
-                placeholder="请输入"
-                type="number"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input v-model.number="editForm.tensionLimit" placeholder="请输入" type="number"></el-input>
+            </el-form-item></el-col>
         </el-row>
 
         <el-row :gutter="20">
-          <el-col :span="12" :offset="0"
-            ><el-form-item label="测试点位数量">
-              <el-input
-                v-model.number="editForm.tensionPoints"
-                style="width: 240px"
-                placeholder="请输入"
-                type="number"
-              ></el-input>
+          <el-col :span="12" :offset="0"><el-form-item label="测试点位数量">
+              <el-input v-model.number="editForm.tensionPoints" style="width: 240px" placeholder="请输入"
+                type="number"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12" :offset="0">
             <el-form-item label="张力测试下限值">
-              <el-input
-                v-model.number="editForm.lowerTensionLimit"
-                placeholder="请输入"
-                type="number"
-              ></el-input> </el-form-item
-          ></el-col>
+              <el-input v-model.number="editForm.lowerTensionLimit" placeholder="请输入" type="number"></el-input>
+            </el-form-item></el-col>
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -502,7 +309,7 @@ export default {
     this.getData();
     let str = '1/1/4'
     console.log(str.replace(/\//g, '-'));
-    
+
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
@@ -554,7 +361,7 @@ export default {
             //     this.readExcelFile(num + 1);
             //     console.log("error" + item["样件编号"], index);
             //   });
-            
+
             iDControll({
               operationType: "I",
               compid: item["样件编号"],

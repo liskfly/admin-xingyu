@@ -20,7 +20,7 @@ export default {
                 legend: {
                     bottom: 2,
                     left: 'center',
-                    // data: ['偏移', '少锡', '短路', '漏件', '极性反', '其他'],
+                     itemWidth: 9,
                     textStyle: {
                         color: '#ffffff',
                         fontSize: 15,
@@ -30,9 +30,10 @@ export default {
                 series: [{
                     name: '不良分布',
                     type: 'pie',
-                    radius: ['15%', '60%'],
+                    radius: ['15%', '50%'],
                     center: ['50%', '35%'],
                     roseType: 'radius',
+                    // roseType: 'area',
                     itemStyle: {
                         borderRadius: 8
                     },
