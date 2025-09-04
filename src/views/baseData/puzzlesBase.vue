@@ -16,7 +16,7 @@
           <template slot-scope="scope">
             <span>{{
               scope.$index + 1 + (getForm.PageIndex - 1) * getForm.PageSize
-              }}</span>
+            }}</span>
           </template>
         </el-table-column>
         <af-table-column prop="PN" label="拼板物料编号" width="220">
@@ -38,8 +38,12 @@
         </af-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"></el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
+            <el-tooltip content="详情" placement="top">
+              <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(scope.row)"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top">
+              <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -267,12 +271,12 @@
                 </el-table-column>
                 <el-table-column label="操作" width="120">
                   <template slot-scope="scope">
-                      <el-button type="danger" size="mini" icon="el-icon-delete"
+                    <el-button type="danger" size="mini" icon="el-icon-delete"
                       @click="handleDetailDelete(scope.row)"></el-button>
                     <el-button type="primary" size="mini" icon="el-icon-plus"
                       v-if="scope.$index === smallBoardTable.length - 1"
                       @click="handleDetailEdit(scope.row)"></el-button>
-                  
+
                   </template>
                 </el-table-column>
               </el-table></el-tab-pane>

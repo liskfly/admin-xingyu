@@ -42,10 +42,10 @@
       <el-table size="small" :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)" border
         :height="tableHeight" stripe>
         <el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
-        <af-table-column label="工号" prop="employeeName"></af-table-column>
-        <af-table-column label="员工姓名" prop="fullName"></af-table-column>
+        <el-table-column label="工号" prop="employeeName" width="150"></el-table-column>
+        <el-table-column label="员工姓名" prop="fullName" width="150"></el-table-column>
         <el-table-column label="职称" prop="title"></el-table-column>
-        <af-table-column label="手机" prop="mobile"></af-table-column>
+        <af-table-column label="邮件" prop="email"></af-table-column>
         <el-table-column label="角色" prop="OrganizationName" :min-width="170">
           <template slot-scope="scope">
             <el-tag v-for="item in scope.row.RoleName" :key="item" :type="item" effect="plain" size="small">
@@ -53,7 +53,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="最后登录时间" prop="LastLoginTime"></el-table-column>
+        <el-table-column label="最后登录时间" prop="LastLoginTime" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="240" align="center">
           <template slot-scope="scope">
             <el-tooltip content="编辑" placement="top">
@@ -464,6 +464,7 @@ export default {
             employeeName: item.EmployeeName,
             fullName: item.FullName,
             title: item.title,
+            email:item.email,
             OrganizationName: item.OrganizationName,
             OrganizationID: item.OrganizationID,
             RoleName: RoleName ? [RoleName] : [],

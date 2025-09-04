@@ -58,9 +58,14 @@
           </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="120" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleEdit(scope.row)"></el-button>
+                  <el-tooltip content="编辑" placement="top">
+                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleEdit(scope.row)"></el-button>
 
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)"></el-button>
+              </el-tooltip>
+                 <el-tooltip content="删除" placement="top">
+                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)"></el-button>
+              </el-tooltip>
+          
           </template>
         </el-table-column>
       </el-table>

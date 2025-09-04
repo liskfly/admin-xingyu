@@ -51,6 +51,10 @@
             <div class="info-label">生产工单</div>
             <div class="info-value">{{ lineData.OrderName || "" }}</div>
           </div>
+            <div class="info-item">
+            <div class="info-label text-center">面别</div>
+            <div class="info-value text-center">{{ lineData.Side || "" }}</div>
+          </div>
           <div class="info-item">
             <div class="info-label">产品编码</div>
             <div class="info-value">{{ lineData.ProductNO || "" }}</div>
@@ -59,10 +63,7 @@
             <div class="info-label">产品</div>
             <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
           </div>
-          <div class="info-item">
-            <div class="info-label text-center">面别</div>
-            <div class="info-value text-center">{{ lineData.Side || "" }}</div>
-          </div>
+        
           <div class="info-item">
             <div class="info-label">计划开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
@@ -393,7 +394,7 @@ export default {
 
   .info-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 3fr 85px 280px 280px;
+    grid-template-columns: 1fr  85px 1fr 3fr 280px 280px;
     gap: 15px;
   }
 

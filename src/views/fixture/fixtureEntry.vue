@@ -4,8 +4,8 @@
       <div class="mb-2 flex justify-between">
         <el-button type="primary" @click="addOpen" size="medium">添加</el-button>
         <div>
-          <el-input v-model="searchName" style="width: 350px;" clearable placeholder="请输入" @keyup.enter.native="searchData()"
-            @clear="clearData">
+          <el-input v-model="searchName" style="width: 350px" clearable placeholder="请输入"
+            @keyup.enter.native="searchData()" @clear="clearData">
             <template slot="append">
               <el-button type="primary" icon="el-icon-search" @click="searchData()"></el-button>
             </template>
@@ -19,8 +19,7 @@
             <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
           </template>
         </el-table-column>
-        <af-table-column prop="Tool" label="工治具编码" >
-        </af-table-column>
+        <af-table-column prop="Tool" label="工治具编码"> </af-table-column>
         <af-table-column prop="Model" label="工治具类别"> </af-table-column>
         <el-table-column prop="Cell" label="储位" width="100">
         </el-table-column>
@@ -37,7 +36,7 @@
           <template slot-scope="scope">
             <span :class="{ 'text-red': compressDate(scope.row.ExpireDate) }">{{
               scope.row.ExpireDate
-            }}</span>
+              }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="Ud_user" label="操作人" width="125">
@@ -47,14 +46,23 @@
         <!-- <el-table-column prop="Dsc" label="描述"> </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="240" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" :disabled="scope.row.Stts == -1" size="mini"
-              @click="handleEdit(scope.row)"></el-button>
-            <el-button type="warning" icon="el-icon-s-release" :disabled="scope.row.Stts == -1" size="mini"
-              @click="handleScrap(scope.row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" :disabled="scope.row.Stts == -1" size="mini"
-              @click="handleDelete(scope.row)"></el-button>
-            <el-button type="success" icon="el-icon-document" :disabled="scope.row.Stts == -1" size="mini"
-              @click="handleDetail(scope.row)"></el-button>
+            <el-tooltip content="编辑" placement="top">
+              <el-button type="primary" icon="el-icon-edit" :disabled="scope.row.Stts == -1" size="mini"
+                @click="handleEdit(scope.row)">
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="报废" placement="top">
+              <el-button type="warning" icon="el-icon-s-release" :disabled="scope.row.Stts == -1" size="mini"
+                @click="handleScrap(scope.row)"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top"><el-button type="danger" icon="el-icon-delete"
+                :disabled="scope.row.Stts == -1" size="mini" @click="handleDelete(scope.row)">
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="详情" placement="top">
+              <el-button type="success" icon="el-icon-document" :disabled="scope.row.Stts == -1" size="mini"
+                @click="handleDetail(scope.row)"></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -149,7 +157,6 @@
 <script>
 import { moldControl, iDControll } from "@/api/all";
 import { getToken } from "@/utils/auth";
-import { el } from "@fullcalendar/core/internal-common";
 import dayjs from "dayjs";
 export default {
   data() {

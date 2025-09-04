@@ -17,21 +17,21 @@ export default {
                     trigger: 'item',
                     formatter: '{a} <br/>{b}: {c} ({d}%)'
                 },
-                legend: {
-                    bottom: 2,
-                    left: 'center',
-                     itemWidth: 9,
-                    textStyle: {
-                        color: '#ffffff',
-                        fontSize: 15,
-                    }
-                },
+                // legend: {
+                //     bottom: 2,
+                //     left: 'center',
+                //      itemWidth: 9,
+                //     textStyle: {
+                //         color: '#ffffff',
+                //         fontSize: 15,
+                //     }
+                // },
 
                 series: [{
                     name: '不良分布',
                     type: 'pie',
-                    radius: ['15%', '50%'],
-                    center: ['50%', '35%'],
+                    radius: ['30%', '65%'],
+                    center: ['50%', '50%'],
                     roseType: 'radius',
                     // roseType: 'area',
                     itemStyle: {

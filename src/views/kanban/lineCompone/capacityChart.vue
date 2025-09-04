@@ -39,6 +39,7 @@ export default {
 
         xAxis: {
           type: "category",
+          //  type: 'time',
           data: [
             "09:00",
             "10:00",
@@ -62,7 +63,7 @@ export default {
           axisLabel: {
             // color: "#8ac6ff",
             color: "#fff",
-            fontSize: 18,
+            fontSize: 17,
           },
         },
         yAxis: {

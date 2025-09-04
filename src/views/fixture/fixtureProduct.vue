@@ -35,11 +35,16 @@
           <el-table-column prop="Dsc" label="描述"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="120" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini"
+              <el-tooltip content="编辑" placement="top">
+                <el-button type="primary" icon="el-icon-edit" size="mini"
                 @click="handleEdit(scope.$index, scope.row)"></el-button>
-
-              <el-button type="danger" icon="el-icon-delete" size="mini"
+              </el-tooltip>
+              
+                    <el-tooltip content="删除" placement="top">
+                <el-button type="danger" icon="el-icon-delete" size="mini"
                 @click="handleDelete(scope.$index, scope.row)"></el-button>
+              </el-tooltip>
+              
             </template>
           </el-table-column>
         </el-table>
@@ -151,8 +156,8 @@ export default {
             描述: "remark",
           },
           typeMapping: {
-            useage: 'int', // 强制转换为 int 类型
-            productName: 'string', // 强制转换为 string 类型
+            useage: 'int', 
+            productName: 'string',
             toolsMold: 'string',
             remark: 'string'
           }
