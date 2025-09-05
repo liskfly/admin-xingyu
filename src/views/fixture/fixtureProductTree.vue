@@ -361,8 +361,20 @@ export default {
     },
     dataProcess(data) {
       const resultMap = new Map();
-
-      data.forEach((item) => {
+      // let reg=
+      const dataArr=data.map(item=>{
+        let lastIndex =item.PD_model.lastIndexOf('-')
+        if(lastIndex !== -1){
+          return {
+            ...item,
+            PD_model:item.PD_model.substring(0, lastIndex)
+          }
+        }
+        return item
+      })
+      // console.log(dataArr);
+      
+      dataArr.forEach((item) => {
         const { PD_model, PN_Model, Qty, Dsc } = item;
 
         if (!resultMap.has(PD_model)) {
