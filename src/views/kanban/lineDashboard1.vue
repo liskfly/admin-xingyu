@@ -1,7 +1,7 @@
 <template>
   <div class="line-container" ref="container" id="fullDiv5">
     <div class="content-wrapper" ref="content" :style="contentStyle">
-      <lineIndex :isVertical="isVertical"  @changeMsg="changeMsg" :class="isRotate"/>
+      <lineIndex :isVertical="isVertical"/>
     </div>
   </div>
 </template>
@@ -50,11 +50,6 @@ export default {
     }
   },
   methods: {
-    //手动旋转,横屏变竖屏，baseWidth 1920，baseHeight 1080切换为 isVertical=true
-    changeMsg() {
-      this.isVertical = !this.isVertical
-      this.isRotate="transform  rotate-90"
-    },
     checkOrientation() {
       // 判断屏幕方向
       this.isVertical = window.innerHeight > window.innerWidth;

@@ -1,14 +1,8 @@
 <template>
-  <div class="type">
+  <div class="p-2">
     <el-card :body-style="{ padding: '8px' }">
-      <div class="table_header">
+      <div class="mb-1 flex justify-between items-center">
         <div class="flex">
-          <!-- <el-button type="primary" @click="addOpen">添加</el-button>
-          <el-button type="success" @click="downloadFile">下载模板</el-button>
-          <el-upload class="ml-2" :before-upload="handleFileChange" action="dummy-string" :show-file-list="false"
-            accept=".xlsx">
-            <el-button type="warning">导入</el-button>
-          </el-upload> -->
         </div>
         <div>
           <el-input v-model="searchName" clearable placeholder="请输入" @keyup.enter.native="searchData()"
@@ -26,19 +20,11 @@
         )
           " border :height="tableHeight" style="width: 100%" size="mini" ref="operaRecordRef" row-key="PD_modelID"
           :tree-props="{ children: 'children' }">
+          <!-- <el-table-column prop="PD_model" label="产品编号"> </el-table-column> -->
           <el-table-column prop="PD_model" label="产品编号"> </el-table-column>
           <el-table-column prop="PN_Model" label="类型"> </el-table-column>
           <el-table-column prop="Qty" label="消耗量"> </el-table-column>
           <el-table-column prop="Dsc" label="描述"> </el-table-column>
-          <!-- <el-table-column fixed="right" label="操作" width="120" align="center">
-            <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini"
-                @click="handleEdit(scope.$index, scope.row)"></el-button>
-
-              <el-button type="danger" icon="el-icon-delete" size="mini"
-                @click="handleDelete(scope.$index, scope.row)"></el-button>
-            </template>
-          </el-table-column> -->
         </el-table>
       </div>
       <div class="block" style="margin-top: 8px">
@@ -48,29 +34,6 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="titleType" :visible.sync="dialogVisible">
-      <el-form :model="form" ref="form" label-width="80px">
-        <el-form-item label="产品编号" prop="productName">
-          <el-input v-model="form.productName"></el-input>
-        </el-form-item>
-        <el-form-item label="类型" prop="toolsMold">
-          <el-select v-model="form.toolsMold" filterable placeholder="治具类型">
-            <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
-              :value="item.ToolsMold"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="消耗量" prop="useage">
-          <el-input v-model.number="form.useage"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="remark">
-          <el-input type="textarea" v-model="form.remark"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addCancel()">取 消</el-button>
-        <el-button type="primary" @click="onSubmit()">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -137,75 +100,6 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
-    async handleFileChange(file) {
-      try {
-        const data = await importExcelToJSON(file, {
-          hasHeader: true,
-          headerMapping: {
-            产品编码: "productName",
-            类型: "toolsMold",
-            消耗量: "useage",
-            描述: "remark",
-          },
-          typeMapping: {
-            useage: "int", // 强制转换为 int 类型
-            productName: "string", // 强制转换为 string 类型
-            toolsMold: "string",
-            remark: "string",
-          },
-        });
-        console.log("解析后的数据:", data);
-        XY_WMS_Tools_SpecImportControl(data).then((res) => {
-          if (res.Status == "OK") {
-            this.$notify({
-              title: "成功",
-              message: "数据导入成功",
-              type: "success",
-            });
-            this.getIDdata();
-          } else {
-            this.$notify({
-              title: "错误",
-              message: res.Message,
-              type: "error",
-            });
-          }
-        });
-        // 处理数据...
-      } catch (error) {
-        console.error("文件解析失败:", error);
-      }
-    },
-    downloadFile() {
-      window.open(
-        "http://172.20.99.21:5998/temp/产品消耗-导入模板.xlsx",
-        "_blank"
-      );
-    },
-    deducedClick() {
-      exportTableToExcel({
-        tableRef: this.$refs.operaRecordRef,
-        fetchAllData: this.fetchAllUsers,
-        fileName: `产品消耗_${dayjs().format("YYYYMMDDHHmmss")}`,
-        styles: {
-          headerBgColor: "", // 灰色表头
-          headerFont: {
-            color: { argb: "" }, // 红色文字
-            bold: true,
-            size: 14,
-          }, // 白色文字
-          cell: { numFmt: "@" }, // 强制文本格式
-        },
-      });
-    },
-    async fetchAllUsers() {
-      let data1 = await specControl(this.getAllText).then(({ data }) => {
-        // console.log(res);
-
-        return data.DataList;
-      });
-      return data1;
-    },
     getData() {
       moldControl(this.getText).then((res) => {
         this.typeList = res.data.DataList;
@@ -222,7 +116,7 @@ export default {
               return a.PD_model - b.PD_model;
             });
             this.tableData1 = this.tableData
-            console.log(this.tableData1);
+            // console.log(this.tableData1);
             
           }
           if (
@@ -267,98 +161,6 @@ export default {
         this.tableData1 = this.table1(this.searchName);
       }
     },
-    addOpen() {
-      this.getData();
-      //  this.$refs.form.resetFields()
-      this.form.productName = "";
-      this.form.useage = "";
-      this.form.toolsMold = "";
-      this.form.remark = "";
-      this.form.operationType = "I";
-      this.titleType = "添加";
-      this.dialogVisible = true;
-    },
-    addCancel() {
-      this.$refs.form.resetFields();
-      this.dialogVisible = false;
-      // this.$refs.form.resetFields();
-    },
-    handleEdit(index, row) {
-      this.getData();
-      this.form.operationType = "U";
-      this.form.productName = row.PD_model;
-      this.form.useage = row.Qty;
-      this.form.toolsMold = row.PN_Model;
-      this.form.remark = row.Dsc;
-      this.titleType = "修改";
-      this.dialogVisible = true;
-    },
-    handleDelete(index, row) {
-      this.$confirm("确定删除", "确认操作", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.startLoading();
-          specControl({
-            toolsMold: row.PN_Model,
-            remark: row.Dsc,
-            productName: row.PD_model,
-            useage: row.Qty,
-            operationType: "D",
-          }).then(({ data }) => {
-            this.endLoading();
-            if (data.Status == "OK") {
-              //  this.currentPage = this.currentPage > 1 ? this.currentPage - 1 : 1;
-              this.getIDdata();
-              // this.dialogVisible = false;
-              this.$message({
-                type: "success",
-                message: `删除成功!`,
-              });
-            } else {
-              this.$alert(data.Message, "错误信息", {
-                confirmButtonText: "确定",
-              });
-            }
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-    onSubmit() {
-      this.$refs.form.validate((valid) => (this.itemPass1 = valid));
-      if (this.itemPass1) {
-        specControl(this.form).then(({ data }) => {
-          if (data.Status == "OK") {
-            this.$refs.form.resetFields();
-            this.dialogVisible = false;
-            this.$message({
-              type: "success",
-              message: `${this.titleType}成功!`,
-            });
-            this.getIDdata();
-          } else {
-            this.$message({
-              type: "error",
-              message: `${this.titleType}添加失败!`,
-            });
-            this.$alert(data.Message, "错误信息", {
-              confirmButtonText: "确定",
-            });
-          }
-        });
-      } else {
-        this.$alert("添加失败,请完成必填项", "错误信息", {
-          confirmButtonText: "确定",
-        });
-      }
-    },
     dataProcess(data) {
       const resultMap = new Map();
       // let reg=
@@ -396,6 +198,7 @@ export default {
         if (existingChildIndex === -1) {
           // 添加新的子项
           group.children.push({
+            // PD_model,
             PN_Model,
             Qty,
             Dsc,
@@ -408,7 +211,6 @@ export default {
     },
     handleSizeChange(value) {
       this.pageSize = value;
-      console.log(this.pageSize);
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
@@ -436,28 +238,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.type {
-  padding: 8px;
 
-  .initBox {
-    width: 500px;
-  }
-
-  .table_header {
-    padding-bottom: 8px;
-    display: flex;
-    // gap: 30px;
-    justify-content: space-between;
-    align-items: center;
-
-    .input_box {
-      width: 400px;
-    }
-  }
-
-  .btn {
-    display: flex;
-    justify-content: flex-end;
-  }
-}
 </style>
