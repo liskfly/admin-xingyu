@@ -1,18 +1,16 @@
 <template>
   <div class="puzzles p-2">
     <el-card :body-style="{ padding: '8px' }">
-      <el-form :inline="true" size="medium" @submit.native.prevent>
+      <el-form :inline="true" class="flex justify-between" size="medium" @submit.native.prevent>
         <el-form-item>
           <el-button type="primary" @click="openAdd">新增</el-button>
         </el-form-item>
         <el-form-item>
-          <el-input
-            placeholder="请输入料号"
-            clearable
-            v-model="getForm.SearchModel.ProductName"
-            class="input-with-select"
-            @keyup.enter.native="getData"
-          >
+          <el-input v-model="getForm.SearchModel.ProductName" clearable placeholder="请输入" @keyup.enter.native="getData"
+            style="width: 350px">
+            <template slot="append">
+              <el-button type="primary" icon="el-icon-search" @click="getData"></el-button>
+            </template>
           </el-input>
         </el-form-item>
       </el-form>
