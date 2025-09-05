@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full ">
+  <div class="w-full h-full " :class="is">
     <div class="flex flex-col w-full">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" :color="['#40a0ffb8']" />
@@ -41,7 +41,7 @@
           class="text-white flex justify-end timetext"
           style="font-size: 24px"
         >
-        <span @click="rotateClick">旋转</span>
+        <!-- <span @click="rotateClick">旋转</span> -->
           <span class="pr-5">{{ currentTime }}</span>
         </div>
       </div>
@@ -273,7 +273,7 @@ export default {
       countdownInterval: null,
       rateHeight: 300,
       barHeight: 370,
-      // isRotate:""
+      isRotate:""
     };
   },
   watch: {
