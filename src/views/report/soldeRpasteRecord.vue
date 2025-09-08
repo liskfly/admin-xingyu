@@ -40,7 +40,7 @@
       </el-form>
       <!-- <div class="table"> -->
       <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        " :height="tableHeight" :header-cell-style="heardStyle" border stripe>
+        " :height="tableHeight" :header-cell-style="heardStyle" border stripe size="mini">
         <el-table-column label="序号" width="60" align="center">
           <template slot-scope="scope">
             <div>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</div>
@@ -56,9 +56,14 @@
         </el-table-column>
         <el-table-column prop="McID" label="设备ID" width="100">
         </el-table-column>
-        <el-table-column prop="OperatorID" label="操作人"> </el-table-column>
-        <el-table-column prop="Timestamp" label="时间" width="180">
+         <el-table-column prop="uplinedate" label="上线时间" width="150">
         </el-table-column>
+        <el-table-column prop="downlinedate" label="下线时间" width="150">
+        </el-table-column>
+        <el-table-column prop="OperatorID" label="操作人" width="100"> </el-table-column>
+        <el-table-column prop="Timestamp" label="时间" width="150">
+        </el-table-column>
+       
       </el-table>
       <div class="block" style="margin-top: 8px">
         <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"

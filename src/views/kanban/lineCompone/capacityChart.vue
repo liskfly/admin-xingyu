@@ -183,6 +183,13 @@ export default {
       // console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
       GetCapacity({ Line: this.Line }).then(res => {
         if (res.Success) {
+           let data = res.Data
+          if(data.length<12){
+            let toAdd = 12 - data.length;
+            for(let i=0;i<toAdd;i++){
+              data.push({HourOfDay:"",NumBlocks:0})
+            }
+          }
           this.option.xAxis.data = res.Data.slice(-12).map(item => item.HourOfDay);
           this.option.series[0].data = res.Data.slice(-12).map(item => ({
             value: item.NumBlocks,
