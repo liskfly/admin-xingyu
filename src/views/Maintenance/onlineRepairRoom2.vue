@@ -23,6 +23,7 @@
                 <af-table-column prop="baddata_no" label="报修单号" fixed="left"></af-table-column>
                 <af-table-column prop="baddata_pcbid" label="产品SN"></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号"></af-table-column>
+                  <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
                 <af-table-column prop="productname" label="产品编码"></af-table-column>
                 <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
                 <el-table-column prop="baddata_productdsc" label="产品描述" width="120" show-overflow-tooltip></el-table-column>
@@ -79,58 +80,40 @@
         <el-dialog :title="'维修：' + repairForm.baddatadetail_pcbid" :visible.sync="repairVisible" width="75%"
             @close="repairCancel()">
             <el-form :model="repairForm" ref="repairFormRef" label-width="auto" :inline="true">
-                <!-- <el-form-item label="产品SN" prop="containerName">
-                    <el-input v-model="repairForm.containerName" disabled placeholder="请输入产品SN"
-                        style="width: 270px"></el-input>
-                </el-form-item>
+             
                 <el-row :gutter="20">
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="工单号" prop="mfgordername">
-                            <el-input v-model="repairForm.mfgordername" disabled readonly
-                                style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="repairForm.productname" disabled readonly
-                                style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品名称" prop="productvalue">
-                            <el-input v-model="repairForm.productvalue" disabled readonly
-                                style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row> -->
-                <el-row :gutter="20">
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品SN" prop="containerName">
+                        <el-form-item label="产品SN" prop="containerName" class="mb-2">
                             <el-input v-model="repairForm.containerName" disabled style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="工单号" prop="mfgordername">
+                        <el-form-item label="工单号" prop="mfgordername" class="mb-2">
                             <el-input v-model="repairForm.mfgordername" disabled readonly
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="repairForm.productname" disabled readonly
+                      <el-col :span="8" :offset="0">
+                        <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
+                            <el-input v-model="repairForm.baddata_produtside" disabled readonly
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-
+                     <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname" class="mb-2">
+                            <el-input v-model="repairForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="产品名称" prop="baddata_productname">
+                        <el-form-item label="产品名称" prop="baddata_productname" class="mb-2">
                             <el-input v-model="repairForm.baddata_productname" disabled style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="16" :offset="0">
-                        <el-form-item label="产品描述" prop="baddata_productdsc">
+                        <el-form-item label="产品描述" prop="baddata_productdsc" class="mb-2">
                             <el-input v-model="repairForm.baddata_productdsc" disabled style="width:645px"></el-input>
                         </el-form-item>
                     </el-col>
@@ -162,31 +145,36 @@
                 
                 <el-row :gutter="20">
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="产品SN" prop="containerName">
+                        <el-form-item label="产品SN" prop="containerName" class="mb-2">
                             <el-input v-model="scrapForm.containerName" disabled style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="工单号" prop="mfgordername">
+                        <el-form-item label="工单号" prop="mfgordername" class="mb-2">
                             <el-input v-model="scrapForm.mfgordername" disabled readonly
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8" :offset="0">
-                        <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="scrapForm.productname" disabled readonly style="width: 270px"></el-input>
+                          <el-col :span="8" :offset="0">
+                        <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
+                            <el-input v-model="scrapForm.baddata_produtside" disabled readonly
+                                style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-
+                      <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname" class="mb-2">
+                            <el-input v-model="scrapForm.productname" disabled readonly style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="产品名称" prop="baddata_productname">
+                        <el-form-item label="产品名称" prop="baddata_productname" class="mb-2">
                             <el-input v-model="scrapForm.baddata_productname" disabled style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="16" :offset="0">
-                        <el-form-item label="产品描述" prop="baddata_productdsc">
+                        <el-form-item label="产品描述" prop="baddata_productdsc" class="mb-2">
                             <el-input v-model="scrapForm.baddata_productdsc" disabled style="width:645px"></el-input>
                         </el-form-item>
                     </el-col>
@@ -277,6 +265,9 @@ export default {
                 mfgordername: "",
                 productname: "",
                 productvalue: "",
+                baddata_productname:"",
+                baddata_productdsc:"",
+                baddata_produtside:"",
                 badphenomena_name: "",
                 badphenomena_value: "",
                 baddatadetail_item: "",
@@ -302,6 +293,7 @@ export default {
                 badphenomena_value: "",
                 baddatadetail_item: "",
                 remark: "",
+                baddata_produtside:""
             },
             repairVisible: false,
         };
@@ -369,12 +361,14 @@ export default {
             this.repairForm = {
                 baddatadetail_pcbid: "",
                 containerName: "",
+                side:"",
                 mfgordername: "",
                 productname: "",
                 productvalue: "",
                 badphenomena_name: "",
                 badphenomena_value: "",
                 baddatadetail_item: "",
+                baddata_produtside:"",
                 remark: "",
                 productid: [],
             };
@@ -387,6 +381,7 @@ export default {
             this.repairForm.productvalue = row.productvalue;
             this.repairForm.baddata_productname = row.baddata_productname;
             this.repairForm.baddata_productdsc = row.baddata_productdsc;
+             this.repairForm.baddata_produtside=row.baddata_produtside
             // this.repairForm.badphenomena_name = row.badphenomena_name;
             // this.repairForm.badphenomena_value = row.badphenomena_value;
             // this.repairForm.baddatadetail_item = row.baddatadetail_item;
@@ -506,22 +501,7 @@ export default {
                     });
 
             }
-            // UpdateXYL_BadProductInformation(data).then((res) => {
-            //     if (res.Success) {
-            //         this.$notify({
-            //             title: "提示信息",
-            //             message: res.Msg,
-            //             type: "success",
-            //         });
-            //         this.repairCancel();
-            //         this.getData();
-            //     } else {
-            //         this.$notify.error({
-            //             title: "提示信息",
-            //             message: res.Msg,
-            //         });
-            //     }
-            // });
+       
         },
          UpdateBadProductInformation(data) {
             UpdateXYL_BadProductInformation(data).then((res) => {
@@ -550,6 +530,7 @@ export default {
             this.scrapForm.productvalue = row.productvalue;
             this.scrapForm.baddata_productname = row.baddata_productname;
             this.scrapForm.baddata_productdsc = row.baddata_productdsc
+              this.scrapForm.baddata_produtside=row.baddata_produtside
             QueryXYL_BadProductInformationFromByNo({
                 baddatadetail_no: row.baddata_no,
             }).then((res) => {
@@ -571,6 +552,7 @@ export default {
                 badphenomena_value: "",
                 baddatadetail_item: "",
                 remark: "",
+                baddata_produtside:""
             };
         },
         scrapSubmit() {

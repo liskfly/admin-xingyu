@@ -10,7 +10,7 @@
 import lineIndex from "./lineCompone/index.vue";
 export default {
   components: {
-    lineIndex,
+    lineIndex
   },
   data() {
     return {
@@ -20,7 +20,6 @@ export default {
       isVertical: false,
       windowWidth: 0,
       windowHeight: 0,
-       isRotate:""
     }
   },
   computed: {

@@ -40,6 +40,7 @@
         </af-table-column>
         <af-table-column prop="baddata_pcbid" label="产品SN" />
         <af-table-column prop="mfgordername" label="工单号"></af-table-column>
+          <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
         <af-table-column prop="productname" label="产品编码"></af-table-column>
        <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
         <el-table-column prop="baddata_productdsc" label="产品描述" width="120" show-overflow-tooltip></el-table-column>
@@ -92,30 +93,36 @@
       <el-form :model="replaceForm" ref="repairFormRef" label-width="auto" :inline="true">
         <el-row :gutter="20">
           <el-col :span="8" :offset="0">
-            <el-form-item label="产品SN" prop="containerName">
+            <el-form-item label="产品SN" prop="containerName" class="mb-2">
               <el-input v-model="replaceForm.containerName" disabled style="width: 270px"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="0">
-            <el-form-item label="工单号" prop="mfgordername">
+            <el-form-item label="工单号" prop="mfgordername" class="mb-2">
               <el-input v-model="replaceForm.mfgordername" disabled readonly style="width: 270px"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8" :offset="0">
-            <el-form-item label="产品编码" prop="productname">
+            <el-col :span="8" :offset="0">
+                        <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
+                            <el-input v-model="replaceForm.baddata_produtside" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
+         
+        </el-row>
+        <el-row :gutter="20">
+           <el-col :span="8" :offset="0">
+            <el-form-item label="产品编码" prop="productname" class="mb-2">
               <el-input v-model="replaceForm.productname" disabled readonly style="width: 270px"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
-
           <el-col :span="8" :offset="0">
-            <el-form-item label="产品名称" prop="baddata_productname">
+            <el-form-item label="产品名称" prop="baddata_productname" class="mb-2">
               <el-input v-model="replaceForm.baddata_productname" disabled style="width: 270px"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="16" :offset="0">
-            <el-form-item label="产品描述" prop="baddata_productdsc">
+            <el-form-item label="产品描述" prop="baddata_productdsc" class="mb-2">
               <el-input v-model="replaceForm.baddata_productdsc" disabled style="width:645px"></el-input>
             </el-form-item>
           </el-col>
@@ -194,6 +201,7 @@ export default {
         mfgordername: "",
         productname: "",
         productvalue: "",
+         baddata_produtside:"",
         tableData: [],
       },
       replaceVisible: false,
@@ -255,6 +263,7 @@ export default {
         this.replaceForm.productvalue = row.productvalue;
         this.replaceForm.baddata_productname = row.baddata_productname;
         this.replaceForm.baddata_productdsc = row.baddata_productdsc;
+        this.replaceForm.baddata_produtside=row.baddata_produtside
         QueryXYL_BadProductInformationRepairMaterial({ repairpro_repairno: row.repair_no }).then(res => {
           this.replaceForm.tableData = res.Data
           this.replaceVisible = true

@@ -42,6 +42,8 @@
                 </af-table-column>
                 <af-table-column prop="baddata_pcbid" label="产品SN"></af-table-column>
                 <af-table-column prop="mfgordername" label="工单号"></af-table-column>
+                 <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
+                
                 <af-table-column prop="productname" label="产品编码"></af-table-column>
                 <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
                 <el-table-column prop="baddata_productdsc" label="产品描述" width="120"
@@ -61,7 +63,7 @@
                             }}</el-tag>
                         <el-tag effect="plain" v-else-if="row.baddata_stts == '未维修'" type="info">{{ row.baddata_stts
                             }}</el-tag>
-                        <!-- <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> -->
+                         <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag> 
                     </template>
                 </el-table-column>
                 <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
@@ -75,18 +77,6 @@
 
                 <af-table-column prop="baddata_uuser" label="维修人"></af-table-column>
                 <el-table-column prop="baddata_udatetime" label="维修时间" width="150"></el-table-column>
-                <!--<af-table-column label="操作" fixed="right" width="200" align="center">
-                    <template v-slot="{ row }">
-                        <el-button type="primary" size="mini" @click="handleEdit(row)"
-                            :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '完成报废' || row.baddata_stts == '完成维修'">维修</el-button>
-                        <el-button type="info" size="mini" @click="handleScrap(row)"
-                            :disabled="row.baddata_stts == '报废审核' || row.baddata_stts == '完成报废' || row.baddata_stts == '完成维修'">报废</el-button>
-                        <el-button type="danger" size="mini"
-                            :disabled="row.baddata_stts != '未维修' || row.baddata_stts == '完成维修'"
-                            icon="el-icon-delete" @click="handleDelete(row)"></el-button>
-                           
-                    </template>
-                </af-table-column> -->
 
             </el-table>
             <div class="block" style="margin-top: 8px">
@@ -104,33 +94,39 @@
 
                 <el-row :gutter="20">
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="产品SN" prop="containerName">
+                        <el-form-item label="产品SN" prop="containerName" class="mb-2">
                             <el-input v-model="replaceForm.containerName" disabled style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="工单号" prop="mfgordername">
+                        <el-form-item label="工单号" prop="mfgordername" class="mb-2">
                             <el-input v-model="replaceForm.mfgordername" disabled readonly
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
+                  
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="产品编码" prop="productname">
-                            <el-input v-model="replaceForm.productname" disabled readonly
+                        <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
+                            <el-input v-model="replaceForm.baddata_produtside" disabled readonly
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-
+                      <el-col :span="8" :offset="0">
+                        <el-form-item label="产品编码" prop="productname" class="mb-2">
+                            <el-input v-model="replaceForm.productname" disabled readonly
+                                style="width: 270px"></el-input>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="8" :offset="0">
-                        <el-form-item label="产品名称" prop="baddata_productname">
+                        <el-form-item label="产品名称" prop="baddata_productname" class="mb-2">
                             <el-input v-model="replaceForm.baddata_productname" disabled
                                 style="width: 270px"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="16" :offset="0">
-                        <el-form-item label="产品描述" prop="baddata_productdsc">
+                        <el-form-item label="产品描述" prop="baddata_productdsc" class="mb-2">
                             <el-input v-model="replaceForm.baddata_productdsc" disabled style="width:645px"></el-input>
                         </el-form-item>
                     </el-col>
@@ -198,7 +194,7 @@ export default {
                 badphenomena_name: "",
                 badphenomena_value: "",
                 baddatadetail_item: "",
-
+                // size:"",
                 remark: "",
                 productid: [],
                 tableData: [],
@@ -229,6 +225,9 @@ export default {
                 mfgordername: "",
                 productname: "",
                 productvalue: "",
+                baddata_productname:"",
+                baddata_productdsc:"",
+                baddata_produtside:"",
                 tableData: [],
             },
             replaceVisible: false
@@ -291,9 +290,9 @@ export default {
                 this.replaceForm.containerName = row.baddata_pcbid;
                 this.replaceForm.mfgordername = row.mfgordername;
                 this.replaceForm.productname = row.productname;
-                this.replaceForm.productvalue = row.productvalue;
                 this.replaceForm.baddata_productname = row.baddata_productname;
                 this.replaceForm.baddata_productdsc = row.baddata_productdsc;
+                this.repairForm.baddata_produtside=row.baddata_produtside
                 QueryXYL_BadProductInformationFromByNo({
                     baddatadetail_no: row.baddata_no,
                 }).then(res => {

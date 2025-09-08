@@ -10,11 +10,22 @@
                 </div>
             </div>
             <div>
-                <el-form ref="formRef" :model="form" label-width="auto" class="inbound" @submit.native.prevent>
-                    <el-form-item label="PCB条码" prop="baddata_pcbid" class="mb-2">
-                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入PCB条码" style="width: 500px"
+                <el-form ref="formRef" :model="form" label-width="auto" class="inbound" :inline="true"
+                    @submit.native.prevent>
+                    <el-form-item label="产品SN" prop="baddata_pcbid" class="mb-2">
+                        <el-input v-model="form.baddata_pcbid" ref="pcbRef" placeholder="请输入产品SN" style="width: 640px"
                             @keyup.enter.native="changeInput"></el-input>
                     </el-form-item>
+                    <el-form-item label="面别" prop="Side" class="mb-2">
+                        <el-select v-model="form.Side">
+                            <el-option label="TOP" value="TOP">
+                            </el-option>
+                            <el-option label="BOT" value="BOT">
+                            </el-option>
+                        </el-select>
+
+                    </el-form-item>
+
 
                 </el-form>
                 <el-table :data="form.badrecodeList" border :style="{ width: '100%' }" :height="tableHeight">
@@ -94,6 +105,7 @@ export default {
                 baddata_line: "",
                 baddata_equipment: "",
                 baddata_pcbid: "",
+                Side:"TOP",
                 badrecodeList: [
                     {
                         baddata_item: "",
@@ -137,7 +149,7 @@ export default {
     },
     beforeMount() {
         this.getScreenHeight();
-      this.initFormData()
+        this.initFormData()
     },
     mounted() {
         window.addEventListener("resize", this.getScreenHeight);
@@ -151,26 +163,26 @@ export default {
     },
     methods: {
         initFormData() {
-        const line = localStorage.getItem("LINE") || "请选择线体";
-        const equipment = localStorage.getItem("EQUIPMENT") || "请选择设备";
-        
-        // 使用对象展开运算符统一设置表单值
-        this.form = {
-            ...this.form,
-            baddata_line: line,
-            baddata_equipment: equipment
-        };
-        
-        this.changeForm = {
-            line,
-            equipment
-        };
-        
-        this.getBadCodeForm.badphenomena_fathertype = this.getEquipmentPrefix(equipment);
-    },
-    getEquipmentPrefix(equipment) {
-        return equipment.split('-')[0] || "";
-    },
+            const line = localStorage.getItem("LINE") || "请选择线体";
+            const equipment = localStorage.getItem("EQUIPMENT") || "请选择设备";
+
+            // 使用对象展开运算符统一设置表单值
+            this.form = {
+                ...this.form,
+                baddata_line: line,
+                baddata_equipment: equipment
+            };
+
+            this.changeForm = {
+                line,
+                equipment
+            };
+
+            this.getBadCodeForm.badphenomena_fathertype = this.getEquipmentPrefix(equipment);
+        },
+        getEquipmentPrefix(equipment) {
+            return equipment.split('-')[0] || "";
+        },
         getBadCode() {
             QueryBadCodeFromType(this.getBadCodeForm).then((res) => {
                 this.badList = res.Data;

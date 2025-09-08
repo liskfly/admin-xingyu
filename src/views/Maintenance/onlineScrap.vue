@@ -5,11 +5,12 @@
         <!-- <el-input v-model="input" placeholder="请输入" style="width: 400px" />
         <el-button type="primary">查询</el-button> -->
         <el-input v-model="getForm.SearchModel.pcbid" placeholder="请输入SN" style="width: 350px"
-                        @keyup.enter.native="getSearchData" clearable @clear="clearData">
-                        <el-button slot="append" icon="el-icon-search" @click="getSearchData"></el-button>
-                    </el-input>
+          @keyup.enter.native="getSearchData" clearable @clear="clearData">
+          <el-button slot="append" icon="el-icon-search" @click="getSearchData"></el-button>
+        </el-input>
       </div>
-      <el-table :data="tableData" :style="{ width: '100%' }" border :height="tableHeight" stripe size="small" tooltip-effect="light">
+      <el-table :data="tableData" :style="{ width: '100%' }" border :height="tableHeight" stripe size="small"
+        tooltip-effect="light">
         <el-table-column type="index" width="50" label="序号" align="center">
           <template v-slot="{ $index }">
             {{ $index + 1 + (getForm.PageIndex - 1) * getForm.PageSize }}
@@ -19,10 +20,10 @@
         <af-table-column prop="baddata_no" label="报废审核号" />
         <af-table-column prop="baddata_pcbid" label="产品SN" />
         <af-table-column prop="mfgordername" label="工单号" />
+        <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
         <af-table-column prop="productname" label="产品码" />
-         <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
-                <el-table-column prop="baddata_productdsc" label="产品描述" 
-                    show-overflow-tooltip></el-table-column>
+        <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
+        <el-table-column prop="baddata_productdsc" label="产品描述" show-overflow-tooltip></el-table-column>
 
         <el-table-column label="操作" width="100" align="center">
           <template v-slot="{ row }">
@@ -38,28 +39,66 @@
       </div>
     </el-card>
     <el-dialog :title="'报废审核：' + titleNum" :visible.sync="dialogVisible" width="75%" @close="addCancel()">
-      <el-table :data="tableData1" border style="width: 100%" height="350">
-        <el-table-column type="index" width="50" label="序号">
-        </el-table-column>
+      <el-form :model="replaceForm" ref="repairFormRef" label-width="auto" :inline="true">
 
-        <el-table-column prop="baddatadetail_item" label="不良位号">
-        </el-table-column>
+        <el-row :gutter="20">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="产品SN" prop="baddata_pcbid" class="mb-2">
+              <el-input v-model="replaceForm.baddata_pcbid" disabled style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="0">
+            <el-form-item label="工单号" prop="mfgordername" class="mb-2">
+              <el-input v-model="replaceForm.mfgordername" disabled readonly style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
 
-        <el-table-column prop="badphenomena_value" label="不良现象">
-        </el-table-column>
-        <el-table-column prop="baddatadetail_remark" label="备注">
-        </el-table-column>
-      </el-table>
-      <el-form label-width="auto" class="mt-2">
-        <el-form-item label="报废原因" class="mb-2">
-          <el-input v-model="remark" width="100%"></el-input>
-        </el-form-item>
+          <el-col :span="8" :offset="0">
+            <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
+              <el-input v-model="replaceForm.baddata_produtside" disabled readonly style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8" :offset="0">
+            <el-form-item label="产品编码" prop="productname" class="mb-2">
+              <el-input v-model="replaceForm.productname" disabled readonly style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="0">
+            <el-form-item label="产品名称" prop="baddata_productname" class="mb-2">
+              <el-input v-model="replaceForm.baddata_productname" disabled style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16" :offset="0">
+            <el-form-item label="产品描述" prop="baddata_productdsc" class="mb-2">
+              <el-input v-model="replaceForm.baddata_productdsc" disabled style="width:645px"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
+        <el-table :data="tableData1" border style="width: 100%" height="300" size="small">
+          <el-table-column type="index" width="50" label="序号">
+          </el-table-column>
 
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="onSubmit('N')">不通过</el-button>
-        <el-button type="primary" @click="onSubmit('Y')">通过</el-button>
-      </span>
+          <el-table-column prop="baddatadetail_item" label="不良位号">
+          </el-table-column>
+
+          <el-table-column prop="badphenomena_value" label="不良现象">
+          </el-table-column>
+          <el-table-column prop="baddatadetail_remark" label="备注">
+          </el-table-column>
+        </el-table>
+        <el-form label-width="auto" class="mt-2">
+          <el-form-item label="备注" class="mb-2">
+            <el-input v-model="remark" width="100%"></el-input>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="onSubmit('N')">不通过</el-button>
+          <el-button type="primary" @click="onSubmit('Y')">通过</el-button>
+        </span>
     </el-dialog>
   </div>
 </template>
@@ -105,6 +144,17 @@ export default {
       },
       titleNum: "",
       remark: "",
+      replaceForm: {
+                baddatadetail_pcbid: "",
+                containerName: "",
+                mfgordername: "",
+                productname: "",
+                productvalue: "",
+                baddata_productname:"",
+                baddata_productdsc:"",
+                baddata_produtside:"",
+                // tableData: [],
+            },
     };
   },
   beforeMount() {
@@ -134,25 +184,21 @@ export default {
 
       });
     },
-       getSearchData() {
-            this.getForm.PageIndex = 1;
-            this.getData();
-        },
-        clearData() {
-            this.getForm.PageIndex = 1;
-            this.getData();
-        },
+    getSearchData() {
+      this.getForm.PageIndex = 1;
+      this.getData();
+    },
+    clearData() {
+      this.getForm.PageIndex = 1;
+      this.getData();
+    },
     handleEdit(row) {
-
-
+      this.replaceForm={...row}
       this.titleNum = row.baddata_no;
       this.confirmForm.baddata_pcbid = row.baddata_no;
       QueryXYL_BadProductInformationFromByNo({ baddatadetail_no: row.baddata_no }).then((res) => {
-  
-        
-        this.tableData1 = res.Data;
-        // console.log(res.Data);
 
+        this.tableData1 = res.Data;
         this.dialogVisible = true;
       });
     },
@@ -170,7 +216,7 @@ export default {
         UserNo: getToken(),
       };
       // console.log(data);
-      
+
       UpdateXYL_BadProductInformationScrapRevd(data).then((res) => {
         if (res.Success) {
           this.$notify({
@@ -208,4 +254,21 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: calc(100% - 30px);
+  max-width: calc(100% - 30px);
+}
+
+::v-deep .el-dialog .el-dialog__body {
+  flex: 1;
+  overflow: auto;
+}
+</style>

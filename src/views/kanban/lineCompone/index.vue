@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full " :class="is">
+  <div class="w-full h-full " >
     <div class="flex flex-col w-full">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" :color="['#40a0ffb8']" />
