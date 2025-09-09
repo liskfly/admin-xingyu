@@ -1,6 +1,6 @@
 <template>
   <div class="flex" id="box">
-    <dv-scroll-board :config="config" style="width: 100%; height: 440px" />
+    <dv-scroll-board :config="config" style="width: 100%; height: 400px" />
   </div>
 </template>
 

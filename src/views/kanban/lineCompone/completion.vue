@@ -42,7 +42,7 @@ export default {
               borderWidth: 2,
             },
             label: {
-              formatter: "{b}:\n{c}\n({d}%)",
+              formatter: "{b}:{c}\n({d}%)",
               color: "#e6f7ff",
               fontSize: 18,
               fontWeight: "bold",

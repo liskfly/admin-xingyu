@@ -30,12 +30,12 @@
     <div class="data">
       <el-row :gutter="20">
         <el-col
-          :span="6"
+          :span="8"
           class="item"
           v-for="(item, index) in missingList"
           :key="index"
         >
-          <div>{{ item.SerialNumber }}</div>
+          <div>{{ item.SerialNumber}}{{ item.StatusCode ? `(${item.StatusCode})`:'' }}</div>
           <el-button
             type="primary"
             size="mini"

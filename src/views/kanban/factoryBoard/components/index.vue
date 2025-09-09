@@ -17,69 +17,72 @@
         </div>
       </div>
       <div class="pt-2">
-        <el-row :gutter="10">
+        <el-row :gutter="5">
+          
+          <el-col :span="5" :offset="0">
+
+            <dv-border-box-12 class="centerh">
+              <div class="header_title">
+                <i class="fa fa-tasks"></i> 周完成率
+              </div>
+              <div>
+                <weekPassRate />
+              </div>
+            </dv-border-box-12>
+          </el-col>
+        
+          <el-col :span="5" :offset="0">
+            <dv-border-box-12 class="centerh">
+              <div class="header_title">
+                <i class="fa fa-check-circle"></i>月完成率
+              </div>
+              <div>
+                <monthPassRate />
+              </div>
+            </dv-border-box-12>
+          </el-col>
             <el-col :span="14" :offset="0">
-                 <dv-border-box-12 class="centerh">
+            <dv-border-box-12 class="centerh">
+              <div class="header_title">
+                <i class="fa fa-check-circle"></i> OEE
+              </div>
+              <div>
+                <oeeChart />
+                <!-- <dayChart /> -->
+              </div>
+            </dv-border-box-12>
+          </el-col>
+        </el-row>
+
+
+
+      </div>
+      <div>
+        <dv-border-box-12 class="centerh1">
           <div class="header_title">
             <i class="fa fa-check-circle"></i> 日生产工单
           </div>
           <div>
-           <dayChart/>
-          </div>
-        </dv-border-box-12>
-            </el-col>
-            <el-col :span="5" :offset="0">
- 
-          <dv-border-box-12 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-tasks"></i> 周完成率
-          </div>
-          <div>
-          <weekPassRate/>
-          </div>
-        </dv-border-box-12>
-            </el-col>
-            <el-col :span="5" :offset="0">
-                 <dv-border-box-12 class="centerh">
-          <div class="header_title">
-            <i class="fa fa-check-circle"></i> 
-          </div>
-          <div>
-           <aoiPassRate/>
-          </div>
-        </dv-border-box-12>
-            </el-col>
-        </el-row>
-        
-        
-       
-      </div>
-      <div>
-          <dv-border-box-12 class="centerh1">
-          <div class="header_title">
-            <i class="fa fa-check-circle"></i> OEE
-          </div>
-          <div>
-           <oeeChart/>
+            <dayChart />
           </div>
         </dv-border-box-12>
       </div>
-      
+
     </div>
   </div>
 </template>
 
 <script>
 import dayChart from "./dayChart.vue";
-import aoiPassRate from "./aoiPassRate.vue";
+import monthPassRate from "./monthPassRate.vue";
 import weekPassRate from "./weekPassRate.vue";
 import oeeChart from "./oeeChart.vue";
 export default {
   components: {
-  weekPassRate,
-  aoiPassRate,
-  dayChart,
-  oeeChart
+    weekPassRate,
+    monthPassRate,
+    dayChart,
+    oeeChart
   },
   data() {
     return {
@@ -215,7 +218,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 15px;
-  height: 460px;
+  height: 480px;
   font-size: 22px;
   font-weight: bolder;
   color: #8ac6ff;
@@ -232,7 +235,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 15px;
-  height: 520px;
+  height: 500px;
   font-size: 22px;
   font-weight: bolder;
   color: #8ac6ff;
@@ -293,7 +296,7 @@ export default {
 
 .custom-select {
   width: 100%;
-  
+
   font-size: 2rem;
   color: #ffffff;
   background-color: transparent;
@@ -337,7 +340,7 @@ export default {
   font-size: 1rem;
   border: none;
   text-align: center;
-  
+
 }
 
 
@@ -346,6 +349,6 @@ export default {
 .custom-select option:checked {
   background-color: #4472cb !important;
   color: #fff !important;
-    border: none;
+  border: none;
 }
 </style>

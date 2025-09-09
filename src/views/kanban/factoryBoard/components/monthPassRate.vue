@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div id="weekRateChart" style="width: 100%; height: 380px"></div>
+    <div id="weekRateChart" style="width: 100%; height: 400px"></div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-// import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi";
+import { GetMonthWeekCompleteList } from "@/api/kanbanApi";
 import dayjs from "dayjs";
 export default {
   // props: ['Line'],
@@ -15,7 +15,7 @@ export default {
       option: {
         tooltip: {
           trigger: "item",
-          formatter: "{a} <br/>{b}: {c}%",
+          formatter: "{a} <br/>{b} {d}%",
         },
         legend: {
           bottom: 10,
@@ -31,8 +31,8 @@ export default {
           {
             name: "完成",
             type: "pie",
-            radius: ["30%", "60%"],
-            center: ["46%", "50%"],
+            radius: ["25%", "50%"],
+            center: ["50%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -40,7 +40,7 @@ export default {
               borderWidth: 2,
             },
             label: {
-              formatter: "{b}:\n {c}%",
+              formatter: "{b}:\n {c} \n({d}%)",
               color: "#e6f7ff",
               fontSize: "18",
               fontWeight: "bold",
@@ -82,6 +82,7 @@ export default {
   },
   mounted() {
     this.initChart();
+    this.getData();
     this.startRefreshing();
   },
   beforeDestroy() {
@@ -92,23 +93,18 @@ export default {
   },
   methods: {
     getData() {
-      // GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then((res) => {
-      //   if (res.Success) {
-      //     this.option.series[0].data = [
-      //       {
-      //         value: res.Data[0].FirstPass_Percent,
-      //         name: "直通",
-      //         itemStyle: { color: "#13c2c2" },
-      //       },
-      //       {
-      //         value: res.Data[0].Badness_Percent,
-      //         name: "不良",
-      //         itemStyle: { color: "#ff7a45" },
-      //       },
-      //     ];
-      //     this.chart.setOption(this.option);
-      //   }
-      // });
+       GetMonthWeekCompleteList({ datetype:"W" }).then(res => {
+                if (res.Success) {
+
+                    this.option.series[0].data =[
+                        { value: res.Data.SumNum, name: '总数',itemStyle: { color: "#3f7af8" } },
+                        { value: res.Data.CompNum, name: '已完成',itemStyle: { color: "#31be60" } },
+                         { value: res.Data.InCompNum, name: '未完成',itemStyle: { color: "#ffc801" } },
+                    ]
+                    this.chart.setOption(this.option);
+                }
+
+            })
     },
     initChart() {
       const chartDom = document.getElementById("weekRateChart");

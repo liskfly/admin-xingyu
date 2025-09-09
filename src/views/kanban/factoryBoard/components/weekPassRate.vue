@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div id="badPassRateChart" style="width: 100%; height: 380px"></div>
+        <div id="badPassRateChart" style="width: 100%; height: 400px"></div>
     </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-// import { GetReport_LineBadnessInfo } from "@/api/kanbanApi"
+import { GetMonthWeekCompleteList } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
     // props: ['Line'],
@@ -15,7 +15,7 @@ export default {
             option: {
                 tooltip: {
                     trigger: 'item',
-                    formatter: '{a} <br/>{b}: {c}%'
+                    formatter: '{a} <br/>{b}: {d}%'
                 },
                 legend: {
                     bottom: 10,
@@ -37,7 +37,7 @@ export default {
                     //     borderRadius: 10
                     // },
                     label: {
-                        formatter: '{b}:\n {c}%',
+                        formatter: '{b}:\n {c}\n ({d}%)',
                         color: '#e6f7ff',
                         fontSize: 18,
                         fontWeight: "bold",
@@ -50,8 +50,9 @@ export default {
                         length2: 5, // 引导线末端长度
                     },
 
-                    data: [{ value: 66.67, name: '总数' },
-                    { value: 33.33, name: '已完成' },
+                    data: [
+                         { value: 100, name: '总数' },
+                        { value: 50, name: '已完成' },
                     ],
                     color: ['#8f6be9', '#06c0d5']
                 }]
@@ -64,20 +65,21 @@ export default {
             Line: "Line1"
         };
     },
-    watch: {
-        // 监听Line属性变化
-        Line: {
-            immediate: true, // 立即触发一次
-            handler() {
-                // console.log(`生产线变更为: ${newLine}`);
-                this.stopRefreshing();
-                this.getData();
-                this.startRefreshing();
-            }
-        }
-    },
+    // watch: {
+    //     // 监听Line属性变化
+    //     Line: {
+    //         immediate: true, // 立即触发一次
+    //         handler() {
+    //             // console.log(`生产线变更为: ${newLine}`);
+    //             this.stopRefreshing();
+    //             this.getData();
+    //             this.startRefreshing();
+    //         }
+    //     }
+    // },
     mounted() {
         this.initChart();
+        this.getData();
         this.startRefreshing();
     },
     beforeDestroy() {
@@ -89,17 +91,17 @@ export default {
     methods: {
         getData() {
 
-            // GetReport_LineBadnessInfo({ Line: this.Line }).then(res => {
-            //     if (res.Success) {
+            GetMonthWeekCompleteList({ datetype:"W" }).then(res => {
+                if (res.Success) {
 
-            //         this.option.series[0].data = res.Data.map(item => ({
-            //             value: item.CodeCount,
-            //             name: item.badphenomena_value
-            //         }));
-            //         this.chart.setOption(this.option);
-            //     }
+                    this.option.series[0].data =[
+                        { value: res.Data.SumNum, name: '总数' },
+                        { value: res.Data.CompNum, name: '已完成' },
+                    ]
+                    this.chart.setOption(this.option);
+                }
 
-            // })
+            })
         },
         initChart() {
             const chartDom = document.getElementById("badPassRateChart");

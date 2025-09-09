@@ -1,7 +1,9 @@
 <template>
   <div class="line-container" ref="container" id="fullDiv5">
     <div class="content-wrapper" ref="content" :style="contentStyle">
-      <lineIndex :isVertical="isVertical"/>
+      <!-- <lineIndex :isVertical="isVertical"/> -->
+      <lineIndex :isVertical="isVertical" @changeMsg="changeMsg" :class="{ 'isRotate': isRotate }" />
+
     </div>
   </div>
 </template>
@@ -20,6 +22,7 @@ export default {
       isVertical: false,
       windowWidth: 0,
       windowHeight: 0,
+      isRotate: false
     }
   },
   computed: {
@@ -49,7 +52,32 @@ export default {
     }
   },
   methods: {
+    changeMsg() {
+      this.isRotate = !this.isRotate
+      // this.isVertical=
+      if (this.isRotate) {
+        this.isVertical = true
+        this.baseWidth = 1080;
+        this.baseHeight = 1920;
+       this.$nextTick(() => {
+          this.calcScaleRatio();
+        });
+      }else{
+        this.isVertical = false
+        this.baseWidth = 1920;
+        this.baseHeight = 1080;
+       this.$nextTick(() => {
+          this.calcScaleRatio();
+        });
+      }
+    },
     checkOrientation() {
+      if (this.isRotate) {
+        this.isVertical = true
+        this.baseWidth = 1080;
+        this.baseHeight = 1920;
+        return
+      }
       // 判断屏幕方向
       this.isVertical = window.innerHeight > window.innerWidth;
 
@@ -86,7 +114,13 @@ export default {
         scaleX = containerWidth / this.baseWidth;
         scaleY = containerWidth / (this.baseProportion * this.baseHeight);
       }
-
+    
+      if(this.isRotate){
+        scaleX=containerHeight / this.baseWidth
+        scaleY=containerHeight / this.baseWidth
+        //  console.log(scaleX*1.64,scaleY*1.75);
+      }
+      // console.log(scaleX,scaleY,containerHeight / this.baseWidth,currentRatio); 
       // 应用缩放变换
       content.style.transform = `scale(${scaleX}, ${scaleY}) translate(-50%, -50%)`;
     },
@@ -147,6 +181,10 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   transform-origin: left top;
-   transition: transform 0.3s ease; 
+  transition: transform 0.3s ease;
+}
+
+.isRotate {
+  transform: rotate(90deg);
 }
 </style>

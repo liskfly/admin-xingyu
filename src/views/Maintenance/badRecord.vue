@@ -138,7 +138,10 @@
                     <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
                     <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
                 </el-table>
-
+                <el-form-item label="不良备注" prop="baddatadetail_remark" class="mt-2">
+              <el-input v-model="replaceForm.baddatadetail_remark" disabled style="width:645px"></el-input>
+            </el-form-item>
+      
             </el-form>
 
             <span slot="footer">
@@ -228,6 +231,7 @@ export default {
                 baddata_productname:"",
                 baddata_productdsc:"",
                 baddata_produtside:"",
+                baddatadetail_remark:"",
                 tableData: [],
             },
             replaceVisible: false
@@ -293,6 +297,7 @@ export default {
                 this.replaceForm.baddata_productname = row.baddata_productname;
                 this.replaceForm.baddata_productdsc = row.baddata_productdsc;
                 this.repairForm.baddata_produtside=row.baddata_produtside
+                this.replaceForm.baddatadetail_remark=row.baddatadetail_remark
                 QueryXYL_BadProductInformationFromByNo({
                     baddatadetail_no: row.baddata_no,
                 }).then(res => {

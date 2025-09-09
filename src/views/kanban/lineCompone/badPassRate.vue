@@ -58,7 +58,6 @@ export default {
             chart: null,
             refreshing: true,
             loading: false,
-            timer: null,
         };
     },
     watch: {

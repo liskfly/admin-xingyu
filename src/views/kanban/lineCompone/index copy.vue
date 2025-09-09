@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full" >
+  <div class="w-full h-full transform rotate-90" >
     <div class="flex flex-col w-full">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" :color="['#40a0ffb8']" />
@@ -38,12 +38,11 @@
         />
 
         <div
-          class="text-white flex justify-end items-center timetext"
+          class="text-white flex justify-end timetext"
           style="font-size: 24px"
         >
-    
+        <!-- <span @click="rotateClick">旋转</span> -->
           <span class="pr-5">{{ currentTime }}</span>
-          <i class="el-icon-refresh" @click="rotateClick"></i>
         </div>
       </div>
 
@@ -107,7 +106,7 @@
         </div>
       </div>
       <div class="flex flex-col" v-if="isVertical">
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
               <i class="fa fa-tasks"></i> 当前工单完成率
@@ -125,7 +124,7 @@
             </div>
           </dv-border-box-13>
         </div>
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
               <i class="fa fa-search"></i> AOI直通率
@@ -166,7 +165,7 @@
       </div>
 
       <div class="flex flex-col" v-if="!isVertical">
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-13 class="centerh">
             <div class="header_title">
               <i class="fa fa-tasks"></i> 当前工单完成率
@@ -200,7 +199,7 @@
             </div>
           </dv-border-box-13>
         </div>
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
               <i class="fa fa-bar-chart"></i> 贴片机单小时产能<span style="color: #F39C12;font-size: 24px;">（12小时）</span>
@@ -324,6 +323,13 @@ export default {
   },
   methods: {
     rotateClick(){
+      // if(this.isRotate!==""){
+      //    this.isRotate=""
+      // }else{
+      //   this.isRotate="rotate-90"
+      // }
+      
+      
       this.$emit('changeMsg')
     },
     updateTime() {
@@ -564,7 +570,7 @@ export default {
 
 .timetext {
   position: absolute;
-  top: 54px;
+  top: 45px;
   right: 10px;
 }
 
