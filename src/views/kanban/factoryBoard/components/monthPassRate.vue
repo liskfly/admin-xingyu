@@ -68,18 +68,6 @@ export default {
       Line: "Line1",
     };
   },
-  watch: {
-    // 监听Line属性变化
-    Line: {
-      immediate: true, // 立即触发一次
-      handler(newLine) {
-        // console.log(`生产线变更为: ${newLine}`);
-        this.stopRefreshing();
-        this.getData();
-        this.startRefreshing();
-      },
-    },
-  },
   mounted() {
     this.initChart();
     this.getData();
@@ -93,7 +81,7 @@ export default {
   },
   methods: {
     getData() {
-       GetMonthWeekCompleteList({ datetype:"W" }).then(res => {
+       GetMonthWeekCompleteList({ datetype:"M" }).then(res => {
                 if (res.Success) {
 
                     this.option.series[0].data =[
@@ -114,10 +102,6 @@ export default {
     startRefreshing() {
       this.stopRefreshing(); // 确保只有一个定时器运行
       this.refreshing = true;
-      // 立即获取一次数据
-      // this.getData();
-
-      // 设置定时器，每分钟刷新一次
       this.timer = setInterval(() => {
         this.getData();
       }, 60000);

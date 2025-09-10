@@ -36,13 +36,14 @@ export default {
             radius: ["40%", "70%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
+            // startAngle: 90,
             itemStyle: {
               borderRadius: 10,
               borderColor: "#0c162d",
               borderWidth: 2,
             },
             label: {
-              formatter: "{b}: {c}%",
+              formatter: "{b}: \n{c}%",
               color: "#e6f7ff",
               fontSize: "18",
               fontWeight: "bold",

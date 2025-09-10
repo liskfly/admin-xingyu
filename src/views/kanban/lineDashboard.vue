@@ -185,6 +185,6 @@ export default {
 }
 
 .isRotate {
-  transform: rotate(90deg);
+  transform: rotate(270deg);
 }
 </style>

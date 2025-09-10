@@ -296,7 +296,7 @@ export default {
                 this.replaceForm.productname = row.productname;
                 this.replaceForm.baddata_productname = row.baddata_productname;
                 this.replaceForm.baddata_productdsc = row.baddata_productdsc;
-                this.repairForm.baddata_produtside=row.baddata_produtside
+                this.replaceForm.baddata_produtside=row.baddata_produtside
                 this.replaceForm.baddatadetail_remark=row.baddatadetail_remark
                 QueryXYL_BadProductInformationFromByNo({
                     baddatadetail_no: row.baddata_no,

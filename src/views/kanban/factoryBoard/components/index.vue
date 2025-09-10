@@ -19,7 +19,7 @@
       <div class="pt-2">
         <el-row :gutter="5">
           
-          <el-col :span="5" :offset="0">
+          <el-col :span="6" :offset="0">
 
             <dv-border-box-12 class="centerh">
               <div class="header_title">
@@ -31,7 +31,7 @@
             </dv-border-box-12>
           </el-col>
         
-          <el-col :span="5" :offset="0">
+          <el-col :span="6" :offset="0">
             <dv-border-box-12 class="centerh">
               <div class="header_title">
                 <i class="fa fa-check-circle"></i>月完成率
@@ -41,7 +41,7 @@
               </div>
             </dv-border-box-12>
           </el-col>
-            <el-col :span="14" :offset="0">
+            <el-col :span="12" :offset="0">
             <dv-border-box-12 class="centerh">
               <div class="header_title">
                 <i class="fa fa-check-circle"></i> OEE

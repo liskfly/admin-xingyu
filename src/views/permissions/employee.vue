@@ -1,30 +1,5 @@
 <template>
   <div class="p-2" style="display: flex; gap: 10px">
-    <!-- <el-card shadow="always" :body-style="{ padding: '8px' }" style="width: 250px; height: calc(100vh - 97px)">
-        <div slot="header" class="card-header" style="display: flex; justify-content: space-between; align-items: center">
-          <div style="display: flex; gap: 5px; align-items: center">
-            <div style="height: 24px; box-sizing: border-box; padding-top: 3px">BICV-组织</div>
-          </div>
-  
-          <el-tooltip content="重置" placement="right">
-            <i class="el-icon-refresh-right" :class="isLoding" style="font-size: 24px; color: #006487" @click="refreshData"></i>
-          </el-tooltip>
-        </div>
-        <el-scrollbar style="height: calc(100vh - 160px)">
-          <el-tree
-            style="max-width: 600px"
-            highlight-current
-            :data="organTree"
-            :expand-on-click-node="false"
-            :props="{
-              children: 'children',
-              label: 'OrganizationName',
-            }"
-            @node-click="handleNodeClick"
-          ></el-tree>
-        </el-scrollbar>
-      </el-card> -->
-
     <el-card shadow="always" :body-style="{ padding: '8px' }" style="flex: 1">
       <div class="mb-2" style="display: flex; justify-content: space-between">
         <div>
@@ -154,13 +129,13 @@
         <el-form-item label="员工姓名" prop="FullName">
           <el-input v-model="addForm.FullName" clearable></el-input>
         </el-form-item>
-        <el-form-item label="新密码" prop="pwd">
+        <!-- <el-form-item label="新密码" prop="pwd">
           <el-input v-model="addForm.pwd" placeholder="请输入新密码" autocomplete="new-password" show-password
             clearable></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPwd">
           <el-input v-model="addForm.confirmPwd" placeholder="再次输入新密码" show-password clearable></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addPwdCancel()">取消</el-button>
@@ -194,9 +169,10 @@ import {
   getOrganization,
   ResetPwd,
   AddEmployee,
-  findEmpLoginLog
+  findEmpLoginLog,
+  OpcenterEmployeeSync,
 } from "@/api/control/index";
-
+import { getToken } from "@/utils/auth";
 export default {
   data() {
     return {
@@ -408,43 +384,6 @@ export default {
     openAdd() {
       this.editVisible = true;
     },
-    // dataPrecc(data) {
-    //     let start = new Date().getTime();
-    //   let beforeData = data;
-    //   let tempArr = [];
-    //   let afterData = [];
-    //   for (let i = 0; i < beforeData.length; i++) {
-    //     if (tempArr.indexOf(beforeData[i].EmployeeId) === -1) {
-    //       afterData.push({
-    //         employeeId: beforeData[i].EmployeeId,
-    //         employeeName: beforeData[i].EmployeeName,
-    //         fullName: beforeData[i].FullName,
-    //         title: beforeData[i].title,
-    //         OrganizationName: beforeData[i].OrganizationName,
-    //         OrganizationID: beforeData[i].OrganizationID,
-    //         RoleName: beforeData[i].RoleName == null ? [] : [beforeData[i].RoleName],
-    //         LastLoginTime: beforeData[i].LastLoginTime
-    //       });
-    //       tempArr.push(beforeData[i].EmployeeId);
-    //     } else {
-    //       for (let j = 0; j < afterData.length; j++) {
-    //         if (
-    //           afterData[j].employeeId == beforeData[i].EmployeeId &&
-    //           beforeData[i].RoleName !== null
-    //         ) {
-    //           afterData[j].RoleName.push(beforeData[i].RoleName);
-    //           break;
-    //         }
-    //       }
-    //     }
-    //   }
-    //   afterData.sort((a, b) => {
-    //     return a.employeeName - b.employeeName;
-    //   });
-    //   this.tableData = afterData;
-    //   this.tableData1 = this.tableData;
-    //   console.log("updateAllCheckedEnd", new Date().getTime() - start);
-    // },
     dataPrecc(data) {
       // 使用Map存储员工ID和对应对象的映射，提高查找效率
       const employeeMap = new Map();
@@ -464,7 +403,7 @@ export default {
             employeeName: item.EmployeeName,
             fullName: item.FullName,
             title: item.title,
-            email:item.email,
+            email: item.email,
             OrganizationName: item.OrganizationName,
             OrganizationID: item.OrganizationID,
             RoleName: RoleName ? [RoleName] : [],
@@ -595,48 +534,88 @@ export default {
       this.$refs.addFormRef.validate((valid) => {
         if (valid) {
           let data = {
-            employeeName: this.addForm.employeeName,
-            pwd: this.addForm.pwd,
-            FullName: this.addForm.FullName
+            EmployeeName: this.addForm.employeeName,
+            FullName: this.addForm.FullName,
+            CreateBy: getToken(),
+            IsOnline: "Y"
           };
-          AddEmployee(data).then((res) => {
-            if (res.Code == 100200) {
+          OpcenterEmployeeSync(data).then(res => {
+            if (res.Success) {
               this.$notify({
-                title: "添加成功",
+                  title: "提示信息",
+                message:"添加成功",
                 type: "success",
               });
             } else {
               this.$notify.error({
-                title: "添加失败",
+                  title: "提示信息",
+                message:"添加失败",
                 message: res.msg,
               });
             }
             this.getData();
             this.addPwdVisible = false;
-          });
+          })
+          // AddEmployee(data).then((res) => {
+          //   if (res.Code == 100200) {
+          //     this.$notify({
+          //       title: "添加成功",
+          //       type: "success",
+          //     });
+          //   } else {
+          //     this.$notify.error({
+          //       title: "添加失败",
+          //       message: res.msg,
+          //     });
+          //   }
+          //   this.getData();
+          //   this.addPwdVisible = false;
+          // });
         }
       });
     },
     handleDelete(row) {
+      console.log(row);
+      
       this.$confirm("确定删除", "确认操作", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          deleteEmployee(row.employeeName).then((data) => {
-            if (data.Code == 100200) {
+          OpcenterEmployeeSync({
+            EmployeeName: row.employeeName,
+            FullName: row.fullName,
+            CreateBy: getToken(),
+            IsOnline: "N"
+          }).then(res => {
+            if (res.Success) {
               this.getData();
               this.$notify({
-                title: "删除成功",
+                title: "提示信息",
+                message:"删除成功",
                 type: "success",
               });
             } else {
               this.$notify.error({
-                title: "删除失败",
+                title: "提示信息",
+                message:"删除失败",
               });
             }
-          });
+          })
+          // deleteEmployee(row.employeeName).then((data) => {
+          //   if (data.Code == 100200) {
+          //     this.getData();
+          //     this.$notify({
+          //       title: "删除成功",
+          //       type: "success",
+          //     });
+          //   } else {
+          //     this.$notify.error({
+          //       title: "删除失败",
+          //     });
+          //   }
+          // });
         })
         .catch(() => {
           this.$message({

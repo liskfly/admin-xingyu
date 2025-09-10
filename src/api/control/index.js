@@ -249,3 +249,11 @@ export function updateEmployeesByRole(data) {
         data
     });
 }
+//添加用户
+export function OpcenterEmployeeSync(data) {
+    return request({
+        url: "/employee/OpcenterEmployeeSync",
+        method: "post",
+        data
+    });
+}
