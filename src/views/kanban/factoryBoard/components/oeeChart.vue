@@ -1,6 +1,6 @@
 <template>
   <div class="flex" id="box">
-    <dv-scroll-board :config="config" style="width: 100%; height: 440px" />
+    <dv-scroll-board :config="config" style="width: 100%; height: 400px" />
   </div>
 </template>
 
@@ -99,12 +99,12 @@ export default {
       ];
       this.config.data = data.map((item) => {
         return [
-          `<div style="font-size:20px;color:#fff;width:173px">${item.equipment}</div>`,
-          `<div style="font-size:20px;color:#fff;width:173px">${item.line}</div>`,
-          `<div style="font-size:20px;color:#fff;width:173px">${item.a}</div>`,
-          `<div style="font-size:20px;color:#fff;width:173px">${item.q}</div>`,
-           `<div style="font-size:20px;color:#fff;width:173px">${item.p}</div>`,
-          `<div style="font-size:20px;color:#fff;width:173px">${item.oee}</div>`
+          `<div style="font-size:20px;color:#fff;">${item.equipment}</div>`,
+          `<div style="font-size:20px;color:#fff;">${item.line}</div>`,
+          `<div style="font-size:20px;color:#fff;">${item.a}</div>`,
+          `<div style="font-size:20px;color:#fff;">${item.q}</div>`,
+          `<div style="font-size:20px;color:#fff;">${item.p}</div>`,
+          `<div style="font-size:20px;color:#fff;">${item.oee}</div>`
         ];
       });
     },

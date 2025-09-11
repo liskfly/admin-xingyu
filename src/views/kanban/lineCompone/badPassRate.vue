@@ -40,17 +40,12 @@ export default {
                     label: {
                         formatter: '{b}: {c}',
                         color: '#e6f7ff',
-                        fontSize: "18",
+                        fontSize: 20,
                         fontWeight: "bold",
                         overflow: 'none'
                     },
 
-                    data: [{ value: 32, name: '偏移' },
-                    { value: 28, name: '少锡' },
-                    { value: 18, name: '短路' },
-                    { value: 12, name: '漏件' },
-                    { value: 8, name: '极性反' },
-                    { value: 15, name: '其他' }],
+                    data: [],
                     // color: ['#ff4d4f', '#ff7a45', '#ffa940', '#ffc53d', '#ffec3d', '#bae637']
                 }]
             },
@@ -58,7 +53,6 @@ export default {
             chart: null,
             refreshing: true,
             loading: false,
-            timer: null,
         };
     },
     watch: {
@@ -95,7 +89,11 @@ export default {
   
             GetReport_LineBadnessInfo({ Line: this.Line }).then(res => {
                 if (res.Success) {
-                    
+                    if(res.Data.length==0){
+                        this.option.series[0].data = [{ value: 1, name: '无不良' }];
+                        this.chart.setOption(this.option);
+                        return;
+                    }
                     this.option.series[0].data = res.Data.map(item => ({
                         value: item.CodeCount,
                         name: item.badphenomena_value

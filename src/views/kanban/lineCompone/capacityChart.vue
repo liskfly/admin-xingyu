@@ -103,7 +103,7 @@ export default {
               position: "top",
               color: "#e6f7ff",
               fontWeight: "bold",
-              fontSize: 20,
+              fontSize: 24,
             },
           },
           // {
@@ -187,7 +187,7 @@ export default {
           if(data.length<12){
             let toAdd = 12 - data.length;
             for(let i=0;i<toAdd;i++){
-              data.push({HourOfDay:"",NumBlocks:0})
+              data.push({HourOfDay:"",NumBlocks:null})
             }
           }
           this.option.xAxis.data = res.Data.slice(-12).map(item => item.HourOfDay);

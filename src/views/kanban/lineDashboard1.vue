@@ -1,16 +1,19 @@
 <template>
   <div class="line-container" ref="container" id="fullDiv5">
     <div class="content-wrapper" ref="content" :style="contentStyle">
-      <lineIndex :isVertical="isVertical"  @changeMsg="changeMsg" :class="isRotate"/>
+      <!-- <lineIndex :isVertical="isVertical"  @changeMsg="changeMsg" /> -->
+      <lineIndexCopy :isVertical="isVertical" />
     </div>
   </div>
 </template>
 
 <script>
 import lineIndex from "./lineCompone/index.vue";
+import lineIndexCopy from "./lineCompone/index copy.vue";
 export default {
   components: {
     lineIndex,
+    lineIndexCopy
   },
   data() {
     return {
@@ -20,7 +23,7 @@ export default {
       isVertical: false,
       windowWidth: 0,
       windowHeight: 0,
-       isRotate:""
+      isRotate: ""
     }
   },
   computed: {
@@ -53,11 +56,13 @@ export default {
     //手动旋转,横屏变竖屏，baseWidth 1920，baseHeight 1080切换为 isVertical=true
     changeMsg() {
       this.isVertical = !this.isVertical
-      this.isRotate="transform  rotate-90"
+      //  this.baseWidth = 1920;
+      //   this.baseHeight = 1080;
+      // this.isRotate="transform  rotate-90"
     },
     checkOrientation() {
       // 判断屏幕方向
-      this.isVertical = window.innerHeight > window.innerWidth;
+      this.isVertical =true
 
       // 根据方向调整基准尺寸
       if (this.isVertical) {
@@ -92,9 +97,10 @@ export default {
         scaleX = containerWidth / this.baseWidth;
         scaleY = containerWidth / (this.baseProportion * this.baseHeight);
       }
+console.log(scaleX,scaleY);
 
       // 应用缩放变换
-      content.style.transform = `scale(${scaleX}, ${scaleY}) translate(-50%, -50%)`;
+      content.style.transform = `scale(${scaleY*1.75}, ${scaleX*1.75}) translate(-50%, -50%)`;
     },
     handleResize() {
       this.checkOrientation();
@@ -153,6 +159,6 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   transform-origin: left top;
-   transition: transform 0.3s ease; 
+  transition: transform 0.3s ease;
 }
 </style>

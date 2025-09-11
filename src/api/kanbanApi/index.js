@@ -55,3 +55,21 @@ export function GetFeeder(data) {
         data,
     });
 }
+
+//工厂-工单完成
+export function GetDayCompleteList(data) {
+    return request({
+        url: "/NoticeBoard/GetDayCompleteList",
+        method: "post",
+        data,
+    });
+}
+//工厂-周月
+export function GetMonthWeekCompleteList(data) {
+    return request({
+        url: "/NoticeBoard/GetMonthWeekCompleteList",
+        method: "post",
+        data,
+    });
+}
+

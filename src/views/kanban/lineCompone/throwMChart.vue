@@ -65,7 +65,7 @@ export default {
           },
           axisLabel: {
             color: "#ffffff",
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: "bold",
             // formatter: function (value, index) {
             //     return `{${index}|${value}}`;
@@ -120,7 +120,7 @@ export default {
               // color: function (params) {
               //   return params.color; // 直接使用柱形的颜色
               // },
-              fontSize: 20,
+              fontSize: 24,
               fontWeight: "bold",
             },
           },

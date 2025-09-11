@@ -2,7 +2,7 @@
   <div class="p-2">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <div class="flex justify-between">
-        <el-form ref="formRef" :model="getForm" label-width="auto" :inline="true" @submit.native.prevent>
+        <el-form ref="formRef" :model="getForm" :inline="true" @submit.native.prevent>
           <el-form-item label="时间" class="mb-2">
 
             <el-date-picker v-model="dateValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
@@ -40,9 +40,9 @@
         </af-table-column>
         <af-table-column prop="baddata_pcbid" label="产品SN" />
         <af-table-column prop="mfgordername" label="工单号"></af-table-column>
-          <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
+        <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
         <af-table-column prop="productname" label="产品编码"></af-table-column>
-       <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
+        <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
         <el-table-column prop="baddata_productdsc" label="产品描述" width="120" show-overflow-tooltip></el-table-column>
         <el-table-column prop="baddata_line" label="线体" />
         <af-table-column prop="baddata_equip" label="设备" />
@@ -57,16 +57,16 @@
         <el-table-column prop="repair_way" label="维修方法" width="100" align="center" fixed="right">
           <template v-slot="{ row }">
             <span v-if="row.repair_way == '常规维修'">
-              <el-tag  type="primary">{{ row.repair_way }}</el-tag>
+              <el-tag type="primary">{{ row.repair_way }}</el-tag>
             </span>
             <span v-else-if="row.repair_way == '误判'">
-              <el-tag  type="info">{{ row.repair_way }}</el-tag>
+              <el-tag type="info">{{ row.repair_way }}</el-tag>
             </span>
             <span v-else-if="row.repair_way == '报废'">
-              <el-tag  type="danger">{{ row.repair_way }}</el-tag>
+              <el-tag type="danger">{{ row.repair_way }}</el-tag>
             </span>
             <span v-else>
-              <el-tag  type="warning">{{ row.repair_way }}</el-tag>
+              <el-tag type="warning">{{ row.repair_way }}</el-tag>
             </span>
           </template>
         </el-table-column>
@@ -78,6 +78,8 @@
             <el-tag effect="dark" v-else type="danger">{{ row.baddata_stts }}</el-tag>
           </template>
         </el-table-column>
+
+        <af-table-column prop="repair_remark" label="维修备注" />
         <af-table-column prop="baddata_user" label="维修人" />
         <af-table-column prop="repair_datetime" label="维修时间" />
       </el-table>
@@ -102,16 +104,15 @@
               <el-input v-model="replaceForm.mfgordername" disabled readonly style="width: 270px"></el-input>
             </el-form-item>
           </el-col>
-            <el-col :span="8" :offset="0">
-                        <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
-                            <el-input v-model="replaceForm.baddata_produtside" disabled readonly
-                                style="width: 270px"></el-input>
-                        </el-form-item>
-                    </el-col>
-         
+          <el-col :span="8" :offset="0">
+            <el-form-item label="面别" prop="baddata_produtside" class="mb-2">
+              <el-input v-model="replaceForm.baddata_produtside" disabled readonly style="width: 270px"></el-input>
+            </el-form-item>
+          </el-col>
+
         </el-row>
         <el-row :gutter="20">
-           <el-col :span="8" :offset="0">
+          <el-col :span="8" :offset="0">
             <el-form-item label="产品编码" prop="productname" class="mb-2">
               <el-input v-model="replaceForm.productname" disabled readonly style="width: 270px"></el-input>
             </el-form-item>
@@ -130,12 +131,15 @@
 
         <el-table :data="replaceForm.tableData" border stripe height="300" size="small">
           <el-table-column type="index" width="50" label="序号" align="center">
-                    </el-table-column>
+          </el-table-column>
           <af-table-column prop="repairpro_productname" label="物料编码"></af-table-column>
           <af-table-column prop="repairpro_user" label="操作人"></af-table-column>
           <af-table-column prop="repairpro_datetime" label="操作时间"></af-table-column>
         </el-table>
 
+ <el-form-item label="维修备注" prop="repair_remark" class="mt-2">
+              <el-input v-model="replaceForm.repair_remark" disabled style="width:645px"></el-input>
+            </el-form-item>
       </el-form>
 
       <span slot="footer">
@@ -201,7 +205,8 @@ export default {
         mfgordername: "",
         productname: "",
         productvalue: "",
-         baddata_produtside:"",
+        baddata_produtside: "",
+       repair_remark:"",
         tableData: [],
       },
       replaceVisible: false,
@@ -263,7 +268,8 @@ export default {
         this.replaceForm.productvalue = row.productvalue;
         this.replaceForm.baddata_productname = row.baddata_productname;
         this.replaceForm.baddata_productdsc = row.baddata_productdsc;
-        this.replaceForm.baddata_produtside=row.baddata_produtside
+        this.replaceForm.baddata_produtside = row.baddata_produtside
+          this.replaceForm.repair_remark=row.repair_remark
         QueryXYL_BadProductInformationRepairMaterial({ repairpro_repairno: row.repair_no }).then(res => {
           this.replaceForm.tableData = res.Data
           this.replaceVisible = true

@@ -198,7 +198,6 @@ export function ResetPwd(data) {
     });
 }
 
-//重置密码
 export function AddEmployee(data) {
     return request({
         url: "/employee/AddEmployee",
@@ -247,5 +246,30 @@ export function updateEmployeesByRole(data) {
         url: "/role/updateEmployeesByRole",
         method: "post",
         data
+    });
+}
+//添加用户
+export function OpcenterEmployeeSync(data) {
+    return request({
+        url: "/employee/OpcenterEmployeeSync",
+        method: "post",
+        data
+    });
+}
+
+//修改密码
+export function UpdateEmpPwd(data) {
+    return request({
+        url: "/employee/UpdateEmpPwd",
+        method: "post",
+        params: data
+    });
+}
+//重置密码
+export function ResetEmpPwd(data) {
+    return request({
+        url: "/employee/ResetEmpPwd",
+        method: "post",
+        params: data
     });
 }
