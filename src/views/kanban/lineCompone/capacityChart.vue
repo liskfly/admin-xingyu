@@ -9,7 +9,7 @@ import * as echarts from "echarts";
 import { GetCapacity } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
-   props: ['Line','barHeight'],
+  props: ['Line', 'barHeight'],
   data() {
     return {
       option: {
@@ -77,7 +77,7 @@ export default {
           },
           axisLabel: {
             color: "#8ac6ff",
-              // color: "#fff",
+            // color: "#fff",
             fontSize: 18,
           },
         },
@@ -179,7 +179,58 @@ export default {
     getData() {
       // 模拟获取数据，随机生成1000到1500的数
 
-      
+      // GetCapacity({ Line: this.Line }).then(res => {
+      //   if (res.Success) {
+      //     let data = res.Data;
+
+      //     // 获取当前时间
+      //     const now = new Date();
+      //     const currentHour = now.getHours();
+
+      //     // 过滤掉空数据（HourOfDay为空字符串的）
+      //     let validData = data.filter(item => item.HourOfDay);
+
+      //     // 排序函数
+      //     const sortDataByTime = (data) => {
+      //       return data.sort((a, b) => {
+      //         const getSortValue = (hourStr) => {
+      //           const startHour = parseInt(hourStr.split('-')[0]);
+      //           if (startHour > currentHour) {
+      //             return startHour - 24;
+      //           } else {
+      //             return startHour;
+      //           }
+      //         };
+
+      //         const aValue = getSortValue(a.HourOfDay);
+      //         const bValue = getSortValue(b.HourOfDay);
+      //         return aValue - bValue;
+      //       });
+      //     };
+
+      //     // 对有效数据排序
+      //     validData = sortDataByTime(validData);
+
+      //     // 取最后12条
+      //     const latest12 = validData.slice(-12);
+
+      //     // 如果不足12条，用空数据填充到12条
+      //     if (latest12.length < 12) {
+      //       let toAdd = 12 - latest12.length;
+      //       for (let i = 0; i < toAdd; i++) {
+      //         latest12.push({ HourOfDay: "", NumBlocks: null });
+      //       }
+      //     }
+
+      //     this.option.xAxis.data = latest12.map(item => item.HourOfDay);
+      //     this.option.series[0].data = latest12.map(item => ({
+      //       value: item.NumBlocks,
+      //       name: item.HourOfDay
+      //     }));
+
+      //     this.chart.setOption(this.option);
+      //   }
+      // });
       // console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
       GetCapacity({ Line: this.Line }).then(res => {
         if (res.Success) {
