@@ -103,7 +103,7 @@ export default {
               position: "top",
               color: "#e6f7ff",
               fontWeight: "bold",
-              fontSize: 20,
+              fontSize: 24,
             },
           },
           // {

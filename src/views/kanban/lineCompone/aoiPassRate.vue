@@ -45,7 +45,7 @@ export default {
             label: {
               formatter: "{b}: \n{c}%",
               color: "#e6f7ff",
-              fontSize: "18",
+              fontSize: 20,
               fontWeight: "bold",
             },
             emphasis: {

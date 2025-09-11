@@ -168,6 +168,7 @@ import {
   deleteEmployee,
   getOrganization,
   ResetPwd,
+  ResetEmpPwd,
   AddEmployee,
   findEmpLoginLog,
   OpcenterEmployeeSync,
@@ -512,16 +513,19 @@ export default {
             pwd: this.rePwForm.pwd,
             FullName: this.rePwForm.FullName
           };
-          ResetPwd(data).then((res) => {
-            if (res.Code == 100200) {
+          ResetEmpPwd(data).then((res) => {
+            if (res.Success) {
               this.$notify({
-                title: "重置成功",
+                title: "提示信息",
+                message: "重置成功",
                 type: "success",
               });
             } else {
               this.$notify.error({
-                title: "重置失败",
-                message: res.msg,
+
+                title: "提示信息",
+                message: res.Message||"重置失败",
+    
               });
             }
             this.getData();
@@ -549,8 +553,8 @@ export default {
             } else {
               this.$notify.error({
                   title: "提示信息",
-                message:"添加失败",
-                message: res.msg,
+                message: res.Message
+                // message: res.msg,
               });
             }
             this.getData();
@@ -599,7 +603,7 @@ export default {
             } else {
               this.$notify.error({
                 title: "提示信息",
-                message:"删除失败",
+                  message: res.Message
               });
             }
           })

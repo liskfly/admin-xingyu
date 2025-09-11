@@ -1,47 +1,26 @@
 <template>
-  <div class="w-full h-full" >
+  <div class="w-full h-full">
     <div class="flex flex-col w-full">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" :color="['#40a0ffb8']" />
-        <dv-decoration-8
-          class="dv-dec-8 decoration decoration-center"
-          :color="['#40a0ffb8', '#40a0ffb8']"
-        />
+        <dv-decoration-8 class="dv-dec-8 decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']" />
         <div class="text decoration-center">
           <div style="margin: auto" class="text-white flex items-center">
             <span>星宇车灯电子二工厂 </span>
             <div class="custom-select-wrapper">
-              <select
-                id="customSelect"
-                class="custom-select"
-                v-model="line"
-                @change="handleCommand(line)"
-              >
-                <option
-                  v-for="item in options"
-                  :value="item.value"
-                  :key="item.value"
-                >
-                  <span class="text-center">{{ item.label }}</span>
+              <select id="customSelect" class="custom-select" v-model="line" @change="handleCommand(line)">
+                <option v-for="item in options" :value="item.value" :key="item.value" >
+                  <span class="text-center" >{{ item.label }}</span>
                 </option>
               </select>
             </div>
           </div>
         </div>
-        <dv-decoration-8
-          class="dv-dec-8 transform decoration decoration-center"
-          :color="['#40a0ffb8', '#40a0ffb8']"
-        />
-        <dv-decoration-10
-          class="dv-dec-10 transform decoration"
-          :color="['#40a0ffb8']"
-        />
+        <dv-decoration-8 class="dv-dec-8 transform decoration decoration-center" :color="['#40a0ffb8', '#40a0ffb8']" />
+        <dv-decoration-10 class="dv-dec-10 transform decoration" :color="['#40a0ffb8']" />
 
-        <div
-          class="text-white flex justify-end items-center timetext"
-          style="font-size: 24px"
-        >
-    
+        <div class="text-white flex justify-end items-center timetext" style="font-size: 24px">
+
           <span class="pr-5">{{ currentTime }}</span>
           <i class="el-icon-refresh" @click="rotateClick"></i>
         </div>
@@ -53,7 +32,7 @@
             <div class="info-label">生产工单</div>
             <div class="info-value">{{ lineData.OrderName || "" }}</div>
           </div>
-            <div class="info-item">
+          <div class="info-item">
             <div class="info-label text-center">面别</div>
             <div class="info-value text-center">{{ lineData.Side || "" }}</div>
           </div>
@@ -65,7 +44,7 @@
             <div class="info-label">产品</div>
             <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
           </div>
-        
+
           <div class="info-item">
             <div class="info-label">计划开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
@@ -274,7 +253,7 @@ export default {
       countdownInterval: null,
       rateHeight: 300,
       barHeight: 370,
-      isRotate:""
+      isRotate: ""
     };
   },
   watch: {
@@ -323,7 +302,7 @@ export default {
     }
   },
   methods: {
-    rotateClick(){
+    rotateClick() {
       this.$emit('changeMsg')
     },
     updateTime() {
@@ -359,13 +338,13 @@ export default {
             ...res.Data[0],
             PlannedStartTime: res.Data[0].PlannedStartTime
               ? dayjs(res.Data[0].PlannedStartTime).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                )
+                "YYYY-MM-DD HH:mm:ss"
+              )
               : "",
             PlannedFinishTime: res.Data[0].PlannedFinishTime
               ? dayjs(res.Data[0].PlannedFinishTime).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                )
+                "YYYY-MM-DD HH:mm:ss"
+              )
               : "",
           };
         }
@@ -400,7 +379,7 @@ export default {
 
   .info-grid {
     display: grid;
-    grid-template-columns: 1fr  85px 1fr 3fr 280px 280px;
+    grid-template-columns: 1fr 85px 1fr 3fr 280px 280px;
     gap: 15px;
   }
 
@@ -430,6 +409,8 @@ export default {
     display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
     -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
     -webkit-line-clamp: 2; // 显示两行
+    white-space: normal;
+    word-wrap: break-word;
     overflow: hidden;
   }
 
@@ -449,7 +430,7 @@ export default {
 
   .info-grid {
     display: grid;
-    grid-template-columns: 290px 290px 1fr;
+    grid-template-columns: 300px 300px 1fr;
     gap: 15px;
   }
 
@@ -473,15 +454,18 @@ export default {
 
   .info-value {
     // height: 70px;
+    display: block;
     font-size: 25px;
     font-weight: bolder;
     color: #ffffff;
     display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
     -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
     -webkit-line-clamp: 3; // 显示两行
+    white-space: normal;
+    word-wrap: break-word;
     overflow: hidden;
   }
-  
+
 }
 
 .centerh {
@@ -521,11 +505,13 @@ export default {
     border-bottom: 1px solid rgb(64, 160, 255);
   }
 }
-.centerh-vertical{
-   height: 330px;
+
+.centerh-vertical {
+  height: 330px;
 }
-.centerh1-vertical{
-   height: 445px;
+
+.centerh1-vertical {
+  height: 445px;
 }
 
 .el-dropdown-link {

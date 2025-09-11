@@ -84,7 +84,7 @@ import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import Message from "@/components/Message";
 import { getToken, setToken, removeToken } from "@/utils/auth";
-import { ResetPwd,getEmpoyeeInfo } from "@/api/control";
+import { ResetPwd,getEmpoyeeInfo,UpdateEmpPwd } from "@/api/control";
 import bread from "@/components/Bread";
 
 export default {
@@ -133,7 +133,7 @@ export default {
     openUpEmpPwd() {
      
       getEmpoyeeInfo( getToken()).then(res=>{
-        //  console.log(res);
+         console.log(res);
          this.upPwForm.FullName=res.Data[0].FullName
         this.upPwVisible = true;
       })
@@ -146,13 +146,13 @@ export default {
       this.$refs.upPwFormRef.validate((valid) => {
         if (valid) {
           let data = {
-            employeeName: getToken(),
-            pwd: this.upPwForm.pwd,
+            EmployeeName: getToken(),
+            DocManagerUser: this.upPwForm.pwd,
             FullName:this.upPwForm.FullName
           };
           // console.log(data);
 
-          ResetPwd(data).then((res) => {
+          UpdateEmpPwd(data).then((res) => {
             if (res.Success) {
               this.$notify({
                 title: "修改成功",
