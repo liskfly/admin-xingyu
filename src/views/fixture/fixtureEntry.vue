@@ -76,20 +76,23 @@
     <el-dialog :title="'添加'" :visible.sync="addVisible" @close="addCancel()" width="500px">
       <el-form :model="addForm" ref="addFormRef" label-width="auto">
         <el-form-item label="工治具编码" prop="compid">
-          <el-input v-model="addForm.compid" style="width: 280px" placeholder="请输入工治具编码" clearable></el-input>
+          <el-input v-model="addForm.compid" style="width: 350px" placeholder="请输入工治具编码" clearable></el-input>
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
-          <el-select v-model="addForm.compname" filterable style="width: 280px" placeholder="请选择工治具类别" clearable>
+          <el-select v-model="addForm.compname" filterable style="width: 350px" placeholder="请选择工治具类别" clearable @change="getCompname">
             <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
               :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="类别描述" prop="remark">
+          <el-input v-model="compnameText" style="width: 350px" disabled></el-input>
+        </el-form-item>
         <el-form-item label="描述" prop="remark">
-          <el-input v-model="addForm.remark" style="width: 280px" type="textarea" placeholder="请输入描述信息"
+          <el-input v-model="addForm.remark" style="width: 350px" type="textarea" placeholder="请输入描述信息"
             clearable></el-input>
         </el-form-item>
         <el-form-item label="到期日期" prop="expirationDate">
-          <el-date-picker v-model="addForm.expirationDate" style="width: 280px" type="date" placeholder="选择日期"
+          <el-date-picker v-model="addForm.expirationDate" style="width: 350px" type="date" placeholder="选择日期"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
       </el-form>
@@ -101,20 +104,23 @@
     <el-dialog :title="'编辑'" :visible.sync="editVisible" @close="editCancel()" width="500px">
       <el-form :model="editForm" ref="editFormRef" label-width="auto">
         <el-form-item label="工治具编码" prop="compid">
-          <el-input v-model="editForm.compid" disabled style="width: 280px" placeholder="请输入工治具编码" clearable></el-input>
+          <el-input v-model="editForm.compid" disabled style="width: 350px" placeholder="请输入工治具编码" clearable></el-input>
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
-          <el-select v-model="editForm.compname" filterable style="width: 280px" placeholder="请选择工治具类别" clearable>
+          <el-select v-model="editForm.compname" filterable style="width: 350px" placeholder="请选择工治具类别" clearable @change="getCompname">
             <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
               :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
+         <el-form-item label="类别描述" prop="remark">
+          <el-input v-model="compnameText" style="width: 350px" disabled></el-input>
+        </el-form-item>
         <el-form-item label="描述" prop="remark">
-          <el-input v-model="editForm.remark" style="width: 280px" type="textarea" placeholder="请输入描述信息"
+          <el-input v-model="editForm.remark" style="width: 350px" type="textarea" placeholder="请输入描述信息"
             clearable></el-input>
         </el-form-item>
         <el-form-item label="到期日期" prop="expirationDate">
-          <el-date-picker v-model="editForm.expirationDate" style="width: 280px" type="date" placeholder="选择日期"
+          <el-date-picker v-model="editForm.expirationDate" style="width: 350px" type="date" placeholder="选择日期"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
       </el-form>
@@ -210,6 +216,7 @@ export default {
         MaintDate: null,
         CleanStatus: 0,
       },
+      compnameText: "", // 类别描述
     };
   },
   beforeMount() {
@@ -218,12 +225,16 @@ export default {
   mounted() {
     window.addEventListener("resize", this.getScreenHeight);
     this.getIDdata();
-    // this.getData();
+    this.getData();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
+    getCompname(value) {
+      let selected = this.typeList.find(item => item.ToolsMold === value);
+      this.compnameText = selected ? selected.MaterialName : '';
+    },
     getData() {
       moldControl(this.getText).then((res) => {
         this.typeList = res.data.DataList;
@@ -338,6 +349,7 @@ export default {
     // 取消添加
     addCancel() {
       this.$refs.addFormRef.resetFields();
+      this.compnameText=""
       this.addVisible = false;
       // 重置表单
     },
@@ -350,11 +362,13 @@ export default {
         user: getToken(),
         expirationDate: row.ExpireDate,
         operationType: "U",
-      }; // 复制行数据到编辑表单
+      }; 
+      this.getCompname(row.Model);
       this.editVisible = true;
     },
     editCancel() {
       this.$refs.editFormRef.resetFields();
+      this.compnameText=""
       this.editVisible = false;
     },
     editSumbit() {

@@ -101,26 +101,11 @@ export default {
                 {value:90,itemStyle:{color:"#ff0f0b"}},
                 {value:100,itemStyle:{color:"#ff0000"}},
             ],
-            // itemStyle: {
-            //   color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-            //     {
-            //       offset: 0,
-            //       color: "#ff7875",
-            //     },
-            //     {
-            //       offset: 1,
-            //       color: "#ff4d4f",
-            //     },
-            //   ]),
-            // },
             label: {
               show: true,
               position: "right",
               color: "#ffccc7",
-              // color: function (params) {
-              //   return params.color; // 直接使用柱形的颜色
-              // },
-              fontSize: 24,
+              fontSize: 25,
               fontWeight: "bold",
             },
           },

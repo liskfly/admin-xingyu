@@ -89,7 +89,7 @@
         <div class="flex" style="gap: 10px">
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-tasks"></i> 当前工单完成率
+              <i class="fa fa-tasks"></i><span class="text-color"> 当前工单完成率</span>
             </div>
             <div>
               <completion :Line="line" :rateHeight="rateHeight" />
@@ -97,7 +97,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-check-circle"></i> SPI直通率
+              <i class="fa fa-check-circle"></i><span class="text-color"> SPI直通率</span>
             </div>
             <div>
               <spiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -107,7 +107,7 @@
         <div class="flex" style="gap: 10px">
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-search"></i> AOI直通率
+              <i class="fa fa-search"></i><span class="text-color"> AOI直通率</span> 
             </div>
             <div>
               <aoiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -115,7 +115,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-exclamation-triangle"></i> 不良数分布
+              <i class="fa fa-exclamation-triangle"></i> <span class="text-color"> 不良分布</span>
             </div>
             <div>
               <badPassRate :Line="line" :rateHeight="rateHeight" />
@@ -125,7 +125,7 @@
         <div>
           <dv-border-box-12 class="centerh1 centerh1-vertical">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i>贴片机单小时产能<span style="color:  #F39C12;font-size: 24px;">（12小时）</span>
+              <i class="fa fa-bar-chart"></i><span class="text-color"> 贴片机单小时产能</span><span style="color:  #F39C12;font-size: 25px;">（12小时）</span>
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -135,7 +135,7 @@
         <div>
           <dv-border-box-12 class="centerh1 centerh1-vertical">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 抛料<span style="color: #ff0000;font-size: 24px;">TOP10</span>
+              <i class="fa fa-bar-chart"></i> <span class="text-color"> 抛料</span><span style="color: #ff0000;font-size: 25px;">TOP10</span>
             </div>
             <div>
               <throwMChart :Line="line" :barHeight="barHeight" />
@@ -148,7 +148,7 @@
         <div class="flex" style="gap: 10px">
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-tasks"></i> 当前工单完成率
+              <i class="fa fa-tasks"></i> <span class="text-color">当前工单完成率</span>
             </div>
             <div>
               <completion :Line="line" :rateHeight="rateHeight" />
@@ -156,7 +156,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-check-circle"></i> SPI直通率
+              <i class="fa fa-check-circle"></i><span class="text-color"> SPI直通率</span> 
             </div>
             <div>
               <spiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -164,7 +164,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-search"></i> AOI直通率
+              <i class="fa fa-search"></i><span class="text-color"> AOI直通率</span> 
             </div>
             <div>
               <aoiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -172,7 +172,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-exclamation-triangle"></i> 不良数分布
+              <i class="fa fa-exclamation-triangle"></i> <span class="text-color">不良分布</span>
             </div>
             <div>
               <badPassRate :Line="line" :rateHeight="rateHeight" />
@@ -182,7 +182,7 @@
         <div class="flex" style="gap: 10px">
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 贴片机单小时产能<span style="color: #F39C12;font-size: 24px;">（12小时）</span>
+              <i class="fa fa-bar-chart"></i> <span class="text-color">贴片机单小时产能</span><span style="color: #F39C12;font-size: 24px;">（12小时）</span>
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -190,7 +190,7 @@
           </dv-border-box-12>
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i> 抛料<span style="color: #ff0000;font-size: 24px;">TOP10</span>
+              <i class="fa fa-bar-chart"></i> <span class="text-color">抛料</span><span style="color: #ff0000;font-size: 25px;"> TOP10</span>
             </div>
             <div>
               <throwMChart :Line="line" :barHeight="barHeight" />
@@ -379,7 +379,7 @@ export default {
 
   .info-grid {
     display: grid;
-    grid-template-columns: 1fr 85px 1fr 3fr 280px 280px;
+    grid-template-columns: 1fr 90px 1fr 3fr 280px 280px;
     gap: 15px;
   }
 
@@ -614,5 +614,8 @@ export default {
   background-color: #4472cb !important;
   color: #fff !important;
   border: none;
+}
+.text-color {
+  color: #e6f7ff;
 }
 </style>

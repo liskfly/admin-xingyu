@@ -51,7 +51,7 @@ export default {
             emphasis: {
               label: {
                 show: true,
-                fontSize: "18",
+                fontSize: 18,
                 fontWeight: "bold",
               },
             },
