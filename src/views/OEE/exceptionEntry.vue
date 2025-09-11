@@ -165,33 +165,66 @@
     </el-dialog>
 
     <el-dialog title="更改OE参数信息" :visible.sync="OEChange">
-      <div>
-        <el-input
-          class="popul-item"
-          placeholder="请输入内容"
-          v-model="levelCodeChange"
-          :disabled="true"
-        >
-          <template slot="prepend">OE参数</template>
-        </el-input>
-        <el-input
-          class="popul-item"
-          placeholder="请输入内容"
-          v-model="levelTypeChange"
-        >
-          <template slot="prepend">OE类型</template>
-        </el-input>
-        <el-input
-          class="popul-item"
-          placeholder="请输入内容"
-          v-model="descriptionChange"
-        >
-          <template slot="prepend">OE描述</template>
-        </el-input>
-        <!-- <el-input placeholder="请输入内容" v-model="operatorChange">
-          <template slot="prepend">操作员</template>
-        </el-input> -->
-      </div>
+      
+      <el-form ref="form" label-width="120px">
+        <el-form-item label="OEE类别">
+          <el-select v-model="addForm.type" placeholder="请选择OEE类型"
+          style="width: 240px;">
+            <el-option label="设备故障" value="设备故障"></el-option>
+            <el-option label="材料短缺" value="材料短缺"></el-option>
+            <el-option label="其他" value="其他"></el-option>
+            <el-option label="计划停机" value="计划停机"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="维护线体">
+          <el-select v-model="addForm.line" placeholder="工作线"
+          style="width: 240px;">
+            <el-option
+              v-for="item in lineList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="计划停机时间">
+          <el-date-picker
+            v-model="dateAddArr"
+            type="datetimerange"
+    format="yyyy-MM-dd HH:mm"
+    value-format="yyyy-MM-dd HH:mm"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="dateChange"
+          >
+          </el-date-picker>
+        </el-form-item> -->
+        <el-form-item label="计划停机时间">
+          <el-input
+          style="width: 240px;"
+            placeholder="请输入内容"
+            type="number"
+            @input="handlePositiveInput"
+            v-model="addForm.time"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item label="日期">
+          <el-date-picker
+          style="width: 240px;"
+            v-model="addForm.date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="说明">
+          <el-input placeholder="请输入内容" v-model="addForm.Instructions">
+          </el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="OEChange = false">取 消</el-button>
         <el-button
