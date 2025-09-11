@@ -2,6 +2,21 @@
   <div class="moisture">
     <!-- <el-row :gutter="20">
       <el-col :span="18" :offset="0"> -->
+      <div class="m-2">
+        <el-input
+          placeholder="ID"
+          v-model="reelID"
+          class="input-with-select"
+          @click.native.prevent="searchData()"
+          style="width: 300px; margin-right: 20px"
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="searchData()"
+          ></el-button>
+        </el-input>
+      </div>
     <el-table
     :data="tableData.slice(
           (currentPage - 1) * pageSize,
@@ -21,8 +36,8 @@
               }}</span>
             </template>
           </el-table-column>
-      <af-table-column prop="CompName" label="料号"> </af-table-column>
       <af-table-column prop="ReelID" label="ID"> </af-table-column>
+      <af-table-column prop="CompName" label="料号"> </af-table-column>
       <el-table-column prop="TimeLeft" label="剩余时间" align="center">
         <template slot-scope="scope">
           <span>{{minChangeH(scope.row.TimeLeft)}}</span>
@@ -35,7 +50,8 @@
       </af-table-column>
       <af-table-column prop="NumDryLeft" label="烘烤次数" align="center">
       </af-table-column>
-      <!-- <el-table-column prop="PlanQty" label="库位"> </el-table-column> -->
+      <af-table-column prop="Cellid" label="库位"> </af-table-column>
+      <af-table-column prop="Remark" label="备注"> </af-table-column>
     </el-table>
      <div class="block" style="margin-top: 15px">
           <el-pagination
@@ -110,9 +126,9 @@ export default {
   },
   mounted() {
      window.addEventListener("resize", this.getScreenHeight);
-    this.getData();
+    this.searchData();
     this.getTimer = setInterval(() => {
-      this.getData();
+      this.searchData();
     }, 5000);
   },
   destroyed() {
@@ -126,6 +142,16 @@ export default {
       dryComponentControl({ reelID: "", mcId: 4, type: "inquiry" }).then(
         (res) => {
           this.tableData = res.data.Details;
+          // console.log();
+        }
+      );
+    },
+    searchData() {
+      dryComponentControl({ reelID: this.reelID, mcId: 4, type: "inquiry" }).then(
+        (res) => {
+          if (res.data.Status == 'OK') {
+            this.tableData = res.data.Details;
+          }
           // console.log();
         }
       );
@@ -238,7 +264,7 @@ export default {
      getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
-        this.tableHeight = window.innerHeight - 150;
+        this.tableHeight = window.innerHeight - 200;
         //后面的50：根据需求空出的高度，自行调整
       });
     },
