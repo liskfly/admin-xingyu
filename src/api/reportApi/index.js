@@ -7,3 +7,11 @@ export function GetPrintingTranslator(data) {
         data,
     });
 }
+
+export function GetToolChkOutList(data) {
+    return request({
+        url: "/Pda/GetToolChkOutList",
+        method: "post",
+        data,
+    });
+}
