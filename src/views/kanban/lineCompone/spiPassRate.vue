@@ -33,7 +33,7 @@ export default {
           {
             name: "直通率",
             type: "pie",
-            radius: ["40%", "70%"],
+            radius: ["40%", "68%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {

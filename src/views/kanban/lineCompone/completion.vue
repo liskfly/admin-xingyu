@@ -9,7 +9,7 @@ import * as echarts from "echarts";
 import { GetCompletionRate } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
-  props: ['Line','rateHeight'],
+  props: ['Line', 'rateHeight'],
   data() {
     return {
       option: {
@@ -33,7 +33,7 @@ export default {
           {
             name: "完成率",
             type: "pie",
-            radius: ["40%", "70%"],
+            radius: ["40%", "68%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {
@@ -46,6 +46,11 @@ export default {
               color: "#e6f7ff",
               fontSize: 20,
               fontWeight: "bold",
+            },
+            labelLine: {
+              show: true, // 显示引导线
+              length: 5, // 引导线长度
+              length2: 5, // 引导线末端长度
             },
             emphasis: {
               label: {
@@ -82,7 +87,7 @@ export default {
         this.startRefreshing();
       }
     },
-     rateHeight: {
+    rateHeight: {
       handler(newHeight) {
         if (this.chart) {
           this.chart.resize({ height: newHeight });
@@ -104,13 +109,13 @@ export default {
     getData() {
       GetCompletionRate({ Line: this.Line }).then(res => {
         if (res.Success) {
-         
+
           // let completionData = ((res.Data[0].qty / res.Data[0].QuantityOrdered) * 100).toFixed(1)
           // let remainderData = (100 - completionData).toFixed(1)
 
           this.option.series[0].data = [
             { value: res.Data[0].qty, name: "完成", itemStyle: { color: "#1890ff" } },
-            { value:(res.Data[0].QuantityOrdered-res.Data[0].qty) , name: "剩余", itemStyle: { color: "#2f4b7c" } },
+            { value: (res.Data[0].QuantityOrdered - res.Data[0].qty), name: "剩余", itemStyle: { color: "#2f4b7c" } },
           ];
           this.chart.setOption(this.option);
         }
