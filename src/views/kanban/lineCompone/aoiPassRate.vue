@@ -43,10 +43,11 @@ export default {
               borderWidth: 2,
             },
             label: {
-              formatter: "{b}: \n{c}%",
+              formatter: "{b}:{c}%",
               color: "#e6f7ff",
               fontSize: 20,
               fontWeight: "bold",
+               overflow: 'break'
             },
             emphasis: {
               label: {

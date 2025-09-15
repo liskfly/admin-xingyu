@@ -30,7 +30,7 @@ export default {
                 series: [{
                     name: '不良分布',
                     type: 'pie',
-                    radius: ['30%', '65%'],
+                    radius: ['30%', '60%'],
                     center: ['50%', '50%'],
                     roseType: 'radius',
                     // roseType: 'area',
@@ -42,9 +42,9 @@ export default {
                         color: '#e6f7ff',
                         fontSize: 20,
                         fontWeight: "bold",
-                        overflow: 'none'
+                        overflow: 'break'
                     },
-
+              
                     data: [],
                     // color: ['#ff4d4f', '#ff7a45', '#ffa940', '#ffc53d', '#ffec3d', '#bae637']
                 }]
