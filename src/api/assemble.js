@@ -42,3 +42,32 @@ export function GetAssGenerateSN(data) {
         method: "post",
         data,
     }); }
+
+    
+//分页查询获取计划信息表信息
+export function GetXYL_OEE_ShutDownList(data) {
+
+    return request({
+        url: "/EquipmentMaintenance/GetXYL_OEE_ShutDownList",
+        method: "post",
+        data,
+    });
+}
+    
+//新增停机计划
+export function InsertXYL_OEE_ShutDown(data) {
+    return request({
+        url: "/EquipmentMaintenance/InsertXYL_OEE_ShutDown",
+        method: "post",
+        data,
+    });
+}
+    
+//删除停机计划
+export function DeleteXYL_OEE_ShutDown(data) {
+    return request({
+        url: "/EquipmentMaintenance/DeleteXYL_OEE_ShutDown",
+        method: "post",
+        data,
+    });
+}

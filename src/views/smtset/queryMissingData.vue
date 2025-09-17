@@ -25,6 +25,9 @@
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="openAdd">批量录入</el-button>
+        </el-form-item>
       </el-form>
     </div>
     <div class="data">
@@ -35,7 +38,10 @@
           v-for="(item, index) in missingList"
           :key="index"
         >
-          <div>{{ item.SerialNumber}}{{ item.StatusCode ? `(${item.StatusCode})`:'' }}</div>
+          <div>
+            {{ item.SerialNumber
+            }}{{ item.StatusCode ? `(${item.StatusCode})` : "" }}
+          </div>
           <el-button
             type="primary"
             size="mini"
@@ -45,15 +51,80 @@
         </el-col>
       </el-row>
     </div>
+    <el-dialog title="批量录入" :visible.sync="addVisible">
+      <el-form ref="form" label-width="80px">
+        <el-form-item label="设备ID">
+          <el-input
+            placeholder="设备ID"
+            v-model="addForm.mcId"
+            class="input-with-select"
+            style="width: 300px"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item label="开始时间">
+          <el-date-picker
+            v-model="addForm.startTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+            type="datetime"
+            placeholder="选择日期时间"
+            style="width: 300px"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="不良代码">
+          <el-select
+            v-model="addForm.status"
+            placeholder="不良代码"
+            style="width: 300px"
+          >
+            <el-option
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="录入类型">
+          <el-select
+            v-model="addForm.operationType"
+            placeholder="录入类型"
+            style="width: 300px"
+          >
+            <el-option
+              v-for="item in typeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="(dialogFormVisible = false), addData()"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { XY_Prod_MissSNs } from "@/api/timeApi";
+import { XY_Prod_AddMissSNNew } from "@/api/all";
 import { getDate } from "@/utils/getDate";
 import { getToken } from "@/utils/auth";
 import { orderName } from "@/utils/oeeFun";
 import { mapGetters, mapState } from "vuex";
+import { missTime } from "@/utils/oeeFun";
 export default {
   data() {
     return {
@@ -64,6 +135,33 @@ export default {
       },
       orderList: orderName(),
       missingList: [],
+      addForm: {
+        orderName: "",
+        pcbId: [],
+        mcId: 0,
+        startTime: "",
+        status: "",
+        operationType: "",
+      },
+      typeList: [
+        {
+          value: "GI",
+          label: "写入工艺流程记录",
+        },
+        {
+          value: "RI",
+          label: "注册SN到工单",
+        },
+      ],
+      statusList: [
+        {
+          value: "PASS",
+        },
+        {
+          value: "FAIL",
+        },
+      ],
+      addVisible: false,
     };
   },
   computed: {
@@ -75,17 +173,22 @@ export default {
   mounted() {},
   methods: {
     getData() {
-      if (this.getDataText.orderName === '' || this.getDataText.operationType === '') {
+      if (
+        this.getDataText.orderName === "" ||
+        this.getDataText.operationType === ""
+      ) {
         this.$alert("查询失败,请完整填写信息", "错误信息", {
           confirmButtonText: "确定",
         });
-        return ;
+        return;
       }
       this.startLoading();
       XY_Prod_MissSNs(this.getDataText)
         .then(({ data }) => {
           if (data.Status === "OK") {
             this.missingList = data.DataList;
+          }else {
+            this.missingList = [];
           }
           this.endLoading();
           console.log(data);
@@ -96,6 +199,50 @@ export default {
     },
     toQuatrace(SerialNumber) {
       this.$router.push({ path: "/report/quatrace", query: { SerialNumber } });
+    },
+    openAdd() {
+      if (
+        this.getDataText.operationName != "" ||
+        this.missingList.length != 0
+      ) {
+        this.addVisible = true;
+        this.addForm.orderName = this.getDataText.orderName;
+        this.addForm.pcbId = [];
+        const seen = new Set();
+        this.missingList.forEach((item) => {
+          if (!seen.has(item.SerialNumber)) {
+            seen.add(item.SerialNumber);
+            this.addForm.pcbId.push(item.SerialNumber);
+          }
+        });
+        console.log(this.addForm.pcbId);
+        // this.addForm.pcbId = this.missingList;
+      } else {
+        this.$notify({
+          title: "提示",
+          message: "请确认已输入工单并已进行搜索",
+          type: "warning",
+        });
+      }
+    },
+    addData() {
+      XY_Prod_AddMissSNNew({
+        ...this.addForm,
+        startTime: missTime(this.addForm.startTime),
+      }).then((res) => {
+        if (res.data.Status == "OK") {
+          this.$message({
+            message: res.data.Status,
+            type: "success",
+          });
+          this.addVisible = false;
+        } else {
+          this.$alert(res.data.Message, "错误", {
+            confirmButtonText: "确定",
+            callback: (action) => {},
+          });
+        }
+      });
     },
     startLoading() {
       this.loading = this.$loading({

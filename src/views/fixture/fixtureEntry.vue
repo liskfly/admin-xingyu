@@ -84,13 +84,16 @@
               :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="类别描述" prop="remark">
-          <el-input v-model="compnameText" style="width: 350px" disabled></el-input>
+        <el-form-item label="类别" prop="remark">
+          <el-input v-model="fixtureType" style="width: 350px" disabled></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
+          <el-input v-model="addForm.remark" style="width: 350px" disabled></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="描述" prop="remark">
           <el-input v-model="addForm.remark" style="width: 350px" type="textarea" placeholder="请输入描述信息"
             clearable></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="到期日期" prop="expirationDate">
           <el-date-picker v-model="addForm.expirationDate" style="width: 350px" type="date" placeholder="选择日期"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
@@ -112,8 +115,8 @@
               :value="item.ToolsMold"></el-option>
           </el-select>
         </el-form-item>
-         <el-form-item label="类别描述" prop="remark">
-          <el-input v-model="compnameText" style="width: 350px" disabled></el-input>
+         <el-form-item label="类别" prop="remark">
+          <el-input v-model="fixtureType" style="width: 350px" disabled></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="remark">
           <el-input v-model="editForm.remark" style="width: 350px" type="textarea" placeholder="请输入描述信息"
@@ -164,6 +167,7 @@
 import { moldControl, iDControll } from "@/api/all";
 import { getToken } from "@/utils/auth";
 import dayjs from "dayjs";
+import FixtureType from "./fixtureType.vue";
 export default {
   data() {
     return {
@@ -216,7 +220,8 @@ export default {
         MaintDate: null,
         CleanStatus: 0,
       },
-      compnameText: "", // 类别描述
+      compnameText: "", // 描述,
+      fixtureType:"" //类别
     };
   },
   beforeMount() {
@@ -233,7 +238,24 @@ export default {
   methods: {
     getCompname(value) {
       let selected = this.typeList.find(item => item.ToolsMold === value);
-      this.compnameText = selected ? selected.MaterialName : '';
+      // this.compnameText = selected ? selected.MaterialName : '';
+      this.addForm.remark = selected ? selected.MaterialName : '';
+      this.fixtureType = this.returnType(selected ? selected.Category : '');
+      
+    },
+    returnType(num) {
+      let arr = [
+        { Value: "1", Text: "印刷工治具" },
+        { Value: "2", Text: "ICT工治具" },
+        { Value: "3", Text: "样件" },
+      ];
+      let text = ''
+      arr.forEach((i) => {
+        if (i.Value == num) {
+          text = i.Text;
+        }
+      })
+      return text;
     },
     getData() {
       moldControl(this.getText).then((res) => {
@@ -349,7 +371,8 @@ export default {
     // 取消添加
     addCancel() {
       this.$refs.addFormRef.resetFields();
-      this.compnameText=""
+      this.addForm.remark=""
+      this.fixtureType = ""
       this.addVisible = false;
       // 重置表单
     },
@@ -368,7 +391,8 @@ export default {
     },
     editCancel() {
       this.$refs.editFormRef.resetFields();
-      this.compnameText=""
+      this.addForm.remark=""
+      this.fixtureType = ""
       this.editVisible = false;
     },
     editSumbit() {

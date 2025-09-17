@@ -340,8 +340,8 @@ export default {
                   this.$refs.input.focus();
                 });
               } else {
-                this.dialogForm.smt.dialogVisible = true;
-                this.dialogForm.smt.Msg = data.Message;
+                // this.dialogForm.smt.dialogVisible = true;
+                // this.dialogForm.smt.Msg = data.Message;
               }
             });
 
@@ -349,13 +349,12 @@ export default {
               if (res.Success) {
                 this.tableData = [...this.tableData, ...res.Data];
               } else {
-                this.dialogForm.dip.dialogVisible = true;
-                this.dialogForm.dip.Msg = res.Msg;
+                // this.dialogForm.dip.dialogVisible = true;
+                // this.dialogForm.dip.Msg = res.Msg;
               }
             });
 
-            SaveIntactProduct(this.form, this.stringcode)
-              .then(({ data }) => {
+            SaveIntactProduct(this.form, this.stringcode).then(({ data }) => {
                 if (data.Code == 200) {
                   this.dialogVisible = true;
                   setTimeout(() => {
@@ -378,6 +377,7 @@ export default {
                 this.dialogForm.product.Msg = err;
                 this.failPlay();
               });
+
           } else {
             this.failPlay();
             this.dialogForm.upDate.dialogVisible = true;

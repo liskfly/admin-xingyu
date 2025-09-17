@@ -263,3 +263,11 @@ export function XY_SMT_OrderStatus(data) {
     data
   });
 }
+  
+export function XY_Prod_AddMissSNNew(data) {
+    return request({
+      url: "/XingYuAPI/XY_Prod_AddMissSNNew",
+      method: "post",
+      data
+    });
+  }

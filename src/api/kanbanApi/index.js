@@ -73,3 +73,10 @@ export function GetMonthWeekCompleteList(data) {
     });
 }
 
+//获取OEE数据
+export function GetAOI2OEE() {
+    return request({
+        url: "/NoticeBoard/GetAOI2OEE",
+        method: "post",
+    });
+}
