@@ -58,7 +58,7 @@
           size="medium"
       >
         <el-table-column prop="ProductName" label="产品"> </el-table-column>
-        <el-table-column prop="CycleTime" label="周期时间"> </el-table-column>
+        <el-table-column prop="CycleTime" label="单片产能"> </el-table-column>
         <el-table-column prop="Side" label="正反面" :filters="[{text:'Top',value:'Top'},{text:'Bot',value:'Bot'}]" :filter-method="filterMethod"> </el-table-column>
         <el-table-column prop="UserName" label="操作人"> </el-table-column>
         <el-table-column prop="UpdateTime" label="操作时间"> </el-table-column>

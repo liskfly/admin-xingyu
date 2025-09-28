@@ -132,7 +132,9 @@
         <el-table :data="replaceForm.tableData" border stripe height="300" size="small">
           <el-table-column type="index" width="50" label="序号" align="center">
           </el-table-column>
-          <af-table-column prop="repairpro_productname" label="物料编码"></af-table-column>
+          <af-table-column prop="repairpro_productname" width="550" label="物料编码"></af-table-column>
+          <af-table-column prop="repairpro_productnoname" label="名称"></af-table-column>
+          <af-table-column prop="repairpro_productnodesc" label="规格"></af-table-column>
           <af-table-column prop="repairpro_user" label="操作人"></af-table-column>
           <af-table-column prop="repairpro_datetime" label="操作时间"></af-table-column>
         </el-table>

@@ -146,8 +146,8 @@ export default {
       this.$refs.upPwFormRef.validate((valid) => {
         if (valid) {
           let data = {
-            EmployeeName: getToken(),
-            DocManagerUser: this.upPwForm.pwd,
+            employeeName: getToken(),
+            pwd: this.upPwForm.pwd,
             FullName:this.upPwForm.FullName
           };
           // console.log(data);

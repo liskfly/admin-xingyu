@@ -1,4 +1,3 @@
-      
 <template>
   <div class="inboundInspec">
     <el-row>
@@ -58,7 +57,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="PCBA序列号" prop="PcbSn">
+              <el-form-item label="序列码" prop="PcbSn">
                 <!-- <el-col :span="12"> -->
                 <el-input
                   class="keydown"
@@ -70,7 +69,7 @@
               </el-form-item>
               <el-form-item label="成品码">
                 <!-- <el-col :span="12"> -->
-                <el-input ref="finishedProduct" v-model="stringcode"></el-input>
+                <el-input ref="finishedProduct" v-model="stringcode" @keyup.enter.native="onSubmit"></el-input>
                 <!-- </el-col> -->
               </el-form-item>
               <el-form-item label="检验结果">
@@ -156,11 +155,11 @@
 import { getFinshOrder, SaveIntactProduct, TransferData } from "@/api/wmsApi";
 import { XY_PCBAHisControl } from "@/api/all";
 // import { updateUri, getContainerMoves } from "@/api/index";
-import { getContainerMoves } from "@/api/dip";
+import { getContainerMoves, getPCBMoves } from "@/api/dip";
 import { getToken } from "@/utils/auth";
 import { getDate } from "@/utils/getDate";
 import AudioPlay from "@/components/mp3/audioPlay.vue";
-import axios from 'axios';
+import axios from "axios";
 // import { getDate } from "@/utils/getDate";
 export default {
   components: {
@@ -169,9 +168,9 @@ export default {
   data() {
     var PcbSnPass = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请输入pcb条码"));
-      } else if (!value.toLowerCase().startsWith("40502")) {
-        callback(new Error("必须要以40502开头"));
+        callback(new Error("请输入序列码"));
+      } else if (!value.startsWith("40502") && !value.startsWith("IBZJ")) {
+        callback(new Error("必须要以40502或IBZJ开头"));
       } else {
         callback();
       }
@@ -289,12 +288,15 @@ export default {
     onSubmit() {
       if (this.isCoolingDown) {
         this.$message({
-            message: "2秒内不能重复点击按钮",
-            type: "warning",
-          });
+          message: "2秒内不能重复点击按钮",
+          type: "warning",
+        });
         return;
       }
-      if (this.stringcode.toLowerCase().startsWith("40510") && this.stringcode.toLowerCase().substring(0, 13) !== this.form.Pn) {
+      if (
+        this.stringcode.toLowerCase().startsWith("40510") &&
+        this.stringcode.toLowerCase().substring(0, 13) !== this.form.Pn
+      ) {
         this.$message.error("工单与产品信息不一致");
         return;
       }
@@ -308,87 +310,154 @@ export default {
       this.toForm.TestResult = this.form.Result == "PASS" ? "OK" : "NG";
       this.toForm.DataHeaderID = this.generateGuid();
       this.toForm.finishCode = this.form.finishCode;
-     
-      TransferData(this.toForm)
-        .then(({data}) => {
-          console.log(data);
+
+      // TransferData(this.toForm).then(({ data }) => {
+      //     // console.log(data);
+
+      //     let res = JSON.parse(JSON.parse(data.Data));
+      //     if (res.IsSucess == true) {
+      //       XY_PCBAHisControl({
+      //         seiralNumber: this.form.PcbSn,
+      //         workOrder: "",
+      //         operationType: "S",
+      //       }).then(({ data }) => {
+      //         // this.dialogVisible = false;
+      //         // console.log(data);
+      //         if (data.Status == "OK") {
+      //           // let arr = data.content;
+      //           this.tableData = data.DataList.map((item) => {
+      //             return {
+      //               ...item,
+      //               DateTime: getDate(item.DateTime),
+      //             };
+      //           });
+      //           this.tableData.sort((a, b) => {
+      //             let aTime = new Date(a.DateTime);
+      //             let bTime = new Date(b.DateTime);
+      //             return bTime - aTime;
+      //           });
+      //           this.form.Result = "PASS";
+      //           this.$nextTick(() => {
+      //             this.$refs.input.focus();
+      //           });
+      //         } else {
+      //           // this.dialogForm.smt.dialogVisible = true;
+      //           // this.dialogForm.smt.Msg = data.Message;
+      //         }
+      //       });
+
+      //       getContainerMoves(this.toForm.ContainerName).then((res) => {
+      //         if (res.Success) {
+      //           this.tableData = [...this.tableData, ...res.Data];
+      //         } else {
+      //           // this.dialogForm.dip.dialogVisible = true;
+      //           // this.dialogForm.dip.Msg = res.Msg;
+      //         }
+      //       });
+
+      //       SaveIntactProduct(this.form, this.stringcode)
+      //         .then(({ data }) => {
+      //           if (data.Code == 200) {
+      //             this.dialogVisible = true;
+      //             setTimeout(() => {
+      //               this.dialogVisible = false;
+      //             }, 1000);
+      //             this.stringcode = "";
+      //             this.$message({
+      //               type: "success",
+      //               message: "保存成功!",
+      //             });
+      //           } else {
+      //             this.dialogForm.product.dialogVisible = true;
+      //             this.dialogForm.product.Msg = data.Msg;
+      //             this.failPlay();
+      //           }
+      //           this.form.PcbSn = "";
+      //         })
+      //         .catch((err) => {
+      //           this.dialogForm.product.dialogVisible = true;
+      //           this.dialogForm.product.Msg = err;
+      //           this.failPlay();
+      //         });
+      //     } else {
+      //       this.failPlay();
+      //       this.dialogForm.upDate.dialogVisible = true;
+      //       this.dialogForm.upDate.Msg = "流程检查失败，缺少过站数据";
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     this.failPlay();
+      //     this.dialogForm.upDate.dialogVisible = true;
+      //     this.dialogForm.upDate.Msg = err;
+      //   });
           
-          let res = JSON.parse(JSON.parse(data.Data))
-          if (res.IsSucess == true) {
-            XY_PCBAHisControl({
-              seiralNumber: this.form.PcbSn,
-              workOrder: "",
-              operationType: "S",
-            }).then(({ data }) => {
-              // this.dialogVisible = false;
-              // console.log(data);
-              if (data.Status == "OK") {
-                // let arr = data.content;
-                this.tableData = data.DataList.map((item) => {
-                  return {
-                    ...item,
-                    DateTime: getDate(item.DateTime),
-                  };
+      SaveIntactProduct(this.form, this.stringcode).then(({ data }) => {
+              if (data.Code == 200) {
+                this.$message({
+                  type: "success",
+                  message: "保存成功!",
                 });
-                this.tableData.sort((a, b) => {
-                  let aTime = new Date(a.DateTime);
-                  let bTime = new Date(b.DateTime);
-                  return bTime - aTime;
+                let saveContainerName = data.Data
+                getPCBMoves(saveContainerName).then((data) => {
+                  // this.dialogVisible = false;
+                  console.log(data);
+                  if (data.Success) {
+                    // let arr = data.content;
+                    this.tableData = data.Data.map((item) => {
+                      return {
+                        ...item,
+                        DateTime: getDate(item.DateTime),
+                      };
+                    });
+                    this.tableData.sort((a, b) => {
+                      let aTime = new Date(a.DateTime);
+                      let bTime = new Date(b.DateTime);
+                      return bTime - aTime;
+                    });
+                    this.form.Result = "PASS";
+                    this.$nextTick(() => {
+                      this.$refs.input.focus();
+                    });
+                  } else {
+                    // this.dialogForm.smt.dialogVisible = true;
+                    // this.dialogForm.smt.Msg = data.Message;
+                  }
                 });
-                this.form.Result = "PASS";
-                this.$nextTick(() => {
-                  this.$refs.input.focus();
+
+                getContainerMoves(saveContainerName).then((res) => {
+                  if (res.Success) {
+                    this.tableData = [...this.tableData, ...res.Data];
+                  } else {
+                    // this.dialogForm.dip.dialogVisible = true;
+                    // this.dialogForm.dip.Msg = res.Msg;
+                  }
+                });
+                TransferData({...this.toForm,ContainerName:saveContainerName}).then((Transferes) => {
+                  let res = JSON.parse(JSON.parse(Transferes.data.Data));
+                  if (res.IsSucess == true) {
+                    this.dialogVisible = true;
+                    setTimeout(() => {
+                      this.dialogVisible = false;
+                    }, 1000);
+                    this.stringcode = "";
+                    this.$refs.input.select();
+                  } else {
+                    this.failPlay();
+                    this.dialogForm.upDate.dialogVisible = true;
+                    this.dialogForm.upDate.Msg = "流程检查失败，缺少过站数据";
+                  }
                 });
               } else {
-                // this.dialogForm.smt.dialogVisible = true;
-                // this.dialogForm.smt.Msg = data.Message;
-              }
-            });
-
-            getContainerMoves(this.toForm.ContainerName).then((res) => {
-              if (res.Success) {
-                this.tableData = [...this.tableData, ...res.Data];
-              } else {
-                // this.dialogForm.dip.dialogVisible = true;
-                // this.dialogForm.dip.Msg = res.Msg;
-              }
-            });
-
-            SaveIntactProduct(this.form, this.stringcode).then(({ data }) => {
-                if (data.Code == 200) {
-                  this.dialogVisible = true;
-                  setTimeout(() => {
-                    this.dialogVisible = false;
-                  }, 1000);
-                  this.stringcode = "";
-                  this.$message({
-                    type: "success",
-                    message: "保存成功!",
-                  });
-                } else {
-                  this.dialogForm.product.dialogVisible = true;
-                  this.dialogForm.product.Msg = data.Msg;
-                  this.failPlay();
-                }
-                this.form.PcbSn = "";
-              })
-              .catch((err) => {
                 this.dialogForm.product.dialogVisible = true;
-                this.dialogForm.product.Msg = err;
+                this.dialogForm.product.Msg = data.Msg;
                 this.failPlay();
-              });
-
-          } else {
-            this.failPlay();
-            this.dialogForm.upDate.dialogVisible = true;
-            this.dialogForm.upDate.Msg = "流程检查失败，缺少过站数据";
-          }
-        })
-        .catch((err) => {
-          this.failPlay();
-          this.dialogForm.upDate.dialogVisible = true;
-          this.dialogForm.upDate.Msg = err;
-        });
+              }
+            })
+            .catch((err) => {
+              this.dialogForm.product.dialogVisible = true;
+              this.dialogForm.product.Msg = err;
+              this.failPlay();
+            });
     },
     handleKeyDown(event) {
       if (event.keyCode === 32) {
@@ -447,7 +516,7 @@ export default {
       });
     },
     changeFocus() {
-      if (!this.form.PcbSn.toLowerCase().startsWith("40502")) {
+      if (!this.form.PcbSn.toLowerCase().startsWith("40502") && !this.form.PcbSn.startsWith("IBZJ")) {
         this.$message.error("PCBA条码错误");
         return;
       }
@@ -531,5 +600,3 @@ export default {
   color: red;
 }
 </style>
-
-    

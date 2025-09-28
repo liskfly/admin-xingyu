@@ -214,3 +214,12 @@ export function QueryXYL_BadProductInformationRepairMaterial(data) {
         data,
     });
 }
+
+//获取物料id的物料和名称和描述
+export function GetGetMarterialNameDesc(data) {
+    return request({
+        url: "/Repair/GetGetMarterialNameDesc",
+        method: "post",
+        data,
+    });
+}

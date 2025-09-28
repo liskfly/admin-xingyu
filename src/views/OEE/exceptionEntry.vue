@@ -23,14 +23,16 @@
           <el-option label="设备故障" value="设备故障"></el-option>
           <el-option label="材料短缺" value="材料短缺"></el-option>
           <el-option label="其他" value="其他"></el-option>
-          <el-option label="计划停机" value="计划停机"></el-option> </el-select
+          <el-option label="计划停机" value="计划停机"></el-option>
+          <el-option label="全部" value=""></el-option>
+          </el-select
         ><el-select
           v-model="searchForm.SearchModel.oeeline"
           placeholder="工作线"
           style="width: 240px"
         >
           <el-option
-            v-for="item in lineList"
+            v-for="item in lineList1"
             :key="item.value"
             :label="item.name"
             :value="item.value"
@@ -56,7 +58,8 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="shutdown_type" label="设备类型"> </el-table-column>
+        <el-table-column prop="shutdown_type" label="设备类型">
+        </el-table-column>
         <el-table-column prop="shutdown_line" label="线体"> </el-table-column>
         <el-table-column
           prop="shutdown_long"
@@ -66,35 +69,32 @@
         >
         </el-table-column>
 
-        <el-table-column
-          prop="shutdown_date"
-          label="日期"
-          align="center"
-        >
+        <el-table-column prop="shutdown_date" label="日期" align="center">
         </el-table-column>
 
-        <el-table-column
-          prop="shutdown_remark"
-          label="说明"
-          align="center"
-        >
+        <el-table-column prop="shutdown_remark" label="说明" align="center">
         </el-table-column>
 
-        <el-table-column
-          prop="shutdown_iuser"
-          label="操作人"
-          align="center"
-        >
+        <el-table-column prop="shutdown_iuser" label="操作人" align="center">
         </el-table-column>
-        <el-table-column label="详情" width="120" align="center">
+        <el-table-column label="详情" width="180" align="center">
           <template slot-scope="scope">
-            <el-button 
-              type="danger"
-              size="mini"
-              icon="el-icon-delete"
-              @click="deleteData(scope.row)"
-              >删除</el-button
-            >
+            <div class="flex justify-between">
+              <el-button
+                type="warning"
+                size="mini"
+                icon="el-icon-edit"
+                @click="changeOpen(scope.row)"
+                >修改</el-button
+              >
+              <el-button
+                type="danger"
+                size="mini"
+                icon="el-icon-delete"
+                @click="deleteData(scope.row)"
+                >删除</el-button
+              >
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -113,7 +113,12 @@
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :visible.sync="addVisible" title="新增" width="40%">
+    <el-dialog
+      :visible.sync="addVisible"
+      title="新增"
+      @close="addClose"
+      width="40%"
+    >
       <el-form ref="form" label-width="140px">
         <el-form-item label="OEE类别">
           <el-select
@@ -171,6 +176,67 @@
         <el-button type="primary" @click="addData"> 确 定 </el-button>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="changeVisible" title="修改" width="40%">
+      <el-form ref="form" label-width="140px">
+        <el-form-item label="OEE类别">
+          <el-select
+            v-model="changeForm.shutdown_type"
+            placeholder="请选择OEE类型"
+            style="width: 240px"
+          >
+            <el-option label="设备故障" value="设备故障"></el-option>
+            <el-option label="材料短缺" value="材料短缺"></el-option>
+            <el-option label="其他" value="其他"></el-option>
+            <el-option label="计划停机" value="计划停机"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="维护线体">
+          <el-select
+            v-model="changeForm.shutdown_line"
+            placeholder="工作线"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in lineList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="计划停机时长(分钟)">
+          <el-input
+            style="width: 240px"
+            placeholder="请输入内容"
+            type="number"
+            @input="handlePositiveInput"
+            v-model="changeForm.shutdown_long"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item label="日期">
+          <el-date-picker
+            style="width: 240px"
+            v-model="changeForm.shutdown_date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="说明">
+          <el-input
+            placeholder="请输入内容"
+            v-model="changeForm.shutdown_remark"
+          >
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="changeVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changeData"> 确 定 </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -186,6 +252,7 @@ import {
   GetXYL_OEE_ShutDownList,
   InsertXYL_OEE_ShutDown,
   DeleteXYL_OEE_ShutDown,
+  UpdateXYL_OEE_ShutDown,
 } from "@/api/assemble";
 import { getToken } from "@/utils/auth";
 import { deleteData } from "@/api/employee";
@@ -218,6 +285,7 @@ export default {
       currentRowIndex: null,
       scrollContainer: null,
       addVisible: false,
+      changeVisible: false,
       tableData2: [],
       container: "",
       detailScrollContainer: null,
@@ -229,6 +297,16 @@ export default {
         { value: "Line5", name: "Line5" },
         { value: "Line6", name: "Line6" },
         { value: "Line7", name: "Line7" },
+      ],
+      lineList1: [
+        { value: "Line1", name: "Line1" },
+        { value: "Line2", name: "Line2" },
+        { value: "Line3", name: "Line3" },
+        { value: "Line4", name: "Line4" },
+        { value: "Line5", name: "Line5" },
+        { value: "Line6", name: "Line6" },
+        { value: "Line7", name: "Line7" },
+        { value: "", name: "全部" },
       ],
       searchForm: {
         PageIndex: 1,
@@ -242,6 +320,14 @@ export default {
         EndTime: "",
       },
       addForm: {
+        shutdown_type: "",
+        shutdown_line: "",
+        shutdown_date: "",
+        shutdown_long: "",
+        shutdown_remark: "",
+        shutdown_user: getToken(),
+      },
+      changeForm: {
         shutdown_type: "",
         shutdown_line: "",
         shutdown_date: "",
@@ -335,8 +421,43 @@ export default {
         }
       });
     },
+    changeOpen(row) {
+      this.changeForm = {
+        shutdown_type: row.shutdown_type,
+        shutdown_line: row.shutdown_line,
+        shutdown_date: row.shutdown_date,
+        shutdown_long: row.shutdown_long,
+        shutdown_remark: row.shutdown_remark,
+        shutdown_user: getToken(),
+      };
+      this.changeVisible = true;
+    },
+    changeData() {
+      UpdateXYL_OEE_ShutDown(this.changeForm).then((res) => {
+        if (res.Success) {
+          this.$message({
+            message: res.Msg,
+            type: "success",
+          });
+          this.addVisible = false;
+          this.changeVisible = false;
+        } else {
+          this.$message.error(res.Msg);
+        }
+      });
+    },
     addOpen() {
       this.addVisible = true;
+    },
+    addClose() {
+      this.addForm = {
+        shutdown_type: "",
+        shutdown_line: "",
+        shutdown_date: "",
+        shutdown_long: "",
+        shutdown_remark: "",
+        shutdown_user: getToken(),
+      };
     },
     deleteData(row) {
       this.$confirm("是否确认删除?", "提示", {
@@ -346,7 +467,7 @@ export default {
       })
         .then(() => {
           DeleteXYL_OEE_ShutDown({ shutdown_guid: row.shutdown_guid }).then(
-            () => {
+            (res) => {
               if (res.Success) {
                 this.$message({
                   message: res.Msg,
@@ -373,6 +494,7 @@ export default {
             message: res.Msg,
             type: "success",
           });
+          this.addVisible = false;
         } else {
           this.$message.error(res.Msg);
         }

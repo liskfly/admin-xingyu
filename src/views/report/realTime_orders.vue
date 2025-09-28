@@ -77,98 +77,119 @@
           </el-select>
         </el-form-item>
         <el-form-item>
+          <el-select v-model="qtyType" placeholder="" @change="qtyChange">
+            <el-option
+              v-for="item in qtyList"
+              :key="item.value"
+              :label="item.lable"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" @click="getData()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- <div class="table"> -->
-      <el-table
-        :data="
-          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        "
-        :height="tableHeight"
-        :header-cell-style="heardStyle"
-        border
-        stripe
-      >
-        <af-table-column
-          align="center"
-          prop="OrderName"
-          label="工单"
-        ></af-table-column>
-        <el-table-column align="center" prop="Laser-Bot" label="Laser-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="DEK-Bot" label="DEK-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="SPI-Bot" label="SPI-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="NPM-Bot" label="NPM-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="AOI-1-Bot" label="AOI-1-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="Reflow-Bot" label="Reflow-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="AOI-2-Bot" label="AOI-2-Bot">
-        </el-table-column>
-        <el-table-column align="center" prop="ICT-Bot" label="ICT-Bot">
-        </el-table-column>
-        <el-table-column align="center" label="Laser-Top">
-          <template slot-scope="scope">
-            {{scope.row['Laser-Top'] ? scope.row['Laser-Top']:scope.row['Laser']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="DEK-Top">
-          <template slot-scope="scope">
-            {{scope.row['DEK-Top'] ? scope.row['DEK-Top']:scope.row['DEK']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="SPI-Top">
-          <template slot-scope="scope">
-            {{scope.row['SPI-Top'] ? scope.row['SPI-Top']:scope.row['SPI']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="NPM-TOP">
-          <template slot-scope="scope">
-            {{scope.row['NPM-Top'] ? scope.row['NPM-Top']:scope.row['NPM']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="AOI-1-Top">
-          <template slot-scope="scope">
-            {{scope.row['AOI-1-Top'] ? scope.row['AOI-1-Top']:scope.row['AOI']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="Reflow-Top">
-          <template slot-scope="scope">
-            {{scope.row['Reflow-Top'] ? scope.row['Reflow-Top']:scope.row['Reflow']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="AOI-2-Top">
-          <template slot-scope="scope">
-            {{scope.row['AOI-2-Top'] ? scope.row['AOI-2-Top']:scope.row['AOI-2']}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="ICT-Top">
-          <template slot-scope="scope">
-            {{scope.row['ICT-Top'] ? scope.row['ICT-Top']:scope.row['ICT']}}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column prop="Name" label="T-炉后AOI"> </el-table-column>
+    <el-table
+      :data="
+        tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+      "
+      :height="tableHeight"
+      :header-cell-style="heardStyle"
+      border
+      stripe
+    >
+      <af-table-column
+        align="center"
+        prop="OrderName"
+        label="工单"
+      ></af-table-column>
+      <el-table-column align="center" prop="Laser-Bot" label="Laser-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="DEK-Bot" label="DEK-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="SPI-Bot" label="SPI-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="NPM-Bot" label="NPM-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="AOI-1-Bot" label="AOI-1-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="Reflow-Bot" label="Reflow-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="AOI-2-Bot" label="AOI-2-Bot">
+      </el-table-column>
+      <el-table-column align="center" prop="ICT-Bot" label="ICT-Bot">
+      </el-table-column>
+      <el-table-column align="center" label="Laser-Top">
+        <template slot-scope="scope">
+          {{
+            scope.row["Laser-Top"] ? scope.row["Laser-Top"] : scope.row["Laser"]
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="DEK-Top">
+        <template slot-scope="scope">
+          {{ scope.row["DEK-Top"] ? scope.row["DEK-Top"] : scope.row["DEK"] }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="SPI-Top">
+        <template slot-scope="scope">
+          {{ scope.row["SPI-Top"] ? scope.row["SPI-Top"] : scope.row["SPI"] }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="NPM-TOP">
+        <template slot-scope="scope">
+          {{ scope.row["NPM-Top"] ? scope.row["NPM-Top"] : scope.row["NPM"] }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="AOI-1-Top">
+        <template slot-scope="scope">
+          {{
+            scope.row["AOI-1-Top"] ? scope.row["AOI-1-Top"] : scope.row["AOI"]
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="Reflow-Top">
+        <template slot-scope="scope">
+          {{
+            scope.row["Reflow-Top"]
+              ? scope.row["Reflow-Top"]
+              : scope.row["Reflow"]
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="AOI-2-Top">
+        <template slot-scope="scope">
+          {{
+            scope.row["AOI-2-Top"] ? scope.row["AOI-2-Top"] : scope.row["AOI-2"]
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="ICT-Top">
+        <template slot-scope="scope">
+          {{ scope.row["ICT-Top"] ? scope.row["ICT-Top"] : scope.row["ICT"] }}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column prop="Name" label="T-炉后AOI"> </el-table-column>
         <el-table-column prop="order" label="DIP"> </el-table-column> -->
-      </el-table>
-      <div class="block" style="margin-top: 15px">
-        <el-pagination
-          align="center"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[5, 10, 20, 50, 100]"
-          layout="total,sizes, prev, pager, next, jumper"
-          :total="tableData.length"
-        >
-        </el-pagination>
-      </div>
+    </el-table>
+    <div class="block" style="margin-top: 15px">
+      <el-pagination
+        align="center"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        layout="total,sizes, prev, pager, next, jumper"
+        :total="tableData1.length"
+      >
+      </el-pagination>
+    </div>
     <!-- </div> -->
   </div>
 </template>
@@ -192,7 +213,7 @@ export default {
         workOrder: "",
         startDateTime: "",
         endDateTime: "",
-        lineNumber: 0,
+        lineNumber:'',
         fixedint: 0,
         operationType: "W",
       },
@@ -225,23 +246,55 @@ export default {
       lineType: [
         {
           lable: "Line1",
-          value: 1,
+          value: "Line1",
         },
         {
           lable: "Line2",
-          value: 2,
+          value: "Line2",
         },
         {
           lable: "Line3",
-          value: 3,
+          value: "Line3",
+        },
+        {
+          lable: "Line4",
+          value: "Line4",
+        },
+        {
+          lable: "Line5",
+          value: "Line5",
+        },
+        {
+          lable: "Line6",
+          value: "Line6",
+        },
+        {
+          lable: "Line7",
+          value: "Line7",
+        },
+      ],
+      qtyType: "all",
+      qtyList: [
+        {
+          lable: "总数",
+          value: "all",
+        },
+        {
+          lable: "Pass数量",
+          value: "pass",
+        },
+        {
+          lable: "Fail数量",
+          value: "fail",
         },
       ],
       tableHeight: 0,
       value1: [],
       tableData: [],
+      tableData1: [],
       currentPage: 1, // 当前页码
       pageSize: 10, // 每页的数据条数
-      selectData:[]
+      selectData: [],
     };
   },
   watch: {
@@ -254,7 +307,7 @@ export default {
         // console.log(newValue, oldValue);
         this.getDataText.workOrder = "";
         this, (this.value1 = []);
-        this.getDataText.lineNumber = 0;
+        this.getDataText.lineNumber = '';
         this.getDataText.fixedint = 0;
       }
     },
@@ -269,8 +322,15 @@ export default {
       this.startLoading();
       XY_PCBAHisQTYControl(this.getDataText).then(({ data }) => {
         if (data.Status == "OK") {
-          this.dataProse(data.DataList);
-          console.log(data);
+          this.tableData = data.DataList;
+          if (this.qtyType == "all") {
+            this.tableData1 = this.dataProse(this.tableData, "sns");
+          } else if (this.qtyType == "pass") {
+            this.tableData1 = this.dataProse(this.tableData, "sns2");
+          } else if (this.qtyType == "fail") {
+            this.tableData1 = this.dataProse(this.tableData, "sns3");
+          }
+          this.endLoading();
         } else {
           this.endLoading();
           this.$alert(data.Message, "错误信息", {
@@ -279,16 +339,25 @@ export default {
         }
       });
     },
-    dataProse(data) {
+    qtyChange(value) {
+      if (value == "all") {
+        this.tableData1 = this.dataProse(this.tableData, "sns");
+      } else if (value == "pass") {
+        this.tableData1 = this.dataProse(this.tableData, "sns2");
+      } else if (value == "fail") {
+        this.tableData1 = this.dataProse(this.tableData, "sns3");
+      }
+    },
+    dataProse(data, type) {
       let arr = [];
       data.forEach((item) => {
         const index = arr.findIndex((wo) => wo.OrderName == item.OrderName);
         if (index > -1) {
-          arr[index][item.OperationName] = item.sns;
+          arr[index][item.OperationName] = item[type];
         } else {
           arr.push({
             OrderName: item.OrderName,
-            [item.OperationName]: item.sns,
+            [item.OperationName]: item[type],
           });
         }
       });
@@ -298,8 +367,9 @@ export default {
         let bTime = b.OrderName.match(/\d+/g);
         return aTime - bTime;
       });
-      console.log(arr);
-      this.tableData = arr;
+      // console.log(arr);
+      // this.tableData = arr;
+      return arr;
       this.endLoading();
     },
     startLoading() {

@@ -20,7 +20,8 @@
           </template>
         </el-table-column>
         <af-table-column prop="Tool" label="工治具编码"> </af-table-column>
-        <af-table-column prop="Model" label="工治具类别"> </af-table-column>
+        <af-table-column prop="Model" label="工治具类型"> </af-table-column>
+        <af-table-column prop="MaterialName" label="类型描述"> </af-table-column>
         <el-table-column prop="Cell" label="储位" width="100">
         </el-table-column>
         <el-table-column prop="Dsc" label="描述"> </el-table-column>
@@ -80,8 +81,10 @@
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
           <el-select v-model="addForm.compname" filterable style="width: 350px" placeholder="请选择工治具类别" clearable @change="getCompname">
-            <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
+            <el-tooltip :content="returnType(item.Category)" placement="top" v-for="item in typeList" :key="item.ToolsMold">
+            <el-option :key="item.ToolsMold" :label="item.ToolsMold"
               :value="item.ToolsMold"></el-option>
+            </el-tooltip>
           </el-select>
         </el-form-item>
         <el-form-item label="类别" prop="remark">
@@ -111,8 +114,10 @@
         </el-form-item>
         <el-form-item label="工治具类别" prop="compname">
           <el-select v-model="editForm.compname" filterable style="width: 350px" placeholder="请选择工治具类别" clearable @change="getCompname">
-            <el-option v-for="item in typeList" :key="item.ToolsMold" :label="item.ToolsMold"
+            <el-tooltip :content="returnType(item.Category)" placement="top" v-for="item in typeList" :key="item.ToolsMold">
+            <el-option :key="item.ToolsMold" :label="item.ToolsMold"
               :value="item.ToolsMold"></el-option>
+              </el-tooltip>
           </el-select>
         </el-form-item>
          <el-form-item label="类别" prop="remark">

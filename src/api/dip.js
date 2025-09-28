@@ -9,3 +9,13 @@ export function getContainerMoves(data) {
       },
     });
   }
+//smt查询
+export function getPCBMoves(data) {
+    return request({
+      url: "/Container/getPCBMoves",
+      method: "post",
+      params: {
+        conName: data,
+      },
+    });
+  }

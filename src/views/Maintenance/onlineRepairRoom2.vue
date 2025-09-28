@@ -205,15 +205,13 @@
 
                 <el-table-column prop="productname" label="更换料号">
                     <template v-slot="{ row, $index }">
-                        <el-input v-model="row.productname" :id="`trayIdRef${$index}`" />
+                        <el-input v-model="row.productname" @change="((val) => { getMarterialData(val,row,$index) })" :id="`trayIdRef${$index}`" />
                     </template>
                 </el-table-column>
-
-                <!-- <el-table-column prop="productnum" label="数量">
-                    <template v-slot="{ row }">
-                        <el-input v-model="row.productnum" />
-                    </template>
-                </el-table-column> -->
+                <el-table-column prop="pnname" label="名称">
+                </el-table-column>
+                <el-table-column prop="pn_spec" label="规格">
+                </el-table-column>
                 <el-table-column label="操作">
                     <template v-slot="{ $index }">
                         <el-button v-if="$index === productid.length - 1" type="text" icon="el-icon-plus"
@@ -238,6 +236,7 @@ import {
     UpdateXYL_BadProductInformation,
     QueryXYL_BadProductInformationFromByNo,
     QueryXYL_BadProductInformationFromContainer,
+    GetGetMarterialNameDesc
 } from "@/api/repairApi";
 import { getToken } from "@/utils/auth";
 import { exportTableToExcel } from "@/utils/exportExcel";
@@ -323,6 +322,16 @@ export default {
                     // });
                 }
             });
+        },
+        getMarterialData(value,row,index) {
+            GetGetMarterialNameDesc({"material": value}).then((res) => {
+                if (res.Success) {
+                    this.$set(this.productid[index], 'pnname', res.Data[0].pnname);
+                    this.$set(this.productid[index], 'pn_spec', res.Data[0].pn_spec);
+                    // this.productid[index].pnname = res.Data[0].pnname;
+                    // this.productid[index].pn_spec = res.Data[0].pn_spec;
+                }
+            })
         },
         getSearchData() {
             this.getForm.PageIndex = 1;

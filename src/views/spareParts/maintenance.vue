@@ -4,16 +4,34 @@
       <div class="table_header">
         <el-button type="primary" @click="openAdd()">添加</el-button>
         <div class="input_box">
-          <!-- <el-input
-            placeholder="请输入内容"
+          <el-date-picker
+            v-model="dateValue"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            size="small"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']"
+            :clearable="true"
+          >
+          </el-date-picker>
+          <el-input
+            placeholder="请输入"
             clearable
+            style="width: 240px"
             v-model="getlistText.searchText"
             class="input-with-select"
             @input="getSearchData"
             @change="getSearchData"
           >
-            <el-button slot="append" icon="el-icon-search"></el-button>
-          </el-input> -->
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getData"
+            ></el-button>
+          </el-input>
         </div>
       </div>
       <div class="table_container">
@@ -27,10 +45,15 @@
         >
           <el-table-column type="index" label="序号" width="50" align="center">
             <template slot-scope="scope">
-              {{ (getlistText.PageIndex - 1) * getlistText.PageSize + scope.$index + 1 }}
+              {{
+                (getlistText.PageIndex - 1) * getlistText.PageSize +
+                scope.$index +
+                1
+              }}
             </template>
           </el-table-column>
-          <el-table-column prop="line_code" label="线体" width="75"> </el-table-column>
+          <el-table-column prop="line_code" label="线体" width="75">
+          </el-table-column>
           <el-table-column prop="device_model" label="设备型号" width="100">
           </el-table-column>
           <el-table-column
@@ -65,15 +88,15 @@
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="create_time" label="时间"  width="120">
+          <el-table-column prop="create_time" label="时间" width="120">
             <template slot-scope="scope">
               <span style="white-space: pre-wrap">{{
                 deleteText(scope.row.create_time)
               }}</span>
             </template>
-        </el-table-column>
+          </el-table-column>
           <!-- <el-table-column prop="creator" label="录入人"> </el-table-column> -->
-          <!-- <el-table-column
+          <el-table-column
             fixed="right"
             label="操作"
             width="200"
@@ -87,19 +110,13 @@
                 @click="handleEdit(scope.$index, scope.row)"
               ></el-button>
               <el-button
-                type="warning"
-                icon="el-icon-time"
-                size="mini"
-                @click="handleHistory(scope.$index, scope.row)"
-              ></el-button>
-              <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
                 @click="handleDelete(scope.$index, scope.row)"
               ></el-button>
             </template>
-          </el-table-column> -->
+          </el-table-column>
         </el-table>
         <div class="block" style="margin-top: 8px">
           <el-pagination
@@ -131,19 +148,43 @@
         inline
       >
         <el-form-item label="线体" prop="line_code">
-          <el-input
+          <el-select
+            v-model="form.line_code"
+            filterable
+            allow-create
+            default-first-option
+            placeholder=""
             style="width: 300px"
             :disabled="show"
-            v-model="form.line_code"
-            placeholder=""
-          ></el-input>
+            @focus="getLine()"
+          >
+            <el-option
+              v-for="item in lineList"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="设备型号" prop="device_model">
-          <el-input
-            style="width: 300px"
+          <el-select
             v-model="form.device_model"
+            filterable
+            allow-create
+            default-first-option
             placeholder=""
-          ></el-input>
+            style="width: 300px"
+            @focus="getType()"
+          >
+            <el-option
+              v-for="item in typeList"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="故障现象" prop="fault_phenomenon">
           <el-input
@@ -204,64 +245,78 @@
       title="修改"
       @close="editCancel()"
       :visible.sync="dialogEdVisible"
-      width="500px"
+      width="1000px"
     >
       <el-form
-        ref="editForm"
+        ref="form"
         :model="edForm"
-        :rules="rules"
         label-width="100px"
+        inline
       >
-        <el-form-item label="容器ID" prop="Containerid">
+        <el-form-item label="线体" prop="line_code">
           <el-input
-            v-model="edForm.Containerid"
-            placeholder="容器ID"
+            style="width: 480px"
+            v-model="edForm.line_code"
+            placeholder=""
+            disabled
           ></el-input>
         </el-form-item>
-        <el-form-item label="名称" prop="ContainerName">
+        <el-form-item label="设备型号" prop="device_model">
           <el-input
-            v-model="edForm.ContainerName"
-            placeholder="名称"
+            style="width: 480px"
+            v-model="edForm.device_model"
+            placeholder=""
+            disabled
           ></el-input>
         </el-form-item>
-        <el-form-item label="规格" prop="Spec">
+        <el-form-item label="故障现象" prop="fault_phenomenon">
           <el-input
+            style="width: 710px"
+            v-model="edForm.fault_phenomenon"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="分析步骤" prop="analysis_steps">
+          <el-input
+            style="width: 710px"
             type="textarea"
-            v-model="edForm.Spec"
-            placeholder="规格"
+            v-model="edForm.analysis_steps"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="最大容量" prop="Capacity">
-          <el-input v-model="edForm.Capacity" placeholder="最大容量"></el-input>
-        </el-form-item>
-        <el-form-item label="生产类型" prop="ProduceType">
-          <el-select v-model="edForm.ProduceType" placeholder="生产类型">
-            <el-option
-              v-for="item in lineList"
-              :key="item.lineType"
-              :label="item.lineType"
-              :value="item.lineType"
-            ></el-option>
-          </el-select>
-          <!-- </el-input> -->
-        </el-form-item>
-        <el-form-item label="最大使用次数" prop="MaxuseNum">
+        <el-form-item label="处理方法" prop="solution_method">
           <el-input
-            v-model="edForm.MaxuseNum"
-            placeholder="最大使用次数"
+            style="width: 710px"
+            type="textarea"
+            v-model="edForm.solution_method"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="出厂日期" prop="madata">
-          <!-- <el-input v-model="form.madata" placeholder="出厂日期"></el-input> -->
-          <el-form-item prop="madata">
-            <el-date-picker
-              type="datetime"
-              placeholder="选择日期"
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="edForm.madata"
-            ></el-date-picker>
-          </el-form-item>
+        <el-form-item label="输出内容" prop="maintenance_result">
+          <el-input
+            style="width: 710px"
+            type="textarea"
+            v-model="edForm.maintenance_result"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="横展" prop="horizontal_extension">
+          <el-input
+            style="width: 710px"
+            type="textarea"
+            v-model="edForm.horizontal_extension"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="时间" prop="create_time">
+          <el-date-picker
+            style="width: 300px"
+            v-model="edForm.create_time"
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -274,9 +329,19 @@
 
 <script>
 import {
+  shortcuts1,
+  disabledDate,
+  setTodayDate,
+  setLastDate,
+} from "@/utils/dataMenu";
+import {
   addEquipmentMaintenance,
   QueryWarehouseInspectionData,
+  GetEquipmentMaintenance,
+  UpdateEquipmentMaintenanceFormID,
+  DeleteEquipmentMaintenanceFormID
 } from "@/api/spApi";
+import dayjs from "dayjs";
 import { getToken } from "@/utils/auth";
 export default {
   data() {
@@ -307,22 +372,16 @@ export default {
         create_time: "",
       },
       edForm: {
-        Containerid: "",
-        ContainerName: "",
-        Spec: "",
-        Pn: "", //料号
-        Qty: 0, //数量
-        CellNo: "", //储位
-        Capacity: "",
-        Stts: 0,
-        ProduceType: "",
-        MaxuseNum: "",
-        UsedNum: 0,
-        UpdateTime: "",
-        UpdateUser: "",
-        CreateTime: "",
-        CreateUser: "",
-        ExFactoryDate: "",
+        id: 0,
+        line_code: "",
+        device_model: "",
+        fault_phenomenon: "",
+        analysis_steps: "",
+        solution_method: "",
+        maintenance_result: "",
+        horizontal_extension: "",
+        creator: "",
+        create_time: "",
       },
       tableData: [],
       total: 0,
@@ -337,6 +396,8 @@ export default {
         StartTime: "",
         EndTime: "",
       },
+      lineList: [],
+      typeList: [],
       rules: {
         line_code: [{ required: true, message: "请输入", trigger: "blur" }],
         device_model: [{ required: true, message: "请输入", trigger: "blur" }],
@@ -358,12 +419,37 @@ export default {
         create_time: [{ required: true, message: "请选择", trigger: "blur" }],
       },
       hosity: [],
+      dateValue: [],
+      pickerOptions: {
+        shortcuts: shortcuts1,
+        // disabledDate: disabledDate,
+      },
     };
+  },
+  watch: {
+    dateValue(value) {
+      if (value == null) {
+        this.getlistText.StartTime = "";
+        this.getlistText.EndTime = "";
+      } else {
+        this.getlistText.StartTime = value[0];
+        this.getlistText.EndTime = value[1];
+      }
+      this.getlistText.PageIndex = 1;
+      this.getData();
+    },
   },
   created() {
     this.getData();
   },
   beforeMount() {
+    // const todayStart = new Date();
+    // todayStart.setMonth(todayStart.getMonth() - 3);
+    // // todayStart.setHours(0, 0, 0, 0); // 今天的开始时间
+    // this.dateValue = [
+    //   dayjs(todayStart).format("YYYY-MM-DD HH:mm:ss"),
+    //   dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+    // ];
     this.getScreenHeight();
   },
   mounted() {
@@ -387,6 +473,26 @@ export default {
           this.endLoading();
         });
     },
+    getLine() {
+      GetEquipmentMaintenance({
+        request_type: "line",
+      }).then((res) => {
+        if (res.data.Success) {
+          this.lineList = res.data.Data.sort(
+            (a, b) => a.split("-")[1] - b.split("-")[1]
+          );
+        }
+      });
+    },
+    getType() {
+      GetEquipmentMaintenance({
+        request_type: "equip",
+      }).then((res) => {
+        if (res.data.Success) {
+          this.typeList = res.data.Data;
+        }
+      });
+    },
     openAdd() {
       this.form.line_code = "";
       this.form.device_model = "";
@@ -398,7 +504,8 @@ export default {
       this.form.create_time = "";
       this.show = false;
       this.dialogVisible = true;
-      //  this.form=this.edForm
+      this.getLine();
+      this.getType();
     },
     onSubmit() {
       this.$refs.form.validate((valid) => {
@@ -443,22 +550,42 @@ export default {
       this.dialogVisible = false;
       this.$refs.form.resetFields();
     },
-    editSubmit() {},
+    editSubmit() {
+      UpdateEquipmentMaintenanceFormID(this.edForm).then(({ data }) => {
+              if (data.Code == 200) {
+                this.dialogEdVisible = false;
+                this.getData();
+                this.$message({
+                  type: "success",
+                  message: data.Msg,
+                });
+              } else {
+                this.$message({
+                  type: "error",
+                  message: data.Msg,
+                });
+              }
+              this.endLoading();
+            })
+            .catch((error) => {
+              this.endLoading();
+            });
+    },
     editCancel() {
       this.dialogEdVisible = false;
     },
     deleteText(str) {
-       let a = str.split(' ')[0];
-       let year = a.split('/')[2];
-       let month = a.split('/')[0];
-       let day = a.split('/')[1];
-       return `${year}/${month}/${day}`
+      let a = str.split(" ")[0];
+      let year = a.split("/")[2];
+      let month = a.split("/")[0];
+      let day = a.split("/")[1];
+      return `${year}/${month}/${day}`;
     },
     handleEdit(index, row) {
       // this.edForm = row;
       this.show = true;
       this.formDataPro(row);
-      this.dialogVisible = true;
+      this.dialogEdVisible = true;
       // console.log(row);
     },
     handleHistory(index, row) {
@@ -483,16 +610,20 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteContainer({ Containerid: row.Containerid }).then((res) => {
-            if (this.tableData.length == 1 && this.getlistText.pageIndex >= 0) {
-              this.getlistText.pageIndex--;
-            }
-            // console.log(this.tableData.length, this.getlistText.pageIndex);
+          DeleteEquipmentMaintenanceFormID({ id: row.id }).then((res) => {
+            if (res.data.Code == 200) {
             this.getData();
             this.$message({
               type: "success",
               message: "删除成功!",
             });
+            }else {
+              
+          this.$message({
+            type: "danger",
+            message: res.data.Msg,
+          });
+            }
           });
         })
         .catch(() => {
@@ -517,22 +648,16 @@ export default {
     },
     formDataPro(row) {
       // console.log(row);
-      this.form.containerid = row.Containerid;
-      this.form.containerName = row.ContainerName;
-      this.form.spec = row.Spec;
-      this.form.pn = row.Pn;
-      this.form.qty = row.Qty;
-      this.form.cellNo = row.CellNo;
-      this.form.capacity = row.Capacity;
-      this.form.stts = row.Stts;
-      this.form.produceType = row.ProduceType;
-      this.form.maxuseNum = row.MaxuseNum;
-      this.form.usedNum = row.UsedNum;
-      this.form.updateTime = row.UpdateTime;
-      this.form.updateUser = row.UpdateUser;
-      this.form.createTime = row.CreateTime;
-      this.form.createUser = row.CreateUser;
-      this.form.exFactoryDate = row.ExFactoryDate;
+      this.edForm.id = row.id;
+      this.edForm.line_code = row.line_code;
+      this.edForm.device_model = row.device_model;
+      this.edForm.fault_phenomenon = row.fault_phenomenon;
+      this.edForm.analysis_steps = row.analysis_steps;
+      this.edForm.solution_method = row.solution_method;
+      this.edForm.maintenance_result = row.maintenance_result;
+      this.edForm.horizontal_extension = row.horizontal_extension;
+      this.edForm.creator = getToken();
+      this.edForm.create_time = dayjs(row.create_time).format("YYYY-MM-DD HH:mm:ss");
       // console.log(this.form);
     },
     getSearchData() {
@@ -580,11 +705,12 @@ export default {
   .table_header {
     padding-bottom: 8px;
     display: flex;
-    gap: 30px;
     justify-content: space-between;
     align-items: center;
     .input_box {
-      width: 400px;
+      display: flex;
+      // width: 400px;
+      gap: 30px;
     }
   }
 }

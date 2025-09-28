@@ -44,10 +44,10 @@
             <el-col :span="12" :offset="0">
             <dv-border-box-12 class="centerh">
               <div class="header_title">
-                <i class="fa fa-check-circle"></i> OEE
+                <i class="fa fa-check-circle"></i> OEE {{ ' 总OEE' + allOee }}
               </div>
               <div>
-                <oeeChart />
+                <oeeChart @update-data="handleDataFromChild" />
                 <!-- <dayChart /> -->
               </div>
             </dv-border-box-12>
@@ -90,7 +90,8 @@ export default {
       refreshCountdown: 60,
       lastUpdatedTime: "",
       dataRefreshInterval: null,
-      countdownInterval: null
+      countdownInterval: null,
+      allOee:0
     };
   },
   beforeMount() {
@@ -124,6 +125,10 @@ export default {
     }
   },
   methods: {
+    handleDataFromChild(data) {
+      this.allOee = data;
+      console.log(this.allOee);
+    },
     updateTime() {
       const now = new Date();
       this.currentTime = now.toLocaleString("zh-CN", {

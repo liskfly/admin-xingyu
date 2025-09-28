@@ -2,45 +2,41 @@
   <div class="moisture">
     <!-- <el-row :gutter="20">
       <el-col :span="18" :offset="0"> -->
-      <div class="m-2">
-        <el-input
-          placeholder="ID"
-          v-model="reelID"
-          class="input-with-select"
-          @click.native.prevent="searchData()"
-          style="width: 300px; margin-right: 20px"
-        >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="searchData()"
-          ></el-button>
-        </el-input>
-      </div>
+    <div class="m-2">
+      <el-input
+        placeholder="ID"
+        v-model="reelID"
+        class="input-with-select"
+        @click.native.prevent="searchData()"
+        style="width: 300px; margin-right: 20px"
+      >
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="searchData()"
+        ></el-button>
+      </el-input>
+    </div>
     <el-table
-    :data="tableData.slice(
-          (currentPage - 1) * pageSize,
-          currentPage * pageSize
-        )
-          "
+      :data="
+        tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+      "
       :height="tableHeight"
       :header-cell-style="heardStyle"
       border
       style="width: 100%"
       size="medium"
     >
-    <el-table-column label="序号" width="55">
-            <template slot-scope="scope">
-              <span>{{
-                scope.$index + 1 + (currentPage - 1) * pageSize
-              }}</span>
-            </template>
-          </el-table-column>
+      <el-table-column label="序号" width="55">
+        <template slot-scope="scope">
+          <span>{{ scope.$index + 1 + (currentPage - 1) * pageSize }}</span>
+        </template>
+      </el-table-column>
       <af-table-column prop="ReelID" label="ID"> </af-table-column>
       <af-table-column prop="CompName" label="料号"> </af-table-column>
       <el-table-column prop="TimeLeft" label="剩余时间" align="center">
         <template slot-scope="scope">
-          <span>{{minChangeH(scope.row.TimeLeft)}}</span>
+          <span>{{ minChangeH(scope.row.TimeLeft) }}</span>
         </template>
       </el-table-column>
       <af-table-column prop="CountLeft" label="剩余数量" align="center">
@@ -53,20 +49,20 @@
       <af-table-column prop="Cellid" label="库位"> </af-table-column>
       <af-table-column prop="Remark" label="备注"> </af-table-column>
     </el-table>
-     <div class="block" style="margin-top: 15px">
-          <el-pagination
-            align="center"
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            :page-sizes="[5, 10, 20, 50, 100]"
-            layout="total,sizes, prev, pager, next, jumper"
-            :total="tableData.length"
-          >
-          </el-pagination>
-        </div>
+    <div class="block" style="margin-top: 15px">
+      <el-pagination
+        align="center"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        layout="total,sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+      >
+      </el-pagination>
+    </div>
     <!-- </el-col> -->
     <!-- <el-col :span="6" :offset="0">
         <el-card>
@@ -107,7 +103,7 @@ export default {
       },
       tableData: [],
       tableHeight: 0,
-         currentPage: 1, // 当前页码
+      currentPage: 1, // 当前页码
       pageSize: 50, // 每页的数据条数
       reelID: "",
       cell: "",
@@ -121,18 +117,18 @@ export default {
       },
     };
   },
-   beforeMount() {
+  beforeMount() {
     this.getScreenHeight();
   },
   mounted() {
-     window.addEventListener("resize", this.getScreenHeight);
+    window.addEventListener("resize", this.getScreenHeight);
     this.searchData();
     this.getTimer = setInterval(() => {
       this.searchData();
     }, 5000);
   },
   destroyed() {
-        window.removeEventListener("resize", this.getScreenHeight);
+    window.removeEventListener("resize", this.getScreenHeight);
     // console.log(1);
     clearTimeout(this.getTimer);
     this.getTimer = null;
@@ -141,20 +137,28 @@ export default {
     getData() {
       dryComponentControl({ reelID: "", mcId: 4, type: "inquiry" }).then(
         (res) => {
-          this.tableData = res.data.Details;
+          if (res.data.Status == "OK") {
+            this.tableData = res.data.Details;
+          } else {
+            this.tableData = [];
+          }
           // console.log();
         }
       );
     },
     searchData() {
-      dryComponentControl({ reelID: this.reelID, mcId: 4, type: "inquiry" }).then(
-        (res) => {
-          if (res.data.Status == 'OK') {
-            this.tableData = res.data.Details;
-          }
-          // console.log();
+      dryComponentControl({
+        reelID: this.reelID,
+        mcId: 4,
+        type: "inquiry",
+      }).then((res) => {
+        if (res.data.Status == "OK") {
+          this.tableData = res.data.Details;
+        } else {
+          this.tableData = [];
         }
-      );
+        // console.log();
+      });
     },
     onSubmit() {
       // this.$refs.form.validate((valid) => (this.itemPass1 = valid));
@@ -218,8 +222,8 @@ export default {
       //   });
       // }
     },
-    minChangeH(data){
-        return (Math.floor(data/60) + "小时" + (data%60) + "分" );
+    minChangeH(data) {
+      return Math.floor(data / 60) + "小时" + (data % 60) + "分";
     },
     offLight() {
       this.$confirm("确定灭灯", "提示", {
@@ -251,7 +255,7 @@ export default {
           });
         });
     },
-     handleSizeChange(val) {
+    handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
       // this.currentPage = 1;
       this.pageSize = val;
@@ -261,7 +265,7 @@ export default {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
-     getScreenHeight() {
+    getScreenHeight() {
       this.$nextTick(() => {
         // console.log( window.innerHeight);
         this.tableHeight = window.innerHeight - 200;
@@ -272,6 +276,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

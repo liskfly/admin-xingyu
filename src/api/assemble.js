@@ -71,3 +71,39 @@ export function DeleteXYL_OEE_ShutDown(data) {
         data,
     });
 }
+    
+//修改停机计划
+export function UpdateXYL_OEE_ShutDown(data) {
+    return request({
+        url: "/EquipmentMaintenance/UpdateXYL_OEE_ShutDown",
+        method: "post",
+        data,
+    });
+}
+    
+//获取pcb追溯数据
+export function QueryPCBDateBackTo(data) {
+    return request({
+        url: "/ReportQuery/QueryPCBDateBackTo",
+        method: "post",
+        data,
+    });
+}
+    
+//获取Camstar和Valor合并线体
+export function GetCamstarValorLine(data) {
+    return request({
+        url: "/ReportQuery/GetCamstarValorLine",
+        method: "post",
+        data,
+    });
+}
+    
+//获取Camstar和Valor合并资源
+export function GetCamstarValorEquip(data) {
+    return request({
+        url: "/ReportQuery/GetCamstarValorEquip",
+        method: "post",
+        data,
+    });
+}

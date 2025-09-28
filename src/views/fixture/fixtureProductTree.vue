@@ -23,6 +23,12 @@
           <!-- <el-table-column prop="PD_model" label="产品编号"> </el-table-column> -->
           <el-table-column prop="PD_model" label="产品编号"> </el-table-column>
           <el-table-column prop="PN_Model" label="类型"> </el-table-column>
+          <el-table-column prop="MaterialName" label="类型描述"> </el-table-column>
+          <el-table-column prop="Category" label="类别">
+            <template slot-scope="scope">
+              <div>{{ returnType(scope.row.Category) }}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="Qty" label="消耗量"> </el-table-column>
           <el-table-column prop="Dsc" label="描述"> </el-table-column>
         </el-table>
@@ -115,6 +121,8 @@ export default {
             this.tableData.sort((a, b) => {
               return a.PD_model - b.PD_model;
             });
+            console.log(this.tableData);
+            
             this.tableData1 = this.tableData
             // console.log(this.tableData1);
             
@@ -177,7 +185,7 @@ export default {
       // console.log(dataArr);
       
       dataArr.forEach((item) => {
-        const { PD_model, PN_Model, Qty, Dsc } = item;
+        const { PD_model, PN_Model, Qty, Dsc, Category, MaterialName } = item;
 
         if (!resultMap.has(PD_model)) {
           // 为每个唯一的PD_model创建一个新组
@@ -202,12 +210,28 @@ export default {
             PN_Model,
             Qty,
             Dsc,
+            Category,
+            MaterialName,
             PD_modelID: `${PD_model}-${PN_Model}`
           });
         }
       });
 
       return Array.from(resultMap.values());
+    },
+    returnType(num) {
+      let arr = [
+        { Value: "1", Text: "印刷工治具" },
+        { Value: "2", Text: "ICT工治具" },
+        { Value: "3", Text: "样件" },
+      ];
+      let text = ''
+      arr.forEach((i) => {
+        if (i.Value == num) {
+          text = i.Text;
+        }
+      })
+      return text;
     },
     handleSizeChange(value) {
       this.pageSize = value;

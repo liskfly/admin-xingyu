@@ -9,40 +9,97 @@
           </el-input>
         </div> -->
         <div>
-          <el-input v-model="searchText" placeholder="请输入ID或名称" style="width: 350px" @keyup.enter.native="getSearchData"
-            clearable @clear="clearData">
-            <el-button slot="append" icon="el-icon-search" @click="getSearchData"></el-button>
+          <el-input
+            v-model="searchText"
+            placeholder="请输入ID或名称"
+            style="width: 350px"
+            @keyup.enter.native="getSearchData"
+            clearable
+            @clear="clearData"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getSearchData"
+            ></el-button>
           </el-input>
         </div>
       </div>
-      <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-        " border :height="tableHeight" style="width: 100%" size="mini">
+      <el-table
+        :data="
+          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
+        border
+        :height="tableHeight"
+        style="width: 100%"
+        size="mini"
+      >
         <!-- 序号列 -->
-        <el-table-column type="index" label="序号" width="55" fixed="left" align="center">
+        <el-table-column
+          type="index"
+          label="序号"
+          width="55"
+          fixed="left"
+          align="center"
+        >
           <template v-slot="{ $index }">
-            {{ ($index + 1) + (currentPage - 1) * pageSize }}
+            {{ $index + 1 + (currentPage - 1) * pageSize }}
           </template>
         </el-table-column>
 
         <!-- 数据列 -->
-        <el-table-column prop="panelmerge_id" label="合并ID" width="220" fixed="left" />
+        <el-table-column
+          prop="panelmerge_id"
+          label="合并ID"
+          width="220"
+          fixed="left"
+        />
         <el-table-column prop="panelmerge_name" label="合并名称" width="150" />
 
         <!-- 左灯信息列组 -->
         <el-table-column label="左灯信息">
-          <af-table-column prop="panelmerge_left_no" label="物料编码" width="120" />
-          <af-table-column prop="panelmerge_left_name" label="物料名称" width="150" />
-          <af-table-column prop="panelmerge_left_desc" label="物料规格" width="200" />
+          <af-table-column
+            prop="panelmerge_left_no"
+            label="物料编码"
+            width="120"
+          />
+          <af-table-column
+            prop="panelmerge_left_name"
+            label="物料名称"
+            width="150"
+          />
+          <af-table-column
+            prop="panelmerge_left_desc"
+            label="物料规格"
+            width="200"
+          />
         </el-table-column>
 
         <!-- 右灯信息列组 -->
         <el-table-column label="右灯信息">
-          <el-table-column prop="panelmerge_right_no" label="物料编码" width="120" />
-          <el-table-column prop="panelmerge_right_name" label="物料名称" width="150" />
-          <el-table-column prop="panelmerge_right_desc" label="物料规格" width="200" />
+          <el-table-column
+            prop="panelmerge_right_no"
+            label="物料编码"
+            width="120"
+          />
+          <el-table-column
+            prop="panelmerge_right_name"
+            label="物料名称"
+            width="150"
+          />
+          <el-table-column
+            prop="panelmerge_right_desc"
+            label="物料规格"
+            width="200"
+          />
         </el-table-column>
 
-        <el-table-column prop="panelmerge_manywo" label="多工单" width="90" align="center">
+        <el-table-column
+          prop="panelmerge_manywo"
+          label="多工单"
+          width="90"
+          align="center"
+        >
           <template v-slot="{ row }">
             <el-tag :type="row.panelmerge_manywo ? 'primary' : 'info'">
               {{ row.panelmerge_manywo ? "是" : "否" }}
@@ -50,34 +107,63 @@
           </template>
         </el-table-column>
 
-        <af-table-column prop="Ud_usr" label="操作人"> </af-table-column>
-        <af-table-column prop="Ud_dt" label="操作时间"> </af-table-column>
+        <af-table-column prop="panelmerge_updateuser" label="操作人">
+        </af-table-column>
+        <af-table-column prop="panelmerge_updatedate" label="操作时间">
+        </af-table-column>
         <!-- 操作列 -->
         <el-table-column fixed="right" label="操作" width="140" align="center">
           <template v-slot="{ row }">
             <el-tooltip content="详情" placement="top">
-              <el-button type="primary" size="mini" icon="el-icon-document" @click="handleEdit(row)" />
+              <el-button
+                type="primary"
+                size="mini"
+                icon="el-icon-document"
+                @click="handleEdit(row)"
+              />
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
-              <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(row)" />
+              <el-button
+                type="danger"
+                size="mini"
+                icon="el-icon-delete"
+                @click="handleDelete(row)"
+              />
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="block" style="margin-top: 8px">
-        <el-pagination align="center" background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100, 200]"
-          layout="total,sizes, prev, pager, next" :total="tableData.length">
+        <el-pagination
+          align="center"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :page-sizes="[10, 20, 50, 100, 200]"
+          layout="total,sizes, prev, pager, next"
+          :total="tableData.length"
+        >
         </el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="'添加'" :visible.sync="dialogVisible" width="85%" @close="addCancel()">
+    <el-dialog
+      :title="'添加'"
+      :visible.sync="dialogVisible"
+      width="85%"
+      @close="addCancel()"
+    >
       <el-form :model="form" ref="formRef" label-width="auto" size="small">
         <div class="form-section">
           <el-row :gutter="20" class="dense-row">
             <el-col :span="12">
-              <el-form-item label="合并名称" class="mb-2" prop="panelmerge_name">
+              <el-form-item
+                label="合并名称"
+                class="mb-2"
+                prop="panelmerge_name"
+              >
                 <el-input v-model="form.panelmerge_name" placeholder="名称" />
               </el-form-item>
             </el-col>
@@ -96,8 +182,12 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="form.panelmerge_left_no" :fetch-suggestions="remoteMethod"
-                      placeholder="请输入40502开头的编码" @select="change1">
+                    <el-autocomplete
+                      v-model="form.panelmerge_left_no"
+                      :fetch-suggestions="remoteMethod"
+                      placeholder="请输入4050开头的编码"
+                      @select="change1"
+                    >
                     </el-autocomplete>
                     <!-- <el-select v-model="form.panelmerge_left_no" @change="change1" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod1">
@@ -115,7 +205,11 @@
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="规格" class="mb-2">
-                    <el-input v-model="form.panelmerge_left_desc" type="textarea" disabled />
+                    <el-input
+                      v-model="form.panelmerge_left_desc"
+                      type="textarea"
+                      disabled
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -130,8 +224,12 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="form.panelmerge_right_no" :fetch-suggestions="remoteMethod"
-                      placeholder="请输入40502开头的编码" @select="change2">
+                    <el-autocomplete
+                      v-model="form.panelmerge_right_no"
+                      :fetch-suggestions="remoteMethod"
+                      placeholder="请输入4050开头的编码"
+                      @select="change2"
+                    >
                     </el-autocomplete>
                     <!-- <el-select v-model="form.panelmerge_right_no" @change="change2" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod2">
@@ -149,7 +247,11 @@
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="规格" class="mb-2">
-                    <el-input v-model="form.panelmerge_right_desc" type="textarea" disabled />
+                    <el-input
+                      v-model="form.panelmerge_right_desc"
+                      type="textarea"
+                      disabled
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -157,8 +259,13 @@
           </el-row>
         </div>
         <el-form-item label="多工单模式" prop="order">
-          <el-switch v-model="form.panelmerge_manywo" active-text="启用" inactive-text="停用" :active-value="true"
-            :inactive-value="false" />
+          <el-switch
+            v-model="form.panelmerge_manywo"
+            active-text="启用"
+            inactive-text="停用"
+            :active-value="true"
+            :inactive-value="false"
+          />
         </el-form-item>
 
         <!-- 其他设置 -->
@@ -169,19 +276,42 @@
         <!-- 大板明细 -->
         <div class="form-section">
           <h3 class="section-title">大板明细</h3>
-          <el-table :data="form.bomlist" border size="small" class="sub-table" :height="200">
+          <el-table
+            :data="form.bomlist"
+            border
+            size="small"
+            class="sub-table"
+            :height="200"
+          >
             <el-table-column label="序号" width="60" align="center">
               <template v-slot="{ $index }">{{ $index + 1 }}</template>
             </el-table-column>
 
             <el-table-column label="拼板物料编码">
               <template v-slot="{ row, $index }">
-                <el-select v-model="row.panelmergebom_no" placeholder="" size="small" filterable
-                  @change="changePuzzle1($event, $index)" style="width: 100%">
-                  <el-option v-for="item in puzzlesOptions" :key="item.PN" :label="item.PN" :value="item.PN">
+                <el-select
+                  v-model="row.panelmergebom_no"
+                  placeholder=""
+                  size="small"
+                  filterable
+                  @change="changePuzzle1($event, $index)"
+                  style="width: 100%"
+                >
+                  <el-option
+                    v-for="item in puzzlesOptions"
+                    :key="item.PN"
+                    :label="item.PN"
+                    :value="item.PN"
+                  >
                   </el-option>
                 </el-select>
                 <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
+              </template>
+            </el-table-column>
+
+            <el-table-column label="是否公用" width="100">
+              <template v-slot="{ row }">
+                <el-switch v-model="row.panelmergebom_isshared"> </el-switch>
               </template>
             </el-table-column>
 
@@ -205,10 +335,20 @@
                   @click="removeBoardItem($index)" />
               </template> -->
               <template v-slot="{ $index }">
-                <el-button type="primary" v-if="$index === form.bomlist.length - 1" size="mini" icon="el-icon-plus"
-                  @click="addSmallBoard"></el-button>
-                <el-button v-else type="danger" size="mini" icon="el-icon-delete"
-                  @click="removeBoardItem($index)"></el-button>
+                <el-button
+                  type="primary"
+                  v-if="$index === form.bomlist.length - 1"
+                  size="mini"
+                  icon="el-icon-plus"
+                  @click="addSmallBoard"
+                ></el-button>
+                <el-button
+                  v-else
+                  type="danger"
+                  size="mini"
+                  icon="el-icon-delete"
+                  @click="removeBoardItem($index)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -219,18 +359,35 @@
         <el-button type="primary" @click="onSubmit()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="'详情'" :visible.sync="detailVisible" width="85%" @close="addCancel()">
-      <el-form :model="editForm" ref="editFormRef" label-width="auto" size="small">
+    <el-dialog
+      :title="'详情'"
+      :visible.sync="detailVisible"
+      width="85%"
+      @close="addCancel()"
+    >
+      <el-form
+        :model="editForm"
+        ref="editFormRef"
+        label-width="auto"
+        size="small"
+      >
         <div class="form-section">
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="合并名称" class="mb-2">
-                <el-input v-model="editForm.panelmerge_name" placeholder="名称" />
+                <el-input
+                  v-model="editForm.panelmerge_name"
+                  placeholder="名称"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="合并ID" class="mb-2">
-                <el-input :value="editForm.panelmerge_id" readonly placeholder="自动生成" />
+                <el-input
+                  :value="editForm.panelmerge_id"
+                  readonly
+                  placeholder="自动生成"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -243,8 +400,12 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="editForm.panelmerge_left_no" :fetch-suggestions="remoteMethod"
-                      placeholder="请输入内容" @select="change3">
+                    <el-autocomplete
+                      v-model="editForm.panelmerge_left_no"
+                      :fetch-suggestions="remoteMethod"
+                      placeholder="请输入内容"
+                      @select="change3"
+                    >
                     </el-autocomplete>
                     <!-- <el-select v-model="editForm.panelmerge_left_no" @change="change3" filterable remote reserve-keyword
                       placeholder="请输入关键词" :remote-method="remoteMethod3">
@@ -257,12 +418,19 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="名称" class="mb-2">
-                    <el-input v-model="editForm.panelmerge_left_name" disabled />
+                    <el-input
+                      v-model="editForm.panelmerge_left_name"
+                      disabled
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="规格" class="mb-2">
-                    <el-input v-model="editForm.panelmerge_left_desc" type="textarea" disabled />
+                    <el-input
+                      v-model="editForm.panelmerge_left_desc"
+                      type="textarea"
+                      disabled
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -277,8 +445,12 @@
               <el-row :gutter="8">
                 <el-col :span="12">
                   <el-form-item label="物料编码" class="mb-2">
-                    <el-autocomplete v-model="editForm.panelmerge_right_no" :fetch-suggestions="remoteMethod"
-                      placeholder="请输入内容" @select="change4">
+                    <el-autocomplete
+                      v-model="editForm.panelmerge_right_no"
+                      :fetch-suggestions="remoteMethod"
+                      placeholder="请输入内容"
+                      @select="change4"
+                    >
                     </el-autocomplete>
                     <!-- <el-select v-model="editForm.panelmerge_right_no" @change="change4" filterable remote
                       reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod4">
@@ -291,12 +463,19 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="名称" class="mb-2">
-                    <el-input v-model="editForm.panelmerge_right_name" disabled />
+                    <el-input
+                      v-model="editForm.panelmerge_right_name"
+                      disabled
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="规格" class="mb-2">
-                    <el-input v-model="editForm.panelmerge_right_desc" type="textarea" disabled />
+                    <el-input
+                      v-model="editForm.panelmerge_right_desc"
+                      type="textarea"
+                      disabled
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -304,8 +483,13 @@
           </el-row>
         </div>
         <el-form-item label="多工单模式" prop="order">
-          <el-switch v-model="editForm.panelmerge_manywo" active-text="启用" inactive-text="停用" :active-value="true"
-            :inactive-value="false" />
+          <el-switch
+            v-model="editForm.panelmerge_manywo"
+            active-text="启用"
+            inactive-text="停用"
+            :active-value="true"
+            :inactive-value="false"
+          />
         </el-form-item>
 
         <!-- 其他设置 -->
@@ -315,7 +499,13 @@
         </div> -->
         <div class="form-section">
           <h3 class="section-title">大板明细</h3>
-          <el-table :data="editForm.bomlist" style="width: 100%" border :height="200" size="mini">
+          <el-table
+            :data="editForm.bomlist"
+            style="width: 100%"
+            border
+            :height="200"
+            size="mini"
+          >
             <el-table-column label="序号" width="55">
               <template slot-scope="scope">
                 <span>{{ scope.$index + 1 }}</span>
@@ -324,11 +514,28 @@
             <el-table-column label="拼板物料编码">
               <template v-slot="{ row, $index }">
                 <!-- <el-input v-model="row.panelmergebom_no" size="small" /> -->
-                <el-select v-model="row.panelmergebom_no" placeholder="" size="small" filterable
-                  @change="changePuzzle($event, $index)" style="width: 100%">
-                  <el-option v-for="item in puzzlesOptions" :key="item.PN" :label="item.PN" :value="item.PN">
+                <el-select
+                  v-model="row.panelmergebom_no"
+                  placeholder=""
+                  size="small"
+                  filterable
+                  @change="changePuzzle($event, $index)"
+                  style="width: 100%"
+                >
+                  <el-option
+                    v-for="item in puzzlesOptions"
+                    :key="item.PN"
+                    :label="item.PN"
+                    :value="item.PN"
+                  >
                   </el-option>
                 </el-select>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="是否公用" width="120">
+              <template v-slot="{ row }">
+                <el-switch v-model="row.panelmergebom_isshared"> </el-switch>
               </template>
             </el-table-column>
 
@@ -347,10 +554,19 @@
               <template v-slot="{ $index }">
                 <!-- <el-button  type="text" icon="el-icon-plus"
                   @click="addDetailSmallBoard" /> -->
-                <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDetailDelete($index)" />
-                <el-button type="primary" size="mini" icon="el-icon-plus" v-if="$index === editForm.bomlist.length - 1"
-                  @click="addDetailSmallBoard"></el-button>
-
+                <el-button
+                  type="danger"
+                  size="mini"
+                  icon="el-icon-delete"
+                  @click="handleDetailDelete($index)"
+                />
+                <el-button
+                  type="primary"
+                  size="mini"
+                  icon="el-icon-plus"
+                  v-if="$index === editForm.bomlist.length - 1"
+                  @click="addDetailSmallBoard"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -566,6 +782,7 @@ export default {
         panelmergebom_no: "",
         panelmergebom_name: "",
         panelmergebom_desc: "",
+        panelmergebom_isshared: false
       });
     },
     removeBoardItem(index) {
@@ -575,6 +792,7 @@ export default {
           panelmergebom_no: "",
           panelmergebom_name: "",
           panelmergebom_desc: "",
+          panelmergebom_isshared:false
         });
       }
     },
@@ -636,6 +854,7 @@ export default {
         this.form.bomlist[index].panelmergebom_no = selectedOption.PN;
         this.form.bomlist[index].panelmergebom_name = selectedOption.name;
         this.form.bomlist[index].panelmergebom_desc = selectedOption.pn_spec;
+        this.form.bomlist[index].panelmergebom_isshared = false;
       }
     },
     changePuzzle(val, index) {
@@ -648,6 +867,7 @@ export default {
         this.editForm.bomlist[index].panelmergebom_name = selectedOption.name;
         this.editForm.bomlist[index].panelmergebom_desc =
           selectedOption.pn_spec;
+        this.editForm.bomlist[index].panelmergebom_isshared = false;
       }
     },
     onSubmit() {
@@ -700,6 +920,7 @@ export default {
             panelmergebom_no: "",
             panelmergebom_name: "",
             panelmergebom_desc: "",
+            panelmergebom_isshared: false
           },
         ],
       };
@@ -716,6 +937,7 @@ export default {
               panelmergebom_no: "",
               panelmergebom_name: "",
               panelmergebom_desc: "",
+              panelmergebom_isshared: false
             });
           }
           this.detailVisible = true;
@@ -761,6 +983,7 @@ export default {
           panelmergebom_no: "",
           panelmergebom_name: "",
           panelmergebom_desc: "",
+          panelmergebom_isshared: false
         });
       }
     },
@@ -780,6 +1003,7 @@ export default {
         panelmergebom_no: "",
         panelmergebom_name: "",
         panelmergebom_desc: "",
+        panelmergebom_isshared: false
       });
     },
     addDeailCancel() {
@@ -802,6 +1026,7 @@ export default {
             panelmergebom_no: "",
             panelmergebom_name: "",
             panelmergebom_desc: "",
+            panelmergebom_isshared:false
           },
         ],
       };
@@ -814,7 +1039,7 @@ export default {
       //   });
       //   return
       // }
-      this.form.panelmerge_updateuser = getToken();
+      this.editForm.panelmerge_updateuser = getToken();
       addPanelmergeList(this.editForm).then((res) => {
         if (res.Success) {
           this.$notify.success({
@@ -887,7 +1112,6 @@ export default {
 }
 
 .form-section {
-
   // margin-bottom: 20px;
   .section-title {
     color: #409eff;

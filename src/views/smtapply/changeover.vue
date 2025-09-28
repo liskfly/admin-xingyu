@@ -45,7 +45,7 @@
                 <el-select
                   v-model="form.lineName"
                   placeholder="选择线别"
-                  @change="getStatus(), clearAll()"
+                  @change="getStatus(), clearAll(),warningLine()"
                 >
                   <el-option
                     v-for="item in lineList"
@@ -467,6 +467,17 @@
       <img :src="pic" alt="" />
     </el-dialog>
     <el-dialog
+      title="请注意"
+      :visible.sync="warningLineVisible"
+      width="60%"
+      custom-class="vertical-centered"
+    >
+      <i style=" white-space: pre-line;font-size: 2rem;">{{ `请注意是否是要在当前所选线体进行换线，当前所选线体为${this.form.lineName}` }}</i>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="warningLineVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
       title="警告"
       :visible.sync="warningVisible"
       width="60%"
@@ -694,6 +705,7 @@ export default {
       warningVisible: false,
       warningText: "",
       sideCode: "",
+      warningLineVisible:false
     };
   },
   created() {
@@ -1072,6 +1084,9 @@ export default {
       setTimeout(() => {
         this.cancellation = true;
       }, 16000);
+    },
+    warningLine() {
+      this.warningLineVisible = true;
     },
     closeCancellation2() {
       this.$nextTick(() => {

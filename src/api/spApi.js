@@ -96,6 +96,7 @@ export function UPdateICTOverStation(data) {
   });
 }
 
+//add设备维修知识库
 export function addEquipmentMaintenance(data) {
   return request({
     url: "/EquipmentMaintenance/addEquipmentMaintenance",
@@ -104,9 +105,37 @@ export function addEquipmentMaintenance(data) {
   });
 }
 
+//分页查询设备维修知识库
 export function QueryWarehouseInspectionData(data) {
   return request({
     url: "/EquipmentMaintenance/QueryWarehouseInspectionData",
+    method: "post",
+    data
+  });
+}
+
+//获取设备维修知识库线体和设备
+export function GetEquipmentMaintenance(data) {
+  return request({
+    url: "/EquipmentMaintenance/GetEquipmentMaintenance",
+    method: "post",
+    data
+  });
+}
+
+//根据id修改设备维修知识库
+export function UpdateEquipmentMaintenanceFormID(data) {
+  return request({
+    url: "/EquipmentMaintenance/UpdateEquipmentMaintenanceFormID",
+    method: "post",
+    data
+  });
+}
+
+//根据id修改设备维修知识库
+export function DeleteEquipmentMaintenanceFormID(data) {
+  return request({
+    url: "/EquipmentMaintenance/DeleteEquipmentMaintenanceFormID",
     method: "post",
     data
   });

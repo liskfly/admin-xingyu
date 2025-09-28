@@ -16,7 +16,7 @@ export default {
         align: ["left", "left", "left", "center", "center", "center", "center"],
         rowNum: 7,
         headerBGC: "",
-        waitTime: 5000,
+        waitTime: 5000
       },
     };
   },
@@ -105,17 +105,19 @@ export default {
           return res.Data;
         }
       });
-
+      let num = 0
       this.config.data = data.map((item) => {
+        num = num + item.OEE_Context;
         return [
           `<div style="font-size:20px;color:#fff;">设备${item.ResourceName}</div>`,
           `<div style="font-size:20px;color:#fff;">${item.LineLine}</div>`,
-          `<div style="font-size:20px;color:#fff;">${item.A_Context}</div>`,
-          `<div style="font-size:20px;color:#fff;">${item.Q_Context}</div>`,
-          `<div style="font-size:20px;color:#fff;">${item.P_Context}</div>`,
-          `<div style="font-size:20px;color:#fff;">${item.OEE_Context}</div>`,
+          `<div style="font-size:20px;color:#fff;">${(item.A_Context * 100).toFixed(0) + '%'}</div>`,
+          `<div style="font-size:20px;color:#fff;">${(item.Q_Context * 100).toFixed(0) + '%'}</div>`,
+          `<div style="font-size:20px;color:#fff;">${(item.P_Context * 100).toFixed(0) + '%'}</div>`,
+          `<div style="font-size:20px;color:#fff;">${(item.OEE_Context * 100).toFixed(0) + '%'}</div>`,
         ];
       });
+      this.$emit('update-data',(num / 7).toFixed(2));
       this.$refs.scrollBoard.updateRows(this.config.data);
         // this.config.data = data.map((item) => {
         //   return [
