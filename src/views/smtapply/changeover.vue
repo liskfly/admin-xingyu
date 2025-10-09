@@ -41,11 +41,11 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="线别">
+              <el-form-item label="线别" v-show="showLine">
                 <el-select
                   v-model="form.lineName"
                   placeholder="选择线别"
-                  @change="getStatus(), clearAll(),warningLine()"
+                  @change="getStatus(), clearAll(), warningLine()"
                 >
                   <el-option
                     v-for="item in lineList"
@@ -122,7 +122,8 @@
                             :style="{
                               opacity:
                                 (form.lineName === 'Line1' && index === 2) ||
-                                (form.lineName === 'Line2' && index === 2) ||
+                                (form.lineName === 'Line2' &&
+                                  (index === 2 || index === 1)) ||
                                 (form.lineName === 'Line3' &&
                                   (index === 2 || index === 1))
                                   ? 0
@@ -472,9 +473,13 @@
       width="60%"
       custom-class="vertical-centered"
     >
-      <i style=" white-space: pre-line;font-size: 2rem;">{{ `请注意是否是要在当前所选线体进行换线，当前所选线体为${this.form.lineName}` }}</i>
+      <i style="white-space: pre-line; font-size: 2rem">{{
+        `请注意是否是要在当前所选线体进行换线，当前所选线体为${this.form.lineName}`
+      }}</i>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="warningLineVisible = false">确 定</el-button>
+        <el-button type="primary" @click="warningLineVisible = false"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
     <el-dialog
@@ -705,10 +710,25 @@ export default {
       warningVisible: false,
       warningText: "",
       sideCode: "",
-      warningLineVisible:false
+      warningLineVisible: false,
+      showLine: true,
     };
   },
   created() {
+    try {
+      if (this.$route.query.lineType) {
+        if (
+          this.lineList.some(
+            (line) => line.lineType == this.$route.query.lineType
+          )
+        ) {
+          this.form.lineName = this.$route.query.lineType;
+          this.showLine = false;
+        }
+      }
+    } catch {
+      this.showLine = true;
+    }
     getChangeOverOrder().then(({ data }) => {
       this.workOrderList = data.WorkOrderList;
       // console.log(this.workOrderList);
@@ -772,7 +792,7 @@ export default {
     change(order) {
       this.form = {
         ...this.form,
-        lineName: "",
+        lineName: this.showLine ? "" : this.form.lineName,
         side: "",
       };
       this.clearAll();
@@ -782,7 +802,7 @@ export default {
         // console.log(data);
         this.form = {
           ...this.form,
-          lineName: "",
+          lineName: this.showLine ? "" : this.form.lineName,
           side: "",
           product: data.Product,
           program: data.Name,

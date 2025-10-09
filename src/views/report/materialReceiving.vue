@@ -135,7 +135,14 @@ export default {
   },
   methods: {
     getData() {
-      if (this.getForm.mfgordername == "") {
+      if (this.searchType == 'W' && this.getForm.reelid == "") {
+        this.$notify.error({
+          title: "提示信息",
+          message: "请输入物料id",
+        });
+        return;
+      }
+      if (this.searchType == 'R' && this.getForm.mfgordername == "") {
         this.$notify.error({
           title: "提示信息",
           message: "请输入工单",
