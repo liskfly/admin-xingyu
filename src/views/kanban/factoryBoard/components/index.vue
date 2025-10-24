@@ -44,7 +44,7 @@
             <el-col :span="12" :offset="0">
             <dv-border-box-12 class="centerh">
               <div class="header_title">
-                <i class="fa fa-check-circle"></i> OEE {{ ' 总OEE' + allOee }}
+                <i class="fa fa-check-circle"></i> OEE {{ ' 总OEE' + (allOee * 100).toFixed(0) + '%' }}
               </div>
               <div>
                 <oeeChart @update-data="handleDataFromChild" />
@@ -127,7 +127,6 @@ export default {
   methods: {
     handleDataFromChild(data) {
       this.allOee = data;
-      console.log(this.allOee);
     },
     updateTime() {
       const now = new Date();

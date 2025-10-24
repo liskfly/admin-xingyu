@@ -41,7 +41,15 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="线别" v-show="showLine">
+              <el-form-item label="设备线体"
+                >{{ form.lineName }}<el-button
+                  class="ml-2"
+                  type="primary"
+                  @click="lineChangeVisible = true"
+                  >设置</el-button
+                ></el-form-item
+              >
+              <!-- <el-form-item label="线别" v-show="showLine">
                 <el-select
                   v-model="form.lineName"
                   placeholder="选择线别"
@@ -54,7 +62,7 @@
                     :value="item.lineType"
                   ></el-option>
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="产品名">{{ form.product }}</el-form-item>
               <el-form-item label="BOM版本">{{ form.bomVer }}</el-form-item>
               <!-- <el-form-item label="软件名">{{ form.program }}</el-form-item> -->
@@ -490,6 +498,20 @@
     >
       <div style="height: 400px; white-space: pre-line">{{ warningText }}</div>
     </el-dialog>
+    <el-dialog title="线体设置" :visible.sync="lineChangeVisible" width="30%" @close="handleClose()">
+      <el-select v-model="lineName" placeholder="选择线别" clearable>
+        <el-option
+          v-for="item in lineList"
+          :key="item.lineType"
+          :label="item.lineType"
+          :value="item.lineType"
+        ></el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="lineChangeVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleLineSetting">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -712,21 +734,22 @@ export default {
       sideCode: "",
       warningLineVisible: false,
       showLine: true,
+      lineChangeVisible: false,
+      lineName: "",
     };
   },
   created() {
-    try {
-      if (this.$route.query.lineType) {
-        if (
-          this.lineList.some(
-            (line) => line.lineType == this.$route.query.lineType
-          )
-        ) {
-          this.form.lineName = this.$route.query.lineType;
-          this.showLine = false;
-        }
+    if (localStorage.getItem("lineName")) {
+      if (
+        this.lineList.some(
+          (line) => line.lineType == localStorage.getItem("lineName")
+        )
+      ) {
+        this.lineName = localStorage.getItem("lineName");
+        this.form.lineName = localStorage.getItem("lineName");
+        this.showLine = false;
       }
-    } catch {
+    } else {
       this.showLine = true;
     }
     getChangeOverOrder().then(({ data }) => {
@@ -1335,6 +1358,23 @@ export default {
         { status: null },
       ];
       this.warningText = "";
+    },
+    handleLineSetting() {
+      this.form.lineName = this.lineName;
+      localStorage.setItem("lineName", this.lineName);
+      this.lineChangeVisible = false;
+      if (this.lineName) {
+        this.showLine = false;
+      } else {
+        this.showLine = true;
+      }
+      this.getStatus();
+      this.clearAll();
+    },
+    handleClose() {
+      console.log(this.form.lineName);
+      
+      this.lineName = this.form.lineName
     },
     startLoading() {
       this.loading = this.$loading({

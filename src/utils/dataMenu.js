@@ -103,6 +103,39 @@ export const shortcuts1 = [
     },
   }
 ]
+export const shortcuts2 = [
+  {
+    text: '本月',
+    onClick: (picker) => {
+      const end = new Date()
+      const start = new Date()
+      const date = (new Date()).getDate() - 1
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * date)
+      // return [start, end]
+      picker.$emit('pick', [start, end]);
+    },
+  },
+  {
+    text: '近七天',
+    onClick: (picker) => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+      // return [start, end]
+      picker.$emit('pick', [start, end]);
+    },
+  },
+  {
+    text: '当天',
+    onClick: (picker) => {
+      const end = new Date()
+      const start = new Date()
+      start.setHours(0, 0, 0, 0);
+      picker.$emit('pick', [start, end]);
+      // return [start, end]
+    },
+  }
+]
 
 export const setTodayDate = () => {
   // 获取当前日期

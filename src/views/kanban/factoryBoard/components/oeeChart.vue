@@ -27,8 +27,8 @@ export default {
       '<div style="font-size:20px;">设备</div>',
       '<div style="font-size:20px;">产线</div>',
       '<div style="font-size:20px;">A</div>',
-      '<div style="font-size:20px;">Q</div>',
       '<div style="font-size:20px;">P</div>',
+      '<div style="font-size:20px;">Q</div>',
       '<div style="font-size:20px;">OEE</div>',
       //   '<div style="font-size:18px;width:108px">工单数量</div>',
       //   '<div style="font-size:18px;width:108px">工单进度</div>',
@@ -107,13 +107,13 @@ export default {
       });
       let num = 0
       this.config.data = data.map((item) => {
-        num = num + item.OEE_Context;
+        num = num + Number(item.OEE_Context);
         return [
           `<div style="font-size:20px;color:#fff;">设备${item.ResourceName}</div>`,
           `<div style="font-size:20px;color:#fff;">${item.LineLine}</div>`,
           `<div style="font-size:20px;color:#fff;">${(item.A_Context * 100).toFixed(0) + '%'}</div>`,
-          `<div style="font-size:20px;color:#fff;">${(item.Q_Context * 100).toFixed(0) + '%'}</div>`,
           `<div style="font-size:20px;color:#fff;">${(item.P_Context * 100).toFixed(0) + '%'}</div>`,
+          `<div style="font-size:20px;color:#fff;">${(item.Q_Context * 100).toFixed(0) + '%'}</div>`,
           `<div style="font-size:20px;color:#fff;">${(item.OEE_Context * 100).toFixed(0) + '%'}</div>`,
         ];
       });

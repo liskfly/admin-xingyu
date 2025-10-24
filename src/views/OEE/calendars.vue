@@ -41,6 +41,7 @@ export default {
           week: "周",
           day: "日",
         },
+        datesSet:this.handleDatesSet,
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
@@ -310,12 +311,15 @@ export default {
     this.getdata(0);
     this.getLevelCode();
   },
-  // mounted() {
-  //   this.getdata();
-  //   this.getLevelCode();
-  // },
+  mounted() {
+  },
   methods: {
     getToken,
+    handleDatesSet(info) {
+      const startStr = info.view.currentStart.toISOString().substring(0, 10)
+      const endStr = info.view.currentEnd.toISOString().substring(0, 10)
+      console.log('当前视图范围:', startStr, '至', endStr)
+    },
     handleViewRender(e) {
       // console.log(e.view);
       if (e.view.type === "dayGridMonth") {
@@ -1249,7 +1253,7 @@ export default {
 <template>
   <div class="demo-app">
     <div class="demo-app-main">
-      <div class="title">
+      <div class="calendars-title">
         <!-- <el-select v-model="line" placeholder="工作线">
         <el-option
           v-for="item in [
@@ -1618,7 +1622,7 @@ export default {
 .demo-app-main {
   flex-grow: 1;
   padding: 1em;
-  .title {
+  .calendars-title {
     display: flex;
     align-items: center;
     .show-color {

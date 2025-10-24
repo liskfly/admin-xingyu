@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full transform rotate-90" >
     <div class="flex flex-col w-full">
       <div class="title">
         <dv-decoration-10 class="dv-dec-10 decoration" :color="['#40a0ffb8']" />
@@ -38,11 +38,11 @@
         />
 
         <div
-          class="text-white flex justify-end items-center timetext"
+          class="text-white flex justify-end timetext"
           style="font-size: 24px"
         >
+        <!-- <span @click="rotateClick">旋转</span> -->
           <span class="pr-5">{{ currentTime }}</span>
-          <i class="el-icon-refresh" @click="rotateClick"></i>
         </div>
       </div>
 
@@ -52,7 +52,7 @@
             <div class="info-label">生产工单</div>
             <div class="info-value">{{ lineData.OrderName || "" }}</div>
           </div>
-          <div class="info-item">
+            <div class="info-item">
             <div class="info-label text-center">面别</div>
             <div class="info-value text-center">{{ lineData.Side || "" }}</div>
           </div>
@@ -64,7 +64,7 @@
             <div class="info-label">产品</div>
             <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
           </div>
-
+        
           <div class="info-item">
             <div class="info-label">计划开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
@@ -106,11 +106,10 @@
         </div>
       </div>
       <div class="flex flex-col" v-if="isVertical">
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-tasks"></i
-              ><span class="text-color"> 当前工单完成率</span>
+              <i class="fa fa-tasks"></i> 当前工单完成率
             </div>
             <div>
               <completion :Line="line" :rateHeight="rateHeight" />
@@ -118,19 +117,17 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-check-circle"></i
-              ><span class="text-color"> SPI直通率</span>
+              <i class="fa fa-check-circle"></i> SPI直通率
             </div>
             <div>
               <spiPassRate :Line="line" :rateHeight="rateHeight" />
             </div>
           </dv-border-box-13>
         </div>
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-search"></i
-              ><span class="text-color"> AOI直通率</span>
+              <i class="fa fa-search"></i> AOI直通率
             </div>
             <div>
               <aoiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -138,8 +135,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
-              <i class="fa fa-exclamation-triangle"></i>
-              <span class="text-color"> 不良分布</span>
+              <i class="fa fa-exclamation-triangle"></i> 不良数分布
             </div>
             <div>
               <badPassRate :Line="line" :rateHeight="rateHeight" />
@@ -149,9 +145,7 @@
         <div>
           <dv-border-box-12 class="centerh1 centerh1-vertical">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i
-              ><span class="text-color"> 贴片机单小时产能</span
-              ><span style="color: #f39c12; font-size: 25px">（12小时）</span>
+              <i class="fa fa-bar-chart"></i>贴片机单小时产能<span style="color:  #F39C12;font-size: 24px;">（12小时）</span>
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -161,9 +155,7 @@
         <div>
           <dv-border-box-12 class="centerh1 centerh1-vertical">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i>
-              <span class="text-color"> 抛料</span
-              ><span style="color: #ff0000; font-size: 25px">TOP10</span>
+              <i class="fa fa-bar-chart"></i> 抛料<span style="color: #ff0000;font-size: 24px;">TOP10</span>
             </div>
             <div>
               <throwMChart :Line="line" :barHeight="barHeight" />
@@ -173,11 +165,10 @@
       </div>
 
       <div class="flex flex-col" v-if="!isVertical">
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-tasks"></i>
-              <span class="text-color">当前工单完成率</span>
+              <i class="fa fa-tasks"></i> 当前工单完成率
             </div>
             <div>
               <completion :Line="line" :rateHeight="rateHeight" />
@@ -185,8 +176,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-check-circle"></i
-              ><span class="text-color"> SPI直通率</span>
+              <i class="fa fa-check-circle"></i> SPI直通率
             </div>
             <div>
               <spiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -194,8 +184,7 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-search"></i
-              ><span class="text-color"> AOI直通率</span>
+              <i class="fa fa-search"></i> AOI直通率
             </div>
             <div>
               <aoiPassRate :Line="line" :rateHeight="rateHeight" />
@@ -203,20 +192,17 @@
           </dv-border-box-13>
           <dv-border-box-13 class="centerh">
             <div class="header_title">
-              <i class="fa fa-exclamation-triangle"></i>
-              <span class="text-color">不良分布</span>
+              <i class="fa fa-exclamation-triangle"></i> 不良数分布
             </div>
             <div>
               <badPassRate :Line="line" :rateHeight="rateHeight" />
             </div>
           </dv-border-box-13>
         </div>
-        <div class="flex" style="gap: 10px">
+        <div class="flex" style="gap: 15px">
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i>
-              <span class="text-color">贴片机单小时产能</span
-              ><span style="color: #f39c12; font-size: 24px">（12小时）</span>
+              <i class="fa fa-bar-chart"></i> 贴片机单小时产能<span style="color: #F39C12;font-size: 24px;">（12小时）</span>
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -224,9 +210,7 @@
           </dv-border-box-12>
           <dv-border-box-12 class="centerh1">
             <div class="header_title">
-              <i class="fa fa-bar-chart"></i>
-              <span class="text-color">抛料</span
-              ><span style="color: #ff0000; font-size: 25px"> TOP10</span>
+              <i class="fa fa-bar-chart"></i> 抛料<span style="color: #ff0000;font-size: 24px;">TOP10</span>
             </div>
             <div>
               <throwMChart :Line="line" :barHeight="barHeight" />
@@ -289,8 +273,7 @@ export default {
       countdownInterval: null,
       rateHeight: 300,
       barHeight: 370,
-      isRotate: "",
-      orderList: [],
+      isRotate:""
     };
   },
   watch: {
@@ -339,8 +322,15 @@ export default {
     }
   },
   methods: {
-    rotateClick() {
-      this.$emit("changeMsg");
+    rotateClick(){
+      // if(this.isRotate!==""){
+      //    this.isRotate=""
+      // }else{
+      //   this.isRotate="rotate-90"
+      // }
+      
+      
+      this.$emit('changeMsg')
     },
     updateTime() {
       const now = new Date();
@@ -396,7 +386,7 @@ export default {
       // 设置新的定时器（每分钟一次）
       this.dataRefreshInterval = setInterval(() => {
         this.getData();
-      }, 5000); // 60秒 = 60000毫秒
+      }, 60000); // 60秒 = 60000毫秒
     },
   },
 };
@@ -416,7 +406,7 @@ export default {
 
   .info-grid {
     display: grid;
-    grid-template-columns: 1fr 90px 1fr 3fr 280px 280px;
+    grid-template-columns: 1fr  85px 1fr 3fr 280px 280px;
     gap: 15px;
   }
 
@@ -446,10 +436,9 @@ export default {
     display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
     -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
     -webkit-line-clamp: 2; // 显示两行
-    white-space: normal;
-    word-wrap: break-word;
     overflow: hidden;
   }
+
 }
 
 .dashboard-header-vertical {
@@ -466,7 +455,7 @@ export default {
 
   .info-grid {
     display: grid;
-    grid-template-columns: 300px 300px 1fr;
+    grid-template-columns: 290px 290px 1fr;
     gap: 15px;
   }
 
@@ -490,17 +479,15 @@ export default {
 
   .info-value {
     // height: 70px;
-    display: block;
     font-size: 25px;
     font-weight: bolder;
     color: #ffffff;
     display: -webkit-box; // 将对象作为弹性伸缩盒子模型显示
     -webkit-box-orient: vertical; // 设置或检索伸缩盒对象的子元素的排列方式
     -webkit-line-clamp: 3; // 显示两行
-    white-space: normal;
-    word-wrap: break-word;
     overflow: hidden;
   }
+  
 }
 
 .centerh {
@@ -521,6 +508,8 @@ export default {
   }
 }
 
+
+
 .centerh1 {
   box-sizing: border-box;
   display: flex;
@@ -538,13 +527,11 @@ export default {
     border-bottom: 1px solid rgb(64, 160, 255);
   }
 }
-
-.centerh-vertical {
-  height: 330px;
+.centerh-vertical{
+   height: 330px;
 }
-
-.centerh1-vertical {
-  height: 445px;
+.centerh1-vertical{
+   height: 445px;
 }
 
 .el-dropdown-link {
@@ -583,7 +570,7 @@ export default {
 
 .timetext {
   position: absolute;
-  top: 54px;
+  top: 45px;
   right: 10px;
 }
 
@@ -647,8 +634,5 @@ export default {
   background-color: #4472cb !important;
   color: #fff !important;
   border: none;
-}
-.text-color {
-  color: #e6f7ff;
 }
 </style>

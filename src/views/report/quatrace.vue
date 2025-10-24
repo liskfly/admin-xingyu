@@ -81,6 +81,14 @@
           <el-form-item class="mb-2">
             <el-button type="primary" @click="getAllData()">查询</el-button>
           </el-form-item>
+          <el-form-item class="mb-2">
+            <el-button
+              type="success"
+              @click="deducedClick(0, [])"
+              :disabled="total == 0"
+              >导出</el-button
+            >
+          </el-form-item>
         </el-form>
       </div>
       <el-table
@@ -88,6 +96,7 @@
         :height="tableHeight"
         border
         stripe
+        ref="operaRecordRef"
         size="small"
       >
         <!-- 表格列定义保持不变 -->
@@ -155,9 +164,16 @@ import {
 } from "@/utils/dataMenu";
 import { QueryMfgLine, QueryEquipment } from "@/api/repairApi";
 import { XY_PCBAHisControl, XY_Prod_MissSNs } from "@/api/all";
-import { QueryPCBDateBackTo, GetCamstarValorLine, GetCamstarValorEquip } from "@/api/assemble";
+import {
+  QueryPCBDateBackTo,
+  GetCamstarValorLine,
+  GetCamstarValorEquip,
+} from "@/api/assemble";
 import { getContainerMoves } from "@/api/material";
 import dayjs from "dayjs";
+import * as XLSX from "xlsx";
+import Excel from "exceljs";
+import FileSaver from "file-saver";
 export default {
   data() {
     return {
@@ -209,7 +225,7 @@ export default {
         StartTime: "",
         EndTime: "",
       },
-      SearchText:'S',
+      SearchText: "S",
       total: 0,
       pickerOptions: {
         shortcuts: shortcuts1,
@@ -234,7 +250,7 @@ export default {
       }
       this.searchForm.PageIndex = 1;
     },
-    "SearchText"(newValue) {
+    SearchText(newValue) {
       this.searchForm = {
         PageIndex: 1,
         PageSize: 10,
@@ -246,7 +262,7 @@ export default {
         },
         StartTime: "",
         EndTime: "",
-      }
+      };
       if (newValue == "W") {
         // this.searchForm.SearchText = "W";
       } else if (newValue == "S") {
@@ -386,6 +402,59 @@ export default {
           }
         });
       });
+    },
+    async deducedClick(num, list) {
+      let arr = list;
+      if (this.total - num * 30000 > 0) {
+        QueryPCBDateBackTo({
+          ...this.searchForm,
+          PageIndex: num + 1,
+          PageSize: 30000,
+        }).then((res) => {
+          if (res.Success) {
+            arr.push(...res.Data.list);
+            arr = arr.map((item) => {
+              return {
+                OrderName: item.OrderName,
+                OperationID: item.OperationID,
+                OperationName: item.OperationName,
+                AssemblyName: item.AssemblyName,
+                LineName: item.LineName,
+                SerialNumber: item.SerialNumber,
+                EquipmentName: item.EquipmentName,
+                DateTime: item.DateTime,
+                StatusCODE: item.StatusCODE,
+              };
+            });
+            this.deducedClick(num + 1, arr);
+          } else {
+            this.$message({
+              message: res.Msg,
+              type: "warning",
+            });
+          }
+        });
+      } else {
+        console.log(arr);
+        const workbook = new Excel.Workbook(); // 创建工作簿
+        const worksheet = workbook.addWorksheet("Sheet1"); // 添加工作表
+        worksheet.columns = [
+          { header: "工单", key: "OrderName" },
+          { header: "制程ID", key: "OperationID" },
+          { header: "制程名称", key: "OperationName" },
+          { header: "产品料号", key: "AssemblyName" },
+          { header: "线体", key: "LineName" },
+          { header: "PCB ID", key: "SerialNumber" },
+          { header: "设备名称", key: "EquipmentName" },
+          { header: "过站时间", key: "DateTime" },
+          { header: "不良代码", key: "StatusCODE" },
+        ];
+        arr.map((item) => {
+          worksheet.addRow(item);
+        });
+        const buffer = await workbook.xlsx.writeBuffer(); // 获取二进制流数据
+        FileSaver.saveAs(new Blob([buffer]), "PCB质量追溯.xlsx"); // 使用FileSaver保存文件到客户端。注意，这里用的是Blob对象。
+      }
     },
     dateCheck(startDate, endDate) {
       // 将日期字符串转换为Date对象

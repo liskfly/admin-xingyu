@@ -3,7 +3,9 @@
     <el-card shadow="always" :body-style="{ padding: '8px' }" style="flex: 1">
       <div class="mb-2" style="display: flex; justify-content: space-between">
         <div>
-          <el-button type="primary" @click="handleAdd()" size="small">添加</el-button>
+          <el-button type="primary" @click="handleAdd()" size="small"
+            >添加</el-button
+          >
         </div>
         <div>
           <el-input v-model="searchName" clearable placeholder="请输入">
@@ -14,62 +16,145 @@
         </div>
       </div>
 
-      <el-table size="small" :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)" border
-        :height="tableHeight" stripe>
-        <el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
-        <el-table-column label="工号" prop="employeeName" width="150"></el-table-column>
-        <el-table-column label="员工姓名" prop="fullName" width="150"></el-table-column>
+      <el-table
+        size="small"
+        :data="
+          tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
+        ref="tableList"
+        border
+        :height="tableHeight"
+        stripe
+        @sort-change="handleSortChange"
+        @filter-change="handleFilterChange"
+      >
+        <el-table-column
+          label="序号"
+          type="index"
+          width="60"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="工号"
+          prop="employeeName"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          label="员工姓名"
+          prop="fullName"
+          width="150"
+        ></el-table-column>
         <el-table-column label="职称" prop="title"></el-table-column>
         <af-table-column label="邮件" prop="email"></af-table-column>
-        <el-table-column label="角色" prop="OrganizationName" :min-width="170">
+        <el-table-column
+          label="角色"
+          prop="OrganizationName"
+          sortable
+          :min-width="280"
+          :filters="optionArr1"
+          :filter-method="filterHandler"
+        >
           <template slot-scope="scope">
-            <el-tag v-for="item in scope.row.RoleName" :key="item" :type="item" effect="plain" size="small">
+            <el-tag
+              v-for="(item, index) in scope.row.RoleName"
+              :key="index"
+              :type="item"
+              effect="plain"
+              size="small"
+            >
               {{ item }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="最后登录时间" prop="LastLoginTime" width="150"></el-table-column>
+        <el-table-column
+          label="最后登录时间"
+          prop="LastLoginTime"
+          sortable
+          width="150"
+        ></el-table-column>
         <el-table-column fixed="right" label="操作" width="240" align="center">
           <template slot-scope="scope">
             <el-tooltip content="编辑" placement="top">
-              <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleEdit(scope.row)"></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="handleEdit(scope.row)"
+              ></el-button>
             </el-tooltip>
             <el-tooltip content="密码重置" placement="top">
-              <el-button type="warning" icon="el-icon-refresh-left" size="mini"
-                @click="handleRest(scope.row)"></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-refresh-left"
+                size="mini"
+                @click="handleRest(scope.row)"
+              ></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
-              <el-button type="danger" icon="el-icon-delete-solid" size="mini"
-                @click="handleDelete(scope.row)"></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete-solid"
+                size="mini"
+                @click="handleDelete(scope.row)"
+              ></el-button>
             </el-tooltip>
             <el-tooltip content="历史登录记录" placement="top">
-              <el-button icon="el-icon-time" size="mini" type="success" @click="handleHistory(scope.row)"></el-button>
+              <el-button
+                icon="el-icon-time"
+                size="mini"
+                type="success"
+                @click="handleHistory(scope.row)"
+              ></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
-      <div class="mt-2  flex justify-around">
-        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-          :current-page="currentPage" :page-size="pageSize" :page-sizes="[30, 50, 100, 150, 200]"
-          layout="total,sizes, prev, pager, next, jumper" :total="tableData1.length"></el-pagination>
+      <div class="mt-2 flex justify-around">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :page-sizes="[30, 50, 100, 150, 200]"
+          layout="total,sizes, prev, pager, next, jumper"
+          :total="tableData1.length"
+        ></el-pagination>
       </div>
     </el-card>
 
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="用户角色" :visible.sync="addVisible"
-      width="400px" @close="addCancel()">
+    <el-dialog
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      title="用户角色"
+      :visible.sync="addVisible"
+      width="400px"
+      @close="addCancel()"
+    >
       <el-form :model="form" ref="formRef" label-width="auto">
         <el-form-item label="员工" prop="roleName">
           <el-input v-model="roleName" disabled></el-input>
         </el-form-item>
         <el-form-item label="当前角色" prop="role">
-          <el-tag class="mb-2" :key="tag.RoleID" v-for="tag in hasRole" closable :disable-transitions="false"
-            @close="handleClose(tag)">
+          <el-tag
+            class="mb-2"
+            :key="tag.RoleID"
+            v-for="tag in hasRole"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)"
+          >
             {{ tag.RoleName }}
           </el-tag>
         </el-form-item>
         <el-form-item label="角色" prop="roleIdArr">
           <el-select v-model="form.roleIdArr" multiple>
-            <el-option v-for="item in noRole" :key="item.value" :label="item.lable" :value="item.value"></el-option>
+            <el-option
+              v-for="item in noRole"
+              :key="item.value"
+              :label="item.lable"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -79,17 +164,35 @@
       </div>
     </el-dialog>
 
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="编辑" :visible.sync="editVisible" width="400px"
-      @close="editCancel()">
+    <el-dialog
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      title="编辑"
+      :visible.sync="editVisible"
+      width="400px"
+      @close="editCancel()"
+    >
       <el-form :model="editForm" ref="editRef" label-width="auto">
         <el-form-item label="员工名" prop="FullName">
-          <el-input v-model="editForm.FullName" placeholder="请输入员工名" clearable></el-input>
+          <el-input
+            v-model="editForm.FullName"
+            placeholder="请输入员工名"
+            clearable
+          ></el-input>
         </el-form-item>
         <el-form-item label="账号" prop="EmployeeName">
-          <el-input v-model="editForm.EmployeeName" placeholder="请输入账号" clearable></el-input>
+          <el-input
+            v-model="editForm.EmployeeName"
+            placeholder="请输入账号"
+            clearable
+          ></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="DocManagerUser">
-          <el-input v-model="editForm.DocManagerUser" placeholder="请输入密码" clearable></el-input>
+          <el-input
+            v-model="editForm.DocManagerUser"
+            placeholder="请输入密码"
+            clearable
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -98,9 +201,20 @@
       </div>
     </el-dialog>
 
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="重置密码" :visible.sync="restVisible"
-      width="400px" @close="upDateCancel()">
-      <el-form :model="rePwForm" ref="reFormRef" :rules="rules" label-width="auto">
+    <el-dialog
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      title="重置密码"
+      :visible.sync="restVisible"
+      width="400px"
+      @close="upDateCancel()"
+    >
+      <el-form
+        :model="rePwForm"
+        ref="reFormRef"
+        :rules="rules"
+        label-width="auto"
+      >
         <el-form-item label="工号" prop="employeeName">
           <el-input v-model="rePwForm.employeeName" disabled></el-input>
         </el-form-item>
@@ -108,10 +222,20 @@
           <el-input v-model="rePwForm.FullName" disabled></el-input>
         </el-form-item>
         <el-form-item label="新密码" prop="pwd">
-          <el-input v-model="rePwForm.pwd" placeholder="请输入新密码" show-password clearable></el-input>
+          <el-input
+            v-model="rePwForm.pwd"
+            placeholder="请输入新密码"
+            show-password
+            clearable
+          ></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPwd">
-          <el-input v-model="rePwForm.confirmPwd" placeholder="再次输入新密码" show-password clearable></el-input>
+          <el-input
+            v-model="rePwForm.confirmPwd"
+            placeholder="再次输入新密码"
+            show-password
+            clearable
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -120,9 +244,20 @@
       </div>
     </el-dialog>
 
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="添加员工" :visible.sync="addPwdVisible"
-      width="400px" @close="addPwdCancel()">
-      <el-form :model="addForm" ref="addFormRef" :rules="addRules" label-width="auto">
+    <el-dialog
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      title="添加员工"
+      :visible.sync="addPwdVisible"
+      width="400px"
+      @close="addPwdCancel()"
+    >
+      <el-form
+        :model="addForm"
+        ref="addFormRef"
+        :rules="addRules"
+        label-width="auto"
+      >
         <el-form-item label="工号" prop="employeeName">
           <el-input v-model="addForm.employeeName" clearable></el-input>
         </el-form-item>
@@ -143,10 +278,20 @@
       </div>
     </el-dialog>
 
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" title="历史登录记录" :visible.sync="historyVisible"
-      width="800px">
+    <el-dialog
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      title="历史登录记录"
+      :visible.sync="historyVisible"
+      width="800px"
+    >
       <el-table size="small" :data="historyData" border :height="400" stripe>
-        <el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
+        <el-table-column
+          label="序号"
+          type="index"
+          width="60"
+          align="center"
+        ></el-table-column>
         <el-table-column label="工号" prop="EmployeeName"></el-table-column>
         <el-table-column label="登录时间" prop="LoginTime"></el-table-column>
       </el-table>
@@ -159,6 +304,7 @@
 </template>
 
 <script>
+import cloneDeep from "lodash/cloneDeep";
 import {
   getAllRole,
   getEmployee,
@@ -198,6 +344,7 @@ export default {
       hasRole: [],
       roleName: "",
       optionArr: [],
+      optionArr1: [],
       editForm: {
         EmployeeId: "",
         EmployeeName: "",
@@ -214,7 +361,7 @@ export default {
         employeeName: "",
         pwd: "",
         FullName: "",
-        confirmPwd: ""
+        confirmPwd: "",
       },
       editRef: null,
       searchName: "",
@@ -231,7 +378,7 @@ export default {
         employeeName: "",
         pwd: "",
         FullName: "",
-        confirmPwd: ""
+        confirmPwd: "",
       },
       rules: {
         pwd: [{ required: true, message: "请输入新密码", trigger: "blur" }],
@@ -246,7 +393,10 @@ export default {
           { required: true, trigger: "blur", message: "请再次输入您的密码" },
           { validator: this.addPassword, trigger: "blur" },
         ],
-      }
+      },
+      dateSequence: false,
+      organizationSequence: false,
+      filterAddress: "",
     };
   },
   computed: {
@@ -258,10 +408,13 @@ export default {
   },
   watch: {
     searchName(newdata) {
+      this.$refs.tableList.clearSort();
+      this.$refs.tableList.clearFilter();
       if (newdata == "") {
-        this.tableData1 = this.tableData;
+        console.log(this.tableData);
+        this.tableData1 = cloneDeep(this.tableData);
       } else {
-        this.tableData1 = this.table1(newdata);
+        this.tableData1 = cloneDeep(this.table1(newdata));
       }
     },
   },
@@ -278,6 +431,86 @@ export default {
     window.removeEventListener("resize", this.getScreenHeight);
   },
   methods: {
+    handleSortChange({ column, prop, order }) {
+      this.$refs.tableList.clearFilter();
+      // this.searchName = '';
+      let arr = cloneDeep(this.tableData);
+      if (column.label == "最后登录时间") {
+        if (order == "ascending") {
+          arr.sort(
+            (a, b) => new Date(b.LastLoginTime) - new Date(a.LastLoginTime)
+          );
+        } else if (order == "descending") {
+          arr.sort(
+            (a, b) => new Date(a.LastLoginTime) - new Date(b.LastLoginTime)
+          );
+        } else {
+          // this.tableData1 = arr;
+        }
+      } else {
+        let result = [];
+        let spaceList = [];
+        if (order == "ascending") {
+          result = Object.values(
+            arr.reduce((acc, item) => {
+              if (!acc[item.RoleName[0]]) {
+                acc[item.RoleName[0]] = [];
+              }
+              if (item.RoleName.length == 0) {
+                spaceList.push(item);
+              } else {
+                acc[item.RoleName[0]].push(item);
+              }
+              return acc;
+            }, {})
+          ).flat();
+          result.push(...spaceList);
+          arr = result;
+        } else if (order == "descending") {
+          result = Object.values(
+            arr.reduce((acc, item) => {
+              if (!acc[item.RoleName[0]]) {
+                acc[item.RoleName[0]] = [];
+              }
+              if (item.RoleName.length == 0) {
+                spaceList.push(item);
+              } else {
+                acc[item.RoleName[0]].push(item);
+              }
+              return acc;
+            }, {})
+          ).flat();
+          result.unshift(...spaceList);
+          arr = result;
+        } else {
+          // this.tableData1 = arr;
+        }
+      }
+      this.tableData1 = cloneDeep(arr);
+    },
+    filterHandler(value, row, column) {
+      this.$refs.tableList.clearSort();
+      // this.tableData1 = this.tableData.filter((item,index) => {
+      //   return item.RoleName.indexOf(value) !== -1
+      // })
+      return true;
+    },
+    handleFilterChange(value) {
+      if(value[Object.keys(value)[0]].length == 0) {
+        this.tableData1 = cloneDeep(this.tableData)
+        return;
+      }
+      this.tableData1 = this.tableData.filter((item,index) => {
+        let i = false;
+        value[Object.keys(value)[0]].forEach((type) => {
+          if (!i) {
+            i = item.RoleName.indexOf(type) !== -1
+          console.log(item.RoleName.indexOf(type) !== -1);
+          }
+        })
+        return i
+      })
+    },
     equalToPassword(rule, value, callback) {
       if (this.rePwForm.pwd !== value) {
         callback(new Error("两次输入的密码不一致"));
@@ -350,6 +583,12 @@ export default {
             lable: item.RoleName,
           };
         });
+        this.optionArr1 = data.Data.map((item) => {
+          return {
+            value: item.RoleName,
+            text: item.RoleName,
+          };
+        });
       });
     },
     editCancel() {
@@ -379,7 +618,7 @@ export default {
             message: data.msg,
           });
         }
-        this.getData()
+        this.getData();
       });
     },
     openAdd() {
@@ -408,7 +647,7 @@ export default {
             OrganizationName: item.OrganizationName,
             OrganizationID: item.OrganizationID,
             RoleName: RoleName ? [RoleName] : [],
-            LastLoginTime: item.LastLoginTime
+            LastLoginTime: item.LastLoginTime,
           };
           afterData.push(newItem);
           employeeMap.set(EmployeeId, newItem);
@@ -416,13 +655,10 @@ export default {
       }
 
       // 优化排序：使用localeCompare进行字符串排序
-      afterData.sort((a, b) =>
-        a.employeeName.localeCompare(b.employeeName)
-      );
+      afterData.sort((a, b) => a.employeeName.localeCompare(b.employeeName));
 
       this.tableData = afterData;
       this.tableData1 = afterData; // 避免不必要的数据复制
-
     },
     handleEdit(row) {
       this.roleName = row.fullName;
@@ -511,7 +747,7 @@ export default {
           let data = {
             employeeName: this.rePwForm.employeeName,
             pwd: this.rePwForm.pwd,
-            FullName: this.rePwForm.FullName
+            FullName: this.rePwForm.FullName,
           };
           ResetEmpPwd(data).then((res) => {
             if (res.Success) {
@@ -522,10 +758,8 @@ export default {
               });
             } else {
               this.$notify.error({
-
                 title: "提示信息",
-                message: res.Message||"重置失败",
-    
+                message: res.Message || "重置失败",
               });
             }
             this.getData();
@@ -541,25 +775,25 @@ export default {
             EmployeeName: this.addForm.employeeName,
             FullName: this.addForm.FullName,
             CreateBy: getToken(),
-            IsOnline: "Y"
+            IsOnline: "Y",
           };
-          OpcenterEmployeeSync(data).then(res => {
+          OpcenterEmployeeSync(data).then((res) => {
             if (res.Success) {
               this.$notify({
-                  title: "提示信息",
-                message:"添加成功",
+                title: "提示信息",
+                message: "添加成功",
                 type: "success",
               });
             } else {
               this.$notify.error({
-                  title: "提示信息",
-                message: res.Message
+                title: "提示信息",
+                message: res.Message,
                 // message: res.msg,
               });
             }
             this.getData();
             this.addPwdVisible = false;
-          })
+          });
           // AddEmployee(data).then((res) => {
           //   if (res.Code == 100200) {
           //     this.$notify({
@@ -580,7 +814,7 @@ export default {
     },
     handleDelete(row) {
       console.log(row);
-      
+
       this.$confirm("确定删除", "确认操作", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -591,22 +825,22 @@ export default {
             EmployeeName: row.employeeName,
             FullName: row.fullName,
             CreateBy: getToken(),
-            IsOnline: "N"
-          }).then(res => {
+            IsOnline: "N",
+          }).then((res) => {
             if (res.Success) {
               this.getData();
               this.$notify({
                 title: "提示信息",
-                message:"删除成功",
+                message: "删除成功",
                 type: "success",
               });
             } else {
               this.$notify.error({
                 title: "提示信息",
-                  message: res.Message
+                message: res.Message,
               });
             }
-          })
+          });
           // deleteEmployee(row.employeeName).then((data) => {
           //   if (data.Code == 100200) {
           //     this.getData();
@@ -630,15 +864,16 @@ export default {
     },
     handleHistory(row) {
       this.historyVisible = true;
-      findEmpLoginLog(row.employeeName).then((data) => {
-        if (data.Code == 100200) {
-          this.historyData = data.Data;
-        } else {
-          this.historyData = []
-        }
-      })
+      findEmpLoginLog(row.employeeName)
+        .then((data) => {
+          if (data.Code == 100200) {
+            this.historyData = data.Data;
+          } else {
+            this.historyData = [];
+          }
+        })
         .catch(() => {
-          this.historyData = []
+          this.historyData = [];
         });
     },
     handleSizeChange(val) {
@@ -692,7 +927,7 @@ export default {
   justify-content: center;
 }
 
-.el-tag+.el-tag {
+.el-tag + .el-tag {
   margin-left: 10px;
 }
 

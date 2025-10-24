@@ -42,7 +42,7 @@
           style="font-size: 24px"
         >
           <span class="pr-5">{{ currentTime }}</span>
-          <i class="el-icon-refresh" @click="rotateClick"></i>
+          <!-- <i class="el-icon-refresh" @click="rotateClick"></i> -->
         </div>
       </div>
 
@@ -76,33 +76,8 @@
         </div>
       </div>
       <div class="h-64 dashboard-header-vertical" v-if="isVertical">
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="info-label">生产工单</div>
-            <div class="info-value">{{ lineData.OrderName || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">产品编码</div>
-            <div class="info-value">{{ lineData.ProductNO || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">产品</div>
-            <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
-          </div>
-        </div>
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="info-label">面别</div>
-            <div class="info-value">{{ lineData.Side || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">计划开始时间</div>
-            <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">计划结束时间</div>
-            <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
-          </div>
+        <div class="w-full h-full">
+          <Informationtable :orderList="orderList" />
         </div>
       </div>
       <div class="flex flex-col" v-if="isVertical">
@@ -246,6 +221,7 @@ import aoiPassRate from "./aoiPassRate.vue";
 import badPassRate from "./badPassRate.vue";
 import capacityChart from "./capacityChart.vue";
 import throwMChart from "./throwMChart.vue";
+import Informationtable from "./Informationtable.vue";
 import dayjs from "dayjs";
 export default {
   props: ["isVertical"],
@@ -256,6 +232,7 @@ export default {
     badPassRate,
     capacityChart,
     throwMChart,
+    Informationtable,
   },
   data() {
     return {
@@ -291,6 +268,7 @@ export default {
       barHeight: 370,
       isRotate: "",
       orderList: [],
+      isTable: false,
     };
   },
   watch: {
@@ -384,6 +362,7 @@ export default {
                 )
               : "",
           };
+          this.orderList = [...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,];
         }
       });
     },

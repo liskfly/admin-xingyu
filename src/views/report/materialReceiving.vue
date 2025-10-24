@@ -9,13 +9,13 @@
           @submit.native.prevent
         >
           <el-form-item label="" class="mb-2">
-            <el-select v-model="searchType" placeholder="">
+            <el-select v-model="searchType" placeholder=""
+                @change="typeChange">
               <el-option
                 v-for="item in inquireList"
                 :key="item.value"
                 :label="item.lable"
                 :value="item.value"
-                @change="typeChange"
               >
               </el-option>
             </el-select>
@@ -61,23 +61,13 @@
           </template>
         </el-table-column>
         <af-table-column prop="wo" label="工单" />
-        <af-table-column align="center" prop="Mcid" label="设备ID" />
-        <af-table-column prop="CompId" label="物料编码" />
-        <af-table-column align="center" prop="ActionID" label="操作类型" />
-        <af-table-column align="center" prop="Station" label="机台站点" />
-        <af-table-column align="center" prop="Slot" label="主站位" />
-        <af-table-column align="center" prop="SubSlot" label="子站位" />
-        <af-table-column prop="FeederID" label="FeederID" />
-        <el-table-column
-          prop="Description"
-          label="描述"
-          width="100"
-          show-overflow-tooltip
-        />
-
-        <af-table-column prop="OperatorID" label="操作人" />
-        <el-table-column prop="Timestamp" label="时间" width="150">
-        </el-table-column>
+        <af-table-column align="center" prop="OldCompId" label="上盘物料id" />
+        <af-table-column prop="CompId" label="当前接料id" />
+        <af-table-column align="center" prop="CompType" label="类别" />
+        <af-table-column align="center" prop="Timestamp" label="接料时间" />
+        <af-table-column align="center" prop="CompCode" label="料号" />
+        <af-table-column align="center" prop="CompName" label="名称" />
+        <af-table-column align="center" prop="CompDesc" label="描述" />
       </el-table>
       <div class="block" style="margin-top: 8px">
         <el-pagination
@@ -135,14 +125,14 @@ export default {
   },
   methods: {
     getData() {
-      if (this.searchType == 'W' && this.getForm.reelid == "") {
+      if (this.searchType == 'R' && this.getForm.reelid == "") {
         this.$notify.error({
           title: "提示信息",
           message: "请输入物料id",
         });
         return;
       }
-      if (this.searchType == 'R' && this.getForm.mfgordername == "") {
+      if (this.searchType == 'W' && this.getForm.mfgordername == "") {
         this.$notify.error({
           title: "提示信息",
           message: "请输入工单",
@@ -162,7 +152,7 @@ export default {
           this.tableData = [];
           this.$notify.error({
             title: "提示信息",
-            message: res.Message,
+            message: res.Msg,
           });
         }
       });

@@ -181,6 +181,15 @@ export function UpdateXYL_BadExamine(data) {
     });
 }
 
+//删除审核料号信息
+export function DeleteXYL_BadExamine(data) {
+    return request({
+        url: "/Repair/DeleteXYL_BadExamine",
+        method: "post",
+        data,
+    });
+}
+
 //获取报废审批  
 export function QueryDistinctPCBIDFormScrap(data) {
     return request({

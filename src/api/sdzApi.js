@@ -139,3 +139,21 @@ export function QuerySDZHHeadData(data) {
       data
     });
   }
+  
+  //抛料记录查询
+   export function GetMaterialLossData(data) {
+    return request({
+      url: "/ReportQuery/GetMaterialLossData",
+      method: "post",
+      data
+    });
+  }
+  
+  //抛料记录查询
+   export function GetMaterialLossDetail(data) {
+    return request({
+      url: "/ReportQuery/GetMaterialLossDetail",
+      method: "post",
+      data
+    });
+  }
