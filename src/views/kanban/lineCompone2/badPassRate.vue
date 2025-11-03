@@ -6,7 +6,7 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetReport_LineBadnessInfo } from "@/api/kanbanApi"
+import { GetReport_LineBadnessInfo2 } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
     props: ['Line',"rateHeight"],
@@ -32,7 +32,7 @@ export default {
                     type: 'pie',
                     radius: ['30%', '60%'],
                     center: ['50%', '50%'],
-                    roseType: 'radius',
+                    // roseType: 'radius',
                     // roseType: 'area',
                     itemStyle: {
                         borderRadius: 8
@@ -87,7 +87,7 @@ export default {
     methods: {
         getData() {
   
-            GetReport_LineBadnessInfo({ Line: this.Line }).then(res => {
+            GetReport_LineBadnessInfo2({ Line: this.Line }).then(res => {
                 if (res.Success) {
                     if(res.Data.length==0){
                         this.option.series[0].data = [{ value: 1, name: '无不良' }];

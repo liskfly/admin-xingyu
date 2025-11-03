@@ -1,6 +1,6 @@
 <template>
   <div class="flex" id="box">
-    <dv-scroll-board ref="scrollBoard" :config="config" style="width: 99%; height: 250px" class="wrap-board" />
+    <dv-scroll-board ref="scrollBoard" :config="config" style="width: 100%; height: 120px" class="wrap-board" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
       config: {
         header: [],
         data: [],
-        columnWidth: ['230','60','400','180','180','120'],
+        columnWidth: ['300','60','1000','200','200','140'],
         rowHeight: 20,
         align: ["left", "left", "left", "center", "center", "center", "center"],
         rowNum: 3,
@@ -84,10 +84,4 @@ export default {
 // .ceil div {
 //   display: flex !important;
 // }
-
-::v-deep .ceil {
-  display: flex;
-  align-items: flex-start;
-  align-items: center;
-}
 </style>

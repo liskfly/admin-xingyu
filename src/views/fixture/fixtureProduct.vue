@@ -65,7 +65,7 @@
     <el-dialog :title="titleType" :visible.sync="dialogVisible">
       <el-form :model="form" ref="form" label-width="80px">
         <el-form-item label="产品编号" prop="productName">
-          <el-input v-model="form.productName"></el-input>
+          <el-input v-model="form.productName" :disabled="titleType == '修改'"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="toolsMold">
           <el-select v-model="form.toolsMold" filterable placeholder="治具类型">

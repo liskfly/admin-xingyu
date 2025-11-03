@@ -27,9 +27,9 @@ export default {
       '<div style="font-size:20px;">设备</div>',
       '<div style="font-size:20px;">产线</div>',
       '<div style="font-size:20px;">A</div>',
-      '<div style="font-size:20px;">P</div>',
-      '<div style="font-size:20px;">Q</div>',
-      '<div style="font-size:20px;">OEE</div>',
+      '<div style="font-size:20px;text-align: start;">P</div>',
+      '<div style="font-size:20px;text-align: start;">Q</div>',
+      '<div style="font-size:20px;text-align: start;">OEE</div>',
       //   '<div style="font-size:18px;width:108px">工单数量</div>',
       //   '<div style="font-size:18px;width:108px">工单进度</div>',
     ];

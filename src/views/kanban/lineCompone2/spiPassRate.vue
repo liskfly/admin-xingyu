@@ -6,10 +6,10 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetReport_LineSPIFirstPassInfo } from "@/api/kanbanApi"
+import { GetReport_LineSPIFirstPassInfo2 } from "@/api/kanbanApi";
 import dayjs from "dayjs";
 export default {
-  props: ['Line','rateHeight'],
+  props: ["Line", "rateHeight"],
   data() {
     return {
       option: {
@@ -36,6 +36,7 @@ export default {
             radius: ["40%", "68%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
+            startAngle: 270,
             itemStyle: {
               borderRadius: 10,
               borderColor: "#0c162d",
@@ -80,9 +81,9 @@ export default {
         this.stopRefreshing();
         this.getData();
         this.startRefreshing();
-      }
+      },
     },
-     rateHeight: {
+    rateHeight: {
       handler(newHeight) {
         if (this.chart) {
           this.chart.resize({ height: newHeight });
@@ -102,18 +103,34 @@ export default {
   },
   methods: {
     getData() {
-  
-
-      GetReport_LineSPIFirstPassInfo({ Line: this.Line }).then(res => {
+      GetReport_LineSPIFirstPassInfo2({ Line: this.Line }).then((res) => {
         if (res.Success) {
+          let FirstPass_Percent = 0;
+          let Badness_Percent = 0;
+
+          res.Data.map((item) => {
+            FirstPass_Percent = FirstPass_Percent + item.FirstPass_Percent;
+            Badness_Percent = Badness_Percent + item.Badness_Percent;
+          });
+
+          FirstPass_Percent = (FirstPass_Percent / res.Data.length).toFixed(2);
+          Badness_Percent = (Badness_Percent / res.Data.length).toFixed(2);
+
           this.option.series[0].data = [
-            { value: res.Data[0].FirstPass_Percent, name: "直通",  itemStyle: { color: "#52c41a" } },
-            { value: res.Data[0].Badness_Percent, name: "不良", itemStyle: { color: "#ff4d4f" } }
+            {
+              value: FirstPass_Percent,
+              name: "直通",
+              itemStyle: { color: "#52c41a" },
+            },
+            {
+              value: Badness_Percent,
+              name: "不良",
+              itemStyle: { color: "#ff4d4f" },
+            },
           ];
           this.chart.setOption(this.option);
         }
-
-      })
+      });
     },
     initChart() {
       const chartDom = document.getElementById("spiPassRateChart");
@@ -121,7 +138,7 @@ export default {
       this.chart.setOption(this.option);
       // myChart.resize();
     },
-   startRefreshing() {
+    startRefreshing() {
       this.stopRefreshing(); // 确保只有一个定时器运行
       this.refreshing = true;
       // 立即获取一次数据
@@ -131,8 +148,6 @@ export default {
       this.timer = setInterval(() => {
         this.getData();
       }, 60000);
-
-
     },
 
     stopRefreshing() {
@@ -159,7 +174,7 @@ export default {
         this.getData();
         this.loading = false;
       }, 800);
-    }
+    },
   },
 };
 </script>

@@ -6,7 +6,7 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetReport_LineAOIFirstPassInfo } from "@/api/kanbanApi";
+import { GetReport_LineAOIFirstPassInfo2 } from "@/api/kanbanApi";
 import dayjs from "dayjs";
 export default {
   props: ["Line", "rateHeight"],
@@ -36,7 +36,7 @@ export default {
             radius: ["40%", "68%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
-            // startAngle: 90,
+            startAngle: 270,
             itemStyle: {
               borderRadius: 10,
               borderColor: "#0c162d",
@@ -101,16 +101,26 @@ export default {
   },
   methods: {
     getData() {
-      GetReport_LineAOIFirstPassInfo({ Line: this.Line }).then((res) => {
+      GetReport_LineAOIFirstPassInfo2({ Line: this.Line }).then((res) => {
         if (res.Success) {
+          let FirstPass_Percent = 0;
+          let Badness_Percent = 0;
+
+          res.Data.map((item) => {
+            FirstPass_Percent = FirstPass_Percent + item.FirstPass_Percent;
+            Badness_Percent = Badness_Percent + item.Badness_Percent;
+          });
+
+          FirstPass_Percent = (FirstPass_Percent / res.Data.length).toFixed(2);
+          Badness_Percent = (Badness_Percent / res.Data.length).toFixed(2);
           this.option.series[0].data = [
             {
-              value: res.Data[0].FirstPass_Percent,
+              value: FirstPass_Percent,
               name: "直通",
               itemStyle: { color: "#13c2c2" },
             },
             {
-              value: res.Data[0].Badness_Percent,
+              value: Badness_Percent,
               name: "不良",
               itemStyle: { color: "#ff7a45" },
             },

@@ -75,7 +75,11 @@
       >
         <el-table-column prop="OrderNumber" label="工单" width="150"></el-table-column>
         <el-table-column prop="Side" label="面别"></el-table-column>
-        <el-table-column prop="FinalYield" label="最终产率"> </el-table-column>
+        <el-table-column prop="FinalYield" label="最终产率">
+          <template #default="scope">
+            {{ parseFloat(scope.row.FinalYield).toFixed(2) > 100 ? 100:scope.row.FinalYield }}
+          </template>
+        </el-table-column>
         <el-table-column prop="FirstYield" label="首次测试良率"> </el-table-column>
         <el-table-column prop="PlannedStartTime" label="计划开始时间">
         </el-table-column>

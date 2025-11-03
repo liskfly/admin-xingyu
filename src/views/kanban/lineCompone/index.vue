@@ -66,11 +66,11 @@
           </div>
 
           <div class="info-item">
-            <div class="info-label">计划开始时间</div>
+            <div class="info-label">开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
           </div>
           <div class="info-item">
-            <div class="info-label">计划结束时间</div>
+            <div class="info-label">结束时间</div>
             <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
           </div>
         </div>
@@ -96,11 +96,11 @@
             <div class="info-value">{{ lineData.Side || "" }}</div>
           </div>
           <div class="info-item">
-            <div class="info-label">计划开始时间</div>
+            <div class="info-label">开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
           </div>
           <div class="info-item">
-            <div class="info-label">计划结束时间</div>
+            <div class="info-label">结束时间</div>
             <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
           </div>
         </div>
@@ -396,7 +396,7 @@ export default {
       // 设置新的定时器（每分钟一次）
       this.dataRefreshInterval = setInterval(() => {
         this.getData();
-      }, 5000); // 60秒 = 60000毫秒
+      }, 60000); // 60秒 = 60000毫秒
     },
   },
 };

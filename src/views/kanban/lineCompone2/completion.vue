@@ -6,7 +6,7 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetCompletionRate } from "@/api/kanbanApi"
+import { GetCompletionRate2 } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
   props: ['Line', 'rateHeight'],
@@ -107,15 +107,20 @@ export default {
   },
   methods: {
     getData() {
-      GetCompletionRate({ Line: this.Line }).then(res => {
+      GetCompletionRate2({ Line: this.Line }).then(res => {
         if (res.Success) {
 
-          // let completionData = ((res.Data[0].qty / res.Data[0].QuantityOrdered) * 100).toFixed(1)
-          // let remainderData = (100 - completionData).toFixed(1)
+          let completionData = 0;
+          let remainderData = 0;
+
+          res.Data.map((item) => {
+            completionData = completionData + item.qty;
+            remainderData = remainderData + item.QuantityOrdered;
+          })
 
           this.option.series[0].data = [
-            { value: res.Data[0].qty, name: "完成", itemStyle: { color: "#1890ff" } },
-            { value: (res.Data[0].QuantityOrdered - res.Data[0].qty), name: "剩余", itemStyle: { color: "#2f4b7c" } },
+            { value: completionData, name: "完成", itemStyle: { color: "#1890ff" } },
+            { value: (remainderData - completionData), name: "剩余", itemStyle: { color: "#2f4b7c" } },
           ];
           this.chart.setOption(this.option);
         }

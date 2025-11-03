@@ -80,3 +80,48 @@ export function GetAOI2OEE() {
         method: "post",
     });
 }
+
+//当前生产工单(看板2)
+export function GetReport_LineCurrentWo2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetReport_LineCurrentWo",
+        method: "post",
+        data,
+    });
+}
+
+//不良率(看板2)
+export function GetReport_LineBadnessInfo2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetReport_LineBadnessInfo",
+        method: "post",
+        data,
+    });
+}
+
+//AOI一次通过率(看板2)
+export function GetReport_LineAOIFirstPassInfo2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetReport_LineAOIFirstPassInfo",
+        method: "post",
+        data,
+    });
+}
+
+//SPI一次通过率(看板2)
+export function GetReport_LineSPIFirstPassInfo2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetReport_LineSPIFirstPassInfo",
+        method: "post",
+        data,
+    });
+}
+
+//工单完成率(看板2)
+export function GetCompletionRate2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetCompletionRate",
+        method: "post",
+        data,
+    });
+}

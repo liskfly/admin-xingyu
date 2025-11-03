@@ -2,7 +2,7 @@
   <div class="line-container" ref="container" id="fullDiv5">
     <div class="content-wrapper" ref="content" :style="contentStyle">
       <!-- <lineIndex :isVertical="isVertical"/> -->
-      <lineIndex :isVertical="isVertical" @changeMsg="changeMsg" :class="{ 'isRotate': isRotate }" />
+      <lineIndex :isVertical="isVertical" :key="key" @changeMsg="changeMsg" :class="{ 'isRotate': isRotate }" />
 
     </div>
   </div>
@@ -22,7 +22,8 @@ export default {
       isVertical: false,
       windowWidth: 0,
       windowHeight: 0,
-      isRotate: false
+      isRotate: false,
+      key:1
     }
   },
   computed: {
@@ -69,7 +70,8 @@ export default {
        this.$nextTick(() => {
           this.calcScaleRatio();
         });
-      }
+      };
+      this.key += 1
     },
     checkOrientation() {
       if (this.isRotate) {

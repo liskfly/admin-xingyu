@@ -162,11 +162,13 @@ export default {
   },
   created() {},
   beforeMount() {
-    let now = new Date();
-    let year = now.getFullYear();
-    let month = now.getMonth() + 1;
-    let day = now.getDate();
-    this.getDataText.Date = year + "-" + month + "-" + day;
+    // let now = new Date();
+    // let year = now.getFullYear();
+    // let month = now.getMonth() + 1;
+    // let day = now.getDate();
+    // this.getDataText.Date = year + "-" + month + "-" + day;
+    const formattedRange = this.getFormattedTimeRange();
+    this.dateValue = [formattedRange.start,formattedRange.end]
   },
   mounted() {
     this.$nextTick(() => {
@@ -184,7 +186,9 @@ export default {
         });
         return;
       }
-      if (this.dateCheck(this.getDataText.StartTime, this.getDataText.EndTime)) {
+      if (
+        this.dateCheck(this.getDataText.StartTime, this.getDataText.EndTime)
+      ) {
         this.$message({
           message: "时间区间不能超过一个月",
           type: "warning",
@@ -243,6 +247,28 @@ export default {
     },
     endLoading() {
       this.loading?.close();
+    },
+    formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
+    getFormattedTimeRange() {
+      const today8AM = new Date();
+      today8AM.setHours(8, 0, 0, 0);
+
+      const yesterday8AM = new Date(today8AM);
+      yesterday8AM.setDate(yesterday8AM.getDate() - 1);
+
+      return {
+        start: this.formatDate(yesterday8AM), // 如: "2025-11-2 08:00:00"
+        end: this.formatDate(today8AM), // 如: "2025-11-3 08:00:00"
+      };
     },
   },
 };

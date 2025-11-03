@@ -45,8 +45,8 @@ export default {
       '<div style="font-size:18px;width:250px">MES工单</div>',
       '<div style="font-size:18px;width:360px">产品编码</div>',
       '<div style="font-size:18px;width:500px">产品</div>',
-      '<div style="font-size:18px;width:200px">计划开始时间</div>',
-      '<div style="font-size:18px;width:200px">实际开始时间</div>',
+      '<div style="font-size:18px;width:200px">开始时间</div>',
+      '<div style="font-size:18px;width:200px">开始时间</div>',
       '<div style="font-size:18px;width:108px">工单数量</div>',
       '<div style="font-size:18px;width:108px">工单进度</div>',
     ];

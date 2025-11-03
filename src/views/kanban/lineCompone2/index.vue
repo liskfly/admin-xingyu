@@ -42,37 +42,13 @@
           style="font-size: 24px"
         >
           <span class="pr-5">{{ currentTime }}</span>
-          <!-- <i class="el-icon-refresh" @click="rotateClick"></i> -->
+          <i class="el-icon-refresh" @click="rotateClick"></i>
         </div>
       </div>
 
       <div class="h-32 dashboard-header" v-if="!isVertical">
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="info-label">生产工单</div>
-            <div class="info-value">{{ lineData.OrderName || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label text-center">面别</div>
-            <div class="info-value text-center">{{ lineData.Side || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">产品编码</div>
-            <div class="info-value">{{ lineData.ProductNO || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">产品</div>
-            <div class="info-value">{{ lineData.ProductDsc || "" }}</div>
-          </div>
-
-          <div class="info-item">
-            <div class="info-label">计划开始时间</div>
-            <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
-          </div>
-          <div class="info-item">
-            <div class="info-label">计划结束时间</div>
-            <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
-          </div>
+        <div class="w-full h-full">
+          <Informationtable2 :orderList="orderList" />
         </div>
       </div>
       <div class="h-64 dashboard-header-vertical" v-if="isVertical">
@@ -85,7 +61,7 @@
           <dv-border-box-13 class="centerh centerh-vertical">
             <div class="header_title">
               <i class="fa fa-tasks"></i
-              ><span class="text-color"> 当前工单完成率</span>
+              ><span class="text-color"> 工单完成率</span>
             </div>
             <div>
               <completion :Line="line" :rateHeight="rateHeight" />
@@ -214,7 +190,7 @@
 </template>
 
 <script>
-import { GetReport_LineCurrentWo } from "@/api/kanbanApi";
+import { GetReport_LineCurrentWo2 } from "@/api/kanbanApi";
 import completion from "./completion.vue";
 import spiPassRate from "./spiPassRate.vue";
 import aoiPassRate from "./aoiPassRate.vue";
@@ -222,6 +198,7 @@ import badPassRate from "./badPassRate.vue";
 import capacityChart from "./capacityChart.vue";
 import throwMChart from "./throwMChart.vue";
 import Informationtable from "./Informationtable.vue";
+import Informationtable2 from "./Informationtable2.vue";
 import dayjs from "dayjs";
 export default {
   props: ["isVertical"],
@@ -233,6 +210,7 @@ export default {
     capacityChart,
     throwMChart,
     Informationtable,
+    Informationtable2
   },
   data() {
     return {
@@ -347,7 +325,7 @@ export default {
       this.setDataRefreshInterval();
     },
     getData() {
-      GetReport_LineCurrentWo({ line: this.line }).then((res) => {
+      GetReport_LineCurrentWo2({ line: this.line }).then((res) => {
         if (res.Success) {
           this.lineData = {
             ...res.Data[0],
@@ -362,7 +340,7 @@ export default {
                 )
               : "",
           };
-          this.orderList = [...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,...res.Data,];
+          this.orderList = res.Data;
         }
       });
     },
@@ -375,7 +353,7 @@ export default {
       // 设置新的定时器（每分钟一次）
       this.dataRefreshInterval = setInterval(() => {
         this.getData();
-      }, 5000); // 60秒 = 60000毫秒
+      }, 60000); // 60秒 = 60000毫秒
     },
   },
 };

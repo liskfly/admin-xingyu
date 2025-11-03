@@ -61,6 +61,8 @@ export default {
           fullDiv = document.getElementById("fullDiv5");
             case "/kanban/factoryBoard":
           fullDiv = document.getElementById("fullDiv5");
+            case "/kanban/lineDashboard2":
+          fullDiv = document.getElementById("fullDiv5");
           break;
       }
       console.log(fullDiv);

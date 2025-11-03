@@ -10,5 +10,10 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+// div .ceil {
+//   display: flex;
+//   align-items: flex-start;
+//   align-items: center;
+// }
 </style>

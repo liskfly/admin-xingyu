@@ -788,6 +788,12 @@ export default {
         item.cr_time = dayjs().format("YYYY-MM-DD HH:mm:ss");
       });
       this.upDateForm.list = this.smallBoardTable;
+      this.upDateForm.list = this.upDateForm.list.map((item) => {
+        return {
+          ...item,
+          softwareVersion:this.editForm.softwareVersion
+        }
+      })
       UpdatePanelizationDetail(this.upDateForm).then((res) => {
         if (res.Success) {
           this.$notify({
