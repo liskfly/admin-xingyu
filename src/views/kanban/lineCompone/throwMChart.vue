@@ -144,7 +144,7 @@ export default {
   beforeDestroy() {
     this.stopRefreshing();
     if (this.chart) {
-      this.chart.dispose();
+      this.chart.clear();
     }
   },
   methods: {
@@ -182,7 +182,10 @@ export default {
     },
     initChart() {
       const chartDom = document.getElementById("throwMChart");
-      this.chart = echarts.init(chartDom);
+      this.chart = echarts.init(chartDom, null, {
+        renderer: "svg",
+        useDirtyRect: false, // 关闭脏矩形优化，确保 SVG 渲染正常
+      });
       this.chart.setOption(this.option);
       // myChart.resize();
     },
@@ -191,7 +194,7 @@ export default {
       this.refreshing = true;
       this.timer = setInterval(() => {
         this.getData();
-      }, 60000);
+      }, 600000);
     },
     stopRefreshing() {
       if (this.timer) {

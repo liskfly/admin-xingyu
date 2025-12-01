@@ -63,7 +63,7 @@
         <af-table-column prop="wo" label="工单" />
         <af-table-column align="center" prop="OldCompId" label="上盘物料id" />
         <af-table-column prop="CompId" label="当前接料id" />
-        <af-table-column align="center" prop="CompType" label="类别" />
+        <!-- <af-table-column align="center" prop="CompType" label="类别" /> -->
         <af-table-column align="center" prop="Timestamp" label="接料时间" />
         <af-table-column align="center" prop="CompCode" label="料号" />
         <af-table-column align="center" prop="CompName" label="名称" />

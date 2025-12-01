@@ -3,7 +3,6 @@
     <el-card :body-style="{ padding: '8px' }">
       <div class="mb-2">
         <el-button type="primary" @click="openAdd">新增</el-button>
-        <el-button type="primary" @click="openEdit">编辑</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -19,27 +18,27 @@
             }}</span>
           </template>
         </el-table-column>
-        <af-table-column prop="PN" label="样件唯一码"> </af-table-column>
         <af-table-column prop="name" label="样件编码"> </af-table-column>
-        <af-table-column prop="pn_spec" label="样件名称"> </af-table-column>
+        <af-table-column prop="pn_spec" label="成品编码"> </af-table-column>
         <el-table-column
           prop="faceNumber"
-          label="样件内容"
+          label="样件名称"
           width="80"
           align="center"
         >
         </el-table-column>
-        <af-table-column prop="version" label="版本号"> </af-table-column>
+        <af-table-column prop="version" label="版本"> </af-table-column>
+        <af-table-column prop="softwareVersion" label="样件类型">
+        </af-table-column>
+        <af-table-column prop="softwareVersion" label="封样内容">
+        </af-table-column>
         <af-table-column prop="softwareVersion" label="封样日期">
         </af-table-column>
         <af-table-column prop="softwareVersion" label="刷新日期">
         </af-table-column>
-        <af-table-column prop="softwareVersion" label="保质年">
-        </af-table-column>
-        <af-table-column prop="softwareVersion" label="封样人">
-        </af-table-column>
+        <af-table-column prop="softwareVersion" label="有效期"> </af-table-column>
+        <af-table-column prop="softwareVersion" label="封样人"> </af-table-column>
         <af-table-column prop="softwareVersion" label="备注"> </af-table-column>
-        <af-table-column prop="softwareVersion" label="状态"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="180" align="center">
           <template slot-scope="scope">
             <el-button
@@ -92,60 +91,72 @@
         label-position="left"
         label-width="auto"
       >
-        <el-form-item label="样件唯一码" prop="path">
+        <el-form-item label="样件编码" prop="path">
           <el-input
             v-model="form.path"
-            placeholder="请输入样件唯一码"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件编码" prop="MenuName">
+        <el-form-item label="成品编码" prop="MenuName">
           <el-input
             v-model="form.MenuName"
-            placeholder="请输入样件编码"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件名称" prop="redirect">
+        <el-form-item label="产品名称" prop="redirect">
           <el-input
             v-model="form.redirect"
-            placeholder="请输入样件名称"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件内容" prop="component">
+        <el-form-item label="版本" prop="component">
           <el-input
             v-model="form.component"
-            placeholder="请输入样件内容"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="版本号" prop="sortId">
+        <el-form-item label="样件类型" prop="sortId">
           <el-input
             v-model="form.component"
-            placeholder="请输入版本号"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="封样日期" prop="sortId">
+        <el-form-item label="样件内容" prop="sortId">
           <el-date-picker
             v-model="form.component"
             type="date"
-            placeholder="选择日期"
+            placeholder=""
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="保质年" prop="sortId">
+        <el-form-item label="样件日期" prop="sortId">
           <el-input
             v-model="form.component"
-            placeholder="请输入保质年"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="刷新日期" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="有效期(年)" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="封样人" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder=""
           ></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="sortId">
           <el-input
             v-model="form.component"
-            placeholder="请输入备注"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="状态" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder="请输入状态"
+            placeholder=""
           ></el-input>
         </el-form-item>
       </el-form>
@@ -167,61 +178,74 @@
         label-position="left"
         label-width="auto"
       >
-        <el-form-item label="样件唯一码" prop="path">
+        <el-form-item label="样件编码" prop="path">
           <el-input
           :disabled="false"
             v-model="form.path"
-            placeholder="请输入样件唯一码"
+            placeholder=""
+            disabled
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件编码" prop="MenuName">
+        <el-form-item label="成品编码" prop="MenuName">
           <el-input
             v-model="form.MenuName"
-            placeholder="请输入样件编码"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件名称" prop="redirect">
+        <el-form-item label="产品名称" prop="redirect">
           <el-input
             v-model="form.redirect"
-            placeholder="请输入样件名称"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件内容" prop="component">
+        <el-form-item label="版本" prop="component">
           <el-input
             v-model="form.component"
-            placeholder="请输入样件内容"
+            placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="版本号" prop="sortId">
+        <el-form-item label="样件类型" prop="sortId">
           <el-input
             v-model="form.component"
-            placeholder="请输入版本号"
+            placeholder="封样内容"
           ></el-input>
         </el-form-item>
-        <el-form-item label="封样日期" prop="sortId">
+        <el-form-item label="封样内容" prop="sortId">
           <el-date-picker
             v-model="form.component"
             type="date"
-            placeholder="选择日期"
+            placeholder=""
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="保质年" prop="sortId">
+        <el-form-item label="封样日期" prop="sortId">
           <el-input
             v-model="form.component"
-            placeholder="请输入保质年"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="刷新日期" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="有效期(年)" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="封样人" prop="sortId">
+          <el-input
+            v-model="form.component"
+            placeholder=""
           ></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="sortId">
           <el-input
             v-model="form.component"
-            placeholder="请输入备注"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="状态" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder="请输入状态"
+            placeholder=""
           ></el-input>
         </el-form-item>
       </el-form>

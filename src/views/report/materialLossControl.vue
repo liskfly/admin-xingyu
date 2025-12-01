@@ -3,7 +3,8 @@
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <el-form ref="form" :inline="true" label-width="auto">
         <el-form-item class="mb-2">
-          <el-date-picker :clearable="false"
+          <el-date-picker
+            :clearable="false"
             v-model="getDataText.Date"
             type="date"
             placeholder="选择日期"
@@ -22,7 +23,16 @@
           </el-select>
         </el-form-item>
         <el-form-item class="mb-2">
-          <el-button type="primary" @click="getData()">查询</el-button>
+          <el-input
+            placeholder="请输入料号名称"
+            clearable
+            v-model="getDataText.PNName"
+            @input="getData(false)"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item class="mb-2">
+          <el-button type="primary" @click="getData(true)">查询</el-button>
           <!-- <el-button @click="">重置</el-button> -->
         </el-form-item>
       </el-form>
@@ -44,9 +54,20 @@
           align="center"
         ></el-table-column>
         <el-table-column prop="CompName" label="部品名"></el-table-column>
-        <el-table-column prop="TotalCount" sortable label="总数"></el-table-column>
-        <el-table-column prop="lossCount" sortable label="错误次数"> </el-table-column>
-        <el-table-column prop="lossRate" sortable label="错误率%"></el-table-column>
+        <el-table-column prop="PNName" label="料号名称"></el-table-column>
+        <el-table-column prop="PNDesc" label="产品描述"></el-table-column>
+        <el-table-column
+          prop="TotalCount"
+          sortable
+          label="总数"
+        ></el-table-column>
+        <el-table-column prop="lossCount" sortable label="错误次数">
+        </el-table-column>
+        <el-table-column
+          prop="lossRate"
+          sortable
+          label="错误率%"
+        ></el-table-column>
       </el-table>
       <div class="block" style="margin-top: 8px">
         <el-pagination
@@ -89,6 +110,7 @@ export default {
       getDataText: {
         Line: "",
         Date: "",
+        PNName: "",
       },
       ID: "",
       currentPage: 1, // 当前页码
@@ -123,6 +145,10 @@ export default {
           lable: "Line7",
           value: "Line7",
         },
+        {
+          lable: "全部",
+          value: "",
+        },
       ],
       // pickerOptions: {
       //   shortcuts: shortcuts,
@@ -132,11 +158,11 @@ export default {
   watch: {},
   created() {},
   beforeMount() {
-      let now = new Date();
-      let year = now.getFullYear();
-      let month = now.getMonth() + 1;
-      let day = now.getDate();
-      this.getDataText.Date = year + '-' + month + '-' + day
+    let now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth() + 1;
+    let day = now.getDate();
+    this.getDataText.Date = year + "-" + month + "-" + day;
   },
   mounted() {
     this.$nextTick(() => {
@@ -146,12 +172,14 @@ export default {
     });
   },
   methods: {
-    getData() {
-      if (this.getDataText.Line == '' || this.getDataText.Date == '') {
-        this.$message({
-          message: '请选择时间和线体',
-          type: 'warning'
-        });
+    getData(boolen) {
+      if (this.getDataText.Line == "" || this.getDataText.Date == "") {
+        if (boolen) {
+          this.$message({
+            message: "请选择时间和线体",
+            type: "warning",
+          });
+        }
         return;
       }
       GetMaterialLossDetail(this.getDataText).then((res) => {

@@ -35,6 +35,7 @@ export default {
             type: "pie",
             radius: ["40%", "68%"],
             center: ["50%", "50%"],
+            startAngle: 270,
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -97,7 +98,7 @@ export default {
   beforeDestroy() {
     this.stopRefreshing();
     if (this.chart) {
-      this.chart.dispose();
+      this.chart.clear();
     }
   },
   methods: {
@@ -117,7 +118,10 @@ export default {
     },
     initChart() {
       const chartDom = document.getElementById("spiPassRateChart");
-      this.chart = echarts.init(chartDom);
+      this.chart = echarts.init(chartDom, null, {
+        renderer: "svg",
+        useDirtyRect: false, // 关闭脏矩形优化，确保 SVG 渲染正常
+      });
       this.chart.setOption(this.option);
       // myChart.resize();
     },

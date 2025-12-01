@@ -66,11 +66,11 @@
           </div>
 
           <div class="info-item">
-            <div class="info-label">开始时间</div>
+            <div class="info-label">实际开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
           </div>
           <div class="info-item">
-            <div class="info-label">结束时间</div>
+            <div class="info-label">理论结束时间</div>
             <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
           </div>
         </div>
@@ -96,11 +96,11 @@
             <div class="info-value">{{ lineData.Side || "" }}</div>
           </div>
           <div class="info-item">
-            <div class="info-label">开始时间</div>
+            <div class="info-label">实际开始时间</div>
             <div class="info-value">{{ lineData.PlannedStartTime || "" }}</div>
           </div>
           <div class="info-item">
-            <div class="info-label">结束时间</div>
+            <div class="info-label">理论结束时间</div>
             <div class="info-value">{{ lineData.PlannedFinishTime || "" }}</div>
           </div>
         </div>
@@ -151,7 +151,7 @@
             <div class="header_title">
               <i class="fa fa-bar-chart"></i
               ><span class="text-color"> 贴片机单小时产能</span
-              ><span style="color: #f39c12; font-size: 25px">（12小时）</span>
+              >
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />
@@ -216,7 +216,7 @@
             <div class="header_title">
               <i class="fa fa-bar-chart"></i>
               <span class="text-color">贴片机单小时产能</span
-              ><span style="color: #f39c12; font-size: 24px">（12小时）</span>
+              >
             </div>
             <div>
               <capacityChart :Line="line" :barHeight="barHeight" />

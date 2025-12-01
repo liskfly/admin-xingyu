@@ -6,7 +6,7 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetCapacity } from "@/api/kanbanApi"
+import { GetCapacity2 } from "@/api/kanbanApi"
 import dayjs from "dayjs";
 export default {
   props: ['Line', 'barHeight'],
@@ -232,7 +232,7 @@ export default {
       //   }
       // });
       // console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
-      GetCapacity({ Line: this.Line }).then(res => {
+      GetCapacity2({ Line: this.Line }).then(res => {
         if (res.Success) {
            let data = res.Data
           if(data.length<12){

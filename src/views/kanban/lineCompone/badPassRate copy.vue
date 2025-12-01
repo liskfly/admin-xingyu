@@ -8,7 +8,6 @@
 import * as echarts from "echarts";
 import { GetReport_LineBadnessInfo } from "@/api/kanbanApi";
 import dayjs from "dayjs";
-
 export default {
   props: ["Line", "rateHeight"],
   data() {
@@ -18,18 +17,30 @@ export default {
           trigger: "item",
           formatter: "{a} <br/>{b}: {c} ({d}%)",
         },
+        // legend: {
+        //     bottom: 2,
+        //     left: 'center',
+        //      itemWidth: 9,
+        //     textStyle: {
+        //         color: '#ffffff',
+        //         fontSize: 15,
+        //     }
+        // },
+
         series: [
           {
             name: "不良分布",
             type: "pie",
-            radius: ["30%", "60%"],
+            radius: ["40%", "68%"],
             center: ["50%", "50%"],
             roseType: "radius",
+            // roseType: 'area',
             itemStyle: {
               borderRadius: 8,
             },
             label: {
               formatter: function (params) {
+                // 当值为0时不显示标签
                 if (params.value == 0 && params.name == '无不良') {
                   return "无不良";
                 }
@@ -40,21 +51,24 @@ export default {
               fontWeight: "bold",
               overflow: "break",
             },
+
             data: [],
+            // color: ['#ff4d4f', '#ff7a45', '#ffa940', '#ffc53d', '#ffec3d', '#bae637']
           },
         ],
       },
       timer: null,
+      chart: null,
       refreshing: true,
       loading: false,
-      cancelToken: null, // 新增：请求取消令牌
-      timeoutId: null,   // 新增：setTimeout ID
     };
   },
   watch: {
+    // 监听Line属性变化
     Line: {
-      immediate: true,
+      immediate: true, // 立即触发一次
       handler() {
+        // console.log(`生产线变更为: ${newLine}`);
         this.stopRefreshing();
         this.getData();
         this.startRefreshing();
@@ -62,8 +76,8 @@ export default {
     },
     rateHeight: {
       handler(newHeight) {
-        if (this.chartInstance) {
-          this.chartInstance.resize({ height: newHeight });
+        if (this.chart) {
+          this.chart.resize({ height: newHeight });
         }
       },
     },
@@ -71,78 +85,48 @@ export default {
   mounted() {
     this.initChart();
     this.startRefreshing();
-    
-    // 添加resize监听
-    this.handleResize = () => {
-      if (this.chartInstance) {
-        this.chartInstance.resize();
-      }
-    };
-    window.addEventListener('resize', this.handleResize);
   },
   beforeDestroy() {
-    this.cleanup();
+    this.stopRefreshing();
+    if (this.chart) {
+      this.chart.clear();
+    }
   },
   methods: {
-    initChart() {
-      const chartDom = document.getElementById("badPassRateChart");
-      this.chartInstance = echarts.init(chartDom, null, {
-        renderer: "svg",
-        useDirtyRect: false,
-      });
-      this.chartInstance.setOption(this.option);
-    },
-
     getData() {
-      // 取消之前的请求
-      this.cancelPreviousRequest();
-      
-      // 创建取消令牌（根据你的HTTP库调整）
-      // 如果是axios：
-      // this.cancelToken = axios.CancelToken.source();
-      
       GetReport_LineBadnessInfo({ Line: this.Line }).then((res) => {
-        // 检查组件是否还存在
-        if (!this._isDestroyed && res.Success) {
+        if (res.Success) {
           if (res.Data.length == 0) {
             this.option.series[0].data = [{ value: 0, name: "无不良" }];
-            this.chartInstance.setOption(this.option);
+            this.chart.setOption(this.option);
             return;
           }
           this.option.series[0].data = res.Data.map((item) => ({
             value: item.CodeCount,
             name: item.badphenomena_value,
           }));
-          this.chartInstance.setOption(this.option);
-        }
-      }).catch(error => {
-        // 忽略取消请求的错误
-        if (!this.isCancelError(error)) {
-          console.error('获取数据失败:', error);
+          this.chart.setOption(this.option);
         }
       });
     },
+    initChart() {
+      const chartDom = document.getElementById("badPassRateChart");
 
-    cancelPreviousRequest() {
-      if (this.cancelToken) {
-        this.cancelToken.cancel('请求被取消');
-        this.cancelToken = null;
-      }
+      this.chart = echarts.init(chartDom, null, {
+        renderer: "svg",
+        useDirtyRect: false, // 关闭脏矩形优化，确保 SVG 渲染正常
+      });
+      // this.chart = echarts.init(chartDom);
+      this.chart.setOption(this.option);
+      // myChart.resize();
     },
-
-    isCancelError(error) {
-      // 根据你的HTTP库判断是否为取消错误
-      return error && error.message === '请求被取消';
-    },
-
     startRefreshing() {
-      this.stopRefreshing();
+      this.stopRefreshing(); // 确保只有一个定时器运行
       this.refreshing = true;
       this.timer = setInterval(() => {
         this.getData();
       }, 60000);
     },
-
     stopRefreshing() {
       if (this.timer) {
         clearInterval(this.timer);
@@ -158,50 +142,15 @@ export default {
         this.startRefreshing();
       }
     },
-
     refreshData() {
       this.simulateDataFetch();
     },
-
     simulateDataFetch() {
       this.loading = true;
-      // 清理之前的timeout
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
-      }
-      this.timeoutId = setTimeout(() => {
+      setTimeout(() => {
         this.getData();
         this.loading = false;
-        this.timeoutId = null;
       }, 800);
-    },
-
-    cleanup() {
-      // 1. 取消未完成的请求
-      this.cancelPreviousRequest();
-      
-      // 2. 停止定时器
-      this.stopRefreshing();
-      
-      // 3. 清理setTimeout
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
-        this.timeoutId = null;
-      }
-      
-      // 4. 移除事件监听器
-      if (this.handleResize) {
-        window.removeEventListener('resize', this.handleResize);
-        this.handleResize = null;
-      }
-      
-      // 5. 销毁图表实例
-      if (this.chartInstance) {
-        this.chartInstance.dispose();
-        this.chartInstance = null;
-      }
-      
-      console.log('组件资源已完全清理');
     },
   },
 };

@@ -46,7 +46,7 @@ export default {
       '<div style="font-size:18px;width:360px">产品编码</div>',
       '<div style="font-size:18px;width:500px">产品</div>',
       '<div style="font-size:18px;width:200px">开始时间</div>',
-      '<div style="font-size:18px;width:200px">开始时间</div>',
+      '<div style="font-size:18px;width:200px">结束时间</div>',
       '<div style="font-size:18px;width:108px">工单数量</div>',
       '<div style="font-size:18px;width:108px">工单进度</div>',
     ];
@@ -73,7 +73,7 @@ export default {
                   "YYYY-MM-DD HH:mm:ss"
                 )}</div>`,
           `<div style="font-size:20px;color:#fff;width:108px">${item.WoNum}</div>`,
-          `<div style="font-size:24px;width:108px" class="${this.getStatusClass(item.CompletePercent)}">${item.CompletePercent}%</div>`,
+          `<div style="font-size:24px;width:108px" class="${this.getStatusClass(item.CompletePercent)}">${Number(item.CompletePercent) > 100 ? 100:item.CompletePercent}%</div>`,
         ];
       });
       this.$refs.scrollBoard.updateRows(this.config.data);

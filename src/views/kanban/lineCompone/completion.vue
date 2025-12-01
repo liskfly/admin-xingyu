@@ -35,6 +35,7 @@ export default {
             type: "pie",
             radius: ["40%", "68%"],
             center: ["50%", "50%"],
+            startAngle: 270,
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -102,7 +103,7 @@ export default {
   beforeDestroy() {
     this.stopRefreshing();
     if (this.chart) {
-      this.chart.dispose();
+      this.chart.clear();
     }
   },
   methods: {
@@ -112,7 +113,9 @@ export default {
 
           // let completionData = ((res.Data[0].qty / res.Data[0].QuantityOrdered) * 100).toFixed(1)
           // let remainderData = (100 - completionData).toFixed(1)
-
+          if (!res.Data[0]) {
+            return;
+          }
           this.option.series[0].data = [
             { value: res.Data[0].qty, name: "完成", itemStyle: { color: "#1890ff" } },
             { value: (res.Data[0].QuantityOrdered - res.Data[0].qty), name: "剩余", itemStyle: { color: "#2f4b7c" } },
@@ -124,7 +127,10 @@ export default {
     },
     initChart() {
       const chartDom = document.getElementById("completionChart");
-      this.chart = echarts.init(chartDom);
+      this.chart = echarts.init(chartDom, null, {
+        renderer: "svg",
+        useDirtyRect: false, // 关闭脏矩形优化，确保 SVG 渲染正常
+      });
       this.chart.setOption(this.option);
     },
     startRefreshing() {

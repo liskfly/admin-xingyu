@@ -56,10 +56,10 @@
         </el-table-column>
         <el-table-column prop="McID" label="设备ID" width="100">
         </el-table-column>
-         <el-table-column prop="uplinedate" label="上线时间" width="150">
+         <!-- <el-table-column prop="uplinedate" label="上线时间" width="150">
         </el-table-column>
         <el-table-column prop="downlinedate" label="下线时间" width="150">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="OperatorID" label="操作人" width="100"> </el-table-column>
         <el-table-column prop="Timestamp" label="时间" width="150">
         </el-table-column>

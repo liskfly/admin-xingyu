@@ -125,3 +125,21 @@ export function GetCompletionRate2(data) {
         data,
     });
 }
+
+//贴片产能(看板2)
+export function GetCapacity2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetCapacity",
+        method: "post",
+        data,
+    });
+}
+
+//抛料率
+export function GetFeeder2(data) {
+    return request({
+        url: "/NoticeBoardByDay/GetFeeder",
+        method: "post",
+        data,
+    });
+}

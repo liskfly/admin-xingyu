@@ -43,8 +43,9 @@
           </el-col>
             <el-col :span="12" :offset="0">
             <dv-border-box-12 class="centerh">
-              <div class="header_title">
-                <i class="fa fa-check-circle"></i> OEE {{ ' 总OEE' + (allOee * 100).toFixed(0) + '%' }}
+              <div class="w-full header_title flex items-center justify-between">
+                <div class="flex items-center"><i class="fa fa-check-circle"></i> OEE </div>
+                <div>{{ ' 总OEE' + (allOee * 100).toFixed(0) + '%' }}</div>
               </div>
               <div>
                 <oeeChart @update-data="handleDataFromChild" />

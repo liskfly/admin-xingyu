@@ -6,10 +6,10 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetCapacity } from "@/api/kanbanApi"
+import { GetCapacity } from "@/api/kanbanApi";
 import dayjs from "dayjs";
 export default {
-  props: ['Line', 'barHeight'],
+  props: ["Line", "barHeight"],
   data() {
     return {
       option: {
@@ -30,7 +30,7 @@ export default {
           orient: "horizontal",
           x: "center", //可设定图例在左、右、居中
           y: "bottom",
-          data: ["产能"],
+          data: ["标准产能", "产能"],
           textStyle: {
             color: "#ffffff",
             fontSize: 15,
@@ -49,6 +49,10 @@ export default {
             "14:00",
             "15:00",
             "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
           ],
           axisLine: {
             lineStyle: {
@@ -83,9 +87,39 @@ export default {
         },
         series: [
           {
+            name: "标准产能",
+            type: "bar",
+            data: [
+              1250, 1320, 1410, 1530, 1420, 1480, 1370, 1500, 1370, 1500, 1370,
+              1500,
+            ],
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                {
+                  offset: 0,
+                  color: "#32CD32",
+                },
+                {
+                  offset: 1,
+                  color: "#ADFF2F",
+                },
+              ]),
+            },
+            label: {
+              show: true,
+              position: "top",
+              color: "#fefcb8",
+              fontWeight: "bold",
+              fontSize: 14,
+            },
+          },
+          {
             name: "产能",
             type: "bar",
-            data: [1250, 1320, 1410, 1530, 1420, 1480, 1370, 1500],
+            data: [
+              1250, 1320, 1410, 1530, 1420, 1480, 1370, 1500, 1370, 1500, 1370,
+              1500,
+            ],
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
                 {
@@ -100,43 +134,12 @@ export default {
             },
             label: {
               show: true,
-              position: "top",
+              position: "center",
               color: "#e6f7ff",
               fontWeight: "bold",
-              fontSize: 24,
+              fontSize: 14,
             },
           },
-          // {
-          //   name: "目标产能",
-          //   type: "line",
-          //   data: [1400, 1400, 1400, 1400, 1400, 1400, 1400, 1400],
-          //   symbol: "none",
-          //   lineStyle: {
-          //     color: "#52c41a",
-          //     width: 5,
-          //     type: "dashed",
-          //   },
-          //   itemStyle: {
-          //     color: "#52c41a",
-          //   },
-          //   markLine: {
-          //     silent: true,
-          //     lineStyle: {
-          //       color: "#52c41a",
-          //       type: "dashed",
-          //     },
-          //     data: [
-          //       {
-          //         yAxis: 1400,
-          //         label: {
-          //           // formatter: '目标产能',
-          //           color: "#52c41a",
-          //           fontSize: 18,
-          //         },
-          //       },
-          //     ],
-          //   },
-          // },
         ],
       },
       timer: null,
@@ -155,7 +158,7 @@ export default {
         this.stopRefreshing();
         this.getData();
         this.startRefreshing();
-      }
+      },
     },
     barHeight: {
       handler(newHeight) {
@@ -172,7 +175,7 @@ export default {
   beforeDestroy() {
     this.stopRefreshing();
     if (this.chart) {
-      this.chart.dispose();
+      this.chart.clear();
     }
   },
   methods: {
@@ -232,29 +235,48 @@ export default {
       //   }
       // });
       // console.log(dayjs().format("YYYY-MM-DD HH:mm:ss"), "产能");
-      GetCapacity({ Line: this.Line }).then(res => {
+      GetCapacity({ Line: this.Line }).then((res) => {
         if (res.Success) {
-           let data = res.Data
-          if(data.length<12){
+          let data = res.Data;
+          if (data.length < 12) {
             let toAdd = 12 - data.length;
-            for(let i=0;i<toAdd;i++){
-              data.push({HourOfDay:"",NumBlocks:null})
+            for (let i = 0; i < toAdd; i++) {
+              data.push({
+                HourOfDay: "",
+                NumBlocks: null,
+                StandProductNum: null,
+              });
             }
           }
-          this.option.xAxis.data = res.Data.slice(-12).map(item => item.HourOfDay);
-          this.option.series[0].data = res.Data.slice(-12).map(item => ({
+          this.option.xAxis.data = res.Data.slice(-12).map(
+            (item) => item.HourOfDay
+          );
+          this.option.series[1].data = res.Data.slice(-12).map((item) => ({
             value: item.NumBlocks,
-            name: item.HourOfDay
+            name: item.HourOfDay,
           }));
+          this.option.series[0].data = res.Data.slice(-12).map((item) => ({
+            value: Math.ceil(Number(item.StandProductNum)),
+            name: item.HourOfDay,
+          }));
+          this.option.series[0].data.map((item,index) => {
+            if (item.name.startsWith(new Date().getHours())) {
+              this.option.series[0].data[index].value = Math.ceil(this.option.series[0].data[index].value * new Date().getMinutes() / 60);
+            }
+          })
+          console.log(this.option);
           this.chart.setOption(this.option);
         }
-
-      })
-
+      });
     },
     initChart() {
       const chartDom = document.getElementById("capacityChart");
-      this.chart = echarts.init(chartDom);
+
+      this.chart = echarts.init(chartDom, null, {
+        renderer: "svg",
+        useDirtyRect: false, // 关闭脏矩形优化，确保 SVG 渲染正常
+      });
+      // this.chart = echarts.init(chartDom);
       this.chart.setOption(this.option);
       // myChart.resize();
     },
@@ -264,8 +286,6 @@ export default {
       this.timer = setInterval(() => {
         this.getData();
       }, 60000);
-
-
     },
     stopRefreshing() {
       if (this.timer) {
@@ -291,7 +311,7 @@ export default {
         this.getData();
         this.loading = false;
       }, 800);
-    }
+    },
   },
 };
 </script>

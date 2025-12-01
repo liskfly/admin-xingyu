@@ -114,8 +114,8 @@ export default {
           let remainderData = 0;
 
           res.Data.map((item) => {
-            completionData = completionData + item.qty;
-            remainderData = remainderData + item.QuantityOrdered;
+            completionData = completionData + Number(item.qty);
+            remainderData = remainderData + Number(item.QuantityOrdered);
           })
 
           this.option.series[0].data = [

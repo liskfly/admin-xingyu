@@ -39,16 +39,16 @@
 
         </af-table-column>
         <af-table-column prop="baddata_pcbid" label="产品SN" />
+        <el-table-column prop="baddata_line" label="线体" />
+        <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
+        <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
+        <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
         <af-table-column prop="mfgordername" label="工单号"></af-table-column>
         <af-table-column prop="baddata_produtside" label="面别"></af-table-column>
         <af-table-column prop="productname" label="产品编码"></af-table-column>
         <af-table-column prop="baddata_productname" label="产品名称"></af-table-column>
         <el-table-column prop="baddata_productdsc" label="产品描述" width="120" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="baddata_line" label="线体" />
         <af-table-column prop="baddata_equip" label="设备" />
-        <af-table-column prop="baddatadetail_item" label="不良点位"></af-table-column>
-        <af-table-column prop="baddatadetail_code" label="不良代码"></af-table-column>
-        <af-table-column prop="badphenomena_value" label="不良名称"></af-table-column>
         <el-table-column prop="badphenomena_desc" label="不良描述"></el-table-column>
         <el-table-column prop="baddatadetail_remark" label="不良备注"></el-table-column>
 

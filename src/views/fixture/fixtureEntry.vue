@@ -57,9 +57,13 @@
                 @click="handleScrap(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top"><el-button type="danger" icon="el-icon-delete"
-                :disabled="scope.row.Stts == -1" size="mini" @click="handleDelete(scope.row)">
+                 size="mini" @click="handleDelete(scope.row)">
               </el-button>
             </el-tooltip>
+            <!-- <el-tooltip content="删除" placement="top"><el-button type="danger" icon="el-icon-delete"
+                :disabled="scope.row.Stts == -1" size="mini" @click="handleDelete(scope.row)">
+              </el-button>
+            </el-tooltip> -->
             <el-tooltip content="详情" placement="top">
               <el-button type="success" icon="el-icon-document" :disabled="scope.row.Stts == -1" size="mini"
                 @click="handleDetail(scope.row)"></el-button>

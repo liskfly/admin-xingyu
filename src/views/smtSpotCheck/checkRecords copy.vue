@@ -10,7 +10,7 @@
           size="medium"
         >
           <el-form-item class="mb-2">
-            <el-select v-model="getDataText.inspectType" @change="getDataText.wo = '',getDataText.inspect = ''" placeholder="检查类型">
+            <el-select v-model="getDataText.inspectType" placeholder="检查类型">
               <el-option
                 v-for="item in typeList"
                 :key="item.value"
@@ -19,6 +19,51 @@
               ></el-option> </el-select
           ></el-form-item>
           <el-form-item class="mb-2">
+            <el-select v-model="inquire" placeholder="检查类型">
+              <el-option
+                v-for="item in inquireList"
+                :key="item.value"
+                :label="item.lable"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-show="inquire == 'order'" class="mb-2">
+            <el-input
+              placeholder="请输入任务编号"
+              clearable
+              v-model="getDataText.inspect"
+              class="input-with-select"
+              @change="getData()"
+            >
+              <!-- <template slot="prepend">{{ headerType }}</template> -->
+            </el-input>
+          </el-form-item>
+          <el-form-item v-show="inquire == 'line'" class="mb-2">
+            <el-select v-model="getDataText.line" placeholder="线体">
+              <el-option
+                v-for="item in lineList"
+                :key="item.value"
+                :label="item.lable"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-show="inquire == 'times'" class="mb-2">
+            <!-- <el-date-picker
+              v-model="value1"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+            >
+            </el-date-picker> -->
             <el-date-picker
               v-model="value1"
               type="datetimerange"
@@ -31,25 +76,6 @@
               :clearable="false"
             >
             </el-date-picker>
-          </el-form-item>
-          <el-form-item class="mb-2">
-            <el-select v-model="getDataText.lineName" placeholder="线体">
-              <el-option
-                v-for="item in lineList"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item class="mb-2" v-show="getDataText.inspectType == 'WI'">
-            <el-input
-              placeholder="请输入工单"
-              clearable
-              v-model="getDataText.wo"
-            >
-            </el-input>
           </el-form-item>
           <el-form-item class="mb-2">
             <el-button type="primary" @click="getData()">查询</el-button>
@@ -173,42 +199,34 @@ export default {
       tableHeight: 0,
       getDataText: {
         inspectType: "EI",
-        inspect: "",
-        lineName: "",
-        wo: "",
-        dateStart: "2025-11-07 00:00:00",
-        dateEnd: "2025-11-07 23:59:59",
+        inspect: "*",
+        dateStart: "",
+        dateEnd: "",
+        line:''
       },
-      lineList: [
+      lineList:[
         {
           lable: "Line1",
           value: "Line1",
-        },
-        {
+        },{
           lable: "Line2",
           value: "Line2",
-        },
-        {
+        },{
           lable: "Line3",
           value: "Line3",
-        },
-        {
+        },{
           lable: "Line4",
           value: "Line4",
-        },
-        {
+        },{
           lable: "Line5",
           value: "Line5",
-        },
-        {
+        },{
           lable: "Line6",
           value: "Line6",
-        },
-        {
+        },{
           lable: "Line7",
           value: "Line7",
-        },
-      ],
+        },],
       typeList: [
         {
           lable: "首检",

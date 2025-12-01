@@ -107,8 +107,8 @@ export default {
           let Badness_Percent = 0;
 
           res.Data.map((item) => {
-            FirstPass_Percent = FirstPass_Percent + item.FirstPass_Percent;
-            Badness_Percent = Badness_Percent + item.Badness_Percent;
+            FirstPass_Percent = FirstPass_Percent + Number(item.FirstPass_Percent);
+            Badness_Percent = Badness_Percent + Number(item.Badness_Percent);
           });
 
           FirstPass_Percent = (FirstPass_Percent / res.Data.length).toFixed(2);

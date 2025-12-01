@@ -48,8 +48,8 @@ export default {
           `<div style="font-size:17px;color:#fff;text-align: center;">${item.OrderName}</div>`,
           `<div style="font-size:17px;color:#fff;text-align: center;">${item.Side}</div>`,
           `<div style="font-size:17px;color:#fff;text-align: center;width:100%;line-height:25px;word-wrap: break-word;white-space: normal;margin:0 auto">${item.ProductDsc}</div>`,
-          `<div style="font-size:17px;color:#fff;text-align: center;">${item.PlannedStartTime}</div>`,
-          `<div style="font-size:17px;color:#fff;text-align: center;">${item.PlannedFinishTime}</div>`,
+          `<div style="font-size:17px;color:#fff;text-align: center;">${item.ActualStartTime}</div>`,
+          `<div style="font-size:17px;color:#fff;text-align: center;">${item.ActualEndTime}</div>`,
           `<div style="font-size:17px;color:#fff;text-align: center;margin:0 auto">${item.CompleteRate}</div>`,
         ];
       });

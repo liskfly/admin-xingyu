@@ -36,7 +36,7 @@ export default {
             radius: ["40%", "68%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
-            // startAngle: 90,
+            startAngle: 270,
             itemStyle: {
               borderRadius: 10,
               borderColor: "#0c162d",
@@ -67,7 +67,6 @@ export default {
       chart: null,
       refreshing: true,
       loading: false,
-      timer: null,
     };
   },
   watch: {
@@ -96,7 +95,7 @@ export default {
   beforeDestroy() {
     this.stopRefreshing();
     if (this.chart) {
-      this.chart.dispose();
+      this.chart.clear();
     }
   },
   methods: {
@@ -121,7 +120,11 @@ export default {
     },
     initChart() {
       const chartDom = document.getElementById("aoiPassRateChart");
-      this.chart = echarts.init(chartDom);
+
+      this.chart = echarts.init(chartDom, null, {
+        renderer: "svg",
+        useDirtyRect: false, // 关闭脏矩形优化，确保 SVG 渲染正常
+      });
       this.chart.setOption(this.option);
     },
     startRefreshing() {

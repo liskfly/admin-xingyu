@@ -2,11 +2,11 @@
   <div class="parametEnable">
     <el-card shadow="always" :body-style="{ padding: '8px' }">
       <el-form :model="form" ref="form" :inline="true" size="normal">
-        <el-form-item label="产品" style="margin-bottom: 10px;">
+        <el-form-item label="产品" style="margin-bottom: 10px">
           <el-select
             v-model="form.productName"
             filterable
-              size="medium"
+            size="medium"
             placeholder="点击选择"
           >
             <el-option
@@ -17,11 +17,11 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="正反面" style="margin-bottom: 10px;">
+        <!-- <el-form-item label="面别" style="margin-bottom: 10px">
           <el-select
             v-model="form.side"
             filterable
-              size="medium"
+            size="medium"
             placeholder="点击选择"
           >
             <el-option
@@ -32,18 +32,41 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="时间" label-width="50px" style="margin-bottom: 10px;">
+        <el-form-item label="线体" style="margin-bottom: 10px">
+          <el-select
+            v-model="form.lineName"
+            size="medium"
+            clearable
+            placeholder="点击选择"
+          >
+            <el-option
+              v-for="item in lineList"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="时间"
+          label-width="50px"
+          style="margin-bottom: 10px"
+        >
           <el-input
             type="number"
             v-model="form.cycleTime"
             size="medium"
             placeholder="输入时间"
           ></el-input>
-        </el-form-item>
-        <el-form-item class="item" style="margin-bottom: 10px;">
-          <el-button type="primary" @click="addData"   size="medium">添加</el-button>
-          <el-button type="primary" @click="getNowData"   size="medium">查询当前状态</el-button>
-          <el-button type="primary" @click="getHistoryData"   size="medium"
+        </el-form-item> -->
+        <el-form-item class="item" style="margin-bottom: 10px">
+          <el-button type="primary" @click="addVisible = true" size="medium"
+            >添加</el-button
+          >
+          <el-button type="primary" @click="getNowData" size="medium"
+            >查询当前状态</el-button
+          >
+          <el-button type="primary" @click="getHistoryData" size="medium"
             >查询历史状态</el-button
           >
         </el-form-item>
@@ -55,11 +78,21 @@
         :height="tableHeight"
         border
         stripe
-          size="medium"
+        size="medium"
       >
         <el-table-column prop="ProductName" label="产品"> </el-table-column>
+        <el-table-column prop="LineName" label="线体"> </el-table-column>
+        <el-table-column
+          prop="Side"
+          label="面别"
+          :filters="[
+            { text: 'Top', value: 'Top' },
+            { text: 'Bot', value: 'Bot' },
+          ]"
+          :filter-method="filterMethod"
+        >
+        </el-table-column>
         <el-table-column prop="CycleTime" label="单片产能"> </el-table-column>
-        <el-table-column prop="Side" label="正反面" :filters="[{text:'Top',value:'Top'},{text:'Bot',value:'Bot'}]" :filter-method="filterMethod"> </el-table-column>
         <el-table-column prop="UserName" label="操作人"> </el-table-column>
         <el-table-column prop="UpdateTime" label="操作时间"> </el-table-column>
         <el-table-column fixed="right" label="操作" width="150" align="center">
@@ -97,19 +130,87 @@
         </el-pagination>
       </div>
     </el-card>
+    <el-dialog :title="'添加'" :visible.sync="addVisible" @close="addCancel()">
+      <el-form :model="addForm" ref="form" label-width="80px">
+        <el-form-item label="产品" prop="productName">
+          <!-- <el-input v-model="addForm.productName"></el-input> -->
+          <el-select
+            v-model="addForm.productName"
+            filterable
+            size="medium"
+            placeholder="点击选择"
+          >
+            <el-option
+              v-for="item in itemList"
+              :key="item.PartNumber"
+              :label="item.PartNumber"
+              :value="item.PartNumber"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="面别">
+          <el-select v-model="addForm.side" filterable placeholder="点击选择">
+            <el-option
+              v-for="item in pon"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="线体" style="margin-bottom: 10px">
+          <el-select
+            v-model="addForm.lineName"
+            size="medium"
+            clearable
+            placeholder="点击选择"
+          >
+            <el-option
+              v-for="item in lineList"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="周期" prop="cycleTime">
+          <el-input type="number" v-model="addForm.cycleTime"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addCancel()">取 消</el-button>
+        <el-button type="primary" @click="addData()">确 定</el-button>
+      </span>
+    </el-dialog>
     <el-dialog :title="'修改'" :visible.sync="dialogVisible">
       <el-form :model="changeForm" ref="form" label-width="80px">
         <el-form-item label="产品" prop="productName">
-          <el-input v-model="changeForm.productName"></el-input>
+          <el-input v-model="changeForm.productName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="正反面">
+        <el-form-item label="面别">
           <el-select
             v-model="changeForm.side"
             filterable
+            disabled
             placeholder="点击选择"
           >
             <el-option
               v-for="item in pon"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="线体" style="margin-bottom: 10px">
+          <el-select
+            v-model="changeForm.lineName"
+            size="medium"
+            disabled
+            placeholder="点击选择"
+          >
+            <el-option
+              v-for="item in lineList"
               :key="item.value"
               :label="item.value"
               :value="item.value"
@@ -143,23 +244,63 @@ export default {
         userName: getToken(),
         productName: "",
         cycleTime: 0,
-        side:''
+        side: "",
+        lineName: "",
+        position: "",
       },
       itemList: [],
       dialogVisible: false,
+      addVisible: false,
       delectShow: false,
+      addForm: {
+        userName: getToken(),
+        productName: "",
+        cycleTime: 0,
+        side: "",
+        lineName: "",
+        position: "",
+      },
       changeForm: {
         userName: getToken(),
         productName: "",
         cycleTime: 0,
-        side:''
+        side: "",
+        lineName: "",
+        position: "",
       },
       loading: null,
-      pon:[
-        {value:'Top'},
-        {value:'Bot'}
+      pon: [{ value: "TOP" }, { value: "BOT" }],
+      test: "",
+      lineList: [
+        {
+          value: "Line1",
+          label: "Line1",
+        },
+        {
+          value: "Line2",
+          label: "Line2",
+        },
+        {
+          value: "Line3",
+          label: "Line3",
+        },
+        {
+          value: "Line4",
+          label: "Line4",
+        },
+        {
+          value: "Line5",
+          label: "Line5",
+        },
+        {
+          value: "Line6",
+          label: "Line6",
+        },
+        {
+          value: "Line7",
+          label: "Line7",
+        },
       ],
-      test:''
     };
   },
   beforeMount() {
@@ -211,22 +352,33 @@ export default {
       });
     },
     addData() {
-      if (this.form.userName === '' ||
-      this.form.cycleTime === 0 ||
-      this.form.side === '') {
+      if (
+        this.addForm.userName === "" ||
+        this.addForm.cycleTime === 0 ||
+        this.addForm.side === "" ||
+        this.addForm.lineName === ""
+      ) {
         return;
       }
-      XYL_OEE_ProductCycle({ ...this.form, operationType: "I" })
+      XYL_OEE_ProductCycle({ ...this.addForm, operationType: "I" })
         .then(({ data }) => {
-          if (data.Status === "OK") {
-            this.$message("增加成功");
-            this.getNowData();
+          if (typeof data != "string") {
+            if (data.Status === "OK") {
+              this.$message("增加成功");
+              this.getNowData();
+              this.addVisible = false;
+            } else {
+              this.$message(data.Message);
+            }
           } else {
-            this.$message(data.Message);
+            this.$message.error(
+              JSON.parse(data.replace(/[\r\n\s+]/g, '')).Message
+            );
           }
         })
         .catch((res) => {
-          this.$message(res);
+          console.log(res);
+          this.$message.error(res);
         });
     },
     changeData(index, row) {
@@ -235,7 +387,8 @@ export default {
           if (data.Status === "OK") {
             this.$message("修改成功");
             this.dialogVisible = !this.dialogVisible;
-            this.getNowData()
+            this.getNowData();
+            this.getAll();
           } else {
             this.$message(data.Message);
           }
@@ -261,7 +414,7 @@ export default {
         });
     },
     getHistoryData() {
-      if (this.form.productName === '') {
+      if (this.form.productName === "") {
         return;
       }
       this.delectShow = false;
@@ -285,10 +438,20 @@ export default {
         userName: getToken(),
         productName: row.ProductName,
         cycleTime: row.CycleTime,
+        lineName: row.LineName,
+        side: row.Side,
       };
     },
     handleDelete(index, row) {
-      XYL_OEE_ProductCycle({ ...row, operationType: "D" })
+      XYL_OEE_ProductCycle({
+        userName: getToken(),
+        productName: row.ProductName,
+        cycleTime: row.CycleTime,
+        side: row.Side,
+        lineName: row.LineName,
+        position: row.Position,
+        operationType: "D",
+      })
         .then(({ data }) => {
           if (data.Status === "OK") {
             this.$message("删除成功");
@@ -304,6 +467,17 @@ export default {
         .catch((res) => {
           this.$message(res);
         });
+    },
+    addCancel() {
+      this.addForm = {
+        userName: getToken(),
+        productName: "",
+        cycleTime: 0,
+        side: "",
+        lineName: "",
+        position: "",
+      };
+      this.addVisible = false;
     },
     changeCancel() {
       this.dialogVisible = false;
@@ -322,9 +496,9 @@ export default {
         this.loading.close();
       }
     },
-    filterMethod(value,row) {
-      return row.Side === value
-    }
+    filterMethod(value, row) {
+      return row.Side === value;
+    },
   },
 };
 </script>

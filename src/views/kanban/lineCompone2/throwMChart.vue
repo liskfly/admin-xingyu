@@ -6,7 +6,7 @@
 
 <script>
 import * as echarts from "echarts";
-import { GetFeeder } from "@/api/kanbanApi";
+import { GetFeeder2 } from "@/api/kanbanApi";
 // import dayjs from "dayjs";
 export default {
   props: ['Line','barHeight'],
@@ -161,7 +161,7 @@ export default {
         "#ff0f0b",
         "#ff0000",
       ];
-      GetFeeder({ Line: this.Line }).then((res) => {
+      GetFeeder2({ Line: this.Line }).then((res) => {
         if (res.Success) {
           let data = res.Data.slice().reverse();
           if(data.length<10){
