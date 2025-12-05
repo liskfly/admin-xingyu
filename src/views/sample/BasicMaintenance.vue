@@ -121,7 +121,7 @@
             placeholder=""
           ></el-input>
         </el-form-item>
-        <el-form-item label="样件内容" prop="sortId">
+        <el-form-item label="封样内容" prop="sortId">
           <el-date-picker
             v-model="form.component"
             type="date"
@@ -129,7 +129,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="样件日期" prop="sortId">
+        <el-form-item label="封样日期" prop="sortId">
           <el-input
             v-model="form.component"
             placeholder=""

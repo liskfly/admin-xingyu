@@ -110,8 +110,7 @@
                 </el-table-column>
                 <el-table-column label="PCB物料编码">
                   <template slot-scope="scope">
-                    <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod"
-                      placeholder="105057开头的物料编码" @select="change($event, scope.$index)" size="small">
+                    <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" @select="change($event, scope.$index)" size="small">
                     </el-autocomplete>
                     <!-- <el-select v-model="scope.row.pcb_code" @change="change($event, scope.$index)" filterable remote
                   reserve-keyword placeholder="请输入关键词" :remote-method="remoteMethod" size="mini" >
@@ -228,7 +227,7 @@
                 </el-table-column>
                 <el-table-column label="PCB物料编码" prop="pcb_code">
                   <template slot-scope="scope">
-                    <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod" placeholder="10505"
+                    <el-autocomplete v-model="scope.row.pcb_code" :fetch-suggestions="remoteMethod"
                       @select="change1($event, scope.$index)" size="small">
                     </el-autocomplete>
                     <!-- <el-select v-model="scope.row.pcb_code" @change="change1($event, scope.$index)" filterable remote
@@ -469,8 +468,10 @@ export default {
       this.form.Detail[index].model = val.pn_spec;
     },
     remoteMethod(query, cb) {
-      const reg = /^105057\d*$/;
-      if (query !== "" && reg.test(query)) {
+      // const reg = /^105057\d*$/;
+      // if (query !== "" && reg.test(query)) {
+      // }
+      
         findPartNumberData(query).then((res) => {
           if (res.Success) {
             if (res.Data === null || res.Data.length === 0) {
@@ -493,7 +494,6 @@ export default {
             );
           }
         });
-      }
     },
 
     change1(val, index) {

@@ -116,36 +116,36 @@ export default {
       tableHeight: 0,
       lineList: [
         {
-          lable: "Line1",
+          value: "",
+          label: "全部",
+        },
+        {
+          label: "Line1",
           value: "Line1",
         },
         {
-          lable: "Line2",
+          label: "Line2",
           value: "Line2",
         },
         {
-          lable: "Line3",
+          label: "Line3",
           value: "Line3",
         },
         {
-          lable: "Line4",
+          label: "Line4",
           value: "Line4",
         },
         {
-          lable: "Line5",
+          label: "Line5",
           value: "Line5",
         },
         {
-          lable: "Line6",
+          label: "Line6",
           value: "Line6",
         },
         {
-          lable: "Line7",
+          label: "Line7",
           value: "Line7",
-        },,
-        {
-          lable: "全部",
-          value: "",
         },
       ],
       // pickerOptions: {

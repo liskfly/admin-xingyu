@@ -145,10 +145,6 @@ export default {
           lable: "Line7",
           value: "Line7",
         },
-        {
-          lable: "全部",
-          value: "",
-        },
       ],
       // pickerOptions: {
       //   shortcuts: shortcuts,
