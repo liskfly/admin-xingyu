@@ -36,8 +36,10 @@
         </af-table-column>
         <af-table-column prop="softwareVersion" label="刷新日期">
         </af-table-column>
-        <af-table-column prop="softwareVersion" label="有效期"> </af-table-column>
-        <af-table-column prop="softwareVersion" label="封样人"> </af-table-column>
+        <af-table-column prop="softwareVersion" label="有效期">
+        </af-table-column>
+        <af-table-column prop="softwareVersion" label="封样人">
+        </af-table-column>
         <af-table-column prop="softwareVersion" label="备注"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="180" align="center">
           <template slot-scope="scope">
@@ -92,72 +94,72 @@
         label-width="auto"
       >
         <el-form-item label="样件编码" prop="path">
-          <el-input
-            v-model="form.path"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.path" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="成品编码" prop="MenuName">
-          <el-input
+          <el-select
             v-model="form.MenuName"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="产品名称" prop="redirect">
-          <el-input
-            v-model="form.redirect"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="版本" prop="component">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样件类型" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="封样内容" prop="sortId">
-          <el-date-picker
-            v-model="form.component"
-            type="date"
+            @change="change"
+            filterable
             placeholder=""
           >
+            <el-option
+              v-for="item in []"
+              :key="item.WorkOrder"
+              :label="item.WorkOrder"
+              :value="item.WorkOrder"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="产品名称" prop="redirect">
+          <el-input v-model="form.redirect" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="版本" prop="component">
+          <el-input v-model="form.component" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="样件类型" prop="sortId">
+          <el-select
+            v-model="form.component"
+            @change="change"
+            filterable
+            placeholder=""
+          >
+            <el-option
+              v-for="item in []"
+              :key="item.WorkOrder"
+              :label="item.WorkOrder"
+              :value="item.WorkOrder"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="封样内容" prop="sortId">
+          <el-date-picker v-model="form.component" type="date" placeholder="">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="封样日期" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-date-picker
+            v-model="form.date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="刷新日期" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-date-picker
+            v-model="form.date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="有效期(年)" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.component" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="封样人" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.component" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.component" placeholder=""></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -179,74 +181,72 @@
         label-width="auto"
       >
         <el-form-item label="样件编码" prop="path">
-          <el-input
-          :disabled="false"
-            v-model="form.path"
-            placeholder=""
-            disabled
-          ></el-input>
+          <el-input v-model="form.path" placeholder="" disabled></el-input>
         </el-form-item>
         <el-form-item label="成品编码" prop="MenuName">
-          <el-input
+          <el-select
             v-model="form.MenuName"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="产品名称" prop="redirect">
-          <el-input
-            v-model="form.redirect"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="版本" prop="component">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="样件类型" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder="封样内容"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="封样内容" prop="sortId">
-          <el-date-picker
-            v-model="form.component"
-            type="date"
+            @change="change"
+            filterable
             placeholder=""
           >
+            <el-option
+              v-for="item in []"
+              :key="item.WorkOrder"
+              :label="item.WorkOrder"
+              :value="item.WorkOrder"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="产品名称" prop="redirect">
+          <el-input v-model="form.redirect" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="版本" prop="component">
+          <el-input v-model="form.component" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="样件类型" prop="sortId">
+          <el-select
+            v-model="form.component"
+            @change="change"
+            filterable
+            placeholder=""
+          >
+            <el-option
+              v-for="item in []"
+              :key="item.WorkOrder"
+              :label="item.WorkOrder"
+              :value="item.WorkOrder"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="封样内容" prop="sortId">
+          <el-date-picker v-model="form.component" type="date" placeholder="">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="封样日期" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-date-picker
+            v-model="form.date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="刷新日期" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-date-picker
+            v-model="form.date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="有效期(年)" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.component" placeholder="" disabled></el-input>
         </el-form-item>
         <el-form-item label="封样人" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.component" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="sortId">
-          <el-input
-            v-model="form.component"
-            placeholder=""
-          ></el-input>
+          <el-input v-model="form.component" placeholder=""></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -319,6 +319,7 @@ export default {
           name: "",
           version: "",
           softwareVersion: "",
+          date: "",
         },
         Detail: [
           {
