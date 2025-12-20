@@ -250,7 +250,6 @@ export default {
       // this.compnameText = selected ? selected.MaterialName : '';
       this.addForm.remark = selected ? selected.MaterialName : '';
       this.fixtureType = this.returnType(selected ? selected.Category : '');
-      
     },
     returnType(num) {
       let arr = [
@@ -363,7 +362,7 @@ export default {
             this.$refs.addFormRef.resetFields();
             this.addVisible = false;
             // 重置表单
-            this.getIDdata(); // 重新获取数据
+            this.getData(); // 重新获取数据
           } else {
             this.$notify({
               title: "提示信息",
@@ -417,7 +416,7 @@ export default {
               type: "success",
             });
             this.editVisible = false;
-            this.getIDdata(); // 重新获取数据
+            this.getData(); // 重新获取数据
           } else {
             this.$notify({
               title: "提示信息",
