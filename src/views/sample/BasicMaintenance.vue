@@ -21,7 +21,9 @@
         </el-input>
       </div>
       <el-table
-        :data="tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
+        :data="
+          tableData1.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
         border
         :height="tableHeight"
         style="width: 100%"
@@ -42,15 +44,27 @@
         >
         </el-table-column> -->
         <!-- <af-table-column prop="version" label="版本"> </af-table-column> -->
-        <af-table-column prop="Model" label="样件类型">
+        <af-table-column prop="Model" label="样件类型"> </af-table-column>
+        <af-table-column prop="prono" label="产品编码"> </af-table-column>
+        <af-table-column prop="proname" label="产品名称"> </af-table-column>
+        <af-table-column prop="pn_spec" label="产品规格"> </af-table-column>
+        <af-table-column prop="SS_Content" label="封样内容"> </af-table-column>
+        <af-table-column prop="SS_Date" label="封样日期">
+          <template slot-scope="scope">
+            <span>{{ formatDate(scope.row.SS_Date) }}</span>
+          </template>
         </af-table-column>
-        <af-table-column prop="SS_Content" label="封样内容">
+        <af-table-column prop="SS_UpdateDate" label="刷新日期">
         </af-table-column>
-        <af-table-column prop="SS_Date" label="封样日期"> </af-table-column>
-        <!-- <af-table-column prop="softwareVersion" label="刷新日期">
+        <af-table-column prop="ExpireLong" label="有效期">
+          <template slot-scope="scope">
+            <span>{{ scope.row.ExpireLong ? scope.row.ExpireLong + "年":'' }}</span>
+          </template>
         </af-table-column>
-        <af-table-column prop="softwareVersion" label="有效期">
-        </af-table-column> -->
+        <af-table-column prop="ExpireDate" label="失效日期">
+          <template slot-scope="scope">
+            <span>{{ formatDate(scope.row.ExpireDate) }}</span>
+          </template></af-table-column>
         <af-table-column prop="SS_User" label="封样人"> </af-table-column>
         <af-table-column prop="Dsc" label="备注"> </af-table-column>
         <el-table-column fixed="right" label="操作" width="180" align="center">
@@ -146,7 +160,9 @@
           <el-date-picker
             v-model="form.sS_Date"
             type="date"
-            placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            placeholder="选择日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
           >
           </el-date-picker>
         </el-form-item>
@@ -154,13 +170,30 @@
           <el-date-picker
             v-model="form.sS_UpdateDate"
             type="date"
-            placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            @change="addChangeDate"
+            placeholder="选择日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
           >
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="有效期(年)" prop="sortId">
-          <el-input v-model="form.component" placeholder=""></el-input>
-        </el-form-item> -->
+        <el-form-item label="有效期(年)" prop="ExpireLong">
+          <el-input
+            v-model="form.expireLong"
+            disabled
+            @change="addChangeDate"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="失效日期" prop="ExpirationDate">
+          <el-input
+            v-model="form.expirationDate"
+            disabled
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="封样人" prop="sS_User">
+          <el-input v-model="form.sS_User" placeholder=""></el-input>
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder=""></el-input>
         </el-form-item>
@@ -228,7 +261,9 @@
           <el-date-picker
             v-model="editForm.sS_Date"
             type="date"
-            placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            placeholder="选择日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
           >
           </el-date-picker>
         </el-form-item>
@@ -237,13 +272,29 @@
             v-model="editForm.sS_UpdateDate"
             type="date"
             placeholder="选择日期"
-            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            @change="editChangeDate"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
           >
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="有效期(年)" prop="sortId">
-          <el-input v-model="form.component" placeholder="" disabled></el-input>
-        </el-form-item> -->
+        <el-form-item label="有效期(年)" prop="sortId">
+          <el-input
+            v-model="editForm.expireLong"
+            disable
+            @change="editChangeDate"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="失效日期" prop="expirationDate">
+          <el-input
+            v-model="editForm.expirationDate"
+            disabled
+            placeholder=""
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="封样人" prop="sS_User">
+          <el-input v-model="editForm.sS_User" placeholder=""></el-input>
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="editForm.remark" placeholder=""></el-input>
         </el-form-item>
@@ -291,21 +342,29 @@ export default {
         compid: "",
         sS_Date: "",
         sS_Content: "",
-        compname:"",
-        sS_User: getToken(),
-        sS_UpdateDate:'',
+        compname: "",
+        sS_User: "",
+        sS_UpdateDate: "",
         remark: "",
+        expireLong: "1",
+        expireUnit: "Y",
+        expirationDate: "",
+        user:getToken(),
         selectType: ["3"],
       },
       detailVisible: false,
       editForm: {
         compid: "",
         sS_Date: "",
-        compname:"",
+        compname: "",
         sS_Content: "",
-        sS_User: getToken(),
-        sS_UpdateDate:'',
+        sS_User: "",
+        sS_UpdateDate: "",
         remark: "",
+        expireLong: "1",
+        expireUnit: "Y",
+        expirationDate: "",
+        user:getToken(),
         selectType: ["3"],
       },
       upDateForm: {
@@ -315,7 +374,7 @@ export default {
       smallBoardTable: [],
       songBoardVisible: false,
       detailForm: {},
-      searchName:''
+      searchName: "",
     };
   },
   beforeMount() {
@@ -360,7 +419,7 @@ export default {
       let searchName = newdata.toLowerCase();
       this.currentPage = 1;
       console.log();
-      
+
       return this.tableData.filter((v) => {
         if (
           String(v.Tool).toLowerCase().indexOf(searchName) > -1 ||
@@ -405,6 +464,22 @@ export default {
         module_end: 0,
       });
     },
+    addChangeDate() {
+      if (!this.form.sS_UpdateDate || this.form.sS_UpdateDate == "") {
+        return;
+      }
+      const [year, month, day] = this.form.sS_UpdateDate.split("-");
+      let newYear = Number(year) + Number(this.form.expireLong);
+      this.form.expirationDate = `${newYear}-${month}-${day}`;
+    },
+    editChangeDate() {
+      if (!this.editForm.sS_UpdateDate || this.editForm.sS_UpdateDate == "") {
+        return;
+      }
+      const [year, month, day] = this.editForm.sS_UpdateDate.split("-");
+      let newYear = Number(year) + Number(this.editForm.expireLong);
+      this.editForm.expirationDate = `${newYear}-${month}-${day}`;
+    },
     deleteBoard() {
       this.form.smallBoardTable.pop();
     },
@@ -418,7 +493,7 @@ export default {
             compid: row.Tool,
             compname: row.Model,
             remark: "",
-            user: getToken()
+            user: getToken(),
           };
           iDControll(data)
             .then((res) => {
@@ -453,24 +528,32 @@ export default {
       this.detailVisible = true;
     },
     onSubmit() {
-      iDControll({...this.form,operationType:"I"}).then((res) => {
-        if (res.data.Status == "OK") {
+      iDControll({ ...this.form, operationType: "I" })
+        .then((res) => {
+          if (res.data.Status == "OK") {
+            this.$notify({
+              title: "提示信息",
+              message: "添加成功",
+              type: "success",
+            });
+            this.dialogVisible = false;
+            this.getData();
+            // 重置表单
+          } else {
+            this.$notify({
+              title: "提示信息",
+              message: res.data.Message,
+              type: "error",
+            });
+          }
+        })
+        .catch((error) => {
           this.$notify({
             title: "提示信息",
-            message: "添加成功",
-            type: "success",
-          });
-          this.dialogVisible = false;
-          this.getData();
-          // 重置表单
-        } else {
-          this.$notify({
-            title: "提示信息",
-            message: res.data.Message,
+            message: error,
             type: "error",
           });
-        }
-      });
+        });
     },
     restForm() {
       this.form = {
@@ -497,19 +580,38 @@ export default {
     },
     addCancel() {
       this.dialogVisible = false;
-      this.form = {};
+      this.form = {
+        compid: "",
+        sS_Date: "",
+        sS_Content: "",
+        compname: "",
+        sS_User: "",
+        sS_UpdateDate: "",
+        remark: "",
+        expireLong: "1",
+        expireUnit: "Y",
+        expirationDate: "",
+        user:getToken(),
+        selectType: ["3"],
+      };
     },
     handleEdit(row) {
       this.editForm = {
         compid: row.Tool,
         sS_Date: row.SS_Date,
-        compname:row.Model,
+        compname: row.Model,
         sS_Content: row.SS_Content,
-        sS_User: getToken(),
-        sS_UpdateDate:row.SS_UpdateDate,
+        sS_User: row.SS_User,
+        sS_UpdateDate: row.SS_UpdateDate,
         remark: row.Dsc,
+        expireLong: row.ExpireLong ? row.ExpireLong : "1",
+        expireUnit: row.ExpireUnit ? row.expireUnit : "Y",
+        expirationDate: row.ExpireDate,
+        user:getToken(),
         selectType: ["3"],
       };
+      this.editChangeDate();
+      console.log(this.editForm.sS_Date?'':'');
       this.editVisible = true;
     },
     addDetailCancel() {
@@ -530,7 +632,7 @@ export default {
       });
     },
     onEditSubmit() {
-      iDControll({...this.editForm,operationType:"U"}).then((res) => {
+      iDControll({ ...this.editForm, operationType: "U" }).then((res) => {
         if (res.data.Status == "OK") {
           this.$notify({
             title: "提示信息",
@@ -547,7 +649,13 @@ export default {
             type: "error",
           });
         }
-      });
+      }).catch(() => {
+          this.$notify({
+            title: "提示信息",
+            message: error,
+            type: "error",
+          });
+      })
     },
     onDetailSubmit() {
       this.smallBoardTable = this.smallBoardTable.filter(
@@ -576,9 +684,6 @@ export default {
         }
       });
     },
-    addCancel() {
-      this.detailVisible = false;
-    },
     handleSizeChange(value) {
       this.pageSize = value;
     },
@@ -591,6 +696,18 @@ export default {
         this.tableHeight = window.innerHeight - 220;
         // this.tableHeight1 =
       });
+    },
+    formatDate(dateString) {
+      if (dateString == '' || !dateString) {
+        return '';
+      }
+      const date = new Date(dateString.replace(" ", "T"));
+
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // 月份从0开始
+      const day = date.getDate();
+
+      return `${year}-${month}-${day}`;
     },
   },
 };
